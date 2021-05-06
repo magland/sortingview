@@ -1,25 +1,9 @@
 import time
 import json
-import os
-from typing import Any, Callable, Dict, Union
+from typing import Callable, Dict
 import hither2 as hi
-import kachery_p2p as kp
 from ._common import _upload_to_google_cloud
 from ._serialize import _serialize
-
-_global_registered_taskfunctions_by_function_id: Dict[str, Callable] = {}
-
-def find_taskfunction(function_id: str) -> Union[Callable, None]:
-    if function_id in _global_registered_taskfunctions_by_function_id:
-        return _global_registered_taskfunctions_by_function_id[function_id]
-    else:
-        return None
-
-def taskfunction(function_id: str):
-    def wrap(f: Callable[..., Any]):
-        _global_registered_taskfunctions_by_function_id[function_id] = f
-        return f
-    return wrap
 
 job_handler = hi.ParallelJobHandler(4)
 
@@ -31,26 +15,26 @@ def return_42(delay: float):
         'delay': delay
     }
 
-@taskfunction(function_id='test1')
-def task_test1(delay: float, dummy: Any):
-    with hi.Config(job_handler=job_handler):
-        return hi.Job(return_42, {'delay': delay})
+# @taskfunction(function_id='test1')
+# def task_test1(delay: float, dummy: Any):
+#     with hi.Config(job_handler=job_handler):
+#         return hi.Job(return_42, {'delay': delay})
 
-@hi.function('load_surface', '0.1.0')
-def load_surface(uri: str):
-    fname = kp.load_file(uri, p2p=False)
-    if fname is None:
-        raise Exception(f'Unable to find file: {uri}')
-    size = os.path.getsize(fname)
-    if size > 1000 * 1000 * 100:
-        raise Exception('File too large: {size} bytes')
+# @hi.function('load_surface', '0.1.0')
+# def load_surface(uri: str):
+#     fname = kp.load_file(uri, p2p=False)
+#     if fname is None:
+#         raise Exception(f'Unable to find file: {uri}')
+#     size = os.path.getsize(fname)
+#     if size > 1000 * 1000 * 100:
+#         raise Exception('File too large: {size} bytes')
     
-    return kp.load_object(uri, p2p=False)
+#     return kp.load_object(uri, p2p=False)
 
-@taskfunction(function_id='load_surface')
-def task_load_surface(uri: str):
-    with hi.Config(job_handler=job_handler):
-        return hi.Job(load_surface, {'uri': uri})
+# @taskfunction(function_id='load_surface')
+# def task_load_surface(uri: str):
+#     with hi.Config(job_handler=job_handler):
+#         return hi.Job(load_surface, {'uri': uri})
 
 class Task:
     def __init__(self, *, on_publish_message: Callable, google_bucket_name: str, task_hash: str, task_data: dict, job: hi.Job):

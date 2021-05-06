@@ -1,6 +1,9 @@
 import os
 import time
 from .backend import Backend
+# register the tasks
+from ..tasks import *
+from ..extensions import *
 
 def start_backend(*, app_url: str, label: str):
     # For uploading to google bucket

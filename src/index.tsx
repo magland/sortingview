@@ -3,13 +3,36 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { LabboxExtensionContext, LabboxPlugin } from './python/sortingview/extensions/pluginInterface';
+import { createExtensionContext, LabboxProvider } from 'labbox'
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+// ReactDOM.render(
+//   <React.StrictMode>
+//     <App />
+//   </React.StrictMode>,
+//   document.getElementById('root')
+// );
+
+const registerExtensions = async (context: LabboxExtensionContext) => {
+  const {activate: activate_unitstable} = await import('./python/sortingview/extensions/unitstable/unitstable')
+  activate_unitstable(context)
+}
+
+const extensionContext = createExtensionContext<LabboxPlugin>()
+registerExtensions(extensionContext).then(() => {
+  ReactDOM.render(
+    <React.StrictMode>
+      <LabboxProvider
+        extensionContext={extensionContext}
+      >
+        <App />
+      </LabboxProvider>,
+    </React.StrictMode>,
+    document.getElementById('root')
+  );  
+})
+
+
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

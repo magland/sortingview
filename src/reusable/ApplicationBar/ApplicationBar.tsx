@@ -8,6 +8,7 @@ const appBarHeight = 50
 
 type Props = {
     logo?: any
+    onHome?: () => void
 }
 
 const homeButtonStyle: React.CSSProperties = {
@@ -30,12 +31,7 @@ const useModalDialog = () => {
     }), [visible, handleOpen, handleClose])
 }
 
-const ApplicationBar: FunctionComponent<Props> = ({ logo }) => {
-    const handleHome = useCallback(() => {
-        // todo
-    }, [])
-
-
+const ApplicationBar: FunctionComponent<Props> = ({ logo, onHome }) => {
     const {visible: backendProviderVisible, handleOpen: openBackendProvider, handleClose: closeBackendProvider} = useModalDialog()
 
 
@@ -44,9 +40,9 @@ const ApplicationBar: FunctionComponent<Props> = ({ logo }) => {
             <AppBar position="static" style={{height: appBarHeight, color: 'white'}}>
                 <Toolbar>
                 {
-                    logo && (<img src={logo} className="App-logo" alt="logo" height={30} style={{paddingBottom: 5, cursor: 'pointer'}} onClick={handleHome} />)
+                    logo && (<img src={logo} className="App-logo" alt="logo" height={30} style={{paddingBottom: 5, cursor: 'pointer'}} onClick={onHome} />)
                 }
-                &nbsp;&nbsp;&nbsp;<div style={homeButtonStyle} onClick={handleHome}>Sorting view</div>
+                &nbsp;&nbsp;&nbsp;<div style={homeButtonStyle} onClick={onHome}>sortingview</div>
                 <span style={{marginLeft: 'auto'}} />
                 <span style={{paddingBottom: 0, color: 'white'}}>
                     <BackendProviderControl onOpen={openBackendProvider} color={'white'} />

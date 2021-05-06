@@ -39,7 +39,7 @@ class Task {
         const timeoutForNoResponse = 10000
         setTimeout(() => {
             if (this.#status === 'waiting') {
-                this._setErrorMessage('Timeout while waiting for response from compute resource')
+                this._setErrorMessage('Timeout while waiting for response from backend provider')
                 this._setStatus('error')
             }
         }, timeoutForNoResponse)
@@ -65,6 +65,7 @@ class Task {
         this.#returnValue = x
     }
     _setErrorMessage(e: string) {
+        console.warn(`Error running task (${this.functionId}): ${e}`, this.kwargs)
         this.#errorMessage = e
     }
 }

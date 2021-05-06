@@ -48,7 +48,6 @@ class TaskManager {
         return t
     }
     processServerMessage(msg: JSONObject) {
-        console.log('-- process server message', msg)
         if (isStatusUpdateMessage(msg)) {
             const taskHash = msg.taskHash
             if ((isSha1Hash(taskHash)) && (taskHash.toString() in this.#tasks)) {

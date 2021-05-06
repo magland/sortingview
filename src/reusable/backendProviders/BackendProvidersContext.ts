@@ -1,13 +1,12 @@
 import React from 'react'
 import { RegisteredBackendProvider } from './apiInterface'
+import BackendProviderClient from './BackendProviderClient'
 
 export type BackendProviderConfig = {
     uri: string
     label: string
     objectStorageUrl: string
 }
-
-type BackendProviderClient = {}
 
 export type BackendProvidersData = {
     registeredBackendProviders?: RegisteredBackendProvider[]

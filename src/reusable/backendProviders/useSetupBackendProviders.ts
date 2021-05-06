@@ -13,6 +13,7 @@ const useSetupRegisteredBackendProviders = () => {
     const [registeredBackendProviders, setRegisteredBackendProviders] = useState<RegisteredBackendProvider[] | undefined>(undefined)
 
     const refreshRegisteredBackendProviders = useCallback(() => {
+        console.log('---- refresh registered backend providers')
         ;(async () => {
             setRegisteredBackendProviders(undefined)
             await axios.post('/api/probeBackendProviders', {}, {responseType: 'json'})
@@ -28,6 +29,7 @@ const useSetupRegisteredBackendProviders = () => {
 
     
     useEffect(() => {
+        console.log('--- is this called only once?')
         // called only once
         refreshRegisteredBackendProviders()
     }, [refreshRegisteredBackendProviders])

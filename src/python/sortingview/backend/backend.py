@@ -6,7 +6,8 @@ from typing import Union
 
 from .subfeed_manager import SubfeedManager
 
-from .task_manager import TaskManager, find_taskfunction
+from .task_manager import TaskManager
+from .taskfunction import find_taskfunction
 from ._common import _http_json_post, _upload_to_google_cloud
 import paho.mqtt.client as mqtt
 

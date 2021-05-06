@@ -1,0 +1,29 @@
+.MVSortingView .ViewContainerTabBar {
+    background-color: rgb(134, 134, 150);
+}
+
+.MVSortingView .ViewContainerTabBar.active {
+    background-color: darkblue;
+}
+
+.MVSortingView .ViewContainerTabBar .Tab {
+    color: white
+}
+
+.MVSortingView .ViewContainerTabBar.active .Tab.selected {
+    font-weight: bold;
+    color: rgb(219, 219, 177)
+}
+
+.MVSortingView .ViewContainerTabBar .Tab .CloseButton {
+    color: white
+}
+
+.MVSortingView .ViewContainerTabBar.active .Tab.selected .CloseButton {
+    color: rgb(219, 219, 177)
+}
+
+.ViewContainer {
+    background-color: #f7f5f3;
+    border: solid 1px gray;
+}
