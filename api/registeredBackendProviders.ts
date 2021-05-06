@@ -23,6 +23,10 @@ const getMessageHistory = async (channel: Ably.Types.ChannelCallbacks) => {
                         reject(err)
                         return
                     }
+                    if (!nextPage) {
+                        reject('Unexpected: nextPage is not defined')
+                        return
+                    }
                     if (nextPage) processPage(nextPage)
                 })
             }
@@ -33,6 +37,10 @@ const getMessageHistory = async (channel: Ably.Types.ChannelCallbacks) => {
         channel.history((err, resultPage) => {
             if (err) {
                 reject(err)
+                return
+            }
+            if (!resultPage) {
+                reject('Unexpected: resultPage is not defined')
                 return
             }
             processPage(resultPage)
