@@ -56,7 +56,7 @@ const BackendProvidersTable: FunctionComponent<Props> = ({selectedBackendProvide
                 registeredBackendProviders === undefined ? (
                     <div>Loading registered backend providers</div>
                 ) : registeredBackendProviders.length === 0 ? (
-                    <div>No backend providers registered</div>
+                    <div>No backend providers registered.</div>
                 ) : (
                     <NiceTable
                         columns={columns}
