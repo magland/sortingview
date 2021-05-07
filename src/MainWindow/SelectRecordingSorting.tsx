@@ -10,6 +10,7 @@ type Props = {
 
 const SelectRecordingSorting: FunctionComponent<Props> = ({onUpdated}) => {
     const {recordingUri, sortingUri, setRoute} = useRoute()
+    const [closing, setClosing] = useState(false) // hack for now
 
     const [editRecordingUri, setEditRecordingUri] = useState<string>('')
     useEffect(() => {
@@ -23,13 +24,21 @@ const SelectRecordingSorting: FunctionComponent<Props> = ({onUpdated}) => {
 
     const handleSelect = useCallback(() => {
         setRoute({recordingUri: editRecordingUri, sortingUri: editSortingUri})
-        onUpdated && onUpdated()
-    }, [setRoute, editRecordingUri, editSortingUri, onUpdated])
+        setClosing(true) //hack for now
+    }, [setRoute, editRecordingUri, editSortingUri, setClosing])
 
     const handleExampleSelected = useCallback((o: {recordingUri: string, sortingUri: string}) => {
-        setRoute(o)
-        onUpdated && onUpdated()
-    }, [onUpdated, setRoute])
+        console.log('--- setting route', o)
+        setRoute({recordingUri: o.recordingUri, sortingUri: o.sortingUri})
+        setClosing(true) //hack for now
+    }, [setRoute, setClosing])
+
+    useEffect(() => {
+        if (closing) { // hack for now
+            setClosing(false)
+            onUpdated && onUpdated()
+        }
+    }, [closing, onUpdated])
 
     const selectDisabled = (!editRecordingUri) || (!editSortingUri)
 
