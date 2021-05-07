@@ -3,7 +3,8 @@ import { FunctionComponent } from "react"
 import ApplicationBar from '../reusable/ApplicationBar/ApplicationBar'
 import SelectRecordingSorting from './SelectRecordingSorting'
 import useRoute from '../route/useRoute'
-import MountainView from '../MountainView/MountainView'
+import MountainView from '../pages/MountainView/MountainView'
+import Routes from './Routes'
 
 type Props = {
 }
@@ -34,36 +35,23 @@ function useWindowDimensions() {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 const MainWindow: FunctionComponent<Props> = () => {
-    const {recordingUri, sortingUri} = useRoute()
-
+    const {setRoute} = useRoute()
     const {width, height} = useWindowDimensions()
 
-    const [selectingRecordingSorting, setSelectingRecordingSorting] = useState<boolean>(false)
-    const handleSelectRecordingSorting = useCallback(() => {
-        setSelectingRecordingSorting(true)
-    }, [])
+    const handleHome = useCallback(() => {
+        setRoute({routePath: '/home'})
+    }, [setRoute])
 
     return (
         <div style={{margin: 0}}>
             <ApplicationBar
-                onHome = {handleSelectRecordingSorting}
+                onHome = {handleHome}
             />
             <div style={{margin: 10}}>
-                {
-                    (!recordingUri) || (!sortingUri) || (selectingRecordingSorting) ? (
-                        <SelectRecordingSorting onUpdated={() => {setSelectingRecordingSorting(false)}} />
-                    ) : (
-                        <div>
-                            <MountainView
-                                recordingUri={recordingUri}
-                                sortingUri={sortingUri}
-                                width={width - 20}
-                                height={height - 100}
-                            />
-                            {/* <Hyperlink onClick={handleSelectRecordingSorting}>Select a different recording/sorting</Hyperlink> */}
-                        </div>
-                    )
-                }
+                <Routes
+                    width={width - 20}
+                    height = {height - 100}
+                />
             </div>
         </div>
     )

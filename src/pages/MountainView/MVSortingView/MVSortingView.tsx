@@ -5,9 +5,9 @@ import GrainIcon from '@material-ui/icons/Grain'
 import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser'
 import { usePlugins } from 'labbox'
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useReducer, useState } from 'react'
-import Expandable from '../../common/Expandable'
-import Splitter from '../../common/Splitter'
-import { LabboxPlugin, RecordingViewPlugin, SortingUnitViewPlugin, SortingViewPlugin, sortingViewPlugins, SortingViewProps } from "../../python/sortingview/extensions/pluginInterface"
+import Expandable from '../../../common/Expandable'
+import Splitter from '../../../common/Splitter'
+import { LabboxPlugin, RecordingViewPlugin, SortingUnitViewPlugin, SortingViewPlugin, sortingViewPlugins, SortingViewProps } from "../../../python/sortingview/extensions/pluginInterface"
 import '../mountainview.css'
 import CurationControl from './CurationControl'
 import OptionsControl from './OptionsControl'

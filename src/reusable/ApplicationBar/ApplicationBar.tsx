@@ -18,7 +18,7 @@ const homeButtonStyle: React.CSSProperties = {
     cursor: 'pointer'
 }
 
-const useModalDialog = () => {
+export const useModalDialog = () => {
     const [visible, setVisible] = useState<boolean>(false)
     const handleOpen = useCallback(() => {
         setVisible(true)

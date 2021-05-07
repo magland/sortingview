@@ -1,0 +1,1 @@
+The next step is to select a [recording/sorting pair](/selectData) for visualization.

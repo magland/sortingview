@@ -3,6 +3,7 @@ import React, { useCallback, useMemo } from 'react'
 import { FunctionComponent } from "react"
 import useBackendProviders from '../backendProviders/useBackendProviders'
 import NiceTable from '../../reusable/common/NiceTable/NiceTable'
+import Hyperlink from '../common/Hyperlink'
 
 type Props = {
     selectedBackendProviderUri: string | undefined
@@ -15,7 +16,6 @@ const BackendProvidersTable: FunctionComponent<Props> = ({selectedBackendProvide
         refreshRegisteredBackendProviders
     } = useBackendProviders()
     
-
     const columns = useMemo(() => ([
         {
             key: 'label',
@@ -34,13 +34,13 @@ const BackendProvidersTable: FunctionComponent<Props> = ({selectedBackendProvide
             key: x.backendProviderUri,
             columnValues: {
                 label: {
-                    text: x.label
-                    // element: <Hyperlink onClick={() => {handleSelect(x.computeEngineConfigUri)}}>{x.computeEngineConfig.label}</Hyperlink>
+                    text: x.label,
+                    element: <Hyperlink onClick={() => {onSelectBackendProvider(x.backendProviderUri)}}>{x.label}</Hyperlink>
                 },
                 uri: x.backendProviderUri
             }
         }))
-    ), [registeredBackendProviders])
+    ), [registeredBackendProviders, onSelectBackendProvider])
     const handleSelectedRowKeysChanged = useCallback((uris: string[]) => {
         if (uris[0]) {
             onSelectBackendProvider(uris[0])

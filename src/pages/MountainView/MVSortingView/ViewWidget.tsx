@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { SortingViewPlugin, SortingViewProps } from "../../python/sortingview/extensions/pluginInterface";
+import { SortingViewPlugin, SortingViewProps } from "../../../python/sortingview/extensions/pluginInterface";
 import { View } from './MVSortingView';
 
 type Props = {

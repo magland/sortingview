@@ -5,22 +5,25 @@ import MarkdownCodeBlock from "./MarkdownCodeBlock"
 
 interface Props {
     source: string
-    substitute?: {[key: string]: string | undefined | null}
+    substitute?: { [key: string]: string | undefined | null }
+    linkTarget?: '_blank' | ReactMarkdown.LinkTargetResolver
+    renderers?: ReactMarkdown.Renderers
 }
 
-const Markdown: FunctionComponent<Props> = ({source, substitute}) => {
+const Markdown: FunctionComponent<Props> = ({ source, substitute, linkTarget, renderers }) => {
     const source2 = substitute ? doSubstitute(source, substitute) : source
     return (
         <div className='markdown-body'>
             <ReactMarkdown
                 source={source2}
-                renderers={{ code: MarkdownCodeBlock }}
+                renderers={{ code: MarkdownCodeBlock, ...renderers }}
+                linkTarget={linkTarget}
             />
         </div>
     );
 }
 
-const doSubstitute = (x: string, s: {[key: string]: string | undefined | null}) => {
+const doSubstitute = (x: string, s: { [key: string]: string | undefined | null }) => {
     let y = x
     for (let k in s) {
         y = y.split(`{${k}}`).join(s[k] || '')

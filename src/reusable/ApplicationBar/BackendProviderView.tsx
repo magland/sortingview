@@ -24,15 +24,17 @@ const BackendProviderView: FunctionComponent<Props> = ({onClose}) => {
     }, [])
     const handleOkay = useCallback(() => {
         selectBackendProvider(editBackendProviderUri)
-    }, [editBackendProviderUri, selectBackendProvider])
+        onClose()
+    }, [editBackendProviderUri, selectBackendProvider, onClose])
     const handleKeyDown = useCallback((e: any) => {
         if (e.keyCode === 13) {
            handleOkay()
         }
     }, [handleOkay])
     const handleSelectBackendProvider = useCallback((uri: string) => {
-        setEditBackendProviderUri(uri)
-    }, [])
+        selectBackendProvider(uri)
+        onClose()
+    }, [selectBackendProvider, onClose])
     return (
         <div>
             <h3>Select a backend provider</h3>

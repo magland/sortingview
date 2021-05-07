@@ -1,6 +1,6 @@
 import React, { Fragment, FunctionComponent, useEffect, useMemo, useRef, useState } from 'react';
-import { Recording, Sorting } from "../../python/sortingview/extensions/pluginInterface";
-import useTask from '../../reusable/backendProviders/tasks/useTask';
+import { Recording, Sorting } from "../../../python/sortingview/extensions/pluginInterface";
+import useTask from '../../../reusable/backendProviders/tasks/useTask';
 
 interface ChildProps {
     preloadStatus?: 'waiting' | 'running' | 'finished'

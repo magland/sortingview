@@ -8,7 +8,7 @@ type Props = {
     onUpdated?: () => void
 }
 
-const SelectRecordingSort: FunctionComponent<Props> = ({onUpdated}) => {
+const SelectRecordingSorting: FunctionComponent<Props> = ({onUpdated}) => {
     const {recordingUri, sortingUri, setRoute} = useRoute()
 
     const [editRecordingUri, setEditRecordingUri] = useState<string>('')
@@ -21,7 +21,7 @@ const SelectRecordingSort: FunctionComponent<Props> = ({onUpdated}) => {
         setEditSortingUri(sortingUri || '')
     }, [sortingUri])
 
-    const handleUpdate = useCallback(() => {
+    const handleSelect = useCallback(() => {
         setRoute({recordingUri: editRecordingUri, sortingUri: editSortingUri})
         onUpdated && onUpdated()
     }, [setRoute, editRecordingUri, editSortingUri, onUpdated])
@@ -37,10 +37,10 @@ const SelectRecordingSort: FunctionComponent<Props> = ({onUpdated}) => {
         <div>
             <TextField style={{width: '100%'}} label="Recording URI" value={editRecordingUri} onChange={evt => setEditRecordingUri(evt.target.value)} />
             <TextField style={{width: '100%'}} label="Sorting URI" value={editSortingUri} onChange={evt => setEditSortingUri(evt.target.value)} />
-            <Button disabled={selectDisabled} onClick={handleUpdate}>Select</Button>
+            <Button disabled={selectDisabled} onClick={handleSelect}>Select</Button>
             <ExampleRecordingSortings onExampleSelected={handleExampleSelected}/>
         </div>
     )
 }
 
-export default SelectRecordingSort
+export default SelectRecordingSorting

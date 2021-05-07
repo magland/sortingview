@@ -19,6 +19,7 @@ const useTask = <ReturnType>(functionId: string, kwargs: any) => {
         task.onStatusChanged((s) => {
             setTaskStatus(task.status)
         })
+        setTaskStatus(task.status)
     }, [task])
 
     return useMemo(() => {
