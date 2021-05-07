@@ -1,46 +1,50 @@
-# Getting Started with Create React App
+# sortingview
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Interactively view and share results of electrophysiolic spike sorting.
 
-## Available Scripts
+**This project is at an early stage of development.**
 
-In the project directory, you can run:
+## Overview
 
-### `yarn start`
+The frontend (GUI) and backend (compute engine) are decoupled, allowing you to view your own data locally without uploading to our servers. You can also share those views with remote collaborators without uploading any data.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## For developers
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) and is configured to be deployed on [vercel](https://vercel.com). It is a static web application with a few serverless API functions.
 
-### `yarn test`
+### Running a development instance
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+If you are part of our vercel development team then you can run a local development version without any configuration:
 
-### `yarn build`
+```bash
+# Install the vercel CLI tool:
+npm install -g vercel
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+# Install the dependencies
+cd sortingview
+yarn install
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# Start the development server
+vercel dev
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# Point your browser to http://localhost:3000
+# The local app will automatically update as you code
+```
 
-### `yarn eject`
+If you are not part of the team, then the easiest course is to set up your own (free) vercel account, fork this repo, and add that forked repo as a new vercel project. You will also need to create a (free) [ably](https://ably.com) account, get an API key will full permissions, and set the following environment variable in the vercel project settings:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
+ABLY_API_KEY=...
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Then you should be able to run the server locally as above:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```
+vercel dev
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+In the future it will also be possible to run this locally without a vercel and/or ably account.
 
-## Learn More
+### Deployment
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Commits to our `main` branch will be automatically deployed to https://sortingview.vercel.app
