@@ -6,8 +6,9 @@ import { BackendProviderConfig, BackendProvidersData } from "./BackendProvidersC
 import axios from 'axios'
 import { RegisteredBackendProvider, RegisterRequest, RegistrationResult } from "./apiInterface"
 import { sleepMsec } from "./kacheryTypes/kacheryTypes"
+import useBackendRoute from "../../route/useBackendRoute"
 
-const defaultBackendProviderUri = process.env.REACT_APP_DEFAULT_BACKEND_PROVIDER || undefined
+// const defaultBackendProviderUri = process.env.REACT_APP_DEFAULT_BACKEND_PROVIDER || undefined
 
 const useSetupRegisteredBackendProviders = () => {
     const [registeredBackendProviders, setRegisteredBackendProviders] = useState<RegisteredBackendProvider[] | undefined>(undefined)
@@ -38,28 +39,28 @@ const useSetupRegisteredBackendProviders = () => {
 }
 
 const useSetupBackendProviders = (): BackendProvidersData => {
-    const [selectedBackendProviderUri, setSelectedBackendProviderUri] = useState<string | undefined>(defaultBackendProviderUri)
+    const {backendUri, setBackendUri} = useBackendRoute()
     const {registeredBackendProviders, refreshRegisteredBackendProviders} = useSetupRegisteredBackendProviders()
     const [registration, setRegistration] = useState<RegistrationResult | null | undefined>(undefined)
 
     useEffect(() => {
-        if ((selectedBackendProviderUri) && (registration === undefined)) {
+        if ((backendUri) && (registration === undefined)) {
             setRegistration(null)
             ;(async () => {
-                const req0: RegisterRequest = {type: 'registerClient', backendProviderUri: selectedBackendProviderUri, appName: 'sortingview'}
+                const req0: RegisterRequest = {type: 'registerClient', backendProviderUri: backendUri, appName: 'sortingview'}
                 const registrationResult: RegistrationResult = (await axios.post('/api/register', req0)).data
                 setRegistration(registrationResult || null)
             })()
         }
-    }, [selectedBackendProviderUri, registration])
+    }, [backendUri, registration])
 
     const selectedBackendProviderConfig = useMemo((): BackendProviderConfig | undefined => (
-        registration && selectedBackendProviderUri ? ({
-            uri: selectedBackendProviderUri,
+        registration && backendUri ? ({
+            uri: backendUri,
             label: registration.backendProviderConfig.label,
             objectStorageUrl: registration.backendProviderConfig.objectStorageUrl
         }) : undefined
-    ), [registration, selectedBackendProviderUri])
+    ), [registration, backendUri])
 
     const selectedBackendProviderClient = useMemo(() => {
         if ((!registration) || (!selectedBackendProviderConfig)) return undefined
@@ -72,18 +73,18 @@ const useSetupBackendProviders = (): BackendProvidersData => {
     }, [registration, selectedBackendProviderConfig])
 
     const selectBackendProvider = useCallback((uri: string) => {
-        setSelectedBackendProviderUri(uri)
+        setBackendUri(uri)
         setRegistration(undefined)
-    }, [])
+    }, [setBackendUri, setRegistration])
     
     return useMemo((): BackendProvidersData => ({
         registeredBackendProviders,
-        selectedBackendProviderUri,
+        selectedBackendProviderUri: backendUri,
         selectedBackendProviderConfig,
         selectedBackendProviderClient,
         refreshRegisteredBackendProviders,
         selectBackendProvider
-    }), [registeredBackendProviders, selectedBackendProviderUri, selectedBackendProviderConfig, selectedBackendProviderClient, refreshRegisteredBackendProviders, selectBackendProvider])
+    }), [registeredBackendProviders, backendUri, selectedBackendProviderConfig, selectedBackendProviderClient, refreshRegisteredBackendProviders, selectBackendProvider])
 }
 
 export default useSetupBackendProviders
