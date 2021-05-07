@@ -86,7 +86,6 @@ const area = (a: 'north' | 'south') => {
 
 const MVSortingViewWithCheck: FunctionComponent<SortingViewProps> = (props) => {
     const {recording, sorting} = props
-    console.log('---------------- MVSortingViewWithCheck', props)
 
     const [preprocessingSelection, preprocessingSelectionDispatch] = useReducer(preprocessingSelectionReducer, {filterType: 'none'})
 

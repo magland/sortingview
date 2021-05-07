@@ -3,7 +3,6 @@ import { FunctionComponent } from "react"
 import ApplicationBar from '../reusable/ApplicationBar/ApplicationBar'
 import SelectRecordingSorting from './SelectRecordingSorting'
 import useRoute from '../route/useRoute'
-import Hyperlink from '../reusable/common/Hyperlink'
 import MountainView from '../MountainView/MountainView'
 
 type Props = {
