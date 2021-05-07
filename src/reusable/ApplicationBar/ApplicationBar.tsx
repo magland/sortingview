@@ -3,6 +3,8 @@ import React, { FunctionComponent, useCallback, useMemo, useState } from 'react'
 import BackendProviderControl from './BackendProviderControl';
 import BackendProviderView from './BackendProviderView';
 import ModalWindow from './ModalWindow';
+import TaskMonitorControl from './TaskMonitor/TaskMonitorControl'
+import TaskMonitor from './TaskMonitor/TaskMonitor'
 
 const appBarHeight = 50
 
@@ -33,7 +35,7 @@ const useModalDialog = () => {
 
 const ApplicationBar: FunctionComponent<Props> = ({ logo, onHome }) => {
     const {visible: backendProviderVisible, handleOpen: openBackendProvider, handleClose: closeBackendProvider} = useModalDialog()
-
+    const {visible: taskMonitorVisible, handleOpen: openTaskMonitor, handleClose: closeTaskMonitor} = useModalDialog()
 
     return (
         <span>
@@ -47,17 +49,26 @@ const ApplicationBar: FunctionComponent<Props> = ({ logo, onHome }) => {
                 <span style={{paddingBottom: 0, color: 'white'}}>
                     <BackendProviderControl onOpen={openBackendProvider} color={'white'} />
                 </span>
+                <span style={{paddingBottom: 0, color: 'white'}}>
+                    <TaskMonitorControl onOpen={openTaskMonitor} color="white" />
+                </span>
                 </Toolbar>
             </AppBar>
             <ModalWindow
                 open={backendProviderVisible}
                 onClose={closeBackendProvider}
             >
-                <span>
-                    <BackendProviderView
-                        onClose={closeBackendProvider}
-                    />
-                </span>
+                <BackendProviderView
+                    onClose={closeBackendProvider}
+                />
+            </ModalWindow>
+            <ModalWindow
+                open={taskMonitorVisible}
+                onClose={closeTaskMonitor}
+            >
+                <TaskMonitor
+                    onClose={closeTaskMonitor}
+                />
             </ModalWindow>
         </span>
     )

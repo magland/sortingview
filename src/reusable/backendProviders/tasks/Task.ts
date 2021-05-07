@@ -22,7 +22,9 @@ class Task {
     #errorMessage: string = ''
     #returnValue: JSONValue | null = null
     #onStatusChangedCallbacks: ((s: TaskStatus) => void)[] = []
-    constructor(private onPublishToTaskQueue: (message: TaskQueueMessage) => void, private objectStorageClient: ObjectStorageClient, private taskHash: Sha1Hash, private functionId: string, private kwargs: {[key: string]: any}) {
+    #timestampInitiated = Number(new Date())
+    #timestampCompleted: number | undefined = undefined
+    constructor(private onPublishToTaskQueue: (message: TaskQueueMessage) => void, private objectStorageClient: ObjectStorageClient, public taskHash: Sha1Hash, public functionId: string, public kwargs: {[key: string]: any}) {
         ;(async () => {
             const returnValue = await checkForTaskReturnValue(objectStorageClient, taskHash, {deserialize: true})
             if (returnValue) {
@@ -43,6 +45,7 @@ class Task {
                 this._setStatus('error')
             }
         }, timeoutForNoResponse)
+
     }
     public get status() {
         return this.#status
@@ -53,6 +56,12 @@ class Task {
     public get errorMessage() {
         return this.#errorMessage
     }
+    public get timestampInitiated() {
+        return this.#timestampInitiated
+    }
+    public get timestampCompleted() {
+        return this.#timestampCompleted
+    }
     onStatusChanged(cb: (s: TaskStatus) => void) {
         this.#onStatusChangedCallbacks.push(cb)
     }
@@ -60,6 +69,7 @@ class Task {
         if (this.#status === s) return
         this.#status = s
         for (let cb of this.#onStatusChangedCallbacks) cb(this.#status)
+        if (['error', 'finished'].includes(s)) this.#timestampCompleted = Number(new Date())
     }
     _setReturnValue(x: JSONValue) {
         this.#returnValue = x

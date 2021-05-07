@@ -76,6 +76,9 @@ class TaskManager {
             }
         }
     }
+    public get allTasks() {
+        return Object.values(this.#tasks)
+    }
     async _start() {
         const taskHashes = Object.keys(this.#tasks)
         for (let taskHash of taskHashes) {

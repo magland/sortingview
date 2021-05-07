@@ -22,6 +22,9 @@ class BackendProviderClient {
     subscribeToSubfeed(opts: {feedId: FeedId, subfeedHash: SubfeedHash, startPosition: number, onMessage: (msg: SubfeedMessage, messageNumber: number) => void}) {
         this.#subfeedManager.subscribeToSubfeed(opts)
     }
+    public get allTasks() {
+        return this.#taskManager.allTasks
+    }
 }
 
 export default BackendProviderClient
