@@ -49,6 +49,6 @@ In the future it will also be possible to run this locally without a vercel and/
 
 Merges into the `deploy` branch will be automatically deployed to https://sortingview.vercel.app
 
-Commits to other branches will generate [preview deployments](https://vercel.com/docs/git#preview-branches).
+<!-- Commits to other branches will generate [preview deployments](https://vercel.com/docs/git#preview-branches). -->
 
 
