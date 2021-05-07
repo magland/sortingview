@@ -14,6 +14,8 @@ import { createExtensionContext, LabboxProvider } from 'labbox'
 // );
 
 const registerExtensions = async (context: LabboxExtensionContext) => {
+  const {activate: activate_correlograms} = await import('./python/sortingview/extensions/correlograms/correlograms')
+  activate_correlograms(context)
   const {activate: activate_unitstable} = await import('./python/sortingview/extensions/unitstable/unitstable')
   activate_unitstable(context)
 }
