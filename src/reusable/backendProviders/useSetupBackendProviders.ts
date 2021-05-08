@@ -7,6 +7,8 @@ import axios from 'axios'
 import { RegisteredBackendProvider, RegisterRequest, RegistrationResult } from "./apiInterface"
 import { sleepMsec } from "./kacheryTypes/kacheryTypes"
 import useBackendRoute from "../../route/useBackendRoute"
+import loadGoogleSignInClientOpts from "../googleSignIn/loadGoogleSignInClientOpts"
+import useGoogleSignInClient from "../googleSignIn/useGoogleSignInClient"
 
 // const defaultBackendProviderUri = process.env.REACT_APP_DEFAULT_BACKEND_PROVIDER || undefined
 
@@ -40,6 +42,8 @@ const useSetupBackendProviders = (): BackendProvidersData => {
     const {backendUri, setBackendUri} = useBackendRoute()
     const {registeredBackendProviders, refreshRegisteredBackendProviders} = useSetupRegisteredBackendProviders()
     const [registration, setRegistration] = useState<RegistrationResult | null | undefined>(undefined)
+    const opts = useMemo(() => (loadGoogleSignInClientOpts()), [])
+    const googleSignInClient = useGoogleSignInClient()
 
     useEffect(() => {
         if ((backendUri) && (registration === undefined)) {
@@ -66,9 +70,9 @@ const useSetupBackendProviders = (): BackendProvidersData => {
         const ablyClient = createPubsubClient({ably: {token: registration.tokenDetails.token}})
         const clientChannel = ablyClient.getChannel(registration.clientChannelName)
         const serverChannel = ablyClient.getChannel(registration.serverChannelName)
-        const X = new BackendProviderClient(clientChannel, serverChannel, objectStorageClient)
+        const X = new BackendProviderClient(clientChannel, serverChannel, objectStorageClient, googleSignInClient)
         return X
-    }, [registration, selectedBackendProviderConfig])
+    }, [registration, selectedBackendProviderConfig, googleSignInClient])
 
     const selectBackendProvider = useCallback((uri: string) => {
         setBackendUri(uri)

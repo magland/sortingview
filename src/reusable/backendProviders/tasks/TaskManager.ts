@@ -4,6 +4,7 @@ import checkForTaskReturnValue from './checkForTaskReturnValue';
 import { PubsubChannel } from '../../pubsub/createPubsubClient';
 import { ObjectStorageClient } from '../../objectStorage/createObjectStorageClient';
 import { isEqualTo, isSha1Hash, isString, JSONObject, optional, Sha1Hash, sleepMsec, _validateObject } from '../kacheryTypes/kacheryTypes';
+import GoogleSignInClient from '../../googleSignIn/GoogleSignInClient';
 
 type StatusUpdateMessage = {
     type: 'taskStatusUpdate'
@@ -23,9 +24,10 @@ const isStatusUpdateMessage = (x: any): x is StatusUpdateMessage => {
 class TaskManager {
     #tasks: {[key: string]: Task} = {}
     #onPublishToTaskQueue: (msg: TaskQueueMessage) => void
-    constructor(private clientChannel: PubsubChannel, private objectStorageClient: ObjectStorageClient | null) {
+    constructor(private clientChannel: PubsubChannel, private objectStorageClient: ObjectStorageClient | null, private googleSignInClient: GoogleSignInClient | undefined) {
         this.#onPublishToTaskQueue = (msg: TaskQueueMessage) => {
-            clientChannel.publish({data: msg as any as JSONObject})
+            const msg2 = googleSignInClient ? {...msg, idToken: googleSignInClient.idToken} : msg
+            clientChannel.publish({data: msg2 as any as JSONObject})
         }
         this._start()
     }

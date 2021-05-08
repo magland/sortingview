@@ -7,6 +7,15 @@ export type GoogleSignInClientOpts = {
     scopes: string
 }
 
+interface Profile {
+    getId: () => string
+    getName: () => string
+    getGivenName: () => string
+    getFamilyName: () => string
+    getImageUrl: () => string
+    getEmail: () => string
+}
+
 class GoogleSignInClient {
     #gapi: any | undefined | null = undefined
     #signedIn: boolean = false
@@ -23,6 +32,18 @@ class GoogleSignInClient {
     public get signInButton(): any {
         return React.createElement(GoogleSignin, {client: this})
     }
+    public get profile(): Profile | null {
+        const g = (window as any).gapi
+        if (!g) return null
+        if (!this.signedIn) return null
+        return g.auth2.getAuthInstance().currentUser.get().getBasicProfile()
+    }
+    public get idToken(): string | null {
+        const g = (window as any).gapi
+        if (!g) return null
+        if (!this.signedIn) return null
+        return g.auth2.getAuthInstance().currentUser.get().getAuthResponse().id_token
+    }
     onSignedInChanged(callback: (val: boolean) => void) {
         this.#onSignedInCallbacks.push(callback)
     }
@@ -30,6 +51,10 @@ class GoogleSignInClient {
         if (this.#gapi) return
         return new Promise<void>((resolve, reject) => {
             const g = (window as any).gapi
+            if (!g) {
+                reject('gapi is not defined. Add the following to index.html: <script src="https://apis.google.com/js/api.js"></script>')
+                return
+            }
             g.load('client:auth2', () => {
                 // Array of API discovery doc URLs for APIs used by the quickstart
                 const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];

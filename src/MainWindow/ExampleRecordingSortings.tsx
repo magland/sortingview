@@ -8,7 +8,7 @@ type Props = {
 }
 
 const ExampleRecordingSortings: FunctionComponent<Props> = ({onExampleSelected}) => {
-    const {returnValue: examples, task} = useTask<ExampleRecordingSortingType[]>('example_recording_sortings', {cachebust: '2'})
+    const {returnValue: examples, task} = useTask<ExampleRecordingSortingType[]>('example_recording_sortings', {cachebust: '6'})
     return (
         <div>
             {

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { FunctionComponent } from "react";
 import ReactGoogleButton from 'react-google-button'
 import GoogleSignInClient from './GoogleSignInClient';
@@ -7,27 +7,25 @@ type Props = {
     client: GoogleSignInClient
 }
 
-export const useSignedIn = (signInClient: GoogleSignInClient) => {
-    const [signedIn, setSignedIn] = useState<boolean>(signInClient.signedIn)
+export const useSignedIn = (signInClient: GoogleSignInClient | undefined) => {
+    const [updateCode, setUpdateCode] = useState<number>(0)
+    const incrementUpdateCode = useCallback(() => {setUpdateCode(c => (c+1))}, [])
+    const signedIn = useMemo(() => {
+        if (updateCode < 0) console.warn('Force dependency on update code')
+        if (!signInClient) return false
+        return signInClient.signedIn
+    }, [signInClient, updateCode])
     useEffect(() => {
-        signInClient.onSignedInChanged(() => {
-            setSignedIn(signInClient.signedIn)
+        signInClient?.onSignedInChanged(() => {
+            incrementUpdateCode()
         })
-    }, [signInClient])
+    }, [signInClient, incrementUpdateCode])
     return signedIn
 }
 
 const GoogleSignin: FunctionComponent<Props> = ({client}) => {
-    const [initialized, setInitialized] = useState<boolean>(false)
     const signedIn = useSignedIn(client)
     const gapi = client.gapi
-    useEffect(() => {
-        if (gapi === undefined) {
-            client.initialize().finally(() => {
-                setInitialized(true)
-            })
-        }
-    }, [client, gapi])
 
     const handleSignIn = useCallback(() => {
         gapi.auth2.getAuthInstance().signIn();
@@ -40,7 +38,7 @@ const GoogleSignin: FunctionComponent<Props> = ({client}) => {
         {
             <span>
                 {
-                    (initialized) && (gapi) ? (
+                    (gapi) ? (
                         signedIn ? (
                             <span>
                                 <button onClick={handleSignOut}>Sign out</button>

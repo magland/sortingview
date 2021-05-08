@@ -9,23 +9,11 @@ import useRoute, {RoutePath} from '../../route/useRoute'
 import {useModalDialog} from '../../reusable/ApplicationBar/ApplicationBar'
 import introMd from './intro.md.gen'
 import selectDataMd from './selectData.md.gen'
-import GoogleSignInClient, {GoogleSignInClientOpts} from '../../reusable/googleSignIn/GoogleSignInClient'
-import GoogleSignin from '../../reusable/googleSignIn/GoogleSignin'
+import GoogleSignin, { useSignedIn } from '../../reusable/googleSignIn/GoogleSignin'
+import useGoogleSignInClient from '../../reusable/googleSignIn/useGoogleSignInClient'
 
 type Props = {
     
-}
-
-const useGoogleSignInClient = (opts: GoogleSignInClientOpts | null) => {
-    const [client, setClient] = useState<GoogleSignInClient | null>(null)
-    useEffect(() => {
-        if (!opts) return
-        const c = new GoogleSignInClient(opts)
-        c.initialize().then(() => {
-            setClient(c)
-        })
-    }, [opts])
-    return client
 }
 
 const Home: FunctionComponent<Props> = () => {
@@ -33,8 +21,7 @@ const Home: FunctionComponent<Props> = () => {
     const linkTargetResolver = useCallback((uri: string, text: string, title?: string) => {
         return '_blank'
     }, [])
-    const opts = googleClientS
-    const googleSignInClient = useGoogleSignInClient(opts)
+    
     const routeRenderers: ReactMarkdown.Renderers = useMemo(() => ({
         link: (props) => {
             const value: string = props.children[0].props.value
@@ -48,12 +35,17 @@ const Home: FunctionComponent<Props> = () => {
             }
         }
     }), [setRoute])
+    const [googleSignInVisible, setGoogleSignInVisible] = useState(false)
+    const toggleGoogleSignInVisible = useCallback(() => {setGoogleSignInVisible(v => (!v))}, [])
 
     const {visible: backendProviderVisible, handleOpen: openBackendProvider, handleClose: closeBackendProvider} = useModalDialog()
     const handleSelectBackend = useCallback(() => {
         openBackendProvider()
     }, [openBackendProvider])
-    
+
+    const googleSignInClient = useGoogleSignInClient()
+    const signedIn = useSignedIn(googleSignInClient)
+
     return (
         <span>
             <Markdown
@@ -64,8 +56,16 @@ const Home: FunctionComponent<Props> = () => {
             {
                 googleSignInClient && (
                     <span>
-                        <p>Some backend providers may require authentication. You can optionally sign in using a Google account.</p>
-                        <GoogleSignin client={googleSignInClient} />
+                        {
+                            signedIn ? (
+                                <p>You are signed in as {googleSignInClient.profile?.getEmail()}</p>
+                            ) : (
+                                <p>Some actions on backend providers require authorization. You can optionally <Hyperlink onClick={toggleGoogleSignInVisible}>sign in using a Google account</Hyperlink>.</p>
+                            )
+                        }                        
+                        {
+                            (googleSignInVisible || signedIn) && <GoogleSignin client={googleSignInClient} />
+                        }
                     </span>
                 )
             }

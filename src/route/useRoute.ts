@@ -20,7 +20,6 @@ const useRoute = () => {
     const routePath: RoutePath = isRoutePath(p) ? p : '/home'
 
     const setRoute = useCallback((o: {routePath?: RoutePath, recordingUri?: string, sortingUri?: string, backendUri?: string}) => {
-        console.log('-------- location.search', location.search)
         const query2 = {...query}
         let pathname2 = location.pathname
         if (o.routePath) pathname2 = o.routePath
@@ -28,7 +27,6 @@ const useRoute = () => {
         if (o.sortingUri !== undefined) query2.sorting = o.sortingUri
         if (o.backendUri !== undefined) query2.backend = o.backendUri
         const search2 = queryString(query2)
-        console.log('----xxxx', o, query2, search2)
         history.push({...location, pathname: pathname2, search: search2})
     }, [location, history, query])
     
