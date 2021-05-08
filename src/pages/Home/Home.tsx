@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { FunctionComponent } from "react"
 import ReactMarkdown from 'react-markdown'
 import Markdown from '../../common/Markdown'
@@ -9,9 +9,23 @@ import useRoute, {RoutePath} from '../../route/useRoute'
 import {useModalDialog} from '../../reusable/ApplicationBar/ApplicationBar'
 import introMd from './intro.md.gen'
 import selectDataMd from './selectData.md.gen'
+import GoogleSignInClient, {GoogleSignInClientOpts} from '../../reusable/googleSignIn/GoogleSignInClient'
+import GoogleSignin from '../../reusable/googleSignIn/GoogleSignin'
 
 type Props = {
     
+}
+
+const useGoogleSignInClient = (opts: GoogleSignInClientOpts | null) => {
+    const [client, setClient] = useState<GoogleSignInClient | null>(null)
+    useEffect(() => {
+        if (!opts) return
+        const c = new GoogleSignInClient(opts)
+        c.initialize().then(() => {
+            setClient(c)
+        })
+    }, [opts])
+    return client
 }
 
 const Home: FunctionComponent<Props> = () => {
@@ -19,6 +33,8 @@ const Home: FunctionComponent<Props> = () => {
     const linkTargetResolver = useCallback((uri: string, text: string, title?: string) => {
         return '_blank'
     }, [])
+    const opts = googleClientS
+    const googleSignInClient = useGoogleSignInClient(opts)
     const routeRenderers: ReactMarkdown.Renderers = useMemo(() => ({
         link: (props) => {
             const value: string = props.children[0].props.value
@@ -45,6 +61,14 @@ const Home: FunctionComponent<Props> = () => {
                 linkTarget={linkTargetResolver}
                 renderers={{...routeRenderers}}
             />
+            {
+                googleSignInClient && (
+                    <span>
+                        <p>Some backend providers may require authentication. You can optionally sign in using a Google account.</p>
+                        <GoogleSignin client={googleSignInClient} />
+                    </span>
+                )
+            }
             {
                 backendUri ? (
                     <span>
