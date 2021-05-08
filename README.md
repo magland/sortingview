@@ -37,13 +37,25 @@ If you are not part of the team, then the easiest course is to set up your own (
 ABLY_API_KEY=...
 ```
 
-Then you should be able to run the server locally as above:
-
-```
-vercel dev
-```
+Then you should be able to run the server locally as above.
 
 In the future it will also be possible to run this locally without a vercel and/or ably account.
+
+### Hosting a backend server
+
+For now you will need to create a bucket on Google Cloud Storage (in the future you will be able to run this locally without a bucket, or alternatively using a S3 bucket on AWS).
+
+After cloning this repo, install the python repo locally:
+
+```bash
+pip install -e src/python
+```
+
+To run the backend server:
+
+```bash
+# this section needs to be completed
+```
 
 ### Deployment
 
