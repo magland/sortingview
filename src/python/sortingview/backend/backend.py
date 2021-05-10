@@ -2,7 +2,8 @@ import time
 import json
 import uuid
 import hashlib
-from typing import Union, cast
+from typing import List, Union, cast
+import kachery_p2p as kp
 from ._verify_oauth2_token import _verify_oauth2_token
 
 from .subfeed_manager import SubfeedManager
@@ -21,8 +22,10 @@ class Backend:
         self._registration_timestamp = 0
         self._last_registration_attempt_timestamp = 0
         self._last_report_alive_timestamp = 0
+        self._last_update_authorized_users_timestamp = 0
         self._ably_client: Union[mqtt.Client, None] = None
         self._secret: Union[str, None] = None
+        self._authorized_users: List[str] = []
         def on_publish_message(msg):
             if self._registration is None:
                 print('WARNING: unable to publish message. Registration is None')
@@ -54,11 +57,22 @@ class Backend:
         elapsed_since_last_report = min(time.time() - self._last_report_alive_timestamp, time.time() - self._last_report_alive_timestamp)
         if elapsed_since_last_report > 60:
             self._renew_registration(report_only=True)
+
+        # update authorized users
+        elapsed_since_update_authorized_users = time.time() - self._last_update_authorized_users_timestamp
+        if elapsed_since_update_authorized_users > 20:
+            self._update_authorized_users()
         
         self._task_manager.iterate()
         self._subfeed_manager.iterate()
     def cleanup(self):
         self._renew_registration(report_only=True, unregister=True)
+    
+    def _update_authorized_users(self):
+        x = kp.get('_sortingview_authorized_users')
+        if x is None:
+            x = []
+        self._authorized_users = x
         
     def _registration_age(self):
         return time.time() - self._registration_timestamp
@@ -66,10 +80,9 @@ class Backend:
         id_token = message.get('idToken', None)
         if id_token is not None:
             id_info = _verify_oauth2_token(cast(str, id_token).encode('utf-8'))
-            user_id = id_info['sub']
+            user_email = id_info['email']
         else:
-            user_id = None
-        print('User id', user_id)
+            user_email = None
         type0 = message.get('type', None)
         if type0 == 'initiateTask':
             # export type TaskQueueMessage = {
@@ -110,6 +123,18 @@ class Backend:
             subfeed_hash = message.get('subfeedHash', None)
             if feed_id is not None and subfeed_hash is not None:
                 self._subfeed_manager.subscribe_to_subfeed(feed_id=feed_id, subfeed_hash=subfeed_hash)
+        elif type0 == 'appendMessagesToSubfeed':
+            feed_id = message.get('feedId', None)
+            subfeed_hash = message.get('subfeedHash', None)
+            messages = message.get('messages', None)
+            if feed_id is None: return
+            if subfeed_hash is None: return
+            if messages is None: return
+            if not self._user_can_append_to_subfeed(user_email, feed_id, subfeed_hash):
+                return
+            sf = kp.load_subfeed(f'feed://{feed_id}/~{subfeed_hash}')
+            sf.append_messages(messages)
+            self._subfeed_manager.check_for_new_messages() # to this so we get a quick update response for the subscribing clients (including the submitter)
         elif type0 == 'probeBackendProviders':
             app_name = message.get('appName', None)
             if app_name != 'sortingview':
@@ -180,6 +205,9 @@ class Backend:
             ably_client.loop_start()
             self._registration = registration
             self._registration_timestamp = time.time()
+
+    def _user_can_append_to_subfeed(self, user_email: Union[str, None], feed_id: str, subfeed_hash: str):
+        return user_email in self._authorized_users
 
 def _random_id():
     return str(uuid.uuid4())[-12:]

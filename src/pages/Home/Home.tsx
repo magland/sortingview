@@ -51,7 +51,7 @@ const Home: FunctionComponent<Props> = () => {
     }, [setRoute])
 
     const googleSignInClient = useGoogleSignInClient()
-    const signedIn = useSignedIn(googleSignInClient)
+    const signedIn = useSignedIn()
 
     return (
         <span>
@@ -89,7 +89,11 @@ const Home: FunctionComponent<Props> = () => {
                                     <p><Hyperlink onClick={handleSelectWorkspace}>Select a different workspace</Hyperlink></p>
                                     <Hyperlink onClick={handleViewWorkspace}>View this workspace</Hyperlink>
                                 </span>
-                            ) : <span />
+                            ) : (
+                                <span>
+                                    <p>The next step is to <Hyperlink onClick={handleSelectWorkspace}>select a workspace</Hyperlink>.</p>
+                                </span>
+                            )
                         }
                     </span>
                 ) : (

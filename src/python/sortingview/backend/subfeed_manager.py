@@ -51,22 +51,24 @@ class SubfeedManager:
         if code in self._subfeeds:
             return
         self._subfeeds[code] = Subfeed(on_publish_message=self._on_publish_message, google_bucket_name=self._google_bucket_name, feed_id=feed_id, subfeed_hash=subfeed_hash)
+    def check_for_new_messages(self):
+        subfeed_watches = {}
+        for k, v in self._subfeeds.items():
+            subfeed_watches[k] = {
+                'feedId': v.feed_id,
+                'subfeedHash': v.subfeed_hash,
+                'position': v.num_messages_reported
+            }
+        ret = kp.watch_for_new_messages(subfeed_watches, wait_msec=100, signed=True)
+        for k, v in self._subfeeds.items():
+            if k in ret:
+                new_messages = ret[k]
+                v.report_new_messages(subfeed_watches[k]['position'], new_messages)
+        self._last_watch_timestamp = time.time()
     def iterate(self):
         elapsed = time.time() - self._last_watch_timestamp
         if elapsed > 3:
-            subfeed_watches = {}
-            for k, v in self._subfeeds.items():
-                subfeed_watches[k] = {
-                    'feedId': v.feed_id,
-                    'subfeedHash': v.subfeed_hash,
-                    'position': v.num_messages_reported
-                }
-            ret = kp.watch_for_new_messages(subfeed_watches, wait_msec=100, signed=True)
-            for k, v in self._subfeeds.items():
-                if k in ret:
-                    new_messages = ret[k]
-                    v.report_new_messages(subfeed_watches[k]['position'], new_messages)
-            self._last_watch_timestamp = time.time()
+            self.check_for_new_messages()
 
     def _get_code(self, feed_id: str, subfeed_hash: str):
         return feed_id + ':' + subfeed_hash

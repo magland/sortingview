@@ -6,6 +6,8 @@ import WorkspaceView from '../../python/sortingview/extensions/workspaceview/Wor
 import { sha1OfObject, SubfeedHash, SubfeedMessage } from '../../reusable/backendProviders/kacheryTypes/kacheryTypes'
 import { parseWorkspaceUri } from '../../reusable/backendProviders/misc'
 import { useBackendProviderClient } from '../../reusable/backendProviders/useBackendProviders'
+import useSubfeed from '../../reusable/backendProviders/useSubfeed'
+import { useSignedIn } from '../../reusable/googleSignIn/GoogleSignin'
 import useRoute, { RoutePath } from '../../route/useRoute'
 
 type Props = {
@@ -18,23 +20,24 @@ const useWorkspace = (workspaceUri: string) => {
     if (!client) throw Error('Unexpected: no backend provider client')
     const {feedId, workspaceName} = parseWorkspaceUri(workspaceUri)
     if ((!feedId) || (!workspaceName)) throw Error(`Error parsing workspace URI: ${workspaceUri}`)
-    const [workspace, workspaceDispatch] = useReducer(workspaceReducer, {recordings: [], sortings: []})
+    const [workspace, workspaceDispatch2] = useReducer(workspaceReducer, {recordings: [], sortings: []})
     // const workspace = useMemo(() => {
     //     const W = new Workspace(client, feedId, workspaceName)
     //     return W
     // }, [client, feedId, workspaceName])
-    useEffect(() => {
-        const subfeedHash = sha1OfObject({workspaceName}) as any as SubfeedHash
-        const subscription = client.subscribeToSubfeed({feedId: feedId, subfeedHash, startPosition: 0, onMessage: (msg: SubfeedMessage) => {
+    const handleMessages = useCallback((messages: SubfeedMessage[]) => {
+        for (let msg of messages) {
             const action = msg.action
             if (action) {
-                workspaceDispatch(action as WorkspaceAction)
+                workspaceDispatch2(action as WorkspaceAction)
             }
-        }})
-        return () => {
-            subscription.cancel()
         }
-    }, [client, feedId, workspaceName])
+    }, [])
+    const subfeedHash = sha1OfObject({workspaceName}) as any as SubfeedHash
+    const {appendMessages} = useSubfeed({feedId, subfeedHash, onMessages: handleMessages})
+    const workspaceDispatch = useCallback((action: WorkspaceAction) => {
+        appendMessages([{action: action} as any as SubfeedMessage])
+    }, [appendMessages])
     return {workspace, workspaceDispatch}
 }
 
@@ -80,7 +83,9 @@ const WorkspacePage: FunctionComponent<Props> = ({width, height}) => {
         }
     }, [setRoute])
 
-    const readOnly = true
+    const signedIn = useSignedIn()
+
+    const readOnly = (!signedIn)
     const workspaceDispatch2 = readOnly ? undefined : workspaceDispatch
 
     return (

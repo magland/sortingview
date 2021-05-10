@@ -21,26 +21,22 @@ const CurationControl: FunctionComponent<Props & SizeMeProps> = ({ selection, se
     const selectedUnitIds = useMemo(() => (selection.selectedUnitIds || []), [selection.selectedUnitIds])
     const _handleApplyLabel = useCallback(
         (label: string) => {
-            for (let unitId of selectedUnitIds) {
-                curationDispatch({
-                    type: 'ADD_UNIT_LABEL',
-                    unitId,
-                    label
-                })
-            }
+            curationDispatch({
+                type: 'ADD_UNIT_LABEL',
+                unitId: selectedUnitIds,
+                label
+            })
         },
         [curationDispatch, selectedUnitIds],
     )
 
     const _handleRemoveLabel = useCallback(
         (label: string) => {
-            for (let unitId of selectedUnitIds) {
-                curationDispatch({
-                    type: 'REMOVE_UNIT_LABEL',
-                    unitId,
-                    label
-                })
-            }
+            curationDispatch({
+                type: 'REMOVE_UNIT_LABEL',
+                unitId: selectedUnitIds,
+                label
+            })
         },
         [curationDispatch, selectedUnitIds]
     )

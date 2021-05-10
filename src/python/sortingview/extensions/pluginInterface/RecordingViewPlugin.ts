@@ -8,7 +8,7 @@ export interface RecordingViewProps {
     recordingInfo: RecordingInfo
     selection: RecordingSelection
     selectionDispatch: RecordingSelectionDispatch
-    calculationPool: CalculationPool
+    calculationPool?: CalculationPool
     width?: number
     height?: number
 }

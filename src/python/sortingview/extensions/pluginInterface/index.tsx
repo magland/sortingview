@@ -52,7 +52,7 @@ export interface LabboxViewPlugin extends BaseLabboxPlugin {
 
 export interface LabboxViewProps {
     plugins: LabboxPlugin
-    calculationPool: CalculationPool
+    calculationPool?: CalculationPool
     width?: number
     height?: number
 }

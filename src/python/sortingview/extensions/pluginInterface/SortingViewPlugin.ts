@@ -15,7 +15,7 @@ export interface SortingViewProps {
     selection: SortingSelection
     selectionDispatch: (a: SortingSelectionAction) => void
     readOnly: boolean | null
-    calculationPool: CalculationPool
+    calculationPool?: CalculationPool
     width: number
     height: number
 }

@@ -2,12 +2,14 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { FunctionComponent } from "react";
 import ReactGoogleButton from 'react-google-button'
 import GoogleSignInClient from './GoogleSignInClient';
+import useGoogleSignInClient from './useGoogleSignInClient';
 
 type Props = {
     client: GoogleSignInClient
 }
 
-export const useSignedIn = (signInClient: GoogleSignInClient | undefined) => {
+export const useSignedIn = () => {
+    const signInClient = useGoogleSignInClient()
     const [updateCode, setUpdateCode] = useState<number>(0)
     const incrementUpdateCode = useCallback(() => {setUpdateCode(c => (c+1))}, [])
     const signedIn = useMemo(() => {
@@ -24,7 +26,7 @@ export const useSignedIn = (signInClient: GoogleSignInClient | undefined) => {
 }
 
 const GoogleSignin: FunctionComponent<Props> = ({client}) => {
-    const signedIn = useSignedIn(client)
+    const signedIn = useSignedIn()
     const gapi = client.gapi
 
     const handleSignIn = useCallback(() => {

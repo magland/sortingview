@@ -4,3 +4,4 @@ from .example_recording_sorting import task_example_recording_sortings
 from .recording_info import task_recording_info
 from .sorting_info import task_sorting_info
 from .preload_extract_snippets import task_preload_extract_snippets
+from .example_workspaces import task_example_workspaces
