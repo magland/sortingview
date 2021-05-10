@@ -1,7 +1,7 @@
 import { usePlugins } from 'labbox';
 import React, { Fragment, FunctionComponent, useCallback } from 'react';
-import { LabboxPlugin, RecordingViewPlugin, recordingViewPlugins, SortingSelection, SortingUnitViewPlugin, sortingUnitViewPlugins, SortingViewPlugin, sortingViewPlugins } from "../../../python/sortingview/extensions/pluginInterface";
-import sortByPriority from '../../../python/sortingview/extensions/sortByPriority';
+import { LabboxPlugin, RecordingViewPlugin, recordingViewPlugins, SortingSelection, SortingUnitViewPlugin, sortingUnitViewPlugins, SortingViewPlugin, sortingViewPlugins } from "../../pluginInterface";
+import sortByPriority from '../../sortByPriority';
 
 export type ViewPluginType = 'RecordingView' | 'SortingView' | 'SortingUnitView'
 

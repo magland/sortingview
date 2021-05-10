@@ -22,7 +22,7 @@ const isStatusUpdateMessage = (x: any): x is StatusUpdateMessage => {
 }
 
 class TaskManager {
-    #tasks: {[key: string]: Task} = {}
+    #tasks: {[key: string]: Task<any>} = {}
     #onPublishToTaskQueue: (msg: TaskQueueMessage) => void
     constructor(private clientChannel: PubsubChannel, private objectStorageClient: ObjectStorageClient | null, private googleSignInClient: GoogleSignInClient | undefined) {
         this.#onPublishToTaskQueue = (msg: TaskQueueMessage) => {
@@ -31,21 +31,22 @@ class TaskManager {
         }
         this._start()
     }
-    initiateTask(functionId: string, kwargs: {[key: string]: any}) {
+    initiateTask<ReturnType>(functionId: string, kwargs: {[key: string]: any}) {
         if (!this.objectStorageClient) {
             console.warn('Unable to initiate task. No object storage client.')
             return undefined
         }
+        if (!functionId) return undefined
         const taskData = {
             functionId,
             kwargs
         }
         const taskHash = sha1OfObject(taskData)
         if (taskHash.toString() in this.#tasks) {
-            const tt = this.#tasks[taskHash.toString()]
+            const tt = this.#tasks[taskHash.toString()] as any as Task<ReturnType>
             return tt
         }
-        const t = new Task(this.#onPublishToTaskQueue, this.objectStorageClient, taskHash, functionId, kwargs)
+        const t = new Task<ReturnType>(this.#onPublishToTaskQueue, this.objectStorageClient, taskHash, functionId, kwargs)
         this.#tasks[taskHash.toString()] = t
         return t
     }

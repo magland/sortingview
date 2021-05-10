@@ -17,11 +17,11 @@ class BackendProviderClient {
             this.#subfeedManager.processServerMessage(msg)
         })
     }
-    initiateTask(functionId: string, kwargs: {[key: string]: any}) {
-        return this.#taskManager.initiateTask(functionId, kwargs)
+    initiateTask<ReturnType>(functionId: string, kwargs: {[key: string]: any}) {
+        return this.#taskManager.initiateTask<ReturnType>(functionId, kwargs)
     }
     subscribeToSubfeed(opts: {feedId: FeedId, subfeedHash: SubfeedHash, startPosition: number, onMessage: (msg: SubfeedMessage, messageNumber: number) => void}) {
-        this.#subfeedManager.subscribeToSubfeed(opts)
+        return this.#subfeedManager.subscribeToSubfeed(opts)
     }
     public get allTasks() {
         return this.#taskManager.allTasks

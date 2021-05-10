@@ -11,7 +11,7 @@ export interface SortingViewProps {
     sortingInfo: SortingInfo
     recordingInfo: RecordingInfo
     curation: SortingCuration
-    curationDispatch: (action: SortingCurationAction) => void
+    curationDispatch: ((action: SortingCurationAction) => void) | undefined
     selection: SortingSelection
     selectionDispatch: (a: SortingSelectionAction) => void
     readOnly: boolean | null

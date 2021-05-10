@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { RecordingViewProps } from "../../../python/sortingview/extensions/pluginInterface";
+import { RecordingViewProps } from "../../pluginInterface";
 
 const MVRecordingView: FunctionComponent<RecordingViewProps> = ({recording, recordingInfo}) => {
     return <div>Test</div>

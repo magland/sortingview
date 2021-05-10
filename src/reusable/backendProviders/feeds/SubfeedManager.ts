@@ -6,6 +6,7 @@ import { isMessageCount, isSignedSubfeedMessage, isSubfeedHash, messageCount, Me
 class SubfeedSubscription {
     #position = 0
     #onMessageCallbacks: ((subfeedMessage: SubfeedMessage, messageNumber: number) => void)[] = []
+    #isAlive = true
     constructor(public subfeed: Subfeed, private startPosition: number = 0) {
         this.#position = startPosition
     }
@@ -15,13 +16,20 @@ class SubfeedSubscription {
     onMessage(callback: (subfeedMessage: SubfeedMessage, messageNumber: number) => void) {
         this.#onMessageCallbacks.push(callback)
     }
+    cancel() {
+        this.#isAlive = false
+    }
     initialize() {
         this._handleNewMessages()
         this.subfeed.onNewMessages(() => {
             this._handleNewMessages()  
         })
     }
+    public get isAlive() {
+        return this.#isAlive
+    }
     _handleNewMessages() {
+        if (!this.#isAlive) return
         if (this.subfeed.inMemoryMessageCount > this.#position) {
             for (let i = this.#position; i < this.subfeed.inMemoryMessageCount; i++) {
                 this.#onMessageCallbacks.forEach(cb => {
@@ -160,6 +168,7 @@ class SubfeedManager {
         const x = new SubfeedSubscription(s, opts.startPosition)
         x.onMessage(opts.onMessage)
         x.initialize()
+        return x
     }
     _subfeedCode(feedId: FeedId, subfeedHash: SubfeedHash) {
         return feedId + ':' + subfeedHash

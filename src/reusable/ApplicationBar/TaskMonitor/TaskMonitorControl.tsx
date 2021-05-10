@@ -9,7 +9,7 @@ type Props = {
 }
 
 export const useUpdatingTasks = () => {
-    const [tasks, setTasks] = useState<Task[]>([])
+    const [tasks, setTasks] = useState<Task<any>[]>([])
     const client = useBackendProviders().selectedBackendProviderClient
     useEffect(() => {
         if (!client) return

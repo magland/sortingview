@@ -1,5 +1,8 @@
 import { HitherContext, HitherInterface, HitherJob, useHitherJob } from 'labbox';
 import { useContext, useRef, useState } from "react";
+import Task from '../../../../reusable/backendProviders/tasks/Task';
+import useTask from '../../../../reusable/backendProviders/tasks/useTask';
+import { useBackendProviderClient } from '../../../../reusable/backendProviders/useBackendProviders';
 import { Recording, RecordingInfo } from "../pluginInterface";
 
 export const getRecordingInfo = async (a: {recordingObject: any, hither: HitherInterface}): Promise<RecordingInfo> => {
@@ -14,35 +17,35 @@ export const getRecordingInfo = async (a: {recordingObject: any, hither: HitherI
     return info as RecordingInfo;
 }
 
-export const useRecordingInfo = (recordingObject: any): RecordingInfo | undefined => {
-    const {result: recordingInfo} = useHitherJob<RecordingInfo>(
-        recordingObject ? 'createjob_get_recording_info': '',
-        {recording_object: recordingObject},
-        {useClientCache: true}
-    )
+export const useRecordingInfo = (recordingUri: string): RecordingInfo | undefined => {
+    const {returnValue: recordingInfo} = useTask<RecordingInfo>('recording_info.3', {recording_uri: recordingUri})
     return recordingInfo
 }
 
-export const useRecordingInfos = (recordings: Recording[]): {[key: string]: RecordingInfo} => {
-    const hither = useContext(HitherContext)
-    const jobs = useRef<{[key: string]: HitherJob}>({})
+export const useRecordingInfos = (recordings: Recording[]): {[key: string]: RecordingInfo | null} => {
+    const client = useBackendProviderClient()
+    const tasks = useRef<{[key: string]: Task<RecordingInfo> | null}>({})
     const [, setCount] = useState(0) // just for triggering update
-    const ret: {[key: string]: RecordingInfo} = {}
-    recordings.forEach(r => {
-        const rid = r.recordingId
-        if (!jobs.current[rid]) {
-            const j = hither.createHitherJob('createjob_get_recording_info', {recording_object: r.recordingObject}, {useClientCache: true})
-            jobs.current[rid] = j
-            j.wait().then(() => {
-                setCount(c => (c + 1))
-            })
-            .catch(() => {
-                setCount(c => (c + 1))
-            })
-        }
-        if (jobs.current[rid].result) {
-            ret[rid] = jobs.current[rid].result as RecordingInfo
-        }
-    })
+    const ret: {[key: string]: RecordingInfo | null} = {}
+    if (client) {
+        recordings.forEach(r => {
+            const rid = r.recordingId
+            const t = tasks.current[rid]
+            if (t === undefined) {
+                const task = client.initiateTask<RecordingInfo>('recording_info.3', {recording_uri: r.recordingPath})
+                task?.onStatusChanged(() => {
+                    if (task.status === 'finished') {
+                        setCount(c => (c + 1))
+                    }
+                })
+                tasks.current[rid] = task || null
+            }
+            else if (t !== null) {
+                if (t.status === 'finished') {
+                    ret[rid] = t.returnValue
+                }
+            }
+        })
+    }
     return ret
 }

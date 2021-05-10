@@ -1,4 +1,5 @@
 import axios from "axios"
+import { randomAlphaString } from "../google/GoogleObjectStorageClient"
 
 export type HttpObjectStorageClientOpts = {
     baseUrl: string
@@ -7,8 +8,11 @@ export type HttpObjectStorageClientOpts = {
 class HttpObjectStorageClient {
     constructor(private opts: HttpObjectStorageClientOpts) {
     }
-    async getObjectData(name: string): Promise<ArrayBuffer | null> {
-        const url = `${this.opts.baseUrl}/${name}`
+    async getObjectData(name: string, opts: {cacheBust?: boolean} = {}): Promise<ArrayBuffer | null> {
+        let url = `${this.opts.baseUrl}/${name}`
+        if (opts.cacheBust) {
+            url = cacheBust(url)
+        }
         let resp = null
         try {
             resp = await axios.get(url, {responseType: 'arraybuffer'})
@@ -20,6 +24,15 @@ class HttpObjectStorageClient {
             return resp.data || null
         }
         else return null
+    }
+}
+
+const cacheBust = (url: string) => {
+    if (url.includes('?')) {
+        return url + `&cb=${randomAlphaString(10)}`
+    }
+    else {
+        return url + `?cb=${randomAlphaString(10)}`
     }
 }
 

@@ -4,7 +4,7 @@ import { WorkspaceDispatch, WorkspaceState } from "./workspaceReducer";
 
 export type WorkspaceViewProps = {
     workspace: WorkspaceState
-    workspaceDispatch: WorkspaceDispatch
+    workspaceDispatch: WorkspaceDispatch | undefined
     workspaceRoute: WorkspaceRoute
     workspaceRouteDispatch: WorkspaceRouteDispatch
     width: number

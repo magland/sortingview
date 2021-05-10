@@ -18,6 +18,8 @@ const registerExtensions = async (context: LabboxExtensionContext) => {
   activate_correlograms(context)
   const {activate: activate_unitstable} = await import('./python/sortingview/extensions/unitstable/unitstable')
   activate_unitstable(context)
+  const {activate: activate_mountainview} = await import('./python/sortingview/extensions/mountainview/mountainview')
+  activate_mountainview(context)
 }
 
 const extensionContext = createExtensionContext<LabboxPlugin>()

@@ -2,7 +2,8 @@ import time
 import json
 import uuid
 import hashlib
-from typing import Union
+from typing import Union, cast
+from ._verify_oauth2_token import _verify_oauth2_token
 
 from .subfeed_manager import SubfeedManager
 
@@ -62,6 +63,13 @@ class Backend:
     def _registration_age(self):
         return time.time() - self._registration_timestamp
     def _on_ably_message(self, message: dict):
+        id_token = message.get('idToken', None)
+        if id_token is not None:
+            id_info = _verify_oauth2_token(cast(str, id_token).encode('utf-8'))
+            user_id = id_info['sub']
+        else:
+            user_id = None
+        print('User id', user_id)
         type0 = message.get('type', None)
         if type0 == 'initiateTask':
             # export type TaskQueueMessage = {

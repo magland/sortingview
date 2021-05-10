@@ -4,7 +4,7 @@ import Task from '../../backendProviders/tasks/Task'
 
 type Props = {
     label: string
-    task: Task | undefined
+    task: Task<any> | undefined
 }
 
 const TaskStatusView: FunctionComponent<Props> = ({label, task}) => {

@@ -1,8 +1,8 @@
 import { Checkbox, Grid, Paper } from '@material-ui/core';
 import React, { FunctionComponent, useCallback, useMemo } from 'react';
 import sizeMe, { SizeMeProps } from 'react-sizeme';
-import { SortingCuration, SortingSelection, SortingSelectionDispatch } from '../../../python/sortingview/extensions/pluginInterface';
-import { SortingCurationAction } from '../../../python/sortingview/extensions/pluginInterface/SortingCuration';
+import { SortingCuration, SortingSelection, SortingSelectionDispatch } from '../../pluginInterface';
+import { SortingCurationAction } from '../../pluginInterface/SortingCuration';
 
 type Props = {
     sortingId: string
