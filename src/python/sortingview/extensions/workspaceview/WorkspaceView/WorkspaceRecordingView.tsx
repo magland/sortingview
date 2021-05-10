@@ -106,11 +106,11 @@ const WorkspaceRecordingView: FunctionComponent<Props> = ({ recording, sortings,
       positionFromRight={true}
     >
       <div>
-        {
+        {/* {
           !showSpikeSortingInstructions && (
             <div><Button onClick={handleSpikeSorting}>Spike sorting</Button></div>
           )
-        }
+        } */}
         {content}
       </div>
       {

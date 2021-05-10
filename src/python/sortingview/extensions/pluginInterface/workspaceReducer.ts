@@ -48,29 +48,39 @@ export const sortingCurationReducer = (state: SortingCuration, action: SortingCu
         return action.curation
     }
     else if (action.type === 'ADD_UNIT_LABEL') {
-        const uid = action.unitId + ''
-        const labels = (state.labelsByUnit || {})[uid] || []
-        if (!labels.includes(action.label)) {
+        const uids: number[] = typeof(action.unitId) === 'object' ? action.unitId : [action.unitId]
+        const newLabelsByUnit = {...(state.labelsByUnit || {})}
+        let somethingChanged = false
+        for (let uid of uids) {
+            const labels = newLabelsByUnit[uid + ''] || []
+            if (!labels.includes(action.label)) {
+                somethingChanged = true
+                newLabelsByUnit[uid + ''] = [...labels, action.label].sort()
+            }
+        }
+        if (somethingChanged) {
             return {
                 ...state,
-                labelsByUnit: {
-                    ...state.labelsByUnit,
-                    [uid]: [...labels, action.label].sort()
-                }
+                labelsByUnit: newLabelsByUnit
             }
         }
         else return state
     }
     else if (action.type === 'REMOVE_UNIT_LABEL') {
-        const uid = action.unitId + ''
-        const labels = (state.labelsByUnit || {})[uid] || []
-        if (labels.includes(action.label)) {
+        const uids: number[] = typeof(action.unitId) === 'object' ? action.unitId : [action.unitId]
+        const newLabelsByUnit = {...(state.labelsByUnit || {})}
+        let somethingChanged = false
+        for (let uid of uids) {
+            const labels = newLabelsByUnit[uid + ''] || []
+            if (labels.includes(action.label)) {
+                somethingChanged = true
+                newLabelsByUnit[uid + ''] = labels.filter(l => (l !== action.label))
+            }
+        }
+        if (somethingChanged) {
             return {
                 ...state,
-                labelsByUnit: {
-                    ...state.labelsByUnit,
-                    [uid]: labels.filter(l => (l !== action.label))
-                }
+                labelsByUnit: newLabelsByUnit
             }
         }
         else return state

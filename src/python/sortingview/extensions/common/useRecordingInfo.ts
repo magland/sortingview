@@ -1,5 +1,5 @@
 import { HitherContext, HitherInterface, HitherJob, useHitherJob } from 'labbox';
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Task from '../../../../reusable/backendProviders/tasks/Task';
 import useTask from '../../../../reusable/backendProviders/tasks/useTask';
 import { useBackendProviderClient } from '../../../../reusable/backendProviders/useBackendProviders';
@@ -26,6 +26,9 @@ export const useRecordingInfos = (recordings: Recording[]): {[key: string]: Reco
     const client = useBackendProviderClient()
     const tasks = useRef<{[key: string]: Task<RecordingInfo> | null}>({})
     const [, setCount] = useState(0) // just for triggering update
+    useEffect(() => {
+        setCount(c => (c + 1))
+    }, [recordings])
     const ret: {[key: string]: RecordingInfo | null} = {}
     if (client) {
         recordings.forEach(r => {

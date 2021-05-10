@@ -1,10 +1,12 @@
-import { createCalculationPool, HitherContext, usePlugins, useSubfeed } from 'labbox';
-import React, { useCallback, useContext, useEffect, useMemo, useReducer, useState } from 'react';
+import { usePlugins } from 'labbox';
+import React, { useCallback, useEffect, useMemo, useReducer } from 'react';
+import { JSONObject, JSONValue, sha1OfObject, SubfeedHash, SubfeedMessage } from '../../../../../reusable/backendProviders/kacheryTypes/kacheryTypes';
+import { parseWorkspaceUri } from '../../../../../reusable/backendProviders/misc';
+import useSubfeed from '../../../../../reusable/backendProviders/useSubfeed';
 import Hyperlink from '../../common/Hyperlink';
 import { useRecordingInfo } from '../../common/useRecordingInfo';
 import { useSortingInfo } from '../../common/useSortingInfo';
 import { LabboxPlugin, Recording, Sorting, SortingInfo, SortingSelection, sortingSelectionReducer, sortingViewPlugins, WorkspaceRoute, WorkspaceRouteDispatch } from '../../pluginInterface';
-import { parseWorkspaceUri } from '../../pluginInterface/misc';
 import { SortingCurationAction } from '../../pluginInterface/SortingCuration';
 import { sortingCurationReducer } from '../../pluginInterface/workspaceReducer';
 
@@ -29,12 +31,7 @@ interface Props {
   // onSetExternalUnitMetrics: (a: { sortingId: string, externalUnitMetrics: ExternalSortingUnitMetric[] }) => void
 }
 
-type CalcStatus = 'waiting' | 'computing' | 'finished'
-
-const calculationPool = createCalculationPool({maxSimultaneous: 6})
-
 const SortingView: React.FunctionComponent<Props> = (props) => {
-  const hither = useContext(HitherContext)
   const { workspaceRoute, readOnly, sorting, recording, workspaceRouteDispatch } = props
   // const [externalUnitMetricsStatus, setExternalUnitMetricsStatus] = useState<CalcStatus>('waiting');
   //const initialSortingSelection: SortingSelection = {currentTimepoint: 1000, animation: {currentTimepointVelocity: 100, lastUpdateTimestamp: Number(new Date())}}
@@ -45,16 +42,17 @@ const SortingView: React.FunctionComponent<Props> = (props) => {
   const recordingInfo = useRecordingInfo(recording.recordingPath)
   const sortingId = sorting ? sorting.sortingId : null
 
-  const {feedUri, workspaceName} = parseWorkspaceUri(workspaceRoute.workspaceUri)
+  const {feedId, workspaceName} = parseWorkspaceUri(workspaceRoute.workspaceUri)
 
   const [curation, curationDispatch2] = useReducer(sortingCurationReducer, useMemo(() => ({}), []))
   const handleCurationSubfeedMessages = useCallback((messages: any[]) => {
     messages.forEach(msg => curationDispatch2(msg))
   }, [])
   const curationSubfeedName = useMemo(() => ({name: 'sortingCuration', workspaceName, sortingId}), [workspaceName, sortingId])
-  const {appendMessages: appendCurationMessages} = useSubfeed({feedUri, subfeedName: curationSubfeedName, onMessages: handleCurationSubfeedMessages })
+  const curationSubfeedHash = sha1OfObject(curationSubfeedName as any as JSONObject) as any as SubfeedHash
+  const {appendMessages: appendCurationMessages} = useSubfeed({feedId, subfeedHash: curationSubfeedHash, onMessages: handleCurationSubfeedMessages })
   const curationDispatch = useCallback((a: SortingCurationAction) => {
-      appendCurationMessages([a])
+      appendCurationMessages([a as any as SubfeedMessage])
   }, [appendCurationMessages])
 
   useEffect(() => {
@@ -83,7 +81,6 @@ const SortingView: React.FunctionComponent<Props> = (props) => {
   const footerHeight = 20
 
   const footerStyle = useMemo<React.CSSProperties>(() => ({
-    position: 'absolute',
     left: 0,
     top: H - footerHeight,
     width: W,
@@ -94,7 +91,6 @@ const SortingView: React.FunctionComponent<Props> = (props) => {
   const contentWidth = W
   const contentHeight = H - footerHeight
   const contentWrapperStyle = useMemo<React.CSSProperties>(() => ({
-    position: 'absolute',
     left: 0,
     top: 0,
     width: contentWidth,
@@ -142,7 +138,7 @@ const SortingView: React.FunctionComponent<Props> = (props) => {
 
   // const selectedUnitIdsLookup: {[key: string]: boolean} = (selection.selectedUnitIds || []).reduce((m, uid) => {m[uid + ''] = true; return m}, {} as {[key: string]: boolean})
   return (
-    <div>
+    <div className="SortingView">
       <div style={contentWrapperStyle}>
           <sv.component
             {...svProps}
@@ -155,7 +151,6 @@ const SortingView: React.FunctionComponent<Props> = (props) => {
             curation={curation}
             curationDispatch={readOnly ? undefined : curationDispatch}
             readOnly={readOnly}
-            calculationPool={calculationPool}
             width={contentWidth}
             height={contentHeight}
           />

@@ -6,13 +6,13 @@ export type SortingCuration = {
 
 export interface AddUnitLabelCurationAction {
     type: 'ADD_UNIT_LABEL'
-    unitId: number
+    unitId: number | number[]
     label: string
 }
 
 export interface RemoveUnitLabelCurationAction {
     type: 'REMOVE_UNIT_LABEL'
-    unitId: number
+    unitId: number | number[]
     label: string
 }
 

@@ -1,5 +1,5 @@
 import { HitherContext, HitherJob, useHitherJob } from 'labbox';
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Task from '../../../../reusable/backendProviders/tasks/Task';
 import useTask from '../../../../reusable/backendProviders/tasks/useTask';
 import { useBackendProviderClient } from '../../../../reusable/backendProviders/useBackendProviders';
@@ -15,6 +15,9 @@ export const useSortingInfos = (sortings: Sorting[]): {[key: string]: SortingInf
     const tasks = useRef<{[key: string]: Task<SortingInfo> | null}>({})
     const [, setCount] = useState(0) // just for triggering update
     const ret: {[key: string]: SortingInfo | null} = {}
+    useEffect(() => {
+        setCount(c => (c + 1))
+    }, [sortings])
     if (client) {
         sortings.forEach(s => {
             const sid = s.sortingId

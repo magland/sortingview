@@ -10,7 +10,7 @@ class BackendProviderClient {
     #subfeedManager: SubfeedManager
     constructor(private clientChannel: PubsubChannel, private serverChannel: PubsubChannel, private objectStorageClient: ObjectStorageClient, private googleSignInClient: GoogleSignInClient | undefined) {
         this.#taskManager = new TaskManager(clientChannel, objectStorageClient, googleSignInClient)
-        this.#subfeedManager = new SubfeedManager(clientChannel, objectStorageClient)
+        this.#subfeedManager = new SubfeedManager(clientChannel, objectStorageClient, googleSignInClient)
         serverChannel.subscribe((x: PubsubMessage) => {
             const msg = x.data
             this.#taskManager.processServerMessage(msg)
@@ -20,8 +20,11 @@ class BackendProviderClient {
     initiateTask<ReturnType>(functionId: string, kwargs: {[key: string]: any}) {
         return this.#taskManager.initiateTask<ReturnType>(functionId, kwargs)
     }
-    subscribeToSubfeed(opts: {feedId: FeedId, subfeedHash: SubfeedHash, startPosition: number, onMessage: (msg: SubfeedMessage, messageNumber: number) => void}) {
+    subscribeToSubfeed(opts: {feedId: FeedId, subfeedHash: SubfeedHash, startPosition: number, onMessages: (msgs: SubfeedMessage[], messageNumber: number) => void}) {
         return this.#subfeedManager.subscribeToSubfeed(opts)
+    }
+    appendMessagesToSubfeed(opts: {feedId: FeedId, subfeedHash: SubfeedHash, messages: SubfeedMessage[]}) {
+        return this.#subfeedManager.appendMessagesToSubfeed(opts)
     }
     public get allTasks() {
         return this.#taskManager.allTasks
