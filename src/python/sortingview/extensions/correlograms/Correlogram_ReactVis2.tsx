@@ -1,7 +1,8 @@
 import { createCalculationPool, useHitherJob } from 'labbox';
 import React, { FunctionComponent } from 'react';
 import { VerticalBarSeries, XAxis, XYPlot, YAxis } from 'react-vis';
-import HitherJobStatusView from '../common/HitherJobStatusView';
+import TaskStatusView from '../../../../reusable/ApplicationBar/TaskMonitor/TaskStatusView';
+import useTask from '../../../../reusable/backendProviders/tasks/useTask';
 import { applyMergesToUnit, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from "../pluginInterface";
 
 type PlotData = {
@@ -25,18 +26,25 @@ const calculationPool = createCalculationPool({maxSimultaneous: 6})
 
 const Correlogram_rv2: FunctionComponent<Props> = ({ sorting, unitId1, unitId2, selection, curation, selectionDispatch, width, height }) => {
     
-    const {result: plotData, job} = useHitherJob<PlotData>(
-        'createjob_fetch_correlogram_plot_data',
-        {
-            sorting_object: sorting.sortingObject,
-            unit_x: applyMergesToUnit(unitId1, curation, selection.applyMerges),
-            unit_y: unitId2 !== undefined ? applyMergesToUnit(unitId2, curation, selection.applyMerges) : null
-        },
-        {useClientCache: false, calculationPool}
-    )
+    // const {result: plotData, job} = useHitherJob<PlotData>(
+    //     'createjob_fetch_correlogram_plot_data',
+    //     {
+    //         sorting_object: sorting.sortingObject,
+    //         unit_x: applyMergesToUnit(unitId1, curation, selection.applyMerges),
+    //         unit_y: unitId2 !== undefined ? applyMergesToUnit(unitId2, curation, selection.applyMerges) : null
+    //     },
+    //     {useClientCache: false, calculationPool}
+    // )
+
+    const {returnValue: plotData, task: taskPlotData} = useTask<PlotData>('fetch_correlogram_plot_data.1', {
+        sorting_object: sorting.sortingObject,
+        unit_x: applyMergesToUnit(unitId1, curation, selection.applyMerges),
+        unit_y: unitId2 !== undefined ? applyMergesToUnit(unitId2, curation, selection.applyMerges) : null        
+    })
 
     if (!plotData) {
-        return <HitherJobStatusView job={job} width={width} height={height} />
+        // return <HitherJobStatusView job={job} width={width} height={height} />
+        return <TaskStatusView label="Fetch correlogram" task={taskPlotData} />
     }
     const data = plotData.bins.map((item: number, index: number) => {
         return { x: item, y: plotData.bin_counts[index] };

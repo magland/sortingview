@@ -1,36 +1,39 @@
 import { HitherContext, HitherJob, useHitherJob } from 'labbox';
 import { useContext, useRef, useState } from "react";
+import Task from '../../../../reusable/backendProviders/tasks/Task';
+import useTask from '../../../../reusable/backendProviders/tasks/useTask';
+import { useBackendProviderClient } from '../../../../reusable/backendProviders/useBackendProviders';
 import { Sorting, SortingInfo } from "../pluginInterface";
 
-export const useSortingInfo = (sortingObject: any, recordingObject: any): SortingInfo | undefined => {
-    const {result: sortingInfo} = useHitherJob<SortingInfo>(
-        sortingObject ? 'createjob_get_sorting_info': '',
-        {sorting_object: sortingObject, recording_object: recordingObject},
-        {useClientCache: true}
-    )
+export const useSortingInfo = (sortingUri: string): SortingInfo | undefined => {
+    const {returnValue: sortingInfo} = useTask<SortingInfo>(sortingUri ? 'sorting_info.3' : '', {sorting_uri: sortingUri})
     return sortingInfo
 }
 
-export const useSortingInfos = (sortings: Sorting[]): {[key: string]: SortingInfo} => {
-    const hither = useContext(HitherContext)
-    const jobs = useRef<{[key: string]: HitherJob}>({})
+export const useSortingInfos = (sortings: Sorting[]): {[key: string]: SortingInfo | null} => {
+    const client = useBackendProviderClient()
+    const tasks = useRef<{[key: string]: Task<SortingInfo> | null}>({})
     const [, setCount] = useState(0) // just for triggering update
-    const ret: {[key: string]: SortingInfo} = {}
-    sortings.forEach(s => {
-        const rid = s.sortingId
-        if (!jobs.current[rid]) {
-            const j = hither.createHitherJob('createjob_get_sorting_info', {recording_object: s.recordingObject, sorting_object: s.sortingObject}, {useClientCache: true})
-            jobs.current[rid] = j
-            j.wait().then(() => {
-                setCount(c => (c + 1))
-            })
-            .catch(() => {
-                setCount(c => (c + 1))
-            })
-        }
-        if (jobs.current[rid].result) {
-            ret[rid] = jobs.current[rid].result as SortingInfo
-        }
-    })
+    const ret: {[key: string]: SortingInfo | null} = {}
+    if (client) {
+        sortings.forEach(s => {
+            const sid = s.sortingId
+            const t = tasks.current[sid]
+            if (t === undefined) {
+                const task = client.initiateTask<SortingInfo>('sorting_info.3', {sorting_uri: s.sortingPath})
+                task?.onStatusChanged(() => {
+                    if (task.status === 'finished') {
+                        setCount(c => (c + 1))
+                    }
+                })
+                tasks.current[sid] = task || null
+            }
+            else if (t !== null) {
+                if (t.status === 'finished') {
+                    ret[sid] = t.returnValue
+                }
+            }
+        })
+    }
     return ret
 }

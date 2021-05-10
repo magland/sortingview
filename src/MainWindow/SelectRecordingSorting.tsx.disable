@@ -28,7 +28,6 @@ const SelectRecordingSorting: FunctionComponent<Props> = ({onUpdated}) => {
     }, [setRoute, editRecordingUri, editSortingUri, setClosing])
 
     const handleExampleSelected = useCallback((o: {recordingUri: string, sortingUri: string}) => {
-        console.log('--- setting route', o)
         setRoute({recordingUri: o.recordingUri, sortingUri: o.sortingUri})
         setClosing(true) //hack for now
     }, [setRoute, setClosing])

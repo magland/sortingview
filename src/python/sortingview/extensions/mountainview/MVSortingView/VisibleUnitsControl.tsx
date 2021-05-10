@@ -1,11 +1,11 @@
 import { Checkbox } from '@material-ui/core';
 import { useHitherJob } from 'labbox';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { Recording, Sorting, SortingCuration, SortingInfo, SortingSelection, SortingSelectionDispatch } from "../../../python/sortingview/extensions/pluginInterface";
+import { useSortingInfo } from '../../common/useSortingInfo';
+import { Recording, Sorting, SortingCuration, SortingInfo, SortingSelection, SortingSelectionDispatch } from "../../pluginInterface";
 
 type Props = {
     sorting: Sorting
-    sortingInfo: SortingInfo
     recording: Recording
     selection: SortingSelection
     selectionDispatch: SortingSelectionDispatch
@@ -14,7 +14,8 @@ type Props = {
 
 type PeakElectrodeIds = {[key: string]: number}
 
-const VisibleUnitsControl: FunctionComponent<Props> = ({ sorting, sortingInfo, recording, selection, selectionDispatch, curation }) => {
+const VisibleUnitsControl: FunctionComponent<Props> = ({ sorting, recording, selection, selectionDispatch, curation }) => {
+    const sortingInfo: SortingInfo | undefined = useSortingInfo(sorting.sortingObject)
     const [hideRejected, setHideRejected] = useState(false)
     const [showAcceptedOnly, setShowAcceptedOnly] = useState(false)
     const [restrictToVisibleElectrodes, setRestrictToVisibleElectrodes] = useState(true)

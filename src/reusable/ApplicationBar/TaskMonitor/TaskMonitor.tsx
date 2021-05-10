@@ -11,9 +11,9 @@ type Props = {
 const TaskMonitor: FunctionComponent<Props> = ({onClose}) => {
     const tasks = useUpdatingTasks()
 
-    const [currentTask, setCurrentTask] = useState<Task | null>(null);
+    const [currentTask, setCurrentTask] = useState<Task<any> | null>(null);
 
-    const handleCancelTask = (t: Task) => {
+    const handleCancelTask = (t: Task<any>) => {
         console.warn('Cancel task not implemented')
     }
 
@@ -37,7 +37,7 @@ const TaskMonitor: FunctionComponent<Props> = ({onClose}) => {
     )
 }
 
-const TaskInfoView: FunctionComponent<{task: Task}> = ({ task }) => {
+const TaskInfoView: FunctionComponent<{task: Task<any>}> = ({ task }) => {
     const argumentsCollapsable = (task.kwargs && niceStringify(task.kwargs).length > 50);
     const logArgumentsToConsole = (task.kwargs && niceStringify(task.kwargs).length > 1000);
     const [argumentsExpanded, setArgumentsExpanded] = useState<boolean>(!argumentsCollapsable);
@@ -131,9 +131,9 @@ const TaskInfoView: FunctionComponent<{task: Task}> = ({ task }) => {
 }
 
 const TaskMonitorTable: FunctionComponent<{
-    tasks: Task[],
-    onViewTask: (task: Task) => void,
-    onCancelTask: (task: Task) => void
+    tasks: Task<any>[],
+    onViewTask: (task: Task<any>) => void,
+    onCancelTask: (task: Task<any>) => void
 }> = ({
     tasks,
     onViewTask,
@@ -166,7 +166,7 @@ const TaskMonitorTable: FunctionComponent<{
         }
     ];
     const sortedTasks = tasks;
-    sortedTasks.sort((j1: Task, j2: Task) => {
+    sortedTasks.sort((j1: Task<any>, j2: Task<any>) => {
         if ((j1.status === 'running') && (j2.status !== 'running'))
             return -1;
         else if ((j2.status === 'running') && (j1.status !== 'running'))

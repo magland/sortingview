@@ -17,10 +17,10 @@ export type TaskQueueMessage = {
     taskHash: Sha1Hash
 }
 
-class Task {
+class Task<ReturnType> {
     #status: TaskStatus = 'waiting'
     #errorMessage: string = ''
-    #returnValue: JSONValue | null = null
+    #returnValue: ReturnType | null = null
     #onStatusChangedCallbacks: ((s: TaskStatus) => void)[] = []
     #timestampInitiated = Number(new Date())
     #timestampCompleted: number | undefined = undefined
@@ -72,7 +72,7 @@ class Task {
         if (['error', 'finished'].includes(s)) this.#timestampCompleted = Number(new Date())
     }
     _setReturnValue(x: JSONValue) {
-        this.#returnValue = x
+        this.#returnValue = x as any as ReturnType
     }
     _setErrorMessage(e: string) {
         console.warn(`Error running task (${this.functionId}): ${e}`, this.kwargs)

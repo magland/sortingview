@@ -29,7 +29,7 @@ const PlotGrid: FunctionComponent<Props> = ({ sorting, onUnitClicked, selections
 }) => {
         const maxUnitsVisibleIncrement = 60;
         const [maxUnitsVisible, setMaxUnitsVisible] = useState(30);
-        const sortingInfo = useSortingInfo(sorting.sortingObject, sorting.recordingObject)
+        const sortingInfo = useSortingInfo(sorting.sortingPath)
 
         let unit_ids: number[] = sortingInfo ? sortingInfo.unit_ids : []
         let showExpandButton = false;

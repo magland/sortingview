@@ -1,9 +1,10 @@
 import React from 'react'
 import { FunctionComponent } from "react"
 import Home from '../pages/Home/Home'
-import MountainView from '../pages/MountainView/MountainView'
+import WorkspacePage from '../pages/WorkspacePage/WorkspacePage'
+import { useBackendProviderClient } from '../reusable/backendProviders/useBackendProviders'
 import useRoute from '../route/useRoute'
-import SelectRecordingSorting from './SelectRecordingSorting'
+import SelectWorkspace from './SelectWorkspace'
 
 type Props = {
     width: number
@@ -11,25 +12,34 @@ type Props = {
 }
 
 const Routes: FunctionComponent<Props> = ({width, height}) => {
-    const {routePath, recordingUri, sortingUri, backendUri, setRoute} = useRoute()
+    const client = useBackendProviderClient()
+    const {routePath, workspaceUri, setRoute} = useRoute()
 
     if (routePath === '/about') {
         return <div>About</div>
     }
-    else if ((routePath === '/mountainview') && (recordingUri) && (sortingUri)) {
+    // else if ((routePath === '/mountainview') && (recordingUri) && (sortingUri)) {
+    //     return (
+    //         <MountainView
+    //             recordingUri={recordingUri}
+    //             sortingUri={sortingUri}
+    //             width={width}
+    //             height={height}
+    //         />
+    //     )
+    // }
+    else if ((routePath === '/selectWorkspace') && (client)) {
         return (
-            <MountainView
-                recordingUri={recordingUri}
-                sortingUri={sortingUri}
-                width={width}
-                height={height}
+            <SelectWorkspace
+                onUpdated={() => {setRoute({routePath: '/workspace'})}}
             />
         )
     }
-    else if (routePath === '/selectData') {
+    else if (((routePath === '/workspace') || (routePath.startsWith('/workspace/'))) && (workspaceUri) && (client)) {
         return (
-            <SelectRecordingSorting
-                onUpdated={() => {setRoute({routePath: '/mountainview'})}}
+            <WorkspacePage
+                width={width}
+                height={height}
             />
         )
     }

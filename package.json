@@ -24,6 +24,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-draggable": "^4.4.3",
+    "react-google-button": "^0.7.2",
     "react-markdown": "^4.3.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",

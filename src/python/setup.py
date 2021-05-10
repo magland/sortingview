@@ -9,6 +9,7 @@ setup(
         'click',
         'hither',
         'google-cloud-storage',
-        'paho-mqtt'
+        'paho-mqtt',
+        'CacheControl'
     ]
 )

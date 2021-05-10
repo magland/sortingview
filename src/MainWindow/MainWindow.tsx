@@ -1,9 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { FunctionComponent } from "react"
 import ApplicationBar from '../reusable/ApplicationBar/ApplicationBar'
-import SelectRecordingSorting from './SelectRecordingSorting'
 import useRoute from '../route/useRoute'
-import MountainView from '../pages/MountainView/MountainView'
 import Routes from './Routes'
 
 type Props = {

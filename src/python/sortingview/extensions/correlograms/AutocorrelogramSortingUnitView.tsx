@@ -8,7 +8,7 @@ import Correlogram_rv from './Correlogram_ReactVis'
 const AutocorrelogramSortingUnitView: FunctionComponent<{sorting: Sorting, unitId: number, calculationPool: CalculationPool}> = ({ sorting, unitId, calculationPool }) => {
     return (
         <ClientSidePlot
-            dataFunctionName="createjob_fetch_correlogram_plot_data"
+            dataFunctionName="fetch_correlogram_plot_data.1"
             dataFunctionArgs={{
                 sorting_object: sorting.sortingObject,
                 unit_x: unitId

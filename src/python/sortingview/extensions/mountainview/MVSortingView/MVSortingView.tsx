@@ -5,9 +5,10 @@ import GrainIcon from '@material-ui/icons/Grain'
 import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser'
 import { usePlugins } from 'labbox'
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useReducer, useState } from 'react'
-import Expandable from '../../../common/Expandable'
-import Splitter from '../../../common/Splitter'
-import { LabboxPlugin, RecordingViewPlugin, SortingUnitViewPlugin, SortingViewPlugin, sortingViewPlugins, SortingViewProps } from "../../../python/sortingview/extensions/pluginInterface"
+import Expandable from '../../common/Expandable'
+import Splitter from '../../common/Splitter'
+import { LabboxPlugin, SortingUnitViewPlugin, SortingViewPlugin, sortingViewPlugins, SortingViewProps } from "../../pluginInterface"
+import { RecordingViewPlugin } from '../../pluginInterface/RecordingViewPlugin'
 import '../mountainview.css'
 import CurationControl from './CurationControl'
 import OptionsControl from './OptionsControl'
@@ -129,7 +130,7 @@ interface PreprocessingProps {
 
 const MVSortingView: FunctionComponent<SortingViewProps & {preloadStatus?: 'waiting' | 'running' | 'finished'} & PreprocessingProps> = (props) => {
     // useCheckForChanges('MVSortingView', props)
-    const {recording, sorting, sortingInfo, recordingInfo, selection, selectionDispatch, curation, preloadStatus, preprocessingSelection, preprocessingSelectionDispatch, curationDispatch} = props
+    const {recording, sorting, recordingInfo, selection, selectionDispatch, curation, preloadStatus, preprocessingSelection, preprocessingSelectionDispatch, curationDispatch} = props
     const [openViews, openViewsDispatch] = useReducer(openViewsReducer, [])
     const [initializedViews, setInitializedViews] = useState(false)
 
@@ -229,7 +230,7 @@ const MVSortingView: FunctionComponent<SortingViewProps & {preloadStatus?: 'wait
                     {
                         hasSorting && (
                             <Expandable icon={visibleUnitsIcon} label="Visible units" defaultExpanded={false} unmountOnExit={false}>
-                                <VisibleUnitsControl sorting={sorting} sortingInfo={sortingInfo} recording={recording} selection={selection} selectionDispatch={selectionDispatch} curation={curation} />
+                                <VisibleUnitsControl sorting={sorting} recording={recording} selection={selection} selectionDispatch={selectionDispatch} curation={curation} />
                             </Expandable>
                         )
                     }
@@ -240,15 +241,15 @@ const MVSortingView: FunctionComponent<SortingViewProps & {preloadStatus?: 'wait
                     </Expandable>
 
                     {/* Preprocessing */}
-                    {/* <Expandable icon={preprocessingIcon} label="Preprocessing" defaultExpanded={false} unmountOnExit={false}>
+                    <Expandable icon={preprocessingIcon} label="Preprocessing" defaultExpanded={false} unmountOnExit={false}>
                         <PreprocessingControl
                             preprocessingSelection={preprocessingSelection}
                             preprocessingSelectionDispatch={preprocessingSelectionDispatch}
                         />
-                    </Expandable> */}
+                    </Expandable>
                     
                     {/* Curation */}
-                    {/* { curationDispatch && hasSorting && (
+                    { curationDispatch && hasSorting && (
                         <Expandable icon={curationIcon} label="Curation" defaultExpanded={false} unmountOnExit={false}>
                                 
                             <CurationControl
@@ -259,7 +260,7 @@ const MVSortingView: FunctionComponent<SortingViewProps & {preloadStatus?: 'wait
                                 selectionDispatch={props.selectionDispatch}
                             />
                         </Expandable>
-                    )} */}
+                    )}
 
                     {/* Options */}
                     <Expandable icon={optionsIcon} label="Options" defaultExpanded={false} unmountOnExit={false}>

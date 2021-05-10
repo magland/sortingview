@@ -1,6 +1,6 @@
 # sortingview
 
-Interactively view and share results of electrophysiolic spike sorting.
+Interactively view and share results of electrophysiologic spike sorting.
 
 **This project is at an early stage of development.**
 
@@ -37,14 +37,30 @@ If you are not part of the team, then the easiest course is to set up your own (
 ABLY_API_KEY=...
 ```
 
-Then you should be able to run the server locally as above:
-
-```
-vercel dev
-```
+Then you should be able to run the server locally as above.
 
 In the future it will also be possible to run this locally without a vercel and/or ably account.
 
+### Hosting a backend server
+
+For now you will need to create a bucket on Google Cloud Storage (in the future you will be able to run this locally without a bucket, or alternatively using a S3 bucket on AWS).
+
+After cloning this repo, install the python repo locally:
+
+```bash
+pip install -e src/python
+```
+
+To run the backend server:
+
+```bash
+# this section needs to be completed
+```
+
 ### Deployment
 
-Commits to our `main` branch will be automatically deployed to https://sortingview.vercel.app
+Merges into the `deploy` branch will be automatically deployed to https://sortingview.vercel.app
+
+<!-- Commits to other branches will generate [preview deployments](https://vercel.com/docs/git#preview-branches). -->
+
+

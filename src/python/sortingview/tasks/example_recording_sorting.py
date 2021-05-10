@@ -11,7 +11,7 @@ from .job_cache import job_cache
 # adjust these values
 workspace_uri = '{workspaceUri}'
 recording_label = 'simulated_recording'
-duration_sec = 50 # duration of simulated recording
+duration_sec = 60 # duration of simulated recording
 num_channels = 8 # num. channels in simulated recording
 num_units = 5 # num units
 seed = 1 # random number generator seed
@@ -24,7 +24,7 @@ def prepare_recording_sorting():
     return R, S
 
 
-@hi.function('example_recording_sortings', '0.1.1')
+@hi.function('example_recording_sortings', '0.1.2')
 def example_recording_sortings():
     recording, sorting_true = prepare_recording_sorting()
     recording_uri = kp.store_json(recording.object(), basename='example_recording.json')

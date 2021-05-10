@@ -3,6 +3,7 @@ import { Button, Paper } from '@material-ui/core';
 import { HitherContext, usePlugins } from 'labbox';
 import React, { useCallback, useContext, useEffect, useMemo, useReducer, useState } from 'react';
 import BackendProviderClient from '../../../../../reusable/backendProviders/BackendProviderClient';
+import { TaskStatus } from '../../../../../reusable/backendProviders/tasks/Task';
 import useBackendProviders from '../../../../../reusable/backendProviders/useBackendProviders';
 import { LabboxPlugin, Recording, SortingUnitMetricPlugin, sortingUnitMetricPlugins, SortingViewProps } from "../../pluginInterface";
 import sortByPriority from '../../sortByPriority';
@@ -60,7 +61,7 @@ interface OwnProps {
 
 const runTaskAsync = async (client: BackendProviderClient | undefined, functionId: string, kwargs: any) => {
     if (!client) throw Error('No client.')
-    const task = client.initiateTask(functionId, kwargs)
+    const task = client.initiateTask<any>(functionId, kwargs)
     if (!task) throw Error('Unable to initiate task')
     return new Promise((resolve, reject) => {
         let complete = false
@@ -75,7 +76,7 @@ const runTaskAsync = async (client: BackendProviderClient | undefined, functionI
                 reject(new Error(task.errorMessage))
             }
         }
-        task.onStatusChanged((s) => {
+        task.onStatusChanged((s: TaskStatus) => {
             check()
         })
         check()

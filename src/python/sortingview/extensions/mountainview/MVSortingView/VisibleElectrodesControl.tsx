@@ -1,6 +1,6 @@
 import { Button, Radio } from '@material-ui/core';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
-import { RecordingInfo, SortingSelection, SortingSelectionDispatch } from '../../../python/sortingview/extensions/pluginInterface';
+import { RecordingInfo, SortingSelection, SortingSelectionDispatch } from "../../pluginInterface";
 
 type Props = {
     recordingInfo: RecordingInfo
