@@ -27,16 +27,16 @@ class BackendProviderClient {
     appendMessagesToSubfeed(opts: {feedId: FeedId, subfeedHash: SubfeedHash, messages: SubfeedMessage[]}) {
         return this.#subfeedManager.appendMessagesToSubfeed(opts)
     }
-    async runTaskAsync(functionId: string, kwargs: {[key: string]: any}) {
-        return runTaskAsync(this, functionId, kwargs)
+    async runTaskAsync<ReturnType>(functionId: string, kwargs: {[key: string]: any}) {
+        return runTaskAsync<ReturnType>(this, functionId, kwargs)
     }
     public get allTasks() {
         return this.#taskManager.allTasks
     }
 }
 
-const runTaskAsync = async (client: BackendProviderClient, functionId: string, kwargs: {[key: string]: any}) => {
-    const task = client.initiateTask<any>(functionId, kwargs)
+const runTaskAsync = async <ReturnType>(client: BackendProviderClient, functionId: string, kwargs: {[key: string]: any}) => {
+    const task = client.initiateTask<ReturnType>(functionId, kwargs)
     if (!task) throw Error('Unable to initiate task')
     return new Promise((resolve, reject) => {
         let complete = false

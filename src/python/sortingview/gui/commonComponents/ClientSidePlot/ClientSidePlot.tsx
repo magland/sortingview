@@ -1,7 +1,7 @@
 import { Box, CircularProgress } from '@material-ui/core';
-import { CalculationPool, HitherContext } from 'labbox';
-import React, { FunctionComponent, useContext, useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import VisibilitySensor from 'react-visibility-sensor';
+import { CalculationPool, useBackendProviderClient } from '../../labbox';
 
 const ClientSidePlot: FunctionComponent<{
     dataFunctionName: string,
@@ -18,7 +18,7 @@ const ClientSidePlot: FunctionComponent<{
     boxSize = { width: 200, height: 200 },
     PlotComponent, plotComponentArgs, plotComponentProps, title
 }) => {
-    const hither = useContext(HitherContext)
+    const client = useBackendProviderClient()
     const [calculationStatus, setCalculationStatus] = useState<string>('waitingForVisible');
     const [calculationError, setCalculationError] = useState<string | null>(null);
     const [plotData, setPlotData] = useState<any | null>(null);
@@ -26,19 +26,14 @@ const ClientSidePlot: FunctionComponent<{
 
     useEffect(() => {
         ;(async () => {
+            if (!client) return
             if ((calculationStatus === 'waitingForVisible') && (visible)) {
                 setCalculationStatus('waiting');
                 const slot = calculationPool ? await calculationPool.requestSlot() : null;
                 setCalculationStatus('calculating');
                 let plot_data;
                 try {
-                    plot_data = await hither.createHitherJob(
-                        dataFunctionName,
-                        dataFunctionArgs,
-                        {
-                            useClientCache: true
-                        }
-                    ).wait()
+                    plot_data = await client.runTaskAsync(dataFunctionName, dataFunctionArgs)
                 }
                 catch (err) {
                     console.error(err);
@@ -53,7 +48,7 @@ const ClientSidePlot: FunctionComponent<{
                 setCalculationStatus('finished');
             }
         })()
-    }, [dataFunctionName, calculationStatus, calculationPool, dataFunctionArgs, hither, visible])
+    }, [dataFunctionName, calculationStatus, calculationPool, dataFunctionArgs, client, visible])
 
     if (calculationStatus === 'waitingForVisible') {
         return (

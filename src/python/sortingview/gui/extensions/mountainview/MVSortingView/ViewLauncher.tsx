@@ -1,7 +1,7 @@
-import { usePlugins } from 'labbox';
 import React, { Fragment, FunctionComponent, useCallback } from 'react';
 import { LabboxPlugin, RecordingViewPlugin, recordingViewPlugins, SortingSelection, SortingUnitViewPlugin, sortingUnitViewPlugins, SortingViewPlugin, sortingViewPlugins } from "../../../pluginInterface";
 import sortByPriority from '../../../common/sortByPriority';
+import { usePlugins } from '../../../labbox';
 
 export type ViewPluginType = 'RecordingView' | 'SortingView' | 'SortingUnitView'
 

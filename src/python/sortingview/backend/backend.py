@@ -195,7 +195,6 @@ class Backend:
                 print('Ably client connected')
             def on_disconnect(client, userdata, rc):
                 print('Ably client disconnected')
-                ably_client.loop_stop()
             def on_message(client0, userdata, message: mqtt.MQTTMessage):
                 self._on_ably_message(json.loads(message.payload.decode('utf-8')))
             ably_client.on_connect = on_connect

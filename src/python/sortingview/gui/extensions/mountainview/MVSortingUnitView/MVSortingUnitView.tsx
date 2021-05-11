@@ -1,7 +1,7 @@
 import { Grid } from "@material-ui/core"
-import { usePlugins } from "labbox"
 import React, { Fragment, FunctionComponent } from 'react'
 import Expandable from "../../../commonComponents/Expandable/Expandable"
+import { usePlugins } from "../../../labbox"
 import { LabboxPlugin, sortingUnitViewPlugins, SortingUnitViewProps } from "../../../pluginInterface"
 
 

@@ -1,10 +1,10 @@
 import { Button, Grid } from '@material-ui/core';
-import { CalculationPool } from 'labbox';
 import React, { FunctionComponent, useState } from 'react';
 import { Sorting } from "../../pluginInterface";
 import ClientSidePlot from '../ClientSidePlot/ClientSidePlot';
 import './localStyles.css';
 import { useSortingInfo } from '../../common/useSortingInfo';
+import { CalculationPool } from '../../labbox';
 
 const isSelected = (query: string, selections: {[key: string]: boolean} = {}) => (selections[query] ? true : false);
 

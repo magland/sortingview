@@ -1,5 +1,5 @@
-import { CalculationPool } from "labbox";
 import { LabboxViewPlugin } from ".";
+import { CalculationPool } from "../labbox";
 import { Recording, RecordingInfo } from "./Recording";
 import { RecordingSelection, RecordingSelectionDispatch } from "./RecordingSelection";
 

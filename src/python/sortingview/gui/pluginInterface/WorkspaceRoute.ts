@@ -1,4 +1,3 @@
-import { ServerInfo } from 'labbox/lib/LabboxProvider'
 import QueryString from 'querystring'
 
 type Page = 'recordings' | 'recording' | 'sorting'
@@ -47,13 +46,12 @@ export interface HistoryInterface {
     push: (x: LocationInterface) => void
 }
 
-export const routeFromLocation = (location: LocationInterface, serverInfo: ServerInfo | null): WorkspaceRoute => {
+export const routeFromLocation = (location: LocationInterface): WorkspaceRoute => {
     const pathList = location.pathname.split('/')
 
     const query = QueryString.parse(location.search.slice(1));
     const workspace = (query.workspace as string) || 'default'
-    const defaultFeedId = serverInfo?.defaultFeedId
-    const workspaceUri = workspace.startsWith('workspace://') ? workspace : (defaultFeedId ? `workspace://${defaultFeedId}/${workspace}` : undefined)
+    const workspaceUri = workspace.startsWith('workspace://') ? workspace : undefined
 
     const page = pathList[1] || 'recordings'
     if (!isWorkspacePage(page)) throw Error(`Invalid page: ${page}`)

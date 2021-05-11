@@ -1,7 +1,6 @@
-import { usePlugins } from 'labbox';
 import React, { useCallback, useEffect, useMemo, useReducer } from 'react';
 import { JSONObject, sha1OfObject, SubfeedHash, SubfeedMessage } from '../../../labbox/kacheryTypes';
-import { parseWorkspaceUri } from '../../../labbox';
+import { parseWorkspaceUri, usePlugins } from '../../../labbox';
 import { useSubfeed } from '../../../labbox';
 import { useRecordingInfo } from '../../../common/useRecordingInfo';
 import { useSortingInfo } from '../../../common/useSortingInfo';

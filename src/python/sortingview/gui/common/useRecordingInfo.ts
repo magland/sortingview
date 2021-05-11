@@ -1,21 +1,8 @@
-import { HitherInterface } from 'labbox';
 import { useEffect, useRef, useState } from "react";
 import { Task } from '../labbox';
 import { useTask } from '../labbox';
 import { useBackendProviderClient } from '../labbox';
 import { Recording, RecordingInfo } from "../pluginInterface";
-
-export const getRecordingInfo = async (a: {recordingObject: any, hither: HitherInterface}): Promise<RecordingInfo> => {
-    const recordingInfoJob = a.hither.createHitherJob(
-        'createjob_get_recording_info',
-        { recording_object: a.recordingObject },
-        {
-            useClientCache: true
-        }
-    )
-    const info = await recordingInfoJob.wait();
-    return info as RecordingInfo;
-}
 
 export const useRecordingInfo = (recordingUri: string): RecordingInfo | undefined => {
     const {returnValue: recordingInfo} = useTask<RecordingInfo>('recording_info.3', {recording_uri: recordingUri})

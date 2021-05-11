@@ -4,18 +4,18 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { LabboxPlugin } from './python/sortingview/gui/pluginInterface';
-import { createExtensionContext, LabboxProvider } from 'labbox'
 import registerExtensions from './python/sortingview/gui/extensions/registerExtensions';
+import { createExtensionContext, ExtensionsSetup } from './python/sortingview/gui/labbox';
 
 const extensionContext = createExtensionContext<LabboxPlugin>()
 registerExtensions(extensionContext).then(() => {
   ReactDOM.render(
     <React.StrictMode>
-      <LabboxProvider
+      <ExtensionsSetup
         extensionContext={extensionContext}
       >
         <App />
-      </LabboxProvider>,
+      </ExtensionsSetup>,
     </React.StrictMode>,
     document.getElementById('root')
   );  

@@ -1,7 +1,7 @@
 import os
 import hither2 as hi
-from ....tasks import job_cache, job_handler
-from ....backend import taskfunction
+from sortingview.tasks import job_cache, job_handler
+from sortingview.backend import taskfunction
 
 @hi.function(
     'get_firing_data', '0.1.2',

@@ -3,8 +3,8 @@ import hither2 as hi
 import numpy as np
 import labbox_ephys as le
 import spikeextractors as se
-from ...backend import taskfunction
-from ...tasks import job_cache, job_handler
+from sortingview.tasks import job_cache, job_handler
+from sortingview.backend import taskfunction
 
 from ._correlograms_phy import compute_correlograms
 
