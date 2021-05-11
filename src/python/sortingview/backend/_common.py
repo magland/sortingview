@@ -1,3 +1,4 @@
+from typing import Union
 import requests
 from google.cloud import storage
 
@@ -8,11 +9,13 @@ def _http_json_post(url: str, obj: dict):
         return r.json()
     finally:
         r.close()
-
-storage_client = storage.Client()
+class _global:
+    storage_client: Union[storage.Client, None] = None
 
 def _upload_to_google_cloud(bucket_name: str, destination_name: str, data: bytes, *, replace=True):
-    bucket = storage_client.bucket(bucket_name)
+    if _global.storage_client is None:
+        _global.storage_client = storage.Client()
+    bucket = _global.storage_client.bucket(bucket_name)
     if not replace:
         if bucket.get_blob(destination_name) is not None:
             return

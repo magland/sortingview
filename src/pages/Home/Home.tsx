@@ -1,15 +1,13 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { FunctionComponent } from "react"
 import ReactMarkdown from 'react-markdown'
-import Markdown from '../../common/Markdown'
-import BackendProviderView from '../../reusable/ApplicationBar/BackendProviderView'
-import ModalWindow from '../../reusable/ApplicationBar/ModalWindow'
-import Hyperlink from '../../reusable/common/Hyperlink'
+import Hyperlink from '../../python/sortingview/gui/commonComponents/Hyperlink/Hyperlink'
 import useRoute, {RoutePath} from '../../route/useRoute'
-import {useModalDialog} from '../../reusable/ApplicationBar/ApplicationBar'
 import introMd from './intro.md.gen'
-import GoogleSignin, { useSignedIn } from '../../reusable/googleSignIn/GoogleSignin'
-import useGoogleSignInClient from '../../reusable/googleSignIn/useGoogleSignInClient'
+import {GoogleSignIn} from '../../python/sortingview/gui/labbox'
+import {useGoogleSignInClient} from '../../python/sortingview/gui/labbox'
+import { SelectBackendProviderDialog, useVisible } from '../../python/sortingview/gui/labbox'
+import Markdown from '../../python/sortingview/gui/commonComponents/Markdown/Markdown'
 
 type Props = {
     
@@ -37,10 +35,7 @@ const Home: FunctionComponent<Props> = () => {
     const [googleSignInVisible, setGoogleSignInVisible] = useState(false)
     const toggleGoogleSignInVisible = useCallback(() => {setGoogleSignInVisible(v => (!v))}, [])
 
-    const {visible: backendProviderVisible, handleOpen: openBackendProvider, handleClose: closeBackendProvider} = useModalDialog()
-    const handleSelectBackend = useCallback(() => {
-        openBackendProvider()
-    }, [openBackendProvider])
+    const {visible: selectBackendProviderVisible, show: showSelectBackendProvider, hide: hideSelectBackendProvider} = useVisible()
 
     const handleSelectWorkspace = useCallback(() => {
         setRoute({routePath: '/selectWorkspace'})
@@ -51,7 +46,7 @@ const Home: FunctionComponent<Props> = () => {
     }, [setRoute])
 
     const googleSignInClient = useGoogleSignInClient()
-    const signedIn = useSignedIn()
+    const signedIn = googleSignInClient?.signedIn
 
     return (
         <span>
@@ -71,7 +66,7 @@ const Home: FunctionComponent<Props> = () => {
                             )
                         }                        
                         {
-                            (googleSignInVisible || signedIn) && <GoogleSignin client={googleSignInClient} />
+                            (googleSignInVisible || signedIn) && <GoogleSignIn client={googleSignInClient} />
                         }
                     </span>
                 )
@@ -80,7 +75,7 @@ const Home: FunctionComponent<Props> = () => {
                 backendUri ? (
                     <span>
                         <p>The selected backend provider is: {backendUri}</p>
-                        <p><Hyperlink onClick={handleSelectBackend}>Select a different backend provider</Hyperlink></p>
+                        <p><Hyperlink onClick={showSelectBackendProvider}>Select a different backend provider</Hyperlink></p>
                         <p><Hyperlink href="https://github.com/magland/sortingview/blob/main/README.md" target="_blank">Instructions for setting up your own backend provider</Hyperlink></p>
                         {
                             workspaceUri ? (
@@ -97,17 +92,10 @@ const Home: FunctionComponent<Props> = () => {
                         }
                     </span>
                 ) : (
-                    <p>Start by <Hyperlink onClick={handleSelectBackend}>selecting a backend provider</Hyperlink></p>
+                    <p>Start by <Hyperlink onClick={showSelectBackendProvider}>selecting a backend provider</Hyperlink></p>
                 )
             }
-            <ModalWindow
-                open={backendProviderVisible}
-                onClose={closeBackendProvider}
-            >
-                <BackendProviderView
-                    onClose={closeBackendProvider}
-                />
-            </ModalWindow>
+            <SelectBackendProviderDialog visible={selectBackendProviderVisible} onClose={hideSelectBackendProvider} />
         </span>
     )
 }

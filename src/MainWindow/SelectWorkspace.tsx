@@ -2,7 +2,6 @@ import { Button, TextField } from '@material-ui/core'
 import React, { useCallback, useEffect, useState } from 'react'
 import { FunctionComponent } from "react"
 import useRoute from '../route/useRoute'
-import ExampleRecordingSortings from './ExampleRecordingSortings'
 import WorkspaceList from './WorkspaceList'
 
 type Props = {
