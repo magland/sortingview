@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import QueryString from 'querystring'
-import useBackendRoute from './useBackendRoute'
 
 
 export type RoutePath = '/home' | '/about' | '/selectWorkspace' | '/workspace' | '/workspace/recording/<rid>' | '/workspace/sorting/<rid>/<sid>' | '/mountainview'
@@ -17,7 +16,7 @@ const useRoute = () => {
     const history = useHistory()
     const query = useMemo(() => (QueryString.parse(location.search.slice(1))), [location.search]);
     const workspaceUri = (query.workspace as string) || undefined
-    const {backendUri, setBackendUri} = useBackendRoute()
+    const backendUri = (query.backend as string) || undefined
     const p = location.pathname
     const routePath: RoutePath = isRoutePath(p) ? p : '/home'
 

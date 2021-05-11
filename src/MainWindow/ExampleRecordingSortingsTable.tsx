@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { FunctionComponent } from "react"
-import Hyperlink from '../reusable/common/Hyperlink'
-import NiceTable from '../reusable/common/NiceTable/NiceTable'
+import Hyperlink from '../python/sortingview/gui/commonComponents/Hyperlink/Hyperlink'
+import NiceTable from '../python/sortingview/gui/commonComponents/NiceTable/NiceTable'
 
 type Props = {
     examples: ExampleRecordingSortingType[]

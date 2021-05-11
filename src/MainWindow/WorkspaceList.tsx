@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import { FunctionComponent } from "react"
-import useTask from '../reusable/backendProviders/tasks/useTask'
+import { useTask } from '../python/sortingview/gui/labbox'
 import ExampleWorkspacesTable from './ExampleWorkspacesTable'
 
 type Props = {
@@ -13,7 +13,7 @@ export type ExampleWorkspaceType = {
 }
 
 const WorkspaceList: FunctionComponent<Props> = ({onWorkspaceSelected}) => {
-    const {returnValue: examples, task} = useTask<ExampleWorkspaceType[]>('example_workspaces.1', {cachebust: '1'})
+    const {returnValue: examples, task} = useTask<ExampleWorkspaceType[]>('example_workspaces.1', {cachebust: '2'})
     const handleExampleSelected = useCallback((ex: ExampleWorkspaceType) => {
         onWorkspaceSelected(ex.workspaceUri)
     }, [onWorkspaceSelected])

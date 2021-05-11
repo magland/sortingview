@@ -1,6 +1,6 @@
 import React from 'react'
 import { FunctionComponent } from "react"
-import useTask from '../reusable/backendProviders/tasks/useTask'
+import { useTask } from '../python/sortingview/gui/labbox'
 import ExampleRecordingSortingsTable, { ExampleRecordingSortingType } from './ExampleRecordingSortingsTable'
 
 type Props = {

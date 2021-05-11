@@ -2,7 +2,7 @@ import React from 'react'
 import { FunctionComponent } from "react"
 import Home from '../pages/Home/Home'
 import WorkspacePage from '../pages/WorkspacePage/WorkspacePage'
-import { useBackendProviderClient } from '../reusable/backendProviders/useBackendProviders'
+import { useBackendProviderClient } from '../python/sortingview/gui/labbox'
 import useRoute from '../route/useRoute'
 import SelectWorkspace from './SelectWorkspace'
 
@@ -18,16 +18,6 @@ const Routes: FunctionComponent<Props> = ({width, height}) => {
     if (routePath === '/about') {
         return <div>About</div>
     }
-    // else if ((routePath === '/mountainview') && (recordingUri) && (sortingUri)) {
-    //     return (
-    //         <MountainView
-    //             recordingUri={recordingUri}
-    //             sortingUri={sortingUri}
-    //             width={width}
-    //             height={height}
-    //         />
-    //     )
-    // }
     else if ((routePath === '/selectWorkspace') && (client)) {
         return (
             <SelectWorkspace

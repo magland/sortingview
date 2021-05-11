@@ -1,14 +1,14 @@
-import React, { useCallback, useEffect, useMemo, useReducer } from 'react'
+import React, { useCallback, useMemo, useReducer } from 'react'
 import { FunctionComponent } from "react"
-import workspaceReducer, { WorkspaceAction } from '../../python/sortingview/extensions/pluginInterface/workspaceReducer'
-import { WorkspaceRoute, WorkspaceRouteAction, } from '../../python/sortingview/extensions/pluginInterface/WorkspaceRoute'
-import WorkspaceView from '../../python/sortingview/extensions/workspaceview/WorkspaceView'
-import { sha1OfObject, SubfeedHash, SubfeedMessage } from '../../reusable/backendProviders/kacheryTypes/kacheryTypes'
-import { parseWorkspaceUri } from '../../reusable/backendProviders/misc'
-import { useBackendProviderClient } from '../../reusable/backendProviders/useBackendProviders'
-import useSubfeed from '../../reusable/backendProviders/useSubfeed'
-import { useSignedIn } from '../../reusable/googleSignIn/GoogleSignin'
+import workspaceReducer, { WorkspaceAction } from '../../python/sortingview/gui/pluginInterface/workspaceReducer'
+import { WorkspaceRoute, WorkspaceRouteAction, } from '../../python/sortingview/gui/pluginInterface/WorkspaceRoute'
+import WorkspaceView from '../../python/sortingview/gui/extensions/workspaceview/WorkspaceView'
+import { sha1OfObject, SubfeedHash, SubfeedMessage } from '../../python/sortingview/gui/labbox/kacheryTypes'
+import { parseWorkspaceUri } from '../../python/sortingview/gui/labbox'
+import { useBackendProviderClient } from '../../python/sortingview/gui/labbox'
+import { useSubfeed } from '../../python/sortingview/gui/labbox'
 import useRoute, { RoutePath } from '../../route/useRoute'
+import { useGoogleSignInClient } from '../../python/sortingview/gui/labbox'
 
 type Props = {
     width: number
@@ -83,7 +83,8 @@ const WorkspacePage: FunctionComponent<Props> = ({width, height}) => {
         }
     }, [setRoute])
 
-    const signedIn = useSignedIn()
+    const googleSignInClient = useGoogleSignInClient()
+    const signedIn = googleSignInClient?.signedIn
 
     const readOnly = (!signedIn)
     const workspaceDispatch2 = readOnly ? undefined : workspaceDispatch
