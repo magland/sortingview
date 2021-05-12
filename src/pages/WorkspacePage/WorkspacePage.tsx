@@ -8,7 +8,7 @@ import { parseWorkspaceUri } from '../../python/sortingview/gui/labbox'
 import { useBackendProviderClient } from '../../python/sortingview/gui/labbox'
 import { useSubfeed } from '../../python/sortingview/gui/labbox'
 import useRoute, { RoutePath } from '../../route/useRoute'
-import { useGoogleSignInClient } from '../../python/sortingview/gui/labbox'
+import useCurrentUserPermissions from '../../python/sortingview/gui/labbox/backendProviders/userCurrentUserPermissions'
 
 type Props = {
     width: number
@@ -45,6 +45,7 @@ const WorkspacePage: FunctionComponent<Props> = ({width, height}) => {
     const {workspaceUri, routePath, setRoute} = useRoute()
     if (!workspaceUri) throw Error('Unexpected: workspaceUri is undefined')
     
+    const {feedId} = parseWorkspaceUri(workspaceUri)
     const {workspace, workspaceDispatch} = useWorkspace(workspaceUri)
     // const [workspaceRoute, workspaceRouteDispatch] = useReducer(workspaceRouteReducer, {page: 'recordings', workspaceUri})
 
@@ -83,10 +84,15 @@ const WorkspacePage: FunctionComponent<Props> = ({width, height}) => {
         }
     }, [setRoute])
 
-    const googleSignInClient = useGoogleSignInClient()
-    const signedIn = googleSignInClient?.signedIn
+    const currentUserPermissions = useCurrentUserPermissions()
 
-    const readOnly = (!signedIn)
+
+    const readOnly = useMemo(() => {
+        if (!currentUserPermissions) return true
+        if (currentUserPermissions.appendToAllFeeds) return false
+        if (((currentUserPermissions.feeds || {})[feedId?.toString() || ''] || {}).append) return false
+        return true
+    }, [currentUserPermissions, feedId])
     const workspaceDispatch2 = readOnly ? undefined : workspaceDispatch
 
     return (

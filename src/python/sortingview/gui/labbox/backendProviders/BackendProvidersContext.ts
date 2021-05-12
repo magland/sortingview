@@ -1,5 +1,4 @@
 import React from 'react'
-import { RegisteredBackendProvider } from './apiInterface'
 import BackendProviderClient from './BackendProviderClient'
 
 export type BackendProviderConfig = {
@@ -9,16 +8,13 @@ export type BackendProviderConfig = {
 }
 
 export type BackendProvidersData = {
-    registeredBackendProviders?: RegisteredBackendProvider[]
     selectedBackendProviderUri?: string
     selectedBackendProviderConfig?: BackendProviderConfig
     selectedBackendProviderClient?: BackendProviderClient
-    refreshRegisteredBackendProviders: () => void
     selectBackendProvider: (uri: string) => void
 }
 
 const dummyComputeEngineInterface = {
-    refreshRegisteredBackendProviders: () => {},
     selectBackendProvider: (uri: string) => {}
 }
 

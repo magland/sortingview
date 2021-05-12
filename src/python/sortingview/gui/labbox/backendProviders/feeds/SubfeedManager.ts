@@ -8,8 +8,8 @@ export class SubfeedSubscription {
     #position = 0
     #onMessageCallbacks: ((subfeedMessages: SubfeedMessage[], messageNumber: number) => void)[] = []
     #isAlive = true
-    constructor(public subfeed: Subfeed, private startPosition: number = 0) {
-        this.#position = startPosition
+    constructor(public subfeed: Subfeed) {
+        this.#position = 0
     }
     public get position() {
         return this.#position
@@ -31,7 +31,11 @@ export class SubfeedSubscription {
     }
     _handleNewMessages() {
         if (!this.#isAlive) return
-        if (this.subfeed.inMemoryMessageCount > this.#position) {
+        // handle negative starting position (to get last messages)
+        if ((this.#position < 0) && (this.subfeed.inMemoryMessageCount >= -this.#position)) {
+            this.#position = this.#position + this.subfeed.inMemoryMessageCount
+        }
+        if ((this.subfeed.inMemoryMessageCount > this.#position) && (this.#position >= 0)) {
             const newMessages: SubfeedMessage[] = []
             for (let i = this.#position; i < this.subfeed.inMemoryMessageCount; i++) {
                 newMessages.push(this.subfeed.inMemoryMessage(i).body.message)
@@ -157,7 +161,7 @@ class SubfeedManager {
             }
         }
     }
-    subscribeToSubfeed(opts: {feedId: FeedId, subfeedHash: SubfeedHash, startPosition: number, onMessages: (subfeedMessages: SubfeedMessage[], messageNumber: number) => void}) {
+    subscribeToSubfeed(opts: {feedId: FeedId, subfeedHash: SubfeedHash, onMessages: (subfeedMessages: SubfeedMessage[], messageNumber: number) => void}) {
         const code = this._subfeedCode(opts.feedId, opts.subfeedHash)
         let s = this.#subfeeds[code]
         if (!s) {
@@ -172,7 +176,7 @@ class SubfeedManager {
             })
         }
         s.lastSubscriptionTimestamp = nowTimestamp()
-        const x = new SubfeedSubscription(s, opts.startPosition)
+        const x = new SubfeedSubscription(s)
         x.onMessages(opts.onMessages)
         x.initialize()
         return x

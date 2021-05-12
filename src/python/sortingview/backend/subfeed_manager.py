@@ -2,6 +2,8 @@ import json
 import time
 from typing import Any, Callable, Dict, List
 import kachery_p2p as kp
+import multiprocessing
+from multiprocessing.connection import Connection
 from .task_manager import _pathify_hash
 from ._common import _upload_to_google_cloud
 
@@ -45,31 +47,74 @@ class SubfeedManager:
         self._subfeeds: Dict[str, Subfeed] = {}
         self._on_publish_message = on_publish_message
         self._google_bucket_name = google_bucket_name
-        self._last_watch_timestamp = 0
+        # self._last_watch_timestamp = 0
+
+
+        pipe_to_parent, pipe_to_child = multiprocessing.Pipe()
+        self._worker_process =  multiprocessing.Process(target=_run_worker, args=(pipe_to_parent,))
+        self._worker_process.start()
+        self._pipe_to_worker = pipe_to_child
+        self._waiting_for_worker_response = False
+
     def subscribe_to_subfeed(self, *, feed_id: str, subfeed_hash: str):
         code = self._get_code(feed_id, subfeed_hash)
         if code in self._subfeeds:
             return
         self._subfeeds[code] = Subfeed(on_publish_message=self._on_publish_message, google_bucket_name=self._google_bucket_name, feed_id=feed_id, subfeed_hash=subfeed_hash)
-    def check_for_new_messages(self):
-        subfeed_watches = {}
-        for k, v in self._subfeeds.items():
-            subfeed_watches[k] = {
-                'feedId': v.feed_id,
-                'subfeedHash': v.subfeed_hash,
-                'position': v.num_messages_reported
-            }
-        ret = kp.watch_for_new_messages(subfeed_watches, wait_msec=100, signed=True)
-        for k, v in self._subfeeds.items():
-            if k in ret:
-                new_messages = ret[k]
-                v.report_new_messages(subfeed_watches[k]['position'], new_messages)
-        self._last_watch_timestamp = time.time()
+        
+        # ret = kp.watch_for_new_messages(subfeed_watches, wait_msec=100, signed=True)
+        # for k, v in self._subfeeds.items():
+        #     if k in ret:
+        #         new_messages = ret[k]
+        #         v.report_new_messages(subfeed_watches[k]['position'], new_messages)
+        # self._last_watch_timestamp = time.time()
+        
     def iterate(self):
-        elapsed = time.time() - self._last_watch_timestamp
-        if elapsed > 3:
-            self.check_for_new_messages()
+        if not self._waiting_for_worker_response:
+            subfeed_watches = {}
+            for k, v in self._subfeeds.items():
+                subfeed_watches[k] = {
+                    'feedId': v.feed_id,
+                    'subfeedHash': v.subfeed_hash,
+                    'position': v.num_messages_reported
+                }
+            if bool(subfeed_watches):
+                self._pipe_to_worker.send(subfeed_watches)
+                self._waiting_for_worker_response = True
+        else:
+            if self._pipe_to_worker.poll():
+                msg = self._pipe_to_worker.recv()
+                subfeed_watches = msg['subfeed_watches']
+                new_messages = msg['new_messages']
+                for k, v in self._subfeeds.items():
+                    if k in new_messages:
+                        v.report_new_messages(subfeed_watches[k]['position'], new_messages[k])
+                self._waiting_for_worker_response = False
 
     def _get_code(self, feed_id: str, subfeed_hash: str):
         return feed_id + ':' + subfeed_hash
+
+def _run_worker(pipe_to_parent: Connection):
+    while True:
+        while pipe_to_parent.poll():
+            x = pipe_to_parent.recv()
+            if isinstance(x, str):
+                if x == 'exit':
+                    return
+                else:
+                    print(x)
+                    raise Exception('Unexpected message in _run_worker')
+            elif isinstance(x, dict):
+                subfeed_watches = x
+                try:
+                    ret = kp.watch_for_new_messages(subfeed_watches, wait_msec=6000, signed=True)
+                except Exception as e:
+                    print('WARNING: problem watching for new messages', e)
+                    ret = {}
+                pipe_to_parent.send({'subfeed_watches': subfeed_watches, 'new_messages': ret})
+            else:
+                print(x)
+                raise Exception('Unexpected message in _run_worker')    
+        time.sleep(0.1)
+
     

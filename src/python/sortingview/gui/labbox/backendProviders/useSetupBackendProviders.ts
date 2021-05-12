@@ -4,42 +4,14 @@ import createPubsubClient from "../pubsub/createPubsubClient"
 import BackendProviderClient from "./BackendProviderClient"
 import { BackendProviderConfig, BackendProvidersData } from "./BackendProvidersContext"
 import axios from 'axios'
-import { RegisteredBackendProvider, RegisterRequest, RegistrationResult } from "./apiInterface"
-import { sleepMsec } from "../kacheryTypes"
+import { RegisterRequest, RegistrationResult } from "./apiInterface"
 import useGoogleSignInClient from "../googleSignIn/useGoogleSignInClient"
 import useRoute from "../../../../../route/useRoute"
 
 // const defaultBackendProviderUri = process.env.REACT_APP_DEFAULT_BACKEND_PROVIDER || undefined
 
-const useSetupRegisteredBackendProviders = () => {
-    const [registeredBackendProviders, setRegisteredBackendProviders] = useState<RegisteredBackendProvider[] | undefined>(undefined)
-
-    const refreshRegisteredBackendProviders = useCallback(() => {
-        ;(async () => {
-            setRegisteredBackendProviders(undefined)
-            await axios.post('/api/probeBackendProviders', {}, {responseType: 'json'})
-            // give some time for backend providers to respond to probe
-            await sleepMsec(2000)
-            const r = await axios.post('/api/registeredBackendProviders', {}, {responseType: 'json'})
-            if (r.data) {
-                const d: RegisteredBackendProvider[] = r.data
-                setRegisteredBackendProviders(d)
-            }
-        })()
-    }, [])
-
-    
-    useEffect(() => {
-        // called only once
-        refreshRegisteredBackendProviders()
-    }, [refreshRegisteredBackendProviders])
-
-    return {registeredBackendProviders, refreshRegisteredBackendProviders}
-}
-
 const useSetupBackendProviders = (): BackendProvidersData => {
     const {backendUri, setRoute} = useRoute()
-    const {registeredBackendProviders, refreshRegisteredBackendProviders} = useSetupRegisteredBackendProviders()
     const [registration, setRegistration] = useState<RegistrationResult | null | undefined>(undefined)
     const googleSignInClient = useGoogleSignInClient()
 
@@ -78,13 +50,11 @@ const useSetupBackendProviders = (): BackendProvidersData => {
     }, [setRoute, setRegistration])
     
     return useMemo((): BackendProvidersData => ({
-        registeredBackendProviders,
         selectedBackendProviderUri: backendUri,
         selectedBackendProviderConfig,
         selectedBackendProviderClient,
-        refreshRegisteredBackendProviders,
         selectBackendProvider
-    }), [registeredBackendProviders, backendUri, selectedBackendProviderConfig, selectedBackendProviderClient, refreshRegisteredBackendProviders, selectBackendProvider])
+    }), [backendUri, selectedBackendProviderConfig, selectedBackendProviderClient, selectBackendProvider])
 }
 
 export default useSetupBackendProviders
