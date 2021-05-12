@@ -2,7 +2,7 @@ import time
 import json
 import uuid
 import hashlib
-from typing import List, Union, cast
+from typing import Dict, List, Union, cast
 import kachery_p2p as kp
 from ._verify_oauth2_token import _verify_oauth2_token
 
@@ -14,7 +14,7 @@ from ._common import _http_json_post, _upload_to_google_cloud
 import paho.mqtt.client as mqtt
 
 class Backend:
-    def __init__(self, *, google_bucket_name: str, app_url: str, label: str):
+    def __init__(self, *, google_bucket_name: str, app_url: str, label: str, admin_user_id: Union[str, None]=None):
         self._google_bucket_name = google_bucket_name
         self._app_url = app_url
         self._label = label
@@ -22,10 +22,11 @@ class Backend:
         self._registration_timestamp = 0
         self._last_registration_attempt_timestamp = 0
         self._last_report_alive_timestamp = 0
-        self._last_update_authorized_users_timestamp = 0
+        self._last_update_user_permissions_timestamp = 0
         self._ably_client: Union[mqtt.Client, None] = None
         self._secret: Union[str, None] = None
-        self._authorized_users: List[str] = []
+        self._user_permissions: Dict[str, dict] = {}
+        self._admin_user_id = admin_user_id
         def on_publish_message(msg):
             if self._registration is None:
                 print('WARNING: unable to publish message. Registration is None')
@@ -59,20 +60,20 @@ class Backend:
             self._renew_registration(report_only=True)
 
         # update authorized users
-        elapsed_since_update_authorized_users = time.time() - self._last_update_authorized_users_timestamp
-        if elapsed_since_update_authorized_users > 20:
-            self._update_authorized_users()
+        elapsed_since_update_user_permissions = time.time() - self._last_update_user_permissions_timestamp
+        if elapsed_since_update_user_permissions > 20:
+            self._update_user_permissions()
         
         self._task_manager.iterate()
         self._subfeed_manager.iterate()
     def cleanup(self):
         self._renew_registration(report_only=True, unregister=True)
     
-    def _update_authorized_users(self):
-        x = kp.get('_sortingview_authorized_users')
+    def _update_user_permissions(self):
+        x = kp.get('_sortingview_user_permissions')
         if x is None:
-            x = []
-        self._authorized_users = x
+            x = {}
+        self._user_permissions = x
         
     def _registration_age(self):
         return time.time() - self._registration_timestamp
@@ -80,9 +81,9 @@ class Backend:
         id_token = message.get('idToken', None)
         if id_token is not None:
             id_info = _verify_oauth2_token(cast(str, id_token).encode('utf-8'))
-            user_email = id_info['email']
+            auth_user_id = id_info['email']
         else:
-            user_email = None
+            auth_user_id = None
         type0 = message.get('type', None)
         if type0 == 'initiateTask':
             # export type TaskQueueMessage = {
@@ -130,16 +131,28 @@ class Backend:
             if feed_id is None: return
             if subfeed_hash is None: return
             if messages is None: return
-            if not self._user_can_append_to_subfeed(user_email, feed_id, subfeed_hash):
+            if not self._user_can_append_to_subfeed(auth_user_id, feed_id, subfeed_hash):
                 return
             sf = kp.load_subfeed(f'feed://{feed_id}/~{subfeed_hash}')
             sf.append_messages(messages)
-            self._subfeed_manager.check_for_new_messages() # to this so we get a quick update response for the subscribing clients (including the submitter)
+            # self._subfeed_manager.check_for_new_messages() # to this so we get a quick update response for the subscribing clients (including the submitter)
         elif type0 == 'probeBackendProviders':
             app_name = message.get('appName', None)
             if app_name != 'sortingview':
                 return
             self._renew_registration(report_only=True, unregister=False)
+        elif type0 == 'getUserPermissions':
+            user_id = message.get('userId', None)
+            if user_id is None: return
+            if not self._user_can_get_user_permissions(auth_user_id, user_id):
+                return
+            perm = self._get_user_permissions(user_id)
+            msg = {
+                'type': 'userPermissions',
+                'userId': user_id,
+                'permissions': perm
+            }
+            self._ably_client.publish(self._registration['serverChannelName'], json.dumps(msg).encode('utf-8'), qos=1)
     def _publish_to_task_status(self, msg: dict):
         self._ably_client.publish(self._registration['serverChannelName'], json.dumps(msg).encode('utf-8'), qos=1)
     def _renew_registration(self, report_only=False, unregister=False):
@@ -205,8 +218,26 @@ class Backend:
             self._registration = registration
             self._registration_timestamp = time.time()
 
-    def _user_can_append_to_subfeed(self, user_email: Union[str, None], feed_id: str, subfeed_hash: str):
-        return user_email in self._authorized_users
+    def _user_can_append_to_subfeed(self, auth_user_id: Union[str, None], feed_id: str, subfeed_hash: str):
+        if auth_user_id is None: return False
+        perm = self._get_user_permissions(auth_user_id)
+        if perm.get('appendToAllFeeds', False): return True
+        f = perm.get('feeds', {})
+        if feed_id in f:
+            if f[feed_id].get('append', False): return True
+        return False
+    def _get_user_permissions(self, user_id: str) -> dict:
+        return self._user_permissions.get(user_id, {})
+    def _user_can_get_user_permissions(self, auth_user_id: Union[str, None], user_id: str):
+        if auth_user_id is None: return False
+        if auth_user_id == user_id: return True
+        if self._user_is_admin(auth_user_id): return True
+        return False
+    def _user_is_admin(self, user_id: str):
+        p = self._get_user_permissions(user_id)
+        if p.get('admin', False): return True
+        if (self._admin_user_id is not None) and (user_id == self._admin_user_id): return True
+        return False
 
 def _random_id():
     return str(uuid.uuid4())[-12:]

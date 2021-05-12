@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer, useRef } from "react"
+import { useCallback, useEffect, useReducer, useRef, useState } from "react"
 import { FeedId, SubfeedHash, SubfeedMessage } from "../kacheryTypes"
 import { useBackendProviderClient } from "./useBackendProviders"
 import { SubfeedSubscription } from './feeds/SubfeedManager'
@@ -20,6 +20,32 @@ const messagesReducer = (state: SubfeedMessage[], action: MessagesAction) => {
     else return state
 }
 
+export const useSubfeedLastMessage = (a: {feedId: FeedId | undefined, subfeedHash: SubfeedHash | undefined, onMessages?: (messages: SubfeedMessage[]) => void}) => {
+    const [lastMessage, setLastMessage] = useState<SubfeedMessage | undefined>(undefined)
+    const { feedId, subfeedHash } = a
+    const client = useBackendProviderClient()
+    useEffect(() => {
+        let subscription: SubfeedSubscription | undefined = undefined
+        if ((client) && (feedId) && (subfeedHash)) {
+            subscription = client.subscribeToSubfeed({feedId, subfeedHash, onMessages: (msgs, messageNumber) => {
+                if (msgs.length > 0) {
+                    setLastMessage(msgs[msgs.length - 1])
+                }
+            }})
+        }
+        return () => {
+            subscription && subscription.cancel()
+        }
+    }, [client, feedId, subfeedHash])
+    const appendMessage = useCallback((message: SubfeedMessage) => {
+        if (!feedId) return
+        if (!subfeedHash) return
+        if (!client) return
+        client.appendMessagesToSubfeed({feedId, subfeedHash, messages: [message]})
+    }, [feedId, subfeedHash, client])
+    return {lastMessage, appendMessage}
+}
+
 export const useSubfeed = (a: {feedId: FeedId | undefined, subfeedHash: SubfeedHash | undefined, onMessages?: (messages: SubfeedMessage[]) => void}) => {
     const { feedId, subfeedHash, onMessages } = a
     const client = useBackendProviderClient()
@@ -29,7 +55,7 @@ export const useSubfeed = (a: {feedId: FeedId | undefined, subfeedHash: SubfeedH
     useEffect(() => {
         let subscription: SubfeedSubscription | undefined = undefined
         if ((client) && (feedId) && (subfeedHash)) {
-            subscription = client.subscribeToSubfeed({feedId, subfeedHash, startPosition: 0, onMessages: (msgs, messageNumber) => {
+            subscription = client.subscribeToSubfeed({feedId, subfeedHash, onMessages: (msgs, messageNumber) => {
                 messagesDispatch({type: 'appendMessages', messages: msgs, messageNumber})
             }})
         }
