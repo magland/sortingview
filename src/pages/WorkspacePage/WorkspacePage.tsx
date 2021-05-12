@@ -8,7 +8,6 @@ import { parseWorkspaceUri } from '../../python/sortingview/gui/labbox'
 import { useBackendProviderClient } from '../../python/sortingview/gui/labbox'
 import { useSubfeed } from '../../python/sortingview/gui/labbox'
 import useRoute, { RoutePath } from '../../route/useRoute'
-import { useGoogleSignInClient } from '../../python/sortingview/gui/labbox'
 import useCurrentUserPermissions from '../../python/sortingview/gui/labbox/backendProviders/userCurrentUserPermissions'
 
 type Props = {

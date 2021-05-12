@@ -2,7 +2,7 @@ import time
 import json
 import uuid
 import hashlib
-from typing import Dict, List, Union, cast
+from typing import Callable, Dict, List, Union, cast
 import kachery_p2p as kp
 from ._verify_oauth2_token import _verify_oauth2_token
 
@@ -12,6 +12,42 @@ from .task_manager import TaskManager
 from .taskfunction import find_taskfunction
 from ._common import _http_json_post, _upload_to_google_cloud
 import paho.mqtt.client as mqtt
+
+class AblyClient:
+    def __init__(self, on_ably_message: Callable):
+        self._on_ably_message = on_ably_message
+        self._client: Union[None, mqtt.Client] = None
+    def reconnect(self, client_channel_name: str, token_details: dict):
+        old_client = self._client
+        self._client = mqtt.Client()
+        client = self._client
+        client.username_pw_set(token_details['token'], '')
+        client.tls_set()
+        def on_connect(client, userdata, flags, rc):
+            client.subscribe(client_channel_name)
+            print('Ably client connected')
+        def on_disconnect(client, userdata, rc):
+            if self._client == client:
+                print('Ably client disconnected')
+        def on_message(client0, userdata, message: mqtt.MQTTMessage):
+            self._on_ably_message(json.loads(message.payload.decode('utf-8')))
+        client.on_connect = on_connect
+        client.on_disconnect = on_disconnect
+        client.on_message = on_message
+        client.connect('mqtt.ably.io', port=8883, keepalive=15)
+        client.loop_start()
+
+        if old_client is not None:
+            old_client.loop_stop()
+            old_client.disconnect()
+    def publish(self, channel: str, msg, qos: int):
+        if self._client:
+            self._client.publish(channel, msg, qos=qos)
+    def is_connected(self) -> bool:
+        if self._client:
+            return self._client.is_connected()
+        else:
+            return False
 
 class Backend:
     def __init__(self, *, google_bucket_name: str, app_url: str, label: str, admin_user_id: Union[str, None]=None):
@@ -23,16 +59,15 @@ class Backend:
         self._last_registration_attempt_timestamp = 0
         self._last_report_alive_timestamp = 0
         self._last_update_user_permissions_timestamp = 0
-        self._ably_client: Union[mqtt.Client, None] = None
         self._secret: Union[str, None] = None
         self._user_permissions: Dict[str, dict] = {}
         self._admin_user_id = admin_user_id
+        def on_ably_message(msg):
+            self._on_ably_message(msg)
+        self._ably_client = AblyClient(on_ably_message=on_ably_message)
         def on_publish_message(msg):
             if self._registration is None:
                 print('WARNING: unable to publish message. Registration is None')
-                return
-            if self._ably_client is None:
-                print('WARNING: unable to publish message. Ably client is None')
                 return
             if not self._ably_client.is_connected():
                 print('WARNING: unable to publish message. Ably client is not connected')
@@ -42,22 +77,22 @@ class Backend:
         self._task_manager = TaskManager(on_publish_message=on_publish_message, google_bucket_name=google_bucket_name)
         self._subfeed_manager = SubfeedManager(on_publish_message=on_publish_message, google_bucket_name=google_bucket_name)
     def iterate(self):
-
         # Check if we need to renew registration
         renew_registration = False
         if (self._registration is None) or (self._registration_age() > 60 * 10):
             renew_registration = True
-        elif (self._ably_client is not None) and (not self._ably_client.is_connected()):
+        elif not self._ably_client.is_connected():
             renew_registration = True
         if renew_registration:
             elapsed_since_last_attempt = time.time() - self._last_registration_attempt_timestamp
             if elapsed_since_last_attempt > 15:
                 self._renew_registration()
         
+        
         # Check if we need to report alive
-        elapsed_since_last_report = min(time.time() - self._last_report_alive_timestamp, time.time() - self._last_report_alive_timestamp)
-        if elapsed_since_last_report > 60:
-            self._renew_registration(report_only=True)
+        elapsed_since_last_report_alive = min(time.time() - self._last_report_alive_timestamp, time.time() - self._last_report_alive_timestamp)
+        if elapsed_since_last_report_alive > 60:
+            self._report_alive()
 
         # update authorized users
         elapsed_since_update_user_permissions = time.time() - self._last_update_user_permissions_timestamp
@@ -67,7 +102,7 @@ class Backend:
         self._task_manager.iterate()
         self._subfeed_manager.iterate()
     def cleanup(self):
-        self._renew_registration(report_only=True, unregister=True)
+        pass
     
     def _update_user_permissions(self):
         x = kp.get('_sortingview_user_permissions')
@@ -136,11 +171,8 @@ class Backend:
             sf = kp.load_subfeed(f'feed://{feed_id}/~{subfeed_hash}')
             sf.append_messages(messages)
             # self._subfeed_manager.check_for_new_messages() # to this so we get a quick update response for the subscribing clients (including the submitter)
-        elif type0 == 'probeBackendProviders':
-            app_name = message.get('appName', None)
-            if app_name != 'sortingview':
-                return
-            self._renew_registration(report_only=True, unregister=False)
+        elif type0 == 'probe':
+            self._report_alive()
         elif type0 == 'getUserPermissions':
             user_id = message.get('userId', None)
             if user_id is None: return
@@ -153,70 +185,57 @@ class Backend:
                 'permissions': perm
             }
             self._ably_client.publish(self._registration['serverChannelName'], json.dumps(msg).encode('utf-8'), qos=1)
+    def _report_alive(self):
+        if self._ably_client is None:
+            return
+        self._last_report_alive_timestamp = time.time()
+        msg = {
+            'type': 'reportAlive',
+        }
+        if self._registration is not None:
+            self._ably_client.publish(self._registration['serverChannelName'], json.dumps(msg).encode('utf-8'), qos=1)
     def _publish_to_task_status(self, msg: dict):
         self._ably_client.publish(self._registration['serverChannelName'], json.dumps(msg).encode('utf-8'), qos=1)
-    def _renew_registration(self, report_only=False, unregister=False):
-        if not report_only:
-            self._last_registration_attempt_timestamp = time.time()
-        else:
-            self._last_report_alive_timestamp = time.time()
+    def _renew_registration(self):
+        self._last_registration_attempt_timestamp = time.time()
         google_bucket_base_url = f'https://storage.googleapis.com/{self._google_bucket_name}'
         config_object_name = f'sortingview-backends/{self._label}.json'
-        if not report_only:
-            self._secret = _random_id()
-            config = {
-                'label': self._label,
-                'objectStorageUrl': google_bucket_base_url,
-                'secretSha1': _sha1_of_string(self._secret)
-            }
-            _upload_to_google_cloud(self._google_bucket_name, config_object_name, json.dumps(config).encode('utf-8'))
+        self._secret = _random_id()
+        config = {
+            'label': self._label,
+            'objectStorageUrl': google_bucket_base_url,
+            'secretSha1': _sha1_of_string(self._secret),
+            'timestamp': time.time()
+        }
+        _upload_to_google_cloud(self._google_bucket_name, config_object_name, json.dumps(config).encode('utf-8'))
 
 
         # export type RegisterRequest = {
-        #     type: 'registerBackendProvider' | 'unregisterBackendProvider' | 'registerClient'
+        #     type: 'registerBackendProvider' | 'registerClient'
         #     appName: 'sortingview',
         #     backendProviderUri: string
         #     secret?: string
-        #     reportOnly?: string
         # }
         registration = _http_json_post(f'{self._app_url}/api/register', {
-            'type': 'registerBackendProvider' if not unregister else 'unregisterBackendProvider',
+            'type': 'registerBackendProvider',
             'appName': 'sortingview',
             'backendProviderUri': f'gs://{self._google_bucket_name}/{config_object_name}',
-            'secret': self._secret,
-            'reportOnly': report_only
+            'secret': self._secret
         })
 
         print(f'')
         print(f'==========================================================================================')
         print(f'Compute engine URI: gs://{self._google_bucket_name}/{config_object_name}')
         print(f'')
-        if not report_only:
-            client_channel_name = registration['clientChannelName']
-            server_channel_name = registration['serverChannelName']
-            token_details = registration['tokenDetails']
-            ably_client = mqtt.Client()
-            ably_client.username_pw_set(token_details['token'], '')
-            ably_client.tls_set()
-            def on_connect(client, userdata, flags, rc):
-                old_ably_client = self._ably_client
-                self._ably_client = ably_client
-                if old_ably_client is not None:
-                    old_ably_client.disconnect()
-                ably_client.subscribe(client_channel_name)
-                ably_client.subscribe('probe')
-                print('Ably client connected')
-            def on_disconnect(client, userdata, rc):
-                print('Ably client disconnected')
-            def on_message(client0, userdata, message: mqtt.MQTTMessage):
-                self._on_ably_message(json.loads(message.payload.decode('utf-8')))
-            ably_client.on_connect = on_connect
-            ably_client.on_disconnect = on_disconnect
-            ably_client.on_message = on_message
-            ably_client.connect('mqtt.ably.io', port=8883, keepalive=15)
-            ably_client.loop_start()
-            self._registration = registration
-            self._registration_timestamp = time.time()
+        client_channel_name = registration['clientChannelName']
+        server_channel_name = registration['serverChannelName']
+        token_details = registration['tokenDetails']
+
+        self._registration = registration
+        self._registration_timestamp = time.time()
+
+        self._ably_client.reconnect(client_channel_name=client_channel_name, token_details=token_details)
+        
 
     def _user_can_append_to_subfeed(self, auth_user_id: Union[str, None], feed_id: str, subfeed_hash: str):
         if auth_user_id is None: return False

@@ -1,7 +1,7 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import Ably from 'ably'
 import axios from 'axios'
-import { isRegisterRequest, RegisterMessage, RegistrationResult } from './apiInterface'
+import { isRegisterRequest, RegistrationResult } from './apiInterface'
 import { sha1OfString } from './common/misc'
 
 const requestAblyToken = async (opts: {ablyRestClient: Ably.Rest, capability: any}) => {
@@ -70,12 +70,12 @@ module.exports = (req: VercelRequest, res: VercelResponse) => {
     }
 
     ;(async () => {
-        const { backendProviderUri, type, secret, reportOnly } = request
+        const { backendProviderUri, type, secret } = request
         const url0 = urlFromUri(backendProviderUri)
         const response = await axios.get(cacheBust(url0), {responseType: 'json'})
         const backendProviderConfig: {label: string, objectStorageUrl: string, secretSha1: string} = response.data
 
-        if ((request.type === 'registerBackendProvider') || (request.type === 'unregisterBackendProvider')) {
+        if (request.type === 'registerBackendProvider') {
             const {secretSha1} = backendProviderConfig
             if (!secret) {
                 throw Error(`Missing secret.`)
@@ -95,42 +95,24 @@ module.exports = (req: VercelRequest, res: VercelResponse) => {
         let tokenDetails: any | null
         const clientChannelName = 'client_' + backendProviderUriHash.toString()
         const serverChannelName = 'server_' + backendProviderUriHash.toString()
-        if ((!reportOnly) && (type !== 'unregisterBackendProvider')) {
-            const capability: {[key: string]: string[]} = {}
-            
-            if (type === 'registerBackendProvider') {
-                capability[clientChannelName] = ["history", "subscribe"] // order matters i think
-            }
-            else if (type === 'registerClient') {
-                capability[clientChannelName] = ["publish"] // order matters i think
-            }
-
-            if (type === 'registerBackendProvider') {
-                capability[serverChannelName] = ["publish"] // order matters i think
-                capability['probe'] = ["history", "subscribe"] // order matters i think
-            }
-            else if (type === 'registerClient') {
-                capability[serverChannelName] = ["history", "subscribe"] // order matters i think
-            }
-
-            tokenDetails = await requestAblyToken({ablyRestClient: ably, capability})
+        const capability: {[key: string]: string[]} = {}
+        
+        if (type === 'registerBackendProvider') {
+            capability[clientChannelName] = ["history", "subscribe"] // order matters i think
         }
-        else {
-            tokenDetails = null
+        else if (type === 'registerClient') {
+            capability[clientChannelName] = ["publish"] // order matters i think
         }
 
-        if ((type === 'registerBackendProvider') || (type === 'unregisterBackendProvider')) {
-            const registerChannel = ably.channels.get('register')
-            // important to await because serverless may end before data is sent
-            const m: RegisterMessage = {
-                type,
-                backendProviderUri,
-                appName: 'sortingview',
-                label: backendProviderConfig.label,
-                objectStorageUrl: backendProviderConfig.objectStorageUrl
-            }
-            await publishMessageAsync(registerChannel, m)
+        if (type === 'registerBackendProvider') {
+            capability[serverChannelName] = ["publish"] // order matters i think
+            capability['probe'] = ["history", "subscribe"] // order matters i think
         }
+        else if (type === 'registerClient') {
+            capability[serverChannelName] = ["history", "subscribe"] // order matters i think
+        }
+
+        tokenDetails = await requestAblyToken({ablyRestClient: ably, capability})
         
         const r: RegistrationResult = {
             backendProviderConfig,
