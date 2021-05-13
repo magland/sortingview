@@ -29,7 +29,7 @@
             "presentation": {
                 "clear": true
             },
-            "detail": "Install sortingview in development mode using `pip install -e .`"
+            "detail": "Install {{ projectName }} in development mode using `pip install -e .`"
         },
         {
             "label": "Install git hooks",

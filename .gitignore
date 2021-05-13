@@ -1,3 +1,5 @@
+devel/start-backend
+.vscode/settings.json
 .env.development
 *.egg-info
 __pycache__

@@ -1,6 +1,7 @@
 import { IconButton } from '@material-ui/core';
 import { Storage } from '@material-ui/icons';
 import React, { FunctionComponent, useCallback, useMemo } from 'react';
+import useRoute from '../../../../../route/useRoute';
 
 type Props = {
     onOpen: () => void
@@ -8,8 +9,9 @@ type Props = {
 }
 
 const BackendProviderControl: FunctionComponent<Props> = ({ onOpen, color }) => {
+    const {backendUri} = useRoute()
     const { icon, title } = useMemo(() => {
-        return {icon: <Storage />, title: 'Configure backend provider'}
+        return {icon: <Storage />, title: backendUri ? `Backend: ${backendUri}` : 'Configure backend provider'}
     }, [])
 
     const handleClick = useCallback(() => {

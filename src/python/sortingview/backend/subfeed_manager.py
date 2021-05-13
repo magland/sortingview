@@ -72,7 +72,9 @@ class SubfeedManager:
     def iterate(self):
         if not self._waiting_for_worker_response:
             subfeed_watches = {}
-            for k, v in self._subfeeds.items():
+            codes = list(self._subfeeds.keys())
+            for k in codes:
+                v = self._subfeeds[k]
                 subfeed_watches[k] = {
                     'feedId': v.feed_id,
                     'subfeedHash': v.subfeed_hash,
@@ -86,7 +88,9 @@ class SubfeedManager:
                 msg = self._pipe_to_worker.recv()
                 subfeed_watches = msg['subfeed_watches']
                 new_messages = msg['new_messages']
-                for k, v in self._subfeeds.items():
+                codes = list(self._subfeeds.keys())
+                for k in codes:
+                    v = self._subfeeds[k]
                     if k in new_messages:
                         v.report_new_messages(subfeed_watches[k]['position'], new_messages[k])
                 self._waiting_for_worker_response = False
