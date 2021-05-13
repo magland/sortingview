@@ -41,7 +41,10 @@ const BackendProviderSection: FunctionComponent<Props> = ({onSelectBackendProvid
                         <p><Hyperlink style={hyperlinkStyle} onClick={showCustomBackendInstructions}>Use your own backend provider</Hyperlink></p>
                     </span>
                 ) : (
-                    <span>Start by selecting a <Hyperlink style={hyperlinkStyle} onClick={onSelectBackendProvider}>backend provider</Hyperlink></span>
+                    <span>
+                        <p>Start by selecting a <Hyperlink style={hyperlinkStyle} onClick={onSelectBackendProvider}>backend provider</Hyperlink></p>
+                        <p><Hyperlink style={hyperlinkStyle} onClick={showCustomBackendInstructions}>Or use your own backend provider</Hyperlink></p>
+                    </span>
                 )
             }
             {/* <p><Hyperlink style={hyperlinkStyle} href="https://github.com/magland/sortingview/blob/main/README.md" target="_blank">Instructions for setting up your own backend provider</Hyperlink></p> */}

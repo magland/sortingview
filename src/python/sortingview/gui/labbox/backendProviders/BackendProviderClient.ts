@@ -32,7 +32,7 @@ class BackendProviderClient {
         return this.#subfeedManager.appendMessagesToSubfeed(opts)
     }
     async runTaskAsync<ReturnType>(functionId: string, kwargs: {[key: string]: any}) {
-        return runTaskAsync<ReturnType>(this, functionId, kwargs)
+        return await runTaskAsync<ReturnType>(this, functionId, kwargs)
     }
     public get allTasks() {
         return this.#taskManager.allTasks
@@ -53,7 +53,7 @@ class BackendProviderClient {
     }
 }
 
-const runTaskAsync = async <ReturnType>(client: BackendProviderClient, functionId: string, kwargs: {[key: string]: any}) => {
+const runTaskAsync = async <ReturnType>(client: BackendProviderClient, functionId: string, kwargs: {[key: string]: any}): Promise<ReturnType> => {
     const task = client.initiateTask<ReturnType>(functionId, kwargs)
     if (!task) throw Error('Unable to initiate task')
     return new Promise((resolve, reject) => {
@@ -62,7 +62,12 @@ const runTaskAsync = async <ReturnType>(client: BackendProviderClient, functionI
             if (complete) return
             if (task.status === 'finished') {
                 complete = true
-                resolve(task.returnValue)
+                const r = task.returnValue
+                if (!r) {
+                    reject(new Error('Unexpected, result is null.'))
+                    return
+                }
+                resolve(r)
             }
             else if (task.status === 'error') {
                 complete = true
