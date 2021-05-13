@@ -2,19 +2,20 @@ import React, { FunctionComponent } from 'react';
 
 type Props = {
     onClick?: () => void
-    color?: string
     href?: string
     target?: string
+    style?: React.CSSProperties
 }
 
-const Hyperlink: FunctionComponent<Props> = ({ color, onClick, href, target, children }) => {
-    let style0 = {
-        color: color || 'gray',
+const Hyperlink: FunctionComponent<Props> = ({ style={}, onClick, href, target, children }) => {
+    let style0: React.CSSProperties = {
+        color: 'gray',
         cursor: 'pointer',
-        textDecoration: 'underline'
+        textDecoration: 'underline',
+        ...style
     };
     return (
-        <span>
+        <span className="Hyperlink">
             {
                 href ? (
                     <a href={href} target={target}>{children}</a>

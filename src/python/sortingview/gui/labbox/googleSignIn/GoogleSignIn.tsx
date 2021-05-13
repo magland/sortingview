@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { FunctionComponent } from "react";
 import ReactGoogleButton from 'react-google-button'
 import GoogleSignInClient from './GoogleSignInClient';
@@ -10,19 +10,14 @@ type Props = {
 
 export const useSignedIn = () => {
     const signInClient = useGoogleSignInClient()
-    const [updateCode, setUpdateCode] = useState<number>(0)
+    const [, setUpdateCode] = useState<number>(0)
     const incrementUpdateCode = useCallback(() => {setUpdateCode(c => (c+1))}, [])
-    const signedIn = useMemo(() => {
-        if (updateCode < 0) console.warn('Force dependency on update code')
-        if (!signInClient) return false
-        return signInClient.signedIn
-    }, [signInClient, updateCode])
     useEffect(() => {
         signInClient?.onSignedInChanged(() => {
             incrementUpdateCode()
         })
     }, [signInClient, incrementUpdateCode])
-    return signedIn
+    return signInClient?.signedIn
 }
 
 const GoogleSignIn: FunctionComponent<Props> = ({client}) => {

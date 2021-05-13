@@ -1,10 +1,14 @@
 const hardCodedBackendProviderItems: BackendItem[] = [
-    // {
-    //     label: 'cog',
-    //     uri: 'gs://surfaceview/sortingview-backends/cog.json',
-    //     lastUsed: 0
-    // }
 ]
+
+const MAIN_BACKEND_PROVIDER_URI = process.env.REACT_APP_MAIN_BACKEND_PROVIDER_URI || ''
+if (MAIN_BACKEND_PROVIDER_URI) {
+    hardCodedBackendProviderItems.push({
+        label: 'default',
+        uri: MAIN_BACKEND_PROVIDER_URI,
+        lastUsed: 0
+    })
+}
 
 export type BackendItem = {
     label: string

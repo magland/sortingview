@@ -5,21 +5,21 @@ import SubfeedManager from "./feeds/SubfeedManager";
 import { FeedId, SubfeedHash, SubfeedMessage } from "../kacheryTypes";
 import TaskManager from "./tasks/TaskManager";
 import { TaskStatus } from "./tasks/Task";
-import PermissionsManager from "./PermissionsManager";
+import BackendInfoManager from "./BackendInfoManager";
 
 class BackendProviderClient {
     #taskManager: TaskManager
     #subfeedManager: SubfeedManager
-    #permissionsManager: PermissionsManager
+    #backendInfoManager: BackendInfoManager
     constructor(private clientChannel: PubsubChannel, private serverChannel: PubsubChannel, private objectStorageClient: ObjectStorageClient, private googleSignInClient: GoogleSignInClient | undefined) {
         this.#taskManager = new TaskManager(clientChannel, objectStorageClient, googleSignInClient)
         this.#subfeedManager = new SubfeedManager(clientChannel, objectStorageClient, googleSignInClient)
-        this.#permissionsManager = new PermissionsManager(clientChannel, googleSignInClient)
+        this.#backendInfoManager = new BackendInfoManager(clientChannel, googleSignInClient)
         serverChannel.subscribe((x: PubsubMessage) => {
             const msg = x.data
             this.#taskManager.processServerMessage(msg)
             this.#subfeedManager.processServerMessage(msg)
-            this.#permissionsManager.processServerMessage(msg)
+            this.#backendInfoManager.processServerMessage(msg)
         })
     }
     initiateTask<ReturnType>(functionId: string, kwargs: {[key: string]: any}) {
@@ -40,10 +40,16 @@ class BackendProviderClient {
     public get currentUserPermissions() {
         const userId = this.googleSignInClient ? this.googleSignInClient.userId : null
         if (!userId) return null
-        return this.#permissionsManager.getPermissions(userId)
+        return this.#backendInfoManager.getPermissions(userId)
+    }
+    public get backendPythonProjectVersion() {
+        return this.#backendInfoManager.backendPythonProjectVersion
     }
     onCurrentUserPermissionsChanged(callback: () => void) {
-        this.#permissionsManager.onCurrentUserPermissionsChanged(callback)
+        this.#backendInfoManager.onCurrentUserPermissionsChanged(callback)
+    }
+    onBackendInfoChanged(callback: () => void) {
+        this.#backendInfoManager.onBackendInfoChanged(callback)
     }
 }
 

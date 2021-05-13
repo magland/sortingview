@@ -64,7 +64,6 @@ const BackendProvidersTable: FunctionComponent<Props> = ({selectedBackendProvide
         }
     }, [onSelectBackendProvider])
     const handleRefresh = useCallback(() => {
-        if (!client) return
         ;(async () => {
             const newBackendProviderStatuses = {...backendProviderStatuses}
             let somethingChanged = false
@@ -81,7 +80,7 @@ const BackendProvidersTable: FunctionComponent<Props> = ({selectedBackendProvide
                 setBackendProviderStatuses(newBackendProviderStatuses)
             }
         })()
-    }, [backendProviderStatuses, client, backendProviderItems])
+    }, [backendProviderStatuses, backendProviderItems])
     useEffect(() => {
         handleRefresh()
     }, [handleRefresh])
@@ -107,9 +106,11 @@ const BackendProvidersTable: FunctionComponent<Props> = ({selectedBackendProvide
 
 const checkBackendProviderAlive = async (uri: string) => {
     const config = await getBackendProviderConfig(uri)
+    console.log('---- checking alive', config)
     if (!config) return false
     const timestamp = config.timestamp
     const elapsed = Number(new Date()) / 1000 - timestamp
+    console.log('---- elapsed', elapsed)
     if (Math.abs(elapsed) <= 70) return true
     return false
 }

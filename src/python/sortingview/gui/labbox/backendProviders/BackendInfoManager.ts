@@ -35,13 +35,26 @@ const isUserPermissionsMessage = (x: any): x is UserPermissionsMessage => {
         type: isEqualTo('userPermissions'),
         userId: isString,
         permissions: isUserPermissions
-    })
+    }, {allowAdditionalFields: true})
 }
 
-class PermissionsManager {
+type BackendInfoMessage = {
+    type: 'backendInfo'
+    pythonProjectVersion: string
+}
+const isBackendInfoMessage = (x: any): x is BackendInfoMessage => {
+    return _validateObject(x, {
+        type: isEqualTo('backendInfo'),
+        pythonProjectVersion: isString
+    }, {allowAdditionalFields: true})
+}
+
+class BackendInfoManager {
     #permissions: {[key: string]: UserPermissions} = {}
     #requestedPermissions: {[key: string]: boolean} = {}
     #onCurrentUserPermissionsChangedCallbacks: (() => void)[] = []
+    #onBackendInfoChangedCallbacks: (() => void)[] = []
+    #backendPythonProjectVersion: string | null = null
     constructor(private clientChannel: PubsubChannel, private googleSignInClient: GoogleSignInClient | undefined) {
         const checkRequestPermissions = () => {
             const userId = googleSignInClient?.userId
@@ -52,6 +65,7 @@ class PermissionsManager {
         }
         checkRequestPermissions()
         googleSignInClient && googleSignInClient.onSignedInChanged(() => {checkRequestPermissions()})
+        this._requestBackendInfo()
     }
     processServerMessage(msg: JSONObject) {
         if (isUserPermissionsMessage(msg)) {
@@ -60,9 +74,18 @@ class PermissionsManager {
                 this.#onCurrentUserPermissionsChangedCallbacks.forEach(cb => {cb()})
             }
         }
+        else if (isBackendInfoMessage(msg)) {
+            if (msg.pythonProjectVersion !== this.#backendPythonProjectVersion) {
+                this.#backendPythonProjectVersion = msg.pythonProjectVersion
+                this.#onBackendInfoChangedCallbacks.forEach(cb => {cb()})
+            }
+        }
     }
     getPermissions(userId: string): UserPermissions | null {
         return this.#permissions[userId] || null
+    }
+    public get backendPythonProjectVersion() {
+        return this.#backendPythonProjectVersion
     }
     _requestUserPermissions(userId: string) {
         const msg = {
@@ -74,9 +97,20 @@ class PermissionsManager {
             data: msg2
         })
     }
+    _requestBackendInfo() {
+        const msg = {
+            type: 'getBackendInfo'
+        }
+        this.clientChannel.publish({
+            data: msg
+        })
+    }
     onCurrentUserPermissionsChanged(callback: () => void) {
         this.#onCurrentUserPermissionsChangedCallbacks.push(callback)
     }
+    onBackendInfoChanged(callback: () => void) {
+        this.#onBackendInfoChangedCallbacks.push(callback)
+    }
 }
 
-export default PermissionsManager
+export default BackendInfoManager

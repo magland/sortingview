@@ -8,7 +8,7 @@ import { parseWorkspaceUri } from '../../python/sortingview/gui/labbox'
 import { useBackendProviderClient } from '../../python/sortingview/gui/labbox'
 import { useSubfeed } from '../../python/sortingview/gui/labbox'
 import useRoute, { RoutePath } from '../../route/useRoute'
-import useCurrentUserPermissions from '../../python/sortingview/gui/labbox/backendProviders/userCurrentUserPermissions'
+import useCurrentUserPermissions from '../../python/sortingview/gui/labbox/backendProviders/useCurrentUserPermissions'
 
 type Props = {
     width: number

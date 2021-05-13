@@ -3,14 +3,14 @@ import React, { FunctionComponent } from 'react'
 import ReactMarkdown from "react-markdown"
 import MarkdownCodeBlock from "./MarkdownCodeBlock"
 
-interface Props {
+export interface MarkdownProps {
     source: string
     substitute?: { [key: string]: string | undefined | null }
     linkTarget?: '_blank' | ReactMarkdown.LinkTargetResolver
     renderers?: ReactMarkdown.Renderers
 }
 
-const Markdown: FunctionComponent<Props> = ({ source, substitute, linkTarget, renderers }) => {
+const Markdown: FunctionComponent<MarkdownProps> = ({ source, substitute, linkTarget, renderers }) => {
     const source2 = substitute ? doSubstitute(source, substitute) : source
     return (
         <div className='markdown-body'>

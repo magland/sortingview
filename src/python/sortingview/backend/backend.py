@@ -4,6 +4,7 @@ import uuid
 import hashlib
 from typing import Callable, Dict, List, Union, cast
 import kachery_p2p as kp
+from ..version import __version__
 from ._verify_oauth2_token import _verify_oauth2_token
 
 from .subfeed_manager import SubfeedManager
@@ -62,6 +63,7 @@ class Backend:
         self._secret: Union[str, None] = None
         self._user_permissions: Dict[str, dict] = {}
         self._admin_user_id = admin_user_id
+        self._config_object = None
         def on_ably_message(msg):
             self._on_ably_message(msg)
         self._ably_client = AblyClient(on_ably_message=on_ably_message)
@@ -185,6 +187,12 @@ class Backend:
                 'permissions': perm
             }
             self._ably_client.publish(self._registration['serverChannelName'], json.dumps(msg).encode('utf-8'), qos=1)
+        elif type0 == 'getBackendInfo':
+            msg = {
+                'type': 'backendInfo',
+                'pythonProjectVersion': __version__
+            }
+            self._ably_client.publish(self._registration['serverChannelName'], json.dumps(msg).encode('utf-8'), qos=1)
     def _report_alive(self):
         if self._ably_client is None:
             return
@@ -194,20 +202,26 @@ class Backend:
         }
         if self._registration is not None:
             self._ably_client.publish(self._registration['serverChannelName'], json.dumps(msg).encode('utf-8'), qos=1)
+        self._upload_config_object_to_google_cloud()
     def _publish_to_task_status(self, msg: dict):
         self._ably_client.publish(self._registration['serverChannelName'], json.dumps(msg).encode('utf-8'), qos=1)
+    def _config_object_name(self):
+        return f'sortingview-backends/{self._label}.json'
+    def _upload_config_object_to_google_cloud(self):
+        self._config_object['timestamp'] = time.time()
+        _upload_to_google_cloud(self._google_bucket_name, self._config_object_name(), json.dumps(self._config_object).encode('utf-8'))
     def _renew_registration(self):
         self._last_registration_attempt_timestamp = time.time()
         google_bucket_base_url = f'https://storage.googleapis.com/{self._google_bucket_name}'
-        config_object_name = f'sortingview-backends/{self._label}.json'
+        
         self._secret = _random_id()
-        config = {
+        self._config_object = {
             'label': self._label,
             'objectStorageUrl': google_bucket_base_url,
             'secretSha1': _sha1_of_string(self._secret),
-            'timestamp': time.time()
+            'timestamp': 0 # filled in at upload
         }
-        _upload_to_google_cloud(self._google_bucket_name, config_object_name, json.dumps(config).encode('utf-8'))
+        self._upload_config_object_to_google_cloud()
 
 
         # export type RegisterRequest = {
@@ -219,13 +233,13 @@ class Backend:
         registration = _http_json_post(f'{self._app_url}/api/register', {
             'type': 'registerBackendProvider',
             'appName': 'sortingview',
-            'backendProviderUri': f'gs://{self._google_bucket_name}/{config_object_name}',
+            'backendProviderUri': f'gs://{self._google_bucket_name}/{self._config_object_name()}',
             'secret': self._secret
         })
 
         print(f'')
         print(f'==========================================================================================')
-        print(f'Compute engine URI: gs://{self._google_bucket_name}/{config_object_name}')
+        print(f'Backend URI: gs://{self._google_bucket_name}/{self._config_object_name}')
         print(f'')
         client_channel_name = registration['clientChannelName']
         server_channel_name = registration['serverChannelName']
