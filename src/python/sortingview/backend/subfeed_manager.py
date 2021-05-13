@@ -92,7 +92,8 @@ class SubfeedManager:
                 for k in codes:
                     v = self._subfeeds[k]
                     if k in new_messages:
-                        v.report_new_messages(subfeed_watches[k]['position'], new_messages[k])
+                        if len(new_messages[k]) > 0:
+                            v.report_new_messages(subfeed_watches[k]['position'], new_messages[k])
                 self._waiting_for_worker_response = False
 
     def _get_code(self, feed_id: str, subfeed_hash: str):

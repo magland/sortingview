@@ -34,7 +34,7 @@ def get_isi_violation_rates(sorting_object, recording_object, configuration={}):
 def task_get_isi_violation_rates(sorting_object, recording_object, configuration={}):
     with hi.Config(
         job_cache=job_cache,
-        job_handler=job_handler
+        job_handler=job_handler.metrics
     ):
         return get_isi_violation_rates.run(
             sorting_object=sorting_object,

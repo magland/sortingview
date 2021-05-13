@@ -11,7 +11,7 @@ class BackendProviderClient {
     #taskManager: TaskManager
     #subfeedManager: SubfeedManager
     #backendInfoManager: BackendInfoManager
-    constructor(private clientChannel: PubsubChannel, private serverChannel: PubsubChannel, private objectStorageClient: ObjectStorageClient, private googleSignInClient: GoogleSignInClient | undefined) {
+    constructor(public backendUri: string, private clientChannel: PubsubChannel, private serverChannel: PubsubChannel, private objectStorageClient: ObjectStorageClient, private googleSignInClient: GoogleSignInClient | undefined) {
         this.#taskManager = new TaskManager(clientChannel, objectStorageClient, googleSignInClient)
         this.#subfeedManager = new SubfeedManager(clientChannel, objectStorageClient, googleSignInClient)
         this.#backendInfoManager = new BackendInfoManager(clientChannel, googleSignInClient)

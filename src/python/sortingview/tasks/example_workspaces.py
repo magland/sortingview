@@ -27,10 +27,12 @@ def workspace_list_subfeed():
 
 @taskfunction('workspace_list_subfeed.1')
 def task_workspace_list_subfeed(cachebust: str):
-    with hi.Config(job_handler=job_handler, job_cache=None):
+    with hi.Config(job_handler=job_handler.misc, job_cache=None):
         return hi.Job(workspace_list_subfeed, {})
 
 def set_workspace_list(workspace_list):
     uri = workspace_list_subfeed()
     sf = kp.load_subfeed(uri)
-    sf.append_message(workspace_list)
+    print(sf.get_uri())
+    print(sf.get_subfeed_hash())
+    # sf.append_message(workspace_list)

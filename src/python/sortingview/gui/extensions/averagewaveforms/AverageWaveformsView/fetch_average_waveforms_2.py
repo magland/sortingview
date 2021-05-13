@@ -50,9 +50,22 @@ def fetch_average_waveform_2(snippets_h5, unit_id):
 
 @taskfunction('fetch_average_waveform.2')
 def task_fetch_average_waveform(recording_object, sorting_object, unit_id):
-    with hi.Config(job_handler=job_handler, job_cache=job_cache):
+    with hi.Config(job_handler=job_handler.waveforms, job_cache=job_cache):
         snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object)
         return fetch_average_waveform_2.run(
             snippets_h5=snippets_h5,
             unit_id=unit_id
+        )
+
+@hi.function('test_delay', '0.1.0')
+def test_delay(delay_sec):
+    import time
+    time.sleep(delay_sec)
+    return f'delayed: {delay_sec} sec'
+
+@taskfunction('test_delay.1')
+def task_test_delay(delay_sec, cachebust):
+    with hi.Config(job_handler=job_handler.waveforms, job_cache=None):
+        return test_delay.run(
+            delay_sec=delay_sec
         )

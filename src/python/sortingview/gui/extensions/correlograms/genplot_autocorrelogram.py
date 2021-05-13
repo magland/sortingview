@@ -25,7 +25,7 @@ def fetch_correlogram_plot_data(sorting_object, unit_x, unit_y=None):
 def task_fetch_correlogram_plot_data(sorting_object, unit_x, unit_y=None):
     with hi.Config(
         job_cache=job_cache,
-        job_handler=job_handler
+        job_handler=job_handler.correlograms
     ):
         return fetch_correlogram_plot_data.run(
             sorting_object=sorting_object,

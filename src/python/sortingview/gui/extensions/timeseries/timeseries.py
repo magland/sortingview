@@ -26,7 +26,7 @@ def createjob_get_timeseries_segment(labbox, recording_object, ds_factor, segmen
 
 @taskfunction('get_timeseries_segment.1')
 def task_get_timeseries_segment(recording_object, ds_factor, segment_num, segment_size):
-    with hi.Config(job_handler=job_handler, job_cache=job_cache):
+    with hi.Config(job_handler=job_handler.timeseries, job_cache=job_cache):
         return get_timeseries_segment.run(recording_object=recording_object, ds_factor=ds_factor, segment_num=segment_num, segment_size=segment_size)
 
 

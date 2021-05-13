@@ -20,7 +20,7 @@ def sorting_info(sorting_uri):
 
 @taskfunction('sorting_info.3')
 def task_sorting_info(sorting_uri: str):
-    with hi.Config(job_handler=job_handler, job_cache=job_cache):
+    with hi.Config(job_handler=job_handler.misc, job_cache=job_cache):
         return hi.Job(sorting_info, {'sorting_uri': sorting_uri})
 
 

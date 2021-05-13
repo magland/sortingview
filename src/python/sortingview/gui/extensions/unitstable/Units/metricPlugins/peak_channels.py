@@ -37,7 +37,7 @@ def _compute_peak_channel_index_from_waveforms(waveforms):
 def task_get_peak_channels(sorting_object, recording_object, configuration={}):
     with hi.Config(
         job_cache=job_cache,
-        job_handler=job_handler
+        job_handler=job_handler.metrics
     ):
         snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object)
         return get_peak_channels.run(

@@ -11,5 +11,5 @@ def preload_extract_snippets(recording_object, sorting_object):
 
 @taskfunction('preload_extract_snippets.1')
 def task_preload_extract_snippets(recording_object, sorting_object):
-    with hi.Config(job_handler=job_handler, job_cache=job_cache):
+    with hi.Config(job_handler=job_handler.waveforms, job_cache=job_cache):
         return hi.Job(preload_extract_snippets, {'recording_object': recording_object, 'sorting_object': sorting_object})

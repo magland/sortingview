@@ -35,14 +35,14 @@ const useSetupBackendProviders = (): BackendProvidersData => {
     ), [registration, backendUri])
 
     const selectedBackendProviderClient = useMemo(() => {
-        if ((!registration) || (!selectedBackendProviderConfig)) return undefined
+        if ((!backendUri) || (!registration) || (!selectedBackendProviderConfig)) return undefined
         const objectStorageClient = createObjectStorageClient({http: {baseUrl: selectedBackendProviderConfig.objectStorageUrl}})
         const ablyClient = createPubsubClient({ably: {token: registration.tokenDetails.token}})
         const clientChannel = ablyClient.getChannel(registration.clientChannelName)
         const serverChannel = ablyClient.getChannel(registration.serverChannelName)
-        const X = new BackendProviderClient(clientChannel, serverChannel, objectStorageClient, googleSignInClient)
+        const X = new BackendProviderClient(backendUri, clientChannel, serverChannel, objectStorageClient, googleSignInClient)
         return X
-    }, [registration, selectedBackendProviderConfig, googleSignInClient])
+    }, [backendUri, registration, selectedBackendProviderConfig, googleSignInClient])
 
     const selectBackendProvider = useCallback((uri: string) => {
         setRoute({backendUri: uri})
