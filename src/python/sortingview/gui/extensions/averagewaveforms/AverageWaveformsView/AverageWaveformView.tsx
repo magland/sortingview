@@ -1,5 +1,5 @@
 // import { createCalculationPool } from 'labbox';
-import React, { FunctionComponent, useMemo } from 'react';
+import React, { FunctionComponent, useEffect, useMemo } from 'react';
 import { ActionItem, DividerItem } from '../../../common/Toolbars';
 import { TaskStatusView, useTask } from '../../../labbox';
 import { applyMergesToUnit, Recording, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from '../../../pluginInterface';
@@ -36,6 +36,16 @@ const AverageWaveformView: FunctionComponent<Props> = ({ sorting, curation, reco
             unit_id: applyMergesToUnit(unitId, curation, selection.applyMerges)
         }
     )
+    // const {returnValue: test} = useTask(
+    //     'test_delay.1',
+    //     {
+    //         delay_sec: 500,
+    //         cachebust: applyMergesToUnit(unitId, curation, selection.applyMerges)
+    //     }
+    // )
+    // useEffect(() => {
+    //     if (test) console.log('test result', test)
+    // }, [test])
 
     const electrodeOpts: ElectrodeOpts = useMemo(() => ({}), [])
 

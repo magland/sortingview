@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react'
 import { FunctionComponent } from "react"
-import { useSubfeed, useTask } from '../python/sortingview/gui/labbox'
+import { useBackendProviderClient, useSubfeed, useTask } from '../python/sortingview/gui/labbox'
 import { FeedId, isArrayOf, isFeedId, isString, sha1OfString, SubfeedHash, _validateObject } from '../python/sortingview/gui/labbox/kacheryTypes'
 import ExampleWorkspacesTable from './ExampleWorkspacesTable'
 
@@ -42,7 +42,8 @@ const parseSubfeedUri = (subfeedUri: string | undefined): {feedId: FeedId | unde
 }
 
 const WorkspaceList: FunctionComponent<Props> = ({onWorkspaceSelected}) => {
-    const {returnValue: workspaceListSubfeedUri, task} = useTask<string>('workspace_list_subfeed.1', {cachebust: '1'})
+    const client = useBackendProviderClient()
+    const {returnValue: workspaceListSubfeedUri, task} = useTask<string>('workspace_list_subfeed.1', {cachebust: client?.backendUri || 'x'})
     const {feedId, subfeedHash} = parseSubfeedUri(workspaceListSubfeedUri)
     const {messages} = useSubfeed({feedId, subfeedHash})
     const examples = useMemo(() => {
@@ -69,7 +70,7 @@ const WorkspaceList: FunctionComponent<Props> = ({onWorkspaceSelected}) => {
                     <span>Error: {task.errorMessage}</span>
                 ) :
                 (
-                    <span>Loading examples</span>
+                    <span>Loading workspace list</span>
                 )
             }
         </div>

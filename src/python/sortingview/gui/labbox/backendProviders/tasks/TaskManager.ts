@@ -42,8 +42,9 @@ class TaskManager {
             kwargs
         }
         const taskHash = sha1OfObject(taskData)
-        if (taskHash.toString() in this.#tasks) {
+        if ((taskHash.toString() in this.#tasks) && (!this.#tasks[taskHash.toString()].canceled)) {
             const tt = this.#tasks[taskHash.toString()] as any as Task<ReturnType>
+            tt.incrementNumPointers()
             return tt
         }
         const t = new Task<ReturnType>(this.#onPublishToTaskQueue, this.objectStorageClient, taskHash, functionId, kwargs)
@@ -53,7 +54,7 @@ class TaskManager {
     processServerMessage(msg: JSONObject) {
         if (isStatusUpdateMessage(msg)) {
             const taskHash = msg.taskHash
-            if ((isSha1Hash(taskHash)) && (taskHash.toString() in this.#tasks)) {
+            if ((isSha1Hash(taskHash)) && (taskHash.toString() in this.#tasks && (!this.#tasks[taskHash.toString()].canceled))) {
                 const t = this.#tasks[taskHash.toString()]
                 if (msg.status === 'error') {
                     t._setErrorMessage(msg.error || 'unknown')
@@ -80,17 +81,27 @@ class TaskManager {
         }
     }
     public get allTasks() {
-        return Object.values(this.#tasks)
+        return Object.values(this.#tasks).filter(t => (!t.canceled))
     }
     async _start() {
-        const taskHashes = Object.keys(this.#tasks)
-        for (let taskHash of taskHashes) {
-            const t = this.#tasks[taskHash]
-            if (['error', 'finished'].includes(t.status)) {
-                delete this.#tasks[taskHash]
+        while (true) {
+            const taskHashes = Object.keys(this.#tasks)
+            for (let taskHash of taskHashes) {
+                const t = this.#tasks[taskHash]
+                if (['error', 'finished'].includes(t.status)) {
+                    delete this.#tasks[taskHash]
+                }
+                else if (t.canceled) {
+                    delete this.#tasks[taskHash]
+                }
+                else {
+                    if (t.elapsedSecSinceKeepAliveSent >= 60 * 2) {
+                        t.sendKeepAlive()
+                    }
+                }
             }
+            await sleepMsec(2000)
         }
-        await sleepMsec(5000)
     }
 }
 

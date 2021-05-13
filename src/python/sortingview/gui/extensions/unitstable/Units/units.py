@@ -24,7 +24,7 @@ def get_firing_data(sorting_object, recording_object, configuration):
 def task_get_firing_data(sorting_object, recording_object, configuration):
     with hi.Config(
         job_cache=job_cache,
-        job_handler=job_handler
+        job_handler=job_handler.metrics
     ):
         return get_firing_data.run(
             sorting_object=sorting_object,

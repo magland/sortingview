@@ -39,7 +39,7 @@ def _compute_unit_snr_from_waveforms(waveforms):
 def task_get_unit_snrs(sorting_object, recording_object, configuration={}):
     with hi.Config(
         job_cache=job_cache,
-        job_handler=job_handler
+        job_handler=job_handler.metrics
     ):
         snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object)
         return get_unit_snrs.run(

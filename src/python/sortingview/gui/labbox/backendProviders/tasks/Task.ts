@@ -15,6 +15,9 @@ export type TaskQueueMessage = {
         kwargs: JSONObject
     }
     taskHash: Sha1Hash
+} | {
+    type: 'keepAliveTask'
+    taskHash: Sha1Hash
 }
 
 class Task<ReturnType> {
@@ -24,6 +27,9 @@ class Task<ReturnType> {
     #onStatusChangedCallbacks: ((s: TaskStatus) => void)[] = []
     #timestampInitiated = Number(new Date())
     #timestampCompleted: number | undefined = undefined
+    #numPointers: number = 1
+    #canceled: boolean = false
+    #lastKeepAliveSentTimestamp: number = Number(new Date())
     constructor(private onPublishToTaskQueue: (message: TaskQueueMessage) => void, private objectStorageClient: ObjectStorageClient, public taskHash: Sha1Hash, public functionId: string, public kwargs: {[key: string]: any}) {
         ;(async () => {
             const returnValue = await checkForTaskReturnValue(objectStorageClient, taskHash, {deserialize: true})
@@ -45,7 +51,6 @@ class Task<ReturnType> {
                 this._setStatus('error')
             }
         }, timeoutForNoResponse)
-
     }
     public get status() {
         return this.#status
@@ -62,8 +67,33 @@ class Task<ReturnType> {
     public get timestampCompleted() {
         return this.#timestampCompleted
     }
+    public get canceled() {
+        return this.#canceled
+    }
+    public get elapsedSecSinceKeepAliveSent() {
+        return (Number(new Date()) - this.#lastKeepAliveSentTimestamp) / 1000
+    }
+    sendKeepAlive() {
+        if (this.#canceled) return
+        this.#lastKeepAliveSentTimestamp = Number(new Date())
+        this.onPublishToTaskQueue({type: 'keepAliveTask', taskHash: this.taskHash})
+    }
     onStatusChanged(cb: (s: TaskStatus) => void) {
         this.#onStatusChangedCallbacks.push(cb)
+    }
+    incrementNumPointers() {
+        this.#numPointers = this.#numPointers + 1
+    }
+    decrementNumPointers() {
+        console.info(`Decrementing num pointers for task ${this.functionId}: ${this.#numPointers} ${this.taskHash}`, this.kwargs)
+        this.#numPointers = this.#numPointers - 1
+        if (['error', 'finished'].includes(this.#status)) {
+            return
+        }
+        if (this.#numPointers <= 0) {
+            console.info(`Canceling task ${this.functionId}`)
+            this.#canceled = true
+        }
     }
     _setStatus(s: TaskStatus) {
         if (this.#status === s) return

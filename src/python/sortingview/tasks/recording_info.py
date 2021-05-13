@@ -24,7 +24,7 @@ def recording_info(recording_uri):
 
 @taskfunction('recording_info.3')
 def task_recording_info(recording_uri: str):
-    with hi.Config(job_handler=job_handler, job_cache=job_cache):
+    with hi.Config(job_handler=job_handler.misc, job_cache=job_cache):
         return hi.Job(recording_info, {'recording_uri': recording_uri})
 
 def geom_from_recording(recording):

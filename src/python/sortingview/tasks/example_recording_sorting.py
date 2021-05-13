@@ -40,5 +40,5 @@ def example_recording_sortings():
 
 @taskfunction('example_recording_sortings')
 def task_example_recording_sortings(cachebust: str):
-    with hi.Config(job_handler=job_handler, job_cache=job_cache):
+    with hi.Config(job_handler=job_handler.misc, job_cache=job_cache):
         return hi.Job(example_recording_sortings, {})

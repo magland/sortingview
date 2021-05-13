@@ -44,6 +44,8 @@ class Task:
         self._task_data = task_data
         self._status = job.status
         self._job = job
+        self._last_keep_alive_timestamp = time.time()
+        self._canceled = False
         self._publish_status_update()
     @property
     def status(self):
@@ -55,7 +57,17 @@ class Task:
         if self._status != self._job.status:
             self._status = self._job.status
             self._publish_status_update()
+    def cancel(self):
+        print(f'Canceling task: {self._job.function_name}')
+        self._canceled = True
+        self._job.cancel()
+    def elapsed_since_keep_alive(self):
+        return time.time() - self._last_keep_alive_timestamp
+    def keep_alive(self):
+        self._last_keep_alive_timestamp = time.time()
     def _publish_status_update(self):
+        if self._canceled:
+            return
         msg = {'type': 'taskStatusUpdate', 'taskHash': self._task_hash, 'status': self._status}
         if self._status == 'error':
             msg['error'] = str(self._job.result.error)
@@ -66,6 +78,8 @@ class Task:
 
 def _pathify_hash(x: str):
     return f'{x[0]}{x[1]}/{x[2]}{x[3]}/{x[4]}{x[5]}/{x}'
+
+task_timeout_sec = 60 * 3
 
 class TaskManager:
     def __init__(self, *, on_publish_message: Callable, google_bucket_name: str):
@@ -79,6 +93,9 @@ class TaskManager:
         t = Task(on_publish_message=self._on_publish_message, google_bucket_name=self._google_bucket_name, task_hash=task_hash, task_data=task_data, job=job)
         self._tasks[task_hash] = t
         return t
+    def keep_alive_task(self, task_hash: str):
+        if task_hash in self._tasks:
+            self._tasks[task_hash].keep_alive()
     def iterate(self):
         hi.wait(0)
         task_hashes = list(self._tasks.keys())
@@ -87,3 +104,9 @@ class TaskManager:
             task.iterate()
             if task.status in ['error', 'finished']:
                 del self._tasks[task_hash]
+            else:
+                elapsed = task.elapsed_since_keep_alive()
+                if elapsed > task_timeout_sec:
+                    task.cancel()
+                    del self._tasks[task_hash]
+                

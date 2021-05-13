@@ -156,7 +156,17 @@ class Backend:
                 else:
                     msg = {'type': 'taskStatusUpdate', 'taskHash': task_hash, 'status': 'error', 'error': f'Unable to find task function: {function_id}'}
                     self._ably_client.publish(self._registration['serverChannelName'], json.dumps(msg).encode('utf-8'), qos=1)
+        elif type0 == 'keepAliveTask':
+            try:
+                task_hash = message.get('taskHash')
+            except Exception as e:
+                print(e)
+                print('Unexpected problem parsing keepAliveTask payload')
+                task_hash = None
+            if task_hash is not None:
+                self._task_manager.keep_alive_task(task_hash)
         elif type0 == 'subscribeToSubfeed':
+            print('subscribe to subfeed')
             feed_id = message.get('feedId', None)
             subfeed_hash = message.get('subfeedHash', None)
             if feed_id is not None and subfeed_hash is not None:
