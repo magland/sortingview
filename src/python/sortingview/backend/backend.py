@@ -239,7 +239,7 @@ class Backend:
 
         print(f'')
         print(f'==========================================================================================')
-        print(f'Backend URI: gs://{self._google_bucket_name}/{self._config_object_name}')
+        print(f'Backend URI: gs://{self._google_bucket_name}/{self._config_object_name()}')
         print(f'')
         client_channel_name = registration['clientChannelName']
         server_channel_name = registration['serverChannelName']

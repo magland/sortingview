@@ -10,6 +10,7 @@ setup(
         'hither',
         'google-cloud-storage',
         'paho-mqtt',
-        'CacheControl'
+        'CacheControl',
+        'labbox-ephys>=0.5.13'
     ]
 )
