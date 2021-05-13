@@ -13,7 +13,7 @@ After creating the bucket, download the credentials to a .json file on the compu
 It is recommended that you use a conda environment with `Python >=3.8`.
 
 ```
-pip install --upgrade git+https://github.com/magland/sortingview
+pip install --upgrade "git+https://github.com/magland/sortingview#egg=sortingview&subdirectory=src/python"
 ```
 
 ## Run the backend provider
@@ -29,7 +29,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="path-to-google-application-credentials-js
 sortingview-start-backend --label choose-a-label --app-url https://sortingview.vercel.app
 ```
 
-Keep this running, and make a note of the `Backend URI` as output from this program.
+Run this script and keep it running in a terminal (you may want to use a tool like tmux). Make a note of the `Backend URI` as output from this program.
 
 ## Select your custom backend provider in the app
 

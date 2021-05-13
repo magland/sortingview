@@ -4,7 +4,6 @@ import { FunctionComponent } from "react"
 import axios from 'axios'
 import NiceTable from '../../commonComponents/NiceTable/NiceTable'
 import Hyperlink from '../../commonComponents/Hyperlink/Hyperlink'
-import { useBackendProviderClient } from '../backendProviders/useBackendProviders'
 import { randomAlphaString } from '../objectStorage/google/GoogleObjectStorageClient'
 import { BackendItem, BackendProviderItemsAction } from './backendProviderItemsReducer'
 
@@ -17,7 +16,6 @@ type Props = {
 
 const BackendProvidersTable: FunctionComponent<Props> = ({selectedBackendProviderUri, onSelectBackendProvider, backendProviderItems, backendProviderItemsDispatch}) => {
     const [backendProviderStatuses, setBackendProviderStatuses] = useState<{[key: string]: {alive: boolean}}>({})
-    const client = useBackendProviderClient()
     const columns = useMemo(() => ([
         {
             key: 'label',

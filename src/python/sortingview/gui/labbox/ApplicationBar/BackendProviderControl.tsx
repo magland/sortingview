@@ -12,7 +12,7 @@ const BackendProviderControl: FunctionComponent<Props> = ({ onOpen, color }) => 
     const {backendUri} = useRoute()
     const { icon, title } = useMemo(() => {
         return {icon: <Storage />, title: backendUri ? `Backend: ${backendUri}` : 'Configure backend provider'}
-    }, [])
+    }, [backendUri])
 
     const handleClick = useCallback(() => {
         onOpen()
