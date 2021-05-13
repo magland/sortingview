@@ -150,7 +150,7 @@ export class CanvasWidgetLayer<LayerProps extends BaseLayerProps, State extends 
         this._transformMatrix = [[1, 0, 0], [0, 1, 0], [0, 0, 1]] as any as TransformationMatrix
         this._inverseMatrix = [[1, 0, 0], [0, 1, 0], [0, 0, 1]] as any as TransformationMatrix
     }
-    getProps() {
+    getProps(): LayerProps {
         if (!this._props) throw Error('getProps must not be called before initial props are set')
         return this._props
     }
