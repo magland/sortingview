@@ -86,10 +86,10 @@ class Task<ReturnType> {
     }
     decrementNumPointers() {
         console.info(`Decrementing num pointers for task ${this.functionId}: ${this.#numPointers} ${this.taskHash}`, this.kwargs)
-        this.#numPointers = this.#numPointers - 1
         if (['error', 'finished'].includes(this.#status)) {
             return
         }
+        this.#numPointers = this.#numPointers - 1
         if (this.#numPointers <= 0) {
             console.info(`Canceling task ${this.functionId}`)
             this.#canceled = true

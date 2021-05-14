@@ -28,6 +28,6 @@ sorting = le.LabboxEphysSortingExtractor(sorting_uri, samplerate=30000)
 recording = le.LabboxEphysRecordingExtractor(recording_uri, download=True)
 
 workspace = le.load_workspace(workspace_uri)
-print(f'Workspace URI: {workspace.get_uri()}')
+print(f'Workspace URI: {workspace.uri}')
 R_id = workspace.add_recording(recording=recording, label=recording_label)
 S_id = workspace.add_sorting(sorting=sorting, recording_id=R_id, label=sorting_label)

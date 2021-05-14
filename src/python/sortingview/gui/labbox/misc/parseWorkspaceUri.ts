@@ -1,20 +1,16 @@
-import { FeedId, isFeedId } from "../kacheryTypes"
+import { FeedId } from "../kacheryTypes"
 
-const parseWorkspaceUri = (workspaceUri: string | undefined): {feedId: FeedId | undefined, feedUri: string | undefined, workspaceName: string | undefined} => {
-    const undefinedResult = {feedId: undefined, feedUri: undefined, workspaceName: undefined}
-    if (!workspaceUri) return undefinedResult
+const parseWorkspaceUri = (workspaceUri: string | undefined): {feedId: FeedId | undefined, feedUri: string | undefined} => {
+    if (!workspaceUri) return {feedUri: undefined, feedId: undefined}
     if (!workspaceUri.startsWith('workspace://')) {
-        return undefinedResult
+        return {feedUri: undefined, feedId: undefined}
     }
-    const a = workspaceUri.split('/')
+    const a = workspaceUri.split('?')[0].split('/')
     const feedId = a[2] || undefined
-    const workspaceName = a[3] || undefined
-    if ((!feedId) || (!workspaceName)) return undefinedResult
-    if (!isFeedId(feedId)) return undefinedResult
+    if (!feedId) return {feedUri: undefined, feedId: undefined}
     return {
-        feedId,
-        feedUri: `feed://${feedId}`,
-        workspaceName
+        feedId: feedId as any as FeedId,
+        feedUri: `feed://${feedId}`
     }
 }
 

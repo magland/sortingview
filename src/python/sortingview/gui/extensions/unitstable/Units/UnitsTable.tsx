@@ -1,10 +1,8 @@
 import React, { FunctionComponent, useCallback } from 'react';
 import { mergeGroupForUnitId, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch, SortingUnitMetricPlugin } from "../../../pluginInterface";
-import { ExternalSortingUnitMetric } from '../../../pluginInterface/Sorting';
 import sortByPriority from '../../../common/sortByPriority';
 import '../unitstable.css';
 import TableWidget, { Column, Row } from './TableWidget';
-import { useTask } from '../../../labbox';
 
 interface Props {
     sortingUnitMetrics?: SortingUnitMetricPlugin[]
@@ -18,7 +16,7 @@ interface Props {
 }
 
 const UnitsTable: FunctionComponent<Props> = (props) => {
-    const { sortingUnitMetrics, units, metrics, selection, selectionDispatch, curation, sorting, height } = props
+    const { sortingUnitMetrics, units, metrics, selection, selectionDispatch, curation, height } = props
     const selectedUnitIds = ((selection || {}).selectedUnitIds || [])
     const sortingUnitMetricsList = sortByPriority(Object.values(sortingUnitMetrics || {})).filter(p => (!p.disabled))
 
@@ -37,7 +35,7 @@ const UnitsTable: FunctionComponent<Props> = (props) => {
     const numericSort = (a: any, b: any) => {
         return (Number(a) - Number(b))
     }
-    const numericElement = (x: any) => (<span>{x + ''}</span>)
+    // const numericElement = (x: any) => (<span>{x + ''}</span>)
     const unitIdStyle: React.CSSProperties = {
         color: 'black',
         fontWeight: 'bold',
@@ -115,26 +113,26 @@ const UnitsTable: FunctionComponent<Props> = (props) => {
         }
     })
 
-    const {returnValue: externalUnitMetrics} = useTask<ExternalSortingUnitMetric[]>('fetch_unit_metrics.1', {unit_metrics_uri: sorting.unitMetricsUri || ''})
+    // const {returnValue: externalUnitMetrics} = useTask<ExternalSortingUnitMetric[]>('fetch_unit_metrics.1', {unit_metrics_uri: sorting.unitMetricsUri || ''})
 
-    ;(externalUnitMetrics || []).forEach((m: ExternalSortingUnitMetric) => {
-        const columnName = 'external-metric-' + m.name
-        columns.push({
-            columnName,
-            label: m.label,
-            tooltip: m.tooltip || '',
-            sort: numericSort,
-            dataElement: numericElement
-        })
-        rows.forEach(row => {
-            const unitId = Number(row.rowId)
-            const v = m.data[unitId + '']
-            row.data[columnName] = {
-                value: v !== undefined ? v : NaN,
-                sortValue: v !== undefined ? v : NaN
-            }
-        })
-    })
+    // ;(externalUnitMetrics || []).forEach((m: ExternalSortingUnitMetric) => {
+    //     const columnName = 'external-metric-' + m.name
+    //     columns.push({
+    //         columnName,
+    //         label: m.label,
+    //         tooltip: m.tooltip || '',
+    //         sort: numericSort,
+    //         dataElement: numericElement
+    //     })
+    //     rows.forEach(row => {
+    //         const unitId = Number(row.rowId)
+    //         const v = m.data[unitId + '']
+    //         row.data[columnName] = {
+    //             value: v !== undefined ? v : NaN,
+    //             sortValue: v !== undefined ? v : NaN
+    //         }
+    //     })
+    // })
 
     ;(sortingUnitMetricsList).forEach((m: SortingUnitMetricPlugin) => {
         const columnName = 'plugin-metric-' + m.name
