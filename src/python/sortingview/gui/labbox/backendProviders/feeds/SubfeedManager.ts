@@ -2,25 +2,30 @@ import GoogleSignInClient from "../../googleSignIn/GoogleSignInClient";
 import { ObjectStorageClient } from "../../objectStorage/createObjectStorageClient";
 import { PubsubChannel } from "../../pubsub/createPubsubClient";
 import { elapsedSince, FeedId, isEqualTo, isFeedId, JSONObject, nowTimestamp, Timestamp, zeroTimestamp, _validateObject, pathifyHash, JSONValue, isNumber } from "../../kacheryTypes";
-import { isMessageCount, isSignedSubfeedMessage, isSubfeedHash, messageCount, MessageCount, messageCountToNumber, SignedSubfeedMessage, SubfeedHash, SubfeedMessage } from "../../kacheryTypes";
+import { isMessageCount, isSignedSubfeedMessage, isSubfeedHash, messageCount, MessageCount, messageCountToNumber, SubfeedHash, SubfeedMessage } from "../../kacheryTypes";
 
-export class SubfeedSubscription {
-    #position = 0
-    #onMessageCallbacks: ((subfeedMessages: SubfeedMessage[], messageNumber: number) => void)[] = []
+export class SubfeedView {
+    #position: number
     #isAlive = true
-    constructor(public subfeed: Subfeed) {
-        this.#position = 0
+    #handlingNewMessages = false
+    constructor(public subfeed: Subfeed, private opts: {downloadAllMessages: boolean, position: number, onNewMessages: ((subfeedMessages: SubfeedMessage[], messageNumber: number) => void)}) {
+        this.#position = opts.position
+        if (opts.downloadAllMessages) {
+            subfeed.setDownloadAllMessages(true)
+        }
+        this._initialize()
     }
     public get position() {
+        if (this.#position < 0) {
+            if (this.subfeed.numMessages === undefined) return undefined
+            return this.subfeed.numMessages + this.#position
+        }
         return this.#position
-    }
-    onMessages(callback: (subfeedMessages: SubfeedMessage[], messageNumber: number) => void) {
-        this.#onMessageCallbacks.push(callback)
     }
     cancel() {
         this.#isAlive = false
     }
-    initialize() {
+    _initialize() {
         this._handleNewMessages()
         this.subfeed.onNewMessages(() => {
             this._handleNewMessages()  
@@ -29,49 +34,83 @@ export class SubfeedSubscription {
     public get isAlive() {
         return this.#isAlive
     }
-    _handleNewMessages() {
+    async _handleNewMessages() {
         if (!this.#isAlive) return
-        // handle negative starting position (to get last messages)
-        if ((this.#position < 0) && (this.subfeed.inMemoryMessageCount >= -this.#position)) {
-            this.#position = this.#position + this.subfeed.inMemoryMessageCount
-        }
-        if ((this.subfeed.inMemoryMessageCount > this.#position) && (this.#position >= 0)) {
-            const newMessages: SubfeedMessage[] = []
-            for (let i = this.#position; i < this.subfeed.inMemoryMessageCount; i++) {
-                newMessages.push(this.subfeed.inMemoryMessage(i).body.message)
+        if (this.#handlingNewMessages) return
+        this.#handlingNewMessages = true
+        try {
+            // handle negative starting position (to get last messages)
+            if ((this.#position < 0) && (this.subfeed.numMessages !== undefined) && (this.subfeed.numMessages >= -this.#position)) {
+                this.#position = this.#position + this.subfeed.numMessages
             }
-            this.#onMessageCallbacks.forEach(cb => {
-                cb(newMessages, this.#position)
-            })
-            this.#position = this.subfeed.inMemoryMessageCount
+            if ((this.subfeed.numMessages !== undefined) && (this.subfeed.numMessages > this.#position) && (this.#position >= 0)) {
+                const newMessages: SubfeedMessage[] = []
+                let i = this.#position
+                while (i < this.subfeed.numMessages) {
+                    const msg = await this.subfeed.getMessage(i)
+                    if (!msg) throw Error(`Error getting message of ${this.subfeed.feedId} ${this.subfeed.subfeedHash} ${i}`)
+                    newMessages.push(msg)
+                    i ++
+                }
+                if (newMessages.length > 0) {
+                    this.opts.onNewMessages(newMessages, this.#position)
+                    this.#position = this.#position + newMessages.length
+                }
+            }
+        }
+        finally {
+            this.#handlingNewMessages = false
         }
     }
 }
 
+// Only one subfeed object per subfeed
 class Subfeed {
-    #inMemoryMessages: SignedSubfeedMessage[] = []
-    #remoteMessageCount: MessageCount | undefined = undefined
+    #inMemoryMessages: {[key: number]: SubfeedMessage | null} = {}
+    #numMessages: MessageCount | undefined = undefined
     #onNewMessagesCallbacks: (() => void)[] = []
     #lastSubscriptionTimestamp: Timestamp = zeroTimestamp()
     #isDownloadingMessages = false
+    #downloadAllMessages = false
     constructor(private opts: {feedId: FeedId, subfeedHash: SubfeedHash, objectStorageClient: ObjectStorageClient}) {
         this._loadSubfeedJson()
     }
-    public get inMemoryMessageCount() {
-        return this.#inMemoryMessages.length
+    public get numMessages() {
+        return this.#numMessages ? messageCountToNumber(this.#numMessages) : undefined
     }
-    inMemoryMessage(i: number) {
-        return this.#inMemoryMessages[i]
+    public get feedId() {
+        return this.opts.feedId
+    }
+    public get subfeedHash() {
+        return this.opts.subfeedHash
+    }
+    setDownloadAllMessages(val: boolean) {
+        if (val === this.#downloadAllMessages) return
+        this.#downloadAllMessages = val
+        if (this.#downloadAllMessages) this._startDownloadingMessages()
+    }
+    async getMessage(i: number) {
+        if (!(i in this.#inMemoryMessages)) {
+            const name = `feeds/${pathifyHash(this.opts.feedId)}/subfeeds/${pathifyHash(this.opts.subfeedHash)}/${i}`
+            const data = await this.opts.objectStorageClient.getObjectData(name)
+            if (!data) {
+                this.#inMemoryMessages[i] = null
+            }
+            else {
+                const msg = JSON.parse((new TextDecoder()).decode(data)) as any as JSONValue
+                if (isSignedSubfeedMessage(msg)) {
+                    this.#inMemoryMessages[i] = msg.body.message
+                }
+                else {
+                    console.warn('Not a valid signed subfeed message', msg)
+                    this.#inMemoryMessages[i] = null
+                }
+            }
+        }
+        return this.#inMemoryMessages[i] || null
     }
     onNewMessages(callback: () => void) {
         this.#onNewMessagesCallbacks.push(callback)
-    }
-    addMessages(messages: SignedSubfeedMessage[]) {
-        if (messages.length === 0) return
-        for (let msg of messages) {
-            this.#inMemoryMessages.push(msg)
-        }
-        this.#onNewMessagesCallbacks.forEach(cb => {cb()})
     }
     public set lastSubscriptionTimestamp(t: Timestamp) {
         this.#lastSubscriptionTimestamp = t
@@ -82,42 +121,36 @@ class Subfeed {
     elapsedMsecSinceLastSubscription() {
         return elapsedSince(this.#lastSubscriptionTimestamp)
     }
-    setRemoteMessageCount(c: MessageCount) {
-        this.#remoteMessageCount = c
-        this._startDownloadingMessages()
+    _setNumMessages(c: MessageCount) {
+        if (c !== this.#numMessages) {
+            this.#numMessages = c
+            this.#onNewMessagesCallbacks.forEach(cb => {cb()})
+            if (this.#downloadAllMessages) {
+                this._startDownloadingMessages()
+            }
+        }
     }
     async _startDownloadingMessages() {
         if (this.#isDownloadingMessages) return
         this.#isDownloadingMessages = true
-        const messagesToAdd: SignedSubfeedMessage[] = []
-        while ((this.#remoteMessageCount) && (messageCountToNumber(this.#remoteMessageCount) > this.#inMemoryMessages.length + messagesToAdd.length)) {
-            const i = this.#inMemoryMessages.length + messagesToAdd.length
-            try {
-                const name = `feeds/${pathifyHash(this.opts.feedId)}/subfeeds/${pathifyHash(this.opts.subfeedHash)}/${i}`
-                const data = await this.opts.objectStorageClient.getObjectData(name)
-                if (!data) {
-                    break
-                }
-                const msg = JSON.parse((new TextDecoder()).decode(data)) as any as JSONValue
-                if (isSignedSubfeedMessage(msg)) {
-                    messagesToAdd.push(msg)
-                    if (this.#inMemoryMessages.length + messagesToAdd.length <= i) throw Error('Very unexpected.')
-                }
-                else {
-                    console.warn(msg)
-                    throw Error('Not a valid signed subfeed message')
-                }
-            }
-            catch(err) {
-                console.warn(`WARNING: problem downloading message data:`, err)
-                break
+        try {
+            let i = 0
+            while ((this.#numMessages) && (i < messageCountToNumber(this.#numMessages))) {
+                await this.getMessage(i)
+                i ++
             }
         }
-        if (messagesToAdd.length > 0) {
-            this.addMessages(messagesToAdd)
+        finally {
+            this.#isDownloadingMessages = false
         }
-        this.#isDownloadingMessages = false
     }
+    // _addMessages(messages: SignedSubfeedMessage[]) {
+    //     if (messages.length === 0) return
+    //     for (let msg of messages) {
+    //         this.#inMemoryMessages.push(msg)
+    //     }
+    //     this.#onNewMessagesCallbacks.forEach(cb => {cb()})
+    // }
     async _loadSubfeedJson() {
         const name = `feeds/${pathifyHash(this.opts.feedId)}/subfeeds/${pathifyHash(this.opts.subfeedHash)}/subfeed.json`
         const data = await this.opts.objectStorageClient.getObjectData(name, {cacheBust: true})
@@ -125,8 +158,8 @@ class Subfeed {
         const x = JSON.parse((new TextDecoder()).decode(data))
         const ct = x.messageCount
         if ((isNumber(ct)) && (ct > 0)) {
-            if ((!this.#remoteMessageCount) || (ct > messageCountToNumber(this.#remoteMessageCount))) {
-                this.setRemoteMessageCount(messageCount(ct))
+            if ((!this.#numMessages) || (ct > messageCountToNumber(this.#numMessages))) {
+                this._setNumMessages(messageCount(ct))
             }
         }
     }
@@ -157,11 +190,11 @@ class SubfeedManager {
             const code = this._subfeedCode(msg.feedId, msg.subfeedHash)
             if (code in this.#subfeeds) {
                 const sf = this.#subfeeds[code]
-                sf.setRemoteMessageCount(msg.messageCount)
+                sf._setNumMessages(msg.messageCount)
             }
         }
     }
-    subscribeToSubfeed(opts: {feedId: FeedId, subfeedHash: SubfeedHash, onMessages: (subfeedMessages: SubfeedMessage[], messageNumber: number) => void}) {
+    subscribeToSubfeed(opts: {feedId: FeedId, subfeedHash: SubfeedHash, onMessages: (subfeedMessages: SubfeedMessage[], messageNumber: number) => void, downloadAllMessages: boolean, position: number}) {
         const code = this._subfeedCode(opts.feedId, opts.subfeedHash)
         let s = this.#subfeeds[code]
         if (!s) {
@@ -176,9 +209,7 @@ class SubfeedManager {
             })
         }
         s.lastSubscriptionTimestamp = nowTimestamp()
-        const x = new SubfeedSubscription(s)
-        x.onMessages(opts.onMessages)
-        x.initialize()
+        const x = new SubfeedView(s, {downloadAllMessages: opts.downloadAllMessages, position: opts.position, onNewMessages: opts.onMessages})
         return x
     }
     appendMessagesToSubfeed(opts: {feedId: FeedId, subfeedHash: SubfeedHash, messages: SubfeedMessage[]}) {

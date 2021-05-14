@@ -25,7 +25,7 @@ class BackendProviderClient {
     initiateTask<ReturnType>(functionId: string, kwargs: {[key: string]: any}) {
         return this.#taskManager.initiateTask<ReturnType>(functionId, kwargs)
     }
-    subscribeToSubfeed(opts: {feedId: FeedId, subfeedHash: SubfeedHash, onMessages: (msgs: SubfeedMessage[], messageNumber: number) => void}) {
+    subscribeToSubfeed(opts: {feedId: FeedId, subfeedHash: SubfeedHash, onMessages: (msgs: SubfeedMessage[], messageNumber: number) => void, downloadAllMessages: boolean, position: number}) {
         return this.#subfeedManager.subscribeToSubfeed(opts)
     }
     appendMessagesToSubfeed(opts: {feedId: FeedId, subfeedHash: SubfeedHash, messages: SubfeedMessage[]}) {

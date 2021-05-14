@@ -43,9 +43,9 @@ const parseSubfeedUri = (subfeedUri: string | undefined): {feedId: FeedId | unde
 
 const WorkspaceList: FunctionComponent<Props> = ({onWorkspaceSelected}) => {
     const client = useBackendProviderClient()
-    const {returnValue: workspaceListSubfeedUri, task} = useTask<string>('workspace_list_subfeed.1', {cachebust: client?.backendUri || 'x'})
+    const {returnValue: workspaceListSubfeedUri, task} = useTask<string>('workspace_list_subfeed.1', {cachebust: (client?.backendUri || 'x') + '-1'})
     const {feedId, subfeedHash} = parseSubfeedUri(workspaceListSubfeedUri)
-    const {messages} = useSubfeed({feedId, subfeedHash})
+    const {messages} = useSubfeed({feedId, subfeedHash, tail: true})
     const examples = useMemo(() => {
         if ((messages) && (messages.length > 0)) {
             const e = messages[messages.length - 1]

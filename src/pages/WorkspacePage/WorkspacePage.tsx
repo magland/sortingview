@@ -3,7 +3,7 @@ import { FunctionComponent } from "react"
 import workspaceReducer, { WorkspaceAction } from '../../python/sortingview/gui/pluginInterface/workspaceReducer'
 import { WorkspaceRoute, WorkspaceRouteAction, } from '../../python/sortingview/gui/pluginInterface/WorkspaceRoute'
 import WorkspaceView from '../../python/sortingview/gui/extensions/workspaceview/WorkspaceView'
-import { sha1OfObject, SubfeedHash, SubfeedMessage } from '../../python/sortingview/gui/labbox/kacheryTypes'
+import { sha1OfString, SubfeedHash, SubfeedMessage } from '../../python/sortingview/gui/labbox/kacheryTypes'
 import { parseWorkspaceUri } from '../../python/sortingview/gui/labbox'
 import { useBackendProviderClient } from '../../python/sortingview/gui/labbox'
 import { useSubfeed } from '../../python/sortingview/gui/labbox'
@@ -18,8 +18,8 @@ type Props = {
 const useWorkspace = (workspaceUri: string) => {
     const client = useBackendProviderClient()
     if (!client) throw Error('Unexpected: no backend provider client')
-    const {feedId, workspaceName} = parseWorkspaceUri(workspaceUri)
-    if ((!feedId) || (!workspaceName)) throw Error(`Error parsing workspace URI: ${workspaceUri}`)
+    const {feedId} = parseWorkspaceUri(workspaceUri)
+    if (!feedId) throw Error(`Error parsing workspace URI: ${workspaceUri}`)
     const [workspace, workspaceDispatch2] = useReducer(workspaceReducer, {recordings: [], sortings: []})
     // const workspace = useMemo(() => {
     //     const W = new Workspace(client, feedId, workspaceName)
@@ -33,7 +33,7 @@ const useWorkspace = (workspaceUri: string) => {
             }
         }
     }, [])
-    const subfeedHash = sha1OfObject({workspaceName}) as any as SubfeedHash
+    const subfeedHash = sha1OfString('main') as any as SubfeedHash
     const {appendMessages} = useSubfeed({feedId, subfeedHash, onMessages: handleMessages})
     const workspaceDispatch = useCallback((action: WorkspaceAction) => {
         appendMessages([{action: action} as any as SubfeedMessage])

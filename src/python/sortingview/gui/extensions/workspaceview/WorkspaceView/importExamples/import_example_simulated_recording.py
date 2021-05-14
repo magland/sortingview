@@ -21,6 +21,6 @@ def prepare_recording_sorting():
 recording, sorting_true = prepare_recording_sorting()
 sorting_label = 'true'
 workspace = le.load_workspace(workspace_uri)
-print(f'Workspace URI: {workspace.get_uri()}')
+print(f'Workspace URI: {workspace.uri}')
 R_id = workspace.add_recording(recording=recording, label=recording_label)
 S_id = workspace.add_sorting(sorting=sorting_true, recording_id=R_id, label=sorting_label)

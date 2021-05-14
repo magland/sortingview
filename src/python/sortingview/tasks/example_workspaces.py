@@ -10,14 +10,14 @@ def example_workspaces():
     w = le.load_workspace('default')
     return [
         {
-            'workspaceUri': w.get_uri(),
+            'workspaceUri': w.uri,
             'workspaceLabel': 'default'
         }
     ]
 
 @taskfunction('example_workspaces.1')
 def task_example_workspaces(cachebust: str):
-    with hi.Config(job_handler=job_handler, job_cache=None):
+    with hi.Config(job_handler=job_handler.misc, job_cache=None):
         return hi.Job(example_workspaces, {})
 
 @hi.function('workspace_list_subfeed', '0.1.0')
@@ -35,4 +35,4 @@ def set_workspace_list(workspace_list):
     sf = kp.load_subfeed(uri)
     print(sf.get_uri())
     print(sf.get_subfeed_hash())
-    # sf.append_message(workspace_list)
+    sf.append_message(workspace_list)

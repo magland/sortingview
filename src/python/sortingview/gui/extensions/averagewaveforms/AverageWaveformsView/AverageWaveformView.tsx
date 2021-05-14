@@ -1,5 +1,5 @@
 // import { createCalculationPool } from 'labbox';
-import React, { FunctionComponent, useEffect, useMemo } from 'react';
+import React, { FunctionComponent, useMemo } from 'react';
 import { ActionItem, DividerItem } from '../../../common/Toolbars';
 import { TaskStatusView, useTask } from '../../../labbox';
 import { applyMergesToUnit, Recording, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from '../../../pluginInterface';

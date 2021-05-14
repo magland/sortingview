@@ -89,7 +89,6 @@ class TaskManager {
             for (let taskHash of taskHashes) {
                 const t = this.#tasks[taskHash]
                 if (['error', 'finished'].includes(t.status)) {
-                    delete this.#tasks[taskHash]
                 }
                 else if (t.canceled) {
                     delete this.#tasks[taskHash]
