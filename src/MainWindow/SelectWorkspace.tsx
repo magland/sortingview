@@ -1,4 +1,4 @@
-import { Button, TextField } from '@material-ui/core'
+import { Button } from '@material-ui/core'
 import React, { useCallback, useEffect, useState } from 'react'
 import { FunctionComponent } from "react"
 import Splitter from '../python/sortingview/gui/commonComponents/Splitter/Splitter'
@@ -16,7 +16,7 @@ type Props = {
 const SelectWorkspace: FunctionComponent<Props> = ({onUpdated, width, height}) => {
     const {setRoute} = useRoute()
     const [closing, setClosing] = useState(false) // hack for now
-    const {visible: instructionsVisible, show: showInstructions, hide: hideInstructions} = useVisible()
+    const {visible: instructionsVisible, show: showInstructions} = useVisible()
 
     // const [editWorkspaceUri, setEditWorkspaceUri] = useState<string>('')
     // useEffect(() => {

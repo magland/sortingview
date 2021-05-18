@@ -40,7 +40,7 @@ const backendProviderItemsReducer = (state: BackendItem[], action: BackendProvid
 }
 
 export const initialBackendProviderItems = () => {
-    const s = _load()
+    const s = loadBackendItems()
     const uris: {[key: string]: boolean} = {}
     s.forEach(x => {uris[x.uri] = true})
     return [...s, ...hardCodedBackendProviderItems.filter(x => (!uris[x.uri]))]
@@ -48,7 +48,7 @@ export const initialBackendProviderItems = () => {
 
 const storageKey = 'sortingview-backend-provider-list'
 
-const _load = (): BackendItem[] => {
+export const loadBackendItems = (): BackendItem[] => {
     try {
         const x = localStorage.getItem(storageKey) || '[]'
         return (JSON.parse(x) as any[]).map(a => ({label: a.label + '', uri: a.uri + '', lastUsed: a.lastUsed} as BackendItem)).filter(x => (x.lastUsed > 0))
