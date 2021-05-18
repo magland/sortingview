@@ -19,7 +19,7 @@ pip install --upgrade "git+https://github.com/magland/sortingview#egg=sortingvie
 
 A Google Storage Bucket is used to store the cached data required for rendering the front-end visualization. Note that this bucket will not need to store the large raw files.
 
-Obtain the Google application credentials for accessing the Google Storage bucket. If you are creating the bucket yourself, follow the instructions below. Otherwise, the person setting up the bucket should provide the secret credentials to you in a .json file. Put that .json file somewhere on the computer where your backend provider will be running. Set the permissions so no other users can read the file.
+Obtain the Google application credentials for accessing the Google Storage bucket. If you are creating the bucket yourself, follow the instructions below. Otherwise, the person setting up the bucket should provide the secret credentials to you in a .json file as well as the name of the bucket. Put that .json file somewhere on the computer where your backend provider will be running. Set the permissions so no other users can read the file.
 
 ## Run the backend provider
 
@@ -43,7 +43,7 @@ On the main page of the app, click to specify a different backend provider, and 
 
 ## Google Storage Bucket configuration
 
-These are the instructions for creating and configuring a Google Storage Bucket to store the cached data required for rendering the front-end visualization. Note that this bucket will not need to store the large raw files. If somebody else created the bucket for you, you'll just need to get the secret credentials .json file from them.
+These are the instructions for creating and configuring a Google Storage Bucket to store the cached data required for rendering the front-end visualization. Note that this bucket will not need to store the large raw files. If somebody else created the bucket for you, you'll just need to get the secret credentials .json file and the name of the bucket from them.
 
 1. [Create a Google Cloud Storage Bucket](https://cloud.google.com/storage/docs/creating-buckets)
 2. Configure the bucket so that [all objects in the bucket are publicly readable](https://cloud.google.com/storage/docs/access-control/making-data-public#buckets).
@@ -68,10 +68,8 @@ These are the instructions for creating and configuring a Google Storage Bucket 
 
 and then using the [gsutil utility to set this CORS on your bucket](https://cloud.google.com/storage/docs/configuring-cors#configure-cors-bucket).
 
-4. [Create a Google Cloud service account](https://cloud.google.com/iam/docs/creating-managing-service-accounts#creating) and give it access to your bucket.
+4. [Create a Google Cloud service account](https://cloud.google.com/iam/docs/creating-managing-service-accounts#creating) and [download credentials](https://cloud.google.com/iam/docs/creating-managing-service-account-keys#creating_service_account_keys) to a .json file on the computer where you will be running the backend compute resource
 
-5. [Create and download credentials for your service account](https://cloud.google.com/iam/docs/creating-managing-service-account-keys#creating_service_account_keys) to a .json file on the computer where you will be running the backend compute resource
-
-6. Give the service account permission to access your bucket with the "Storage Object Admin" role.
+5. Give the service account permission to access your bucket with the "Storage Object Admin" role.
 
 After creating the bucket, download the credentials to a .json file on the computer where you will be running the backend compute resource. Set the permissions so no other users can read the file.
