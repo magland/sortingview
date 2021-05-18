@@ -1,11 +1,12 @@
 import os
 import time
 from .backend import Backend
-# register the tasks
-from ..tasks import *
-from ..gui.extensions import *
 
 def start_backend(*, app_url: str, label: str):
+    # register the tasks
+    from ..tasks import dummy
+    from ..gui.extensions import dummy
+
     # For uploading to google bucket
     GOOGLE_BUCKET_NAME = os.getenv('GOOGLE_BUCKET_NAME', None)
     GOOGLE_APPLICATION_CREDENTIALS = os.getenv('GOOGLE_APPLICATION_CREDENTIALS', None)

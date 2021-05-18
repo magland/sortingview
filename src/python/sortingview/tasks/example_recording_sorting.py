@@ -5,8 +5,7 @@ import labbox_ephys as le
 import hither2 as hi
 import kachery_p2p as kp
 from ..backend import taskfunction
-from .job_handler import job_handler
-from .job_cache import job_cache
+from sortingview.config import job_cache, job_handler
 
 # adjust these values
 workspace_uri = '{workspaceUri}'

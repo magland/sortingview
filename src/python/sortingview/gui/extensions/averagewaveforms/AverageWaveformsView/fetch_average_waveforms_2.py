@@ -8,7 +8,7 @@ import numpy as np
 import labbox_ephys as le
 from labbox import LabboxContext
 from sortingview.backend.taskfunction import taskfunction
-from sortingview.tasks import job_cache, job_handler
+from sortingview.config import job_cache, job_handler
 
 
 @hi.function('createjob_fetch_average_waveform_2', '0.1.1', register_globally=True)

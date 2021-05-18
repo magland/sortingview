@@ -1,3 +1,4 @@
+dummy = 0
 from .unitstable import *
 from .correlograms import *
 from .timeseries import *

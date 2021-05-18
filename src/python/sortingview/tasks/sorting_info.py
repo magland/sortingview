@@ -3,9 +3,8 @@ import hither2 as hi
 import labbox_ephys as le
 import numpy as np
 import spikeextractors as se
-from .job_handler import job_handler
-from .job_cache import job_cache
 from ..backend import taskfunction
+from sortingview.config import job_cache, job_handler
 
 @hi.function(
     'sorting_info', '0.1.3'

@@ -22,6 +22,8 @@ const Routes: FunctionComponent<Props> = ({width, height}) => {
         return (
             <SelectWorkspace
                 onUpdated={() => {setRoute({routePath: '/workspace'})}}
+                width={width}
+                height={height}
             />
         )
     }
