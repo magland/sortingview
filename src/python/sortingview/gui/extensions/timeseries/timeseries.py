@@ -10,7 +10,7 @@ import labbox_ephys as le
 from labbox_ephys.helpers.prepare_snippets_h5 import prepare_snippets_h5
 import numpy as np
 from sortingview.backend.taskfunction import taskfunction
-from sortingview.tasks import job_cache, job_handler
+from sortingview.config import job_cache, job_handler
 
 
 @hi.function('createjob_get_timeseries_segment', '0.1.0', register_globally=True)

@@ -1,0 +1,3 @@
+const text: string = "To add a workspace, run the following Python script on the computer where the backend provider is running:\n\n```python\nimport sortingview\nimport labbox_ephys as le\n\n# replace \"new-workspace\" with the name of the new workspace\nnew_workspace_name = 'new-workspace'\n\nworkspace_list = sortingview.WorkspaceList(backend_uri='{backendUri}')\nnew_workspace = le.create_workspace()\nworkspace_list.add_workspace(name=new_workspace_name, workspace=new_workspace)\n```"
+
+export default text

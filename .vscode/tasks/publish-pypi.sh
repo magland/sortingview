@@ -29,7 +29,7 @@ du -sh dist
 
 # Confirm publish
 while true; do
-    read -p "Publish version 0.1.6 (y/n)?" yn
+    read -p "Publish version 0.1.7 (y/n)?" yn
     case $yn in
         [Yy]* ) break;;
         [Nn]* ) echo "aborting"; exit;;
@@ -42,7 +42,7 @@ done
 twine upload ./dist/*
 
 # Tag this commit
-git tag v0.1.6
+git tag v0.1.7
 
-echo "Tagged as v0.1.6"
+echo "Tagged as v0.1.7"
 echo "You should increment the version now in jinjaroot.yaml"

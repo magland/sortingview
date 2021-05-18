@@ -1,6 +1,5 @@
 import hither2 as hi
-from .job_handler import job_handler
-from .job_cache import job_cache
+from sortingview.config import job_cache, job_handler
 from ..backend import taskfunction
 
 @hi.function('preload_extract_snippets', '0.1.0')

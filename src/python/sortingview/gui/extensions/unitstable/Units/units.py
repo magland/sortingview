@@ -1,6 +1,6 @@
 import os
 import hither2 as hi
-from sortingview.tasks import job_cache, job_handler
+from sortingview.config import job_cache, job_handler
 from sortingview.backend import taskfunction
 
 @hi.function(

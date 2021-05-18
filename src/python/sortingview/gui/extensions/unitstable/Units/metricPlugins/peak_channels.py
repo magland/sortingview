@@ -2,7 +2,7 @@ import os
 import hither2 as hi
 import kachery_p2p as kp
 import numpy as np
-from sortingview.tasks import job_cache, job_handler
+from sortingview.config import job_cache, job_handler
 from sortingview.backend import taskfunction
 
 from labbox_ephys import prepare_snippets_h5

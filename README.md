@@ -1,6 +1,6 @@
 # sortingview
 
-Interactively view and share results of electrophysiologic spike sorting.
+Interactively view and share results of electrophysiological spike sorting.
 
 **This project is at an early stage of development.**
 

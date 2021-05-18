@@ -1,14 +1,14 @@
-import React, { useCallback, useMemo, useReducer } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { FunctionComponent } from "react"
-import workspaceReducer, { WorkspaceAction } from '../../python/sortingview/gui/pluginInterface/workspaceReducer'
+import workspaceReducer from '../../python/sortingview/gui/pluginInterface/workspaceReducer'
 import { WorkspaceRoute, WorkspaceRouteAction, } from '../../python/sortingview/gui/pluginInterface/WorkspaceRoute'
 import WorkspaceView from '../../python/sortingview/gui/extensions/workspaceview/WorkspaceView'
-import { sha1OfString, SubfeedHash, SubfeedMessage } from '../../python/sortingview/gui/labbox/kacheryTypes'
+import { sha1OfString, SubfeedHash } from '../../python/sortingview/gui/labbox/kacheryTypes'
 import { parseWorkspaceUri } from '../../python/sortingview/gui/labbox'
 import { useBackendProviderClient } from '../../python/sortingview/gui/labbox'
-import { useSubfeed } from '../../python/sortingview/gui/labbox'
 import useRoute, { RoutePath } from '../../route/useRoute'
 import useCurrentUserPermissions from '../../python/sortingview/gui/labbox/backendProviders/useCurrentUserPermissions'
+import useSubfeedReducer from '../../python/sortingview/gui/labbox/misc/useSubfeedReducer'
 
 type Props = {
     width: number
@@ -20,24 +20,10 @@ const useWorkspace = (workspaceUri: string) => {
     if (!client) throw Error('Unexpected: no backend provider client')
     const {feedId} = parseWorkspaceUri(workspaceUri)
     if (!feedId) throw Error(`Error parsing workspace URI: ${workspaceUri}`)
-    const [workspace, workspaceDispatch2] = useReducer(workspaceReducer, {recordings: [], sortings: []})
-    // const workspace = useMemo(() => {
-    //     const W = new Workspace(client, feedId, workspaceName)
-    //     return W
-    // }, [client, feedId, workspaceName])
-    const handleMessages = useCallback((messages: SubfeedMessage[]) => {
-        for (let msg of messages) {
-            const action = msg.action
-            if (action) {
-                workspaceDispatch2(action as WorkspaceAction)
-            }
-        }
-    }, [])
+
     const subfeedHash = sha1OfString('main') as any as SubfeedHash
-    const {appendMessages} = useSubfeed({feedId, subfeedHash, onMessages: handleMessages})
-    const workspaceDispatch = useCallback((action: WorkspaceAction) => {
-        appendMessages([{action: action} as any as SubfeedMessage])
-    }, [appendMessages])
+    const [workspace, workspaceDispatch] = useSubfeedReducer(feedId, subfeedHash, workspaceReducer, {recordings: [], sortings: []}, {actionField: true})
+
     return {workspace, workspaceDispatch}
 }
 
