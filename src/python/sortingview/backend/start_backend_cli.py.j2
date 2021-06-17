@@ -1,0 +1,7 @@
+import click
+from .start_backend import start_backend
+
+@click.command('{{ projectName }}-start-backend')
+@click.option('--channel', required=True, help="The kachery channel")
+def start_backend_cli(channel: str):
+    start_backend(channel=channel)

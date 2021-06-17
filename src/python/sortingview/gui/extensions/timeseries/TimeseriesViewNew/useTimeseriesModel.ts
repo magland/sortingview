@@ -1,7 +1,10 @@
+import { KacheryDaemonNode } from "kachery-js"
+import { ChannelName } from "kachery-js/types/kacheryTypes"
+import { runPureCalculationTaskAsync } from "kachery-react/runPureCalculationTaskAsync"
+import useKacheryNode from "kachery-react/useKacheryNode"
+import useSelectedChannel from "python/sortingview/gui/pages/Home/useSelectedChannel"
 import { useMemo } from "react"
 import useFetchCache from '../../../common/useFetchCache'
-import { useBackendProviderClient } from '../../../labbox'
-import BackendProviderClient from '../../../labbox/backendProviders/BackendProviderClient'
 import { RecordingInfo } from '../../../pluginInterface'
 
 // it may be important to limit this when using a filter
@@ -15,19 +18,24 @@ export type TimeseriesData = {
   getSampleRate: () => number
 }
 
-const getTimeseriesDataSegment = async (args: {client?: BackendProviderClient, recordingObject: any, ds_factor: number, segment_num: number, segment_size: number}): Promise<number[][] | undefined> => {
-  const { client, recordingObject, ds_factor, segment_num, segment_size } = args
-  if (!client) return undefined
-  const result = await client.runTaskAsync<{traces: number[][]}>(
-      'get_timeseries_segment.1',
-      {
-          recording_object: recordingObject,
-          ds_factor,
-          segment_num,
-          segment_size
-      }
+const getTimeseriesDataSegment = async (args: {kacheryNode: KacheryDaemonNode | undefined, recordingObject: any, ds_factor: number, segment_num: number, segment_size: number, channelName: ChannelName}): Promise<number[][] | undefined> => {
+  const { kacheryNode, recordingObject, ds_factor, segment_num, segment_size, channelName } = args
+  if (!kacheryNode) return undefined
+  if (!recordingObject) return undefined
+  const x = await runPureCalculationTaskAsync<{traces: number[][]}>(
+    kacheryNode,
+    'get_timeseries_segment.1',
+    {
+      recording_object: recordingObject,
+      ds_factor,
+      segment_num,
+      segment_size
+    },
+    {
+      channelName
+    }
   )
-  return result?.traces
+  return x.traces
 }
 
 type TimeseriesDataSegmentQuery = {
@@ -40,14 +48,15 @@ type TimeseriesDataSegmentQuery = {
 type TimeseriesDataQuery = TimeseriesDataSegmentQuery
 
 const useTimeseriesData = (recordingObject: any, recordingInfo: RecordingInfo): TimeseriesData | null => {
-  const client = useBackendProviderClient()
+  const kacheryNode = useKacheryNode()
+  const {selectedChannel: channelName} = useSelectedChannel()
   const fetch = useMemo(() => (async (query: TimeseriesDataQuery) => {
     switch(query.type) {
       case 'dataSegment': {
-        return await getTimeseriesDataSegment({client, recordingObject, ds_factor: query.ds_factor, segment_num: query.segment_num, segment_size: query.segment_size})
+        return await getTimeseriesDataSegment({kacheryNode, recordingObject, ds_factor: query.ds_factor, segment_num: query.segment_num, segment_size: query.segment_size, channelName})
       }
     }
-  }), [client, recordingObject])
+  }), [kacheryNode, recordingObject, channelName])
   const data = useFetchCache<TimeseriesDataQuery>(fetch)
 
   const segment_size_times_num_channels = 100000

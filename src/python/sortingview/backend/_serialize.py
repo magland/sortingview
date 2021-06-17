@@ -19,7 +19,7 @@ def _serialize(x):
             '_type': 'ndarray',
             'shape': _serialize(x.shape),
             'dtype': str(x.dtype),
-            'data_b64': base64.b64encode(x.ravel()).decode()
+            'data_b64': base64.b64encode(x.ravel(order='C')).decode()
         }
     else:
         if _is_jsonable(x):

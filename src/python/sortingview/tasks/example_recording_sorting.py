@@ -3,8 +3,7 @@ import spikeextractors as se
 import numpy as np
 import labbox_ephys as le
 import hither2 as hi
-import kachery_p2p as kp
-from ..backend import taskfunction
+import kachery_client as kc
 from sortingview.config import job_cache, job_handler
 
 # adjust these values
@@ -26,8 +25,8 @@ def prepare_recording_sorting():
 @hi.function('example_recording_sortings', '0.1.2')
 def example_recording_sortings():
     recording, sorting_true = prepare_recording_sorting()
-    recording_uri = kp.store_json(recording.object(), basename='example_recording.json')
-    sorting_uri = kp.store_json(sorting_true.object(), basename='example_sorting_true.json')
+    recording_uri = kc.store_json(recording.object(), basename='example_recording.json')
+    sorting_uri = kc.store_json(sorting_true.object(), basename='example_sorting_true.json')
     return [{
         'label': 'Simulation1',
         'recordingObject': recording.object(),
@@ -37,7 +36,7 @@ def example_recording_sortings():
     }]
 
 
-@taskfunction('example_recording_sortings')
+@kc.taskfunction('example_recording_sortings', type='pure-calculation')
 def task_example_recording_sortings(cachebust: str):
     with hi.Config(job_handler=job_handler.misc, job_cache=job_cache):
         return hi.Job(example_recording_sortings, {})

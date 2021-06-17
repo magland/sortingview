@@ -20,7 +20,7 @@ interface Props {
     onEditRow?: (key: string) => void,
     editRowLabel?: string,
     selectionMode?: 'none' | 'single' | 'multiple',
-    selectedRowKeys?: {[key: string]: boolean},
+    selectedRowKeys?: string[],
     onSelectedRowKeysChanged?: ((keys: string[]) => void)
 }
 
@@ -32,12 +32,12 @@ const NiceTable: FunctionComponent<Props> = ({
     onEditRow=undefined,
     editRowLabel=undefined,
     selectionMode='none', // none, single, multiple
-    selectedRowKeys={},
+    selectedRowKeys=[],
     onSelectedRowKeysChanged=undefined
 }) => {
     const selectedRowKeysObj = useMemo(() => {
         const x: {[key: string]: boolean} = {};
-        Object.keys(selectedRowKeys).forEach((key) => {x[key] = selectedRowKeys[key]});
+        selectedRowKeys.forEach((key) => {x[key] = true});
         return x
     }, [selectedRowKeys])
     const [confirmDeleteRowKey, setConfirmDeleteRowKey] = useState<string | null>(null)

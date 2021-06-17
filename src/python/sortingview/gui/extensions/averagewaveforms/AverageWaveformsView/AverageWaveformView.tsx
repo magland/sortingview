@@ -1,7 +1,8 @@
 // import { createCalculationPool } from 'labbox';
+import useSelectedChannel from 'python/sortingview/gui/pages/Home/useSelectedChannel';
 import React, { FunctionComponent, useMemo } from 'react';
 import { ActionItem, DividerItem } from '../../../common/Toolbars';
-import { TaskStatusView, useTask } from '../../../labbox';
+import { TaskStatusView, usePureCalculationTask } from '../../../labbox';
 import { applyMergesToUnit, Recording, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from '../../../pluginInterface';
 import WaveformWidget, { ElectrodeOpts } from './WaveformWidget';
 
@@ -28,12 +29,16 @@ type Props = {
 // const calculationPool = createCalculationPool({maxSimultaneous: 6})
 
 const AverageWaveformView: FunctionComponent<Props> = ({ sorting, curation, recording, unitId, selection, selectionDispatch, width, height, noiseLevel, customActions }) => {
-    const {returnValue: plotData, task} = useTask<PlotData>(
+    const {selectedChannel: channelName} = useSelectedChannel()
+    const {returnValue: plotData, task} = usePureCalculationTask<PlotData>(
         'fetch_average_waveform.2',
         {
             sorting_object: sorting.sortingObject,
             recording_object: recording.recordingObject,
             unit_id: applyMergesToUnit(unitId, curation, selection.applyMerges)
+        },
+        {
+            channelName
         }
     )
     // const {returnValue: test} = useTask(

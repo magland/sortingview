@@ -1,13 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useReducer } from 'react';
-import { JSONObject, sha1OfObject, SubfeedHash, SubfeedMessage } from '../../../labbox/kacheryTypes';
 import { parseWorkspaceUri, usePlugins } from '../../../labbox';
-import { useSubfeed } from '../../../labbox';
 import { useRecordingInfo } from '../../../common/useRecordingInfo';
 import { useSortingInfo } from '../../../common/useSortingInfo';
 import { LabboxPlugin, Recording, Sorting, SortingInfo, SortingSelection, sortingSelectionReducer, sortingViewPlugins, WorkspaceRoute, WorkspaceRouteDispatch } from '../../../pluginInterface';
-import { SortingCurationAction } from '../../../pluginInterface/SortingCuration';
 import { sortingCurationReducer } from '../../../pluginInterface/workspaceReducer';
 import Hyperlink from '../../../commonComponents/Hyperlink/Hyperlink';
+import useSubfeedReducer from 'python/sortingview/gui/labbox/misc/useSubfeedReducer';
+import { JSONObject, sha1OfObject, SubfeedHash } from 'kachery-js/types/kacheryTypes';
 
 // const intrange = (a: number, b: number) => {
 //   const lower = a < b ? a : b;
@@ -43,16 +42,18 @@ const SortingView: React.FunctionComponent<Props> = (props) => {
 
   const {feedId} = parseWorkspaceUri(workspaceRoute.workspaceUri)
 
-  const [curation, curationDispatch2] = useReducer(sortingCurationReducer, useMemo(() => ({}), []))
-  const handleCurationSubfeedMessages = useCallback((messages: any[]) => {
-    messages.forEach(msg => curationDispatch2(msg))
-  }, [])
   const curationSubfeedName = useMemo(() => ({name: 'sortingCuration', sortingId}), [sortingId])
   const curationSubfeedHash = sha1OfObject(curationSubfeedName as any as JSONObject) as any as SubfeedHash
-  const {appendMessages: appendCurationMessages} = useSubfeed({feedId, subfeedHash: curationSubfeedHash, onMessages: handleCurationSubfeedMessages })
-  const curationDispatch = useCallback((a: SortingCurationAction) => {
-      appendCurationMessages([a as any as SubfeedMessage])
-  }, [appendCurationMessages])
+  const [curation, curationDispatch] = useSubfeedReducer(feedId, curationSubfeedHash, sortingCurationReducer, {}, {actionField: false})
+  // const [curation, curationDispatch2] = useReducer(sortingCurationReducer, useMemo(() => ({}), []))
+  // const handleCurationSubfeedMessages = useCallback((messages: any[]) => {
+  //   messages.forEach(msg => curationDispatch2(msg))
+  // }, [])
+  
+  // const {appendMessages: appendCurationMessages} = useSubfeed({feedId, subfeedHash: curationSubfeedHash })
+  // const curationDispatch = useCallback((a: SortingCurationAction) => {
+  //     appendCurationMessages([a as any as SubfeedMessage])
+  // }, [appendCurationMessages])
 
   useEffect(() => {
     if ((!selection.timeRange) && (recordingInfo)) {

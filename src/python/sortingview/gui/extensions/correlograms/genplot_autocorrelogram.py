@@ -1,10 +1,9 @@
-import os
+import kachery_client as kc
 import hither2 as hi
 import numpy as np
 import labbox_ephys as le
 import spikeextractors as se
 from sortingview.config import job_cache, job_handler
-from sortingview.backend import taskfunction
 
 from ._correlograms_phy import compute_correlograms
 
@@ -21,7 +20,7 @@ def fetch_correlogram_plot_data(sorting_object, unit_x, unit_y=None):
         window_size_msec=50, bin_size_msec=1)
     return data
 
-@taskfunction('fetch_correlogram_plot_data.1')
+@kc.taskfunction('fetch_correlogram_plot_data.1', type='pure-calculation')
 def task_fetch_correlogram_plot_data(sorting_object, unit_x, unit_y=None):
     with hi.Config(
         job_cache=job_cache,

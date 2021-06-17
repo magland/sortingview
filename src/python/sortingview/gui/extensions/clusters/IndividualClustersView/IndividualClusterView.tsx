@@ -1,6 +1,7 @@
 // import { createCalculationPool } from 'labbox';
+import useSelectedChannel from 'python/sortingview/gui/pages/Home/useSelectedChannel';
 import React, { FunctionComponent, useCallback, useMemo } from 'react';
-import { TaskStatusView, useTask } from '../../../labbox';
+import { TaskStatusView, usePureCalculationTask } from '../../../labbox';
 import { applyMergesToUnit, Recording, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from "../../../pluginInterface";
 import IndividualClusterWidget from './IndividualClusterWidget';
 
@@ -24,12 +25,16 @@ type Result = {
 }
 
 const IndividualClusterView: FunctionComponent<Props> = ({ recording, sorting, curation, selection, selectionDispatch, unitId, width, height }) => {
-    const {returnValue: features, task} = useTask<Result>(
+    const {selectedChannel: channelName} = useSelectedChannel()
+    const {returnValue: features, task} = usePureCalculationTask<Result>(
         'individual_cluster_features.1',
         {
             recording_object: recording.recordingObject,
             sorting_object: sorting.sortingObject,
             unit_id: applyMergesToUnit(unitId, curation, selection.applyMerges)
+        },
+        {
+            channelName
         }
     )
     const selectedIndex: number | undefined = useMemo(() => {

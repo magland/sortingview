@@ -1,7 +1,7 @@
 import spikeextractors as se
 import numpy as np
 import labbox_ephys as le
-import kachery_p2p as kp
+import kachery_client as kc
 
 
 # Adjust these values
@@ -11,13 +11,13 @@ recording_nwb_path = '<path or URI of nwb recording>'
 sorting_nwb_path = '<path or URI of nwb sorting>'
 workspace_uri = '{workspaceUri}'
 
-recording_uri = kp.store_object({
+recording_uri = kc.store_object({
     'recording_format': 'nwb',
     'data': {
         'path': recording_nwb_path
     }
 })
-sorting_uri = kp.store_object({
+sorting_uri = kc.store_object({
     'sorting_format': 'nwb',
     'data': {
         'path': sorting_nwb_path

@@ -1,5 +1,6 @@
+import usePureCalculationTask from 'kachery-react/usePureCalculationTask';
+import useSelectedChannel from 'python/sortingview/gui/pages/Home/useSelectedChannel';
 import React, { Fragment, FunctionComponent, useEffect, useMemo, useRef, useState } from 'react';
-import { useTask } from '../../../labbox';
 import { Recording, Sorting } from "../../../pluginInterface";
 
 interface ChildProps {
@@ -23,7 +24,8 @@ const PreloadCheck: FunctionComponent<Props> = ({ recording, sorting, children, 
         (runningState.current.sortingObject === x.sortingObject) && (runningState.current.recordingObject === x.recordingObject)
     )), [])
 
-    const {task: preloadExtractSnippetsTask} = useTask('preload_extract_snippets.1', {recording_object: recordingObject, sorting_object: sortingObject})
+    const {selectedChannel: channelName} = useSelectedChannel()
+    const {task: preloadExtractSnippetsTask} = usePureCalculationTask('preload_extract_snippets.1', {recording_object: recordingObject, sorting_object: sortingObject}, {channelName})
     const status = preloadExtractSnippetsTask?.status || 'waiting'
     const message = useMemo(() => {
         if (status === 'running') return 'Precomputing snippets'

@@ -3,9 +3,12 @@ import React, { FunctionComponent, useMemo } from 'react';
 import { getElectrodesAspectRatio } from '../../averagewaveforms/AverageWaveformsView/setupElectrodes';
 import { applyMergesToUnit, Recording, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from "../../../pluginInterface";
 import SnippetBox from './SnippetBox';
-import BackendProviderClient from '../../../labbox/backendProviders/BackendProviderClient';
-import { useBackendProviderClient } from '../../../labbox';
 import useFetchCache from '../../../common/useFetchCache';
+import { KacheryDaemonNode } from 'kachery-js';
+import { runPureCalculationTaskAsync } from 'kachery-react/runPureCalculationTaskAsync';
+import { ChannelName } from 'kachery-js/types/kacheryTypes';
+import useKacheryNode from 'kachery-react/useKacheryNode';
+import useSelectedChannel from 'python/sortingview/gui/pages/Home/useSelectedChannel';
 
 
 type Props = {
@@ -51,18 +54,22 @@ type SnippetsQuery = {
 
 type QueryType = InfoQuery | SnippetsQuery
 
-const getSnippetsInfo = async (args: {recording: Recording, sorting: Sorting, unitId: number | number[], client: BackendProviderClient}): Promise<InfoType> => {
-    const { recording, sorting, unitId, client } = args
-    const result = await client.runTaskAsync<{
+const getSnippetsInfo = async (args: {recording: Recording, sorting: Sorting, unitId: number | number[], kacheryNode: KacheryDaemonNode, channelName: ChannelName}): Promise<InfoType> => {
+    const { recording, sorting, unitId, kacheryNode, channelName } = args
+    const result = await runPureCalculationTaskAsync<{
         channel_ids: number[]
         channel_locations: number[][]
         sampling_frequency: number
     }>(
+        kacheryNode,
         'get_sorting_unit_info.1',
         {
             recording_object: recording.recordingObject,
             sorting_object: sorting.sortingObject,
             unit_id: unitId
+        },
+        {
+            channelName
         }
     )
     return {
@@ -72,14 +79,15 @@ const getSnippetsInfo = async (args: {recording: Recording, sorting: Sorting, un
     }
 }
 
-const getSnippets = async (args: {recording: Recording, sorting: Sorting, unitId: number | number[], timeRange: {min: number, max: number}, client: BackendProviderClient}): Promise<Snippet[]> => {
-    const { recording, sorting, unitId, timeRange, client } = args
-    const result = await client.runTaskAsync<{
+const getSnippets = async (args: {recording: Recording, sorting: Sorting, unitId: number | number[], timeRange: {min: number, max: number}, kacheryNode: KacheryDaemonNode, channelName: ChannelName}): Promise<Snippet[]> => {
+    const { recording, sorting, unitId, timeRange, kacheryNode, channelName } = args
+    const result = await runPureCalculationTaskAsync<{
         channel_ids: number[]
         channel_locations: number[][]
         sampling_frequency: number
         snippets: Snippet[]
     }>(
+        kacheryNode,
         'get_sorting_unit_snippets.1',
         {
             recording_object: recording.recordingObject,
@@ -87,6 +95,9 @@ const getSnippets = async (args: {recording: Recording, sorting: Sorting, unitId
             unit_id: unitId,
             time_range: timeRange,
             max_num_snippets: 1000
+        },
+        {
+            channelName
         }
     )
     return result.snippets
@@ -105,21 +116,21 @@ const createTimeSegments = (timeRange: {min: number, max: number} | null, opts: 
 }
 
 const useSnippets = (args: {recording: Recording, sorting: Sorting, curation: SortingCuration, visibleElectrodeIds: number[] | undefined, selection: SortingSelection, unitId: number, timeRange: {min: number, max: number} | null}) => {
-    const client = useBackendProviderClient()
+    const kacheryNode = useKacheryNode()
+    const {selectedChannel: channelName} = useSelectedChannel()
     const { recording, sorting, selection, curation, visibleElectrodeIds, unitId, timeRange } = args
     const fetchFunction = useMemo(() => (
         async (query: QueryType) => {
-            if (!client) throw Error('No backend client.')
             switch(query.type) {
                 case 'info':
                     const uid1 = applyMergesToUnit(query.unitId, curation, selection.applyMerges)
-                    return await getSnippetsInfo({recording: query.recording, sorting: query.sorting, unitId: uid1, client})
+                    return await getSnippetsInfo({recording: query.recording, sorting: query.sorting, unitId: uid1, kacheryNode, channelName})
                 case 'snippets':
                     const uid2 = applyMergesToUnit(query.unitId, curation, selection.applyMerges)
-                    return await getSnippets({recording: query.recording, sorting: query.sorting, unitId: uid2, timeRange: query.timeRange, client})
+                    return await getSnippets({recording: query.recording, sorting: query.sorting, unitId: uid2, timeRange: query.timeRange, kacheryNode, channelName})
             }
         }
-    ), [client, curation, selection.applyMerges])
+    ), [kacheryNode, channelName, curation, selection.applyMerges])
     const data = useFetchCache<QueryType>(fetchFunction)
     return useMemo(() => {
         const infoQuery: InfoQuery = {type: 'info', recording, sorting, unitId}

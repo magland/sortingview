@@ -1,7 +1,7 @@
 import objectHash from 'object-hash'
 import { useEffect, useMemo, useReducer, useRef, useState } from "react"
 
-type FetchCache<QueryType> = {
+export type FetchCache<QueryType> = {
     get: (query: QueryType) => any | undefined
 }
 
@@ -85,12 +85,12 @@ const useFetchCache = <QueryType>(fetchFunction: (query: QueryType) => Promise<a
     const get = useMemo(() => ((query: QueryType) => {
         const h = queryHash(query)
         const v = state.data[h]
-        if (v === undefined) {
+        if ((v === undefined) && (!state.activeFetches[h])) {
             queriesToFetch.current[h] = query
             setCount((c) => (c + 1)) // make sure we trigger a state change so we go to the useEffect below
         }
         return v
-    }), [state.data])
+    }), [state.data, state.activeFetches])
     const fetch = useMemo(() => ((query: QueryType) => {
         const h = queryHash(query)
         const val = state.data[h]
@@ -98,7 +98,9 @@ const useFetchCache = <QueryType>(fetchFunction: (query: QueryType) => Promise<a
         if (state.activeFetches[h]) return
         dispatch({type: 'startFetch', queryHash: h})
         fetchFunction(query).then((data: any) => {
-            dispatch({type: 'setData', queryHash: h, data})
+            if (data !== undefined) {
+                dispatch({type: 'setData', queryHash: h, data})
+            }
         }).catch((err) => {
             console.warn(err)
             console.warn('Problem fetching data', query)

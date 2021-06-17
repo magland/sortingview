@@ -1,10 +1,12 @@
 
 import { Button, Paper } from '@material-ui/core';
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
-import { useBackendProviders, usePlugins } from '../../../labbox';
+import { useKacheryNode, usePlugins } from '../../../labbox';
 import { LabboxPlugin, Recording, SortingUnitMetricPlugin, sortingUnitMetricPlugins, SortingViewProps } from "../../../pluginInterface";
 import sortByPriority from '../../../common/sortByPriority';
 import UnitsTable from './UnitsTable';
+import { runPureCalculationTaskAsync } from 'kachery-react/runPureCalculationTaskAsync';
+import useSelectedChannel from 'python/sortingview/gui/pages/Home/useSelectedChannel';
 
 // const defaultLabelOptions = ['noise', 'MUA', 'artifact', 'accept', 'reject'];
 
@@ -70,11 +72,12 @@ const Units: React.FunctionComponent<SortingViewProps & OwnProps> = (props) => {
             setPreviousRecording(recording)
         }
     }, [recording, previousRecording, setPreviousRecording, updateMetrics])
-    const {selectedBackendProviderClient: backendProviderClient} = useBackendProviders()
+
+    const kacheryNode = useKacheryNode()
+    const {selectedChannel: channelName} = useSelectedChannel()
 
 
     const fetchMetric = useCallback(async (metric: SortingUnitMetricPlugin) => {
-        if (!backendProviderClient) return
         const name = metric.name;
 
         if (name in metrics) {
@@ -86,12 +89,16 @@ const Units: React.FunctionComponent<SortingViewProps & OwnProps> = (props) => {
         // new request. Add state to cache, dispatch job, then update state as results come back.
         updateMetrics({metricName: metric.name, status: 'executing'})
         try {
-            const data = await backendProviderClient.runTaskAsync(
+            const data = await runPureCalculationTaskAsync(
+                kacheryNode,
                 metric.hitherFnName,
                 {
                     sorting_object: sorting.sortingObject,
                     recording_object: recording.recordingObject,
                     configuration: metric.metricFnParams
+                },
+                {
+                    channelName
                 }
             )
             updateMetrics({metricName: metric.name, status: 'completed', data})
@@ -99,7 +106,7 @@ const Units: React.FunctionComponent<SortingViewProps & OwnProps> = (props) => {
             console.error(err);
             updateMetrics({metricName: metric.name, status: 'error', error: err.message})
         }
-    }, [metrics, sorting.sortingObject, recording.recordingObject, backendProviderClient]);
+    }, [kacheryNode, channelName, metrics, sorting.sortingObject, recording.recordingObject])
 
     const plugins = usePlugins<LabboxPlugin>()
     useEffect(() => { 

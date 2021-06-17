@@ -1,26 +1,17 @@
-import os
-import time
-from .backend import Backend
+import kachery_client as kc
 
-def start_backend(*, app_url: str, label: str):
+def start_backend(*, channel: str):
     # register the tasks
     from ..tasks import dummy
     from ..gui.extensions import dummy
 
-    # For uploading to google bucket
-    GOOGLE_BUCKET_NAME = os.getenv('GOOGLE_BUCKET_NAME', None)
-    GOOGLE_APPLICATION_CREDENTIALS = os.getenv('GOOGLE_APPLICATION_CREDENTIALS', None)
-    if GOOGLE_BUCKET_NAME is None:
-        raise Exception(f'Environment variable not set: GOOGLE_BUCKET_NAME')
-    if GOOGLE_APPLICATION_CREDENTIALS is None:
-        raise Exception(f'Environment variable not set: GOOGLE_APPLICATION_CREDENTIALS')
-    if not os.path.isfile(GOOGLE_APPLICATION_CREDENTIALS):
-        raise Exception(f'Google application credentials file not found: {GOOGLE_APPLICATION_CREDENTIALS}')
-    
-    X = Backend(google_bucket_name=GOOGLE_BUCKET_NAME, app_url=app_url, label=label)
-    try:
-        while True:
-            X.iterate()
-            time.sleep(0.1)
-    finally:
-        X.cleanup()
+    kc.run_task_backend(
+        channels=[channel],
+        task_function_ids=[
+            'sortingview_workspace_list_subfeed.2',
+            'example_recording_sortings', 'recording_info.3', 'sorting_info.3',
+            'preload_extract_snippets.1', 'get_isi_violation_rates.1', 'get_peak_channels.1',
+            'get_unit_snrs.1', 'get_firing_data.1', 'fetch_correlogram_plot_data.1',
+            'get_timeseries_segment.1', 'fetch_average_waveform.2', 'test_delay.1', 'individual_cluster_features.1'
+        ]
+    )

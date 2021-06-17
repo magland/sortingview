@@ -1,7 +1,7 @@
 import os
 import hither2 as hi
+import kachery_client as kc
 from sortingview.config import job_cache, job_handler
-from sortingview.backend import taskfunction
 
 @hi.function(
     'get_firing_data', '0.1.2',
@@ -20,7 +20,7 @@ def get_firing_data(sorting_object, recording_object, configuration):
           'rate': f"{Decimal(t / elapsed).quantize(Decimal('.01'))}"} for t in train]))
     return keyedCount
 
-@taskfunction('get_firing_data.1')
+@kc.taskfunction('get_firing_data.1', type='pure-calculation')
 def task_get_firing_data(sorting_object, recording_object, configuration):
     with hi.Config(
         job_cache=job_cache,

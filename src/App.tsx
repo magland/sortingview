@@ -1,11 +1,12 @@
+import { MuiThemeProvider } from '@material-ui/core';
+import KacheryNodeSetup from 'kachery-react/KacheryNodeSetup';
+import MainWindow from 'python/sortingview/gui/MainWindow/MainWindow';
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 // import logo from './logo.svg';
 import './App.css';
-import MainWindow from './MainWindow/MainWindow';
-import { MuiThemeProvider } from '@material-ui/core';
+import { GoogleSignInSetup } from './python/sortingview/gui/labbox';
 import theme from './theme';
-import { BrowserRouter } from 'react-router-dom';
-import {BackendProvidersSetup, GoogleSignInSetup} from './python/sortingview/gui/labbox';
 
 function App() {
   return (
@@ -13,9 +14,9 @@ function App() {
       <MuiThemeProvider theme={theme}>
         <BrowserRouter>
           <GoogleSignInSetup>
-            <BackendProvidersSetup>
+            <KacheryNodeSetup>
               <MainWindow />
-            </BackendProvidersSetup>
+            </KacheryNodeSetup>
           </GoogleSignInSetup>
         </BrowserRouter>
       </MuiThemeProvider>

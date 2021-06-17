@@ -1,8 +1,8 @@
 import { Button, IconButton, Link as LinkMui, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
 import React, { FunctionComponent, useState } from 'react';
-import Task from '../../backendProviders/tasks/Task';
-import NiceTable from '../../../commonComponents/NiceTable/NiceTable'
+import NiceTable from '../../../commonComponents/NiceTable/NiceTable';
+import { Task } from 'kachery-react/initiateTask';
 import { useUpdatingTasks } from './TaskMonitorControl';
 type Props = {
     onClose: () => void
@@ -42,8 +42,8 @@ const TaskInfoView: FunctionComponent<{task: Task<any>}> = ({ task }) => {
     const logArgumentsToConsole = (task.kwargs && niceStringify(task.kwargs).length > 1000);
     const [argumentsExpanded, setArgumentsExpanded] = useState<boolean>(!argumentsCollapsable);
 
-    const resultCollapsable = (task.returnValue && niceStringify(task.returnValue).length > 50);
-    const logResultToConsole = (task.returnValue && niceStringify(task.returnValue).length > 1000);
+    const resultCollapsable = (task.result && niceStringify(task.result).length > 50);
+    const logResultToConsole = (task.result && niceStringify(task.result).length > 1000);
     const [resultExpanded, setResultExpanded] = useState(!resultCollapsable);
 
     const argumentsElement = argumentsExpanded ? (
@@ -66,20 +66,20 @@ const TaskInfoView: FunctionComponent<{task: Task<any>}> = ({ task }) => {
             {
                 resultCollapsable && <Button onClick={() => setResultExpanded(false)}>Collapse</Button>
             }
-            <pre>{task.returnValue ? niceStringify(task.returnValue): ''}</pre>
+            <pre>{task.result ? niceStringify(task.result): ''}</pre>
         </div>
     ) : (
         logResultToConsole ? (
-            <Button onClick={() => {console.info(task.returnValue)}}>Write result to console</Button>
+            <Button onClick={() => {console.info(task.result)}}>Write result to console</Button>
         ) : (
-            <Button onClick={() => {console.info(task.returnValue); setResultExpanded(true)}}>Expand</Button>
+            <Button onClick={() => {console.info(task.result); setResultExpanded(true)}}>Expand</Button>
         )
     )
 
     const fields = [
         {
-            label: 'Task Hash',
-            value: task.taskHash
+            label: 'Task ID',
+            value: task.taskId
         },
         {
             label: 'Function ID',
@@ -95,11 +95,11 @@ const TaskInfoView: FunctionComponent<{task: Task<any>}> = ({ task }) => {
         },
         {
             label: 'Initiated',
-            value: task.timestampInitiated ? formatTime(new Date(task.timestampInitiated)) : ''
+            value: task.timestampInitiated ? formatTime(new Date(Number(task.timestampInitiated))) : ''
         },
         {
             label: 'Completed',
-            value: task.timestampCompleted ? formatTime(new Date(task.timestampCompleted)) : ''
+            value: task.timestampCompleted ? formatTime(new Date(Number(task.timestampCompleted))) : ''
         },
         {
             label: 'Result',
@@ -179,11 +179,11 @@ const TaskMonitorTable: FunctionComponent<{
         else return 0
     })
     const rows = sortedTasks.map((j) => ({
-        key: j.taskHash.toString() || 'null',
+        key: (j.taskId || 'undefined-' + j).toString(),
         columnValues: {
             taskHash: {
-                text: j.taskHash,
-                element: <LinkMui href="#" onClick={() => {onViewTask && onViewTask(j)}}>{j.taskHash}</LinkMui>
+                text: j.taskId,
+                element: <LinkMui href="#" onClick={() => {onViewTask && onViewTask(j)}}>{j.taskId}</LinkMui>
             },
             functionName: {
                 text: j.functionId
@@ -194,8 +194,8 @@ const TaskMonitorTable: FunctionComponent<{
                     <span><span>{j.status} </span><CancelTaskButton onClick={() => {onCancelTask && onCancelTask(j)}}/></span>
                 ) : <span>{j.status}</span>
             },
-            initiated: {text: j.timestampInitiated ? formatTime(new Date(j.timestampInitiated)) : ''},
-            completed: {text: j.timestampCompleted ? formatTime(new Date(j.timestampCompleted)) : ''},
+            initiated: {text: j.timestampInitiated ? formatTime(new Date(Number(j.timestampInitiated))) : ''},
+            completed: {text: j.timestampCompleted ? formatTime(new Date(Number(j.timestampCompleted))) : ''},
             message: {text: j.errorMessage || ''}
         }
     }));

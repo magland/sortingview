@@ -1,7 +1,7 @@
 import spikeextractors as se
 import numpy as np
 import labbox_ephys as le
-import kachery_p2p as kp
+import kachery_client as kc
 
 # adjust these values
 workspace_uri = '{workspaceUri}'

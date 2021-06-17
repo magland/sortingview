@@ -3,7 +3,7 @@ import hither2 as hi
 import labbox_ephys as le
 import numpy as np
 import spikeextractors as se
-from ..backend import taskfunction
+import kachery_client as kc
 from sortingview.config import job_cache, job_handler
 
 @hi.function(
@@ -21,7 +21,7 @@ def recording_info(recording_uri):
         recording_object=recording.object()
     )
 
-@taskfunction('recording_info.3')
+@kc.taskfunction('recording_info.3', type='pure-calculation')
 def task_recording_info(recording_uri: str):
     with hi.Config(job_handler=job_handler.misc, job_cache=job_cache):
         return hi.Job(recording_info, {'recording_uri': recording_uri})

@@ -1,7 +1,10 @@
 import { Box, CircularProgress } from '@material-ui/core';
+import { CalculationPool } from 'kachery-react/createCalculationPool';
+import { runPureCalculationTaskAsync } from 'kachery-react/runPureCalculationTaskAsync';
+import useKacheryNode from 'kachery-react/useKacheryNode';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import VisibilitySensor from 'react-visibility-sensor';
-import { CalculationPool, useBackendProviderClient } from '../../labbox';
+import useSelectedChannel from '../../pages/Home/useSelectedChannel';
 
 const ClientSidePlot: FunctionComponent<{
     dataFunctionName: string,
@@ -18,22 +21,23 @@ const ClientSidePlot: FunctionComponent<{
     boxSize = { width: 200, height: 200 },
     PlotComponent, plotComponentArgs, plotComponentProps, title
 }) => {
-    const client = useBackendProviderClient()
     const [calculationStatus, setCalculationStatus] = useState<string>('waitingForVisible');
     const [calculationError, setCalculationError] = useState<string | null>(null);
     const [plotData, setPlotData] = useState<any | null>(null);
     const [visible, setVisible] = useState(false);
 
+    const kacheryNode = useKacheryNode()
+    const {selectedChannel: channelName} = useSelectedChannel()
+
     useEffect(() => {
         ;(async () => {
-            if (!client) return
             if ((calculationStatus === 'waitingForVisible') && (visible)) {
                 setCalculationStatus('waiting');
                 const slot = calculationPool ? await calculationPool.requestSlot() : null;
                 setCalculationStatus('calculating');
                 let plot_data;
                 try {
-                    plot_data = await client.runTaskAsync(dataFunctionName, dataFunctionArgs)
+                    plot_data = await runPureCalculationTaskAsync(kacheryNode, dataFunctionName, dataFunctionArgs, {channelName})
                 }
                 catch (err) {
                     console.error(err);
@@ -48,7 +52,7 @@ const ClientSidePlot: FunctionComponent<{
                 setCalculationStatus('finished');
             }
         })()
-    }, [dataFunctionName, calculationStatus, calculationPool, dataFunctionArgs, client, visible])
+    }, [kacheryNode, channelName, dataFunctionName, calculationStatus, calculationPool, dataFunctionArgs, visible])
 
     if (calculationStatus === 'waitingForVisible') {
         return (

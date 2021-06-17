@@ -1,7 +1,7 @@
 import os
 import hither2 as hi
 from sortingview.config import job_cache, job_handler
-from sortingview.backend import taskfunction
+import kachery_client as kc
 
 @hi.function(
     'get_isi_violation_rates', '0.1.1',
@@ -30,7 +30,7 @@ def get_isi_violation_rates(sorting_object, recording_object, configuration={}):
         )
     return ret
 
-@taskfunction('get_isi_violation_rates.1')
+@kc.taskfunction('get_isi_violation_rates.1', type='pure-calculation')
 def task_get_isi_violation_rates(sorting_object, recording_object, configuration={}):
     with hi.Config(
         job_cache=job_cache,

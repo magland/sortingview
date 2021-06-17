@@ -11,6 +11,7 @@ setup(
         'google-cloud-storage',
         'paho-mqtt',
         'CacheControl',
-        'labbox-ephys>=0.5.13'
+        'labbox-ephys>=0.5.13',
+        'pynwb'
     ]
 )

@@ -1,9 +1,8 @@
 import os
 import hither2 as hi
-import kachery_p2p as kp
+import kachery_client as kc
 import numpy as np
 from sortingview.config import job_cache, job_handler
-from sortingview.backend import taskfunction
 
 from labbox_ephys import prepare_snippets_h5
 from labbox_ephys.helpers.get_unit_waveforms import get_unit_waveforms
@@ -15,7 +14,7 @@ from labbox_ephys.helpers.get_unit_waveforms import get_unit_waveforms
 )
 def get_peak_channels(snippets_h5):
     import h5py
-    h5_path = kp.load_file(snippets_h5, p2p=False)
+    h5_path = kc.load_file(snippets_h5)
     assert h5_path is not None
     ret = {}
     with h5py.File(h5_path, 'r') as f:
@@ -33,7 +32,7 @@ def _compute_peak_channel_index_from_waveforms(waveforms):
     peak_channel_index = np.argmax(channel_amplitudes)
     return peak_channel_index
 
-@taskfunction('get_peak_channels.1')
+@kc.taskfunction('get_peak_channels.1', type='pure-calculation')
 def task_get_peak_channels(sorting_object, recording_object, configuration={}):
     with hi.Config(
         job_cache=job_cache,

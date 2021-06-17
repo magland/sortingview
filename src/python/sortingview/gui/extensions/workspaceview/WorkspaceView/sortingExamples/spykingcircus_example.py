@@ -10,7 +10,7 @@ import spikeextractors as se
 import numpy as np
 import labbox_ephys as le
 from labbox_ephys import sorters
-import kachery_p2p as kp
+import kachery_client as kc
 
 if __name__ == '__main__':
     # adjust these values

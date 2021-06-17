@@ -1,9 +1,8 @@
 import os
 import hither2 as hi
-import kachery_p2p as kp
+import kachery_client as kc
 import numpy as np
 from sortingview.config import job_cache, job_handler
-from sortingview.backend import taskfunction
 
 from labbox_ephys import prepare_snippets_h5
 from labbox_ephys.helpers.get_unit_waveforms import get_unit_waveforms
@@ -15,7 +14,7 @@ from labbox_ephys.helpers.get_unit_waveforms import get_unit_waveforms
 )
 def get_unit_snrs(snippets_h5):
     import h5py
-    h5_path = kp.load_file(snippets_h5, p2p=False)
+    h5_path = kc.load_file(snippets_h5)
     assert h5_path is not None
     ret = {}
     with h5py.File(h5_path, 'r') as f:
@@ -35,7 +34,7 @@ def _compute_unit_snr_from_waveforms(waveforms):
     snr = peak_channel_amplitude / est_noise_level
     return snr
 
-@taskfunction('get_unit_snrs.1')
+@kc.taskfunction('get_unit_snrs.1', type='pure-calculation')
 def task_get_unit_snrs(sorting_object, recording_object, configuration={}):
     with hi.Config(
         job_cache=job_cache,

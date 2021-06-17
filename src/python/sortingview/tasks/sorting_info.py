@@ -3,7 +3,7 @@ import hither2 as hi
 import labbox_ephys as le
 import numpy as np
 import spikeextractors as se
-from ..backend import taskfunction
+import kachery_client as kc
 from sortingview.config import job_cache, job_handler
 
 @hi.function(
@@ -17,7 +17,7 @@ def sorting_info(sorting_uri):
         sorting_object=sorting.object()
     )
 
-@taskfunction('sorting_info.3')
+@kc.taskfunction('sorting_info.3', type='pure-calculation')
 def task_sorting_info(sorting_uri: str):
     with hi.Config(job_handler=job_handler.misc, job_cache=job_cache):
         return hi.Job(sorting_info, {'sorting_uri': sorting_uri})

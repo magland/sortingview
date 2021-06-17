@@ -1,8 +1,9 @@
 import axios from "axios"
+import { UrlString } from "kachery-js/types/kacheryTypes"
 import { randomAlphaString } from "../google/GoogleObjectStorageClient"
 
 export type HttpObjectStorageClientOpts = {
-    baseUrl: string
+    baseUrl: UrlString
 }
 
 class HttpObjectStorageClient {

@@ -325,6 +325,15 @@ export class CanvasPainter {
         
         this._context2D.restore()
     }
+    createImageData(W: number, H: number) {
+        return this._context2D.createImageData(W, H);
+    }
+    getImageData(x: number, y: number, W: number, H: number) {
+        return this._context2D.getImageData(x, y, W, H);
+    }
+    putImageData(imageData: ImageData, x: number, y: number) {
+        this._context2D.putImageData(imageData, x, y);
+    }
     // in future we may want to implement this:
     // this.createImageData = function(W, H) {
     //     return ctx.getImageData(W, H);

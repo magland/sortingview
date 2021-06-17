@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { VerticalBarSeries, XAxis, XYPlot, YAxis } from 'react-vis';
-import { TaskStatusView } from '../../labbox';
-import { useTask } from '../../labbox';
+import { TaskStatusView, usePureCalculationTask } from '../../labbox';
+import useSelectedChannel from '../../pages/Home/useSelectedChannel';
 import { applyMergesToUnit, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from "../../pluginInterface";
 
 type PlotData = {
@@ -33,11 +33,12 @@ const Correlogram_rv2: FunctionComponent<Props> = ({ sorting, unitId1, unitId2, 
     //     {useClientCache: false, calculationPool}
     // )
 
-    const {returnValue: plotData, task: taskPlotData} = useTask<PlotData>('fetch_correlogram_plot_data.1', {
+    const {selectedChannel: channelName} = useSelectedChannel()
+    const {returnValue: plotData, task: taskPlotData} = usePureCalculationTask<PlotData>('fetch_correlogram_plot_data.1', {
         sorting_object: sorting.sortingObject,
         unit_x: applyMergesToUnit(unitId1, curation, selection.applyMerges),
         unit_y: unitId2 !== undefined ? applyMergesToUnit(unitId2, curation, selection.applyMerges) : null        
-    })
+    }, {channelName})
 
     if (!plotData) {
         // return <HitherJobStatusView job={job} width={width} height={height} />

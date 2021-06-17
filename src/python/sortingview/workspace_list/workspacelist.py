@@ -1,11 +1,11 @@
-import kachery_p2p as kp
+import kachery_client as kc
 import labbox_ephys as le
 
 class WorkspaceList:
-    def __init__(self, backend_uri: str):
-        self._backend_uri = backend_uri
+    def __init__(self, *, list_name: str):
+        self._list_name = list_name
     def add_workspace(self, *, name: str, workspace: le.Workspace):
-        sf = kp.load_subfeed(self.get_subfeed_uri())
+        sf = kc.load_subfeed(self.get_subfeed_uri())
         sf.append_message({
             'action': {
                 'type': 'add',
@@ -16,10 +16,10 @@ class WorkspaceList:
             }
         })
     def get_subfeed_uri(self):
-        k = {'name': 'sortingview-workspace-list', 'backendUri': self._backend_uri}
-        feed_uri = kp.get(k)
+        k = {'name': 'sortingview-workspace-list'}
+        feed_uri = kc.get(k)
         if feed_uri is None:
-            feed_uri = kp.create_feed().get_uri()
-            kp.set(k, feed_uri)
-        f = kp.load_feed(feed_uri)
-        return f.get_subfeed('workspace-list').get_uri()
+            feed_uri = kc.create_feed().uri
+            kc.set(k, feed_uri)
+        f = kc.load_feed(feed_uri)
+        return f.load_subfeed(self._list_name).uri

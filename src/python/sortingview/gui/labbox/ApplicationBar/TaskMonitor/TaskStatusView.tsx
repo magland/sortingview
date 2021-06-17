@@ -1,6 +1,6 @@
 import React from 'react'
 import { FunctionComponent } from "react"
-import Task from '../../backendProviders/tasks/Task'
+import { Task } from 'kachery-react/initiateTask'
 
 type Props = {
     label: string
@@ -11,7 +11,7 @@ const TaskStatusView: FunctionComponent<Props> = ({label, task}) => {
     if (!task) return (
         <div>Waiting for task: {label}</div>
     )
-    if ((task.status === 'waiting') || (task.status === 'pending') || (task.status === 'queued') || (task.status === 'running') || (task.status === 'finished')) {
+    if ((task.status === 'waiting') || (task.status === 'pending') || (task.status === 'running') || (task.status === 'finished')) {
         return <div>{label}: {task.status}</div>
     }
     else if (task.status === 'error') {

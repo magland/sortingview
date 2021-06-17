@@ -1,14 +1,15 @@
 import { AppBar, Toolbar } from '@material-ui/core';
 import React, { FunctionComponent, useCallback, useMemo, useState } from 'react';
-import BackendProviderControl from './BackendProviderControl';
-import SelectBackendProvider from '../backendProviders/SelectBackendProvider';
+import ChannelControl from './ChannelControl';
 import ModalWindow from './ModalWindow';
 import TaskMonitorControl from './TaskMonitor/TaskMonitorControl'
 import TaskMonitor from './TaskMonitor/TaskMonitor'
+import SelectChannel from '../../pages/Home/SelectChannel';
 
 const appBarHeight = 50
 
 type Props = {
+    title: string
     logo?: any
     onHome?: () => void
 }
@@ -33,8 +34,8 @@ export const useModalDialog = () => {
     }), [visible, handleOpen, handleClose])
 }
 
-const ApplicationBar: FunctionComponent<Props> = ({ logo, onHome }) => {
-    const {visible: backendProviderVisible, handleOpen: openBackendProvider, handleClose: closeBackendProvider} = useModalDialog()
+const ApplicationBar: FunctionComponent<Props> = ({ title, logo, onHome }) => {
+    const {visible: channelVisible, handleOpen: openChannel, handleClose: closeChannel} = useModalDialog()
     const {visible: taskMonitorVisible, handleOpen: openTaskMonitor, handleClose: closeTaskMonitor} = useModalDialog()
 
     return (
@@ -44,10 +45,10 @@ const ApplicationBar: FunctionComponent<Props> = ({ logo, onHome }) => {
                 {
                     logo && (<img src={logo} className="App-logo" alt="logo" height={30} style={{paddingBottom: 5, cursor: 'pointer'}} onClick={onHome} />)
                 }
-                &nbsp;&nbsp;&nbsp;<div style={homeButtonStyle} onClick={onHome}>sortingview</div>
+                &nbsp;&nbsp;&nbsp;<div style={homeButtonStyle} onClick={onHome}>{title}</div>
                 <span style={{marginLeft: 'auto'}} />
                 <span style={{paddingBottom: 0, color: 'white'}}>
-                    <BackendProviderControl onOpen={openBackendProvider} color={'white'} />
+                    <ChannelControl onOpen={openChannel} color={'white'} />
                 </span>
                 <span style={{paddingBottom: 0, color: 'white'}}>
                     <TaskMonitorControl onOpen={openTaskMonitor} color="white" />
@@ -55,11 +56,11 @@ const ApplicationBar: FunctionComponent<Props> = ({ logo, onHome }) => {
                 </Toolbar>
             </AppBar>
             <ModalWindow
-                open={backendProviderVisible}
-                onClose={closeBackendProvider}
+                open={channelVisible}
+                onClose={closeChannel}
             >
-                <SelectBackendProvider
-                    onClose={closeBackendProvider}
+                <SelectChannel
+                    onClose={closeChannel}
                 />
             </ModalWindow>
             <ModalWindow

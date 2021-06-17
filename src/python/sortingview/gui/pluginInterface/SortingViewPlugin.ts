@@ -1,5 +1,5 @@
+import { CalculationPool } from "kachery-react/createCalculationPool";
 import { LabboxViewPlugin } from ".";
-import { CalculationPool } from "../labbox";
 import { Recording, RecordingInfo } from "./Recording";
 import { Sorting, SortingInfo } from "./Sorting";
 import { SortingCuration, SortingCurationAction } from './SortingCuration';

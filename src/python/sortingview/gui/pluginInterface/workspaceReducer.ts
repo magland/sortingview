@@ -8,6 +8,8 @@ export type WorkspaceState = {
     sortings: Sorting[]
 }
 
+export const initialWorkspaceState: WorkspaceState = {recordings: [], sortings: []}
+
 type AddRecordingWorkspaceAction = {
     type: 'ADD_RECORDING'
     recording: Recording
