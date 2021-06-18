@@ -6,3 +6,4 @@ projectAuthorEmail: jmagland@flatironinstitute.org
 projectDescription: Web app for viewing results of ephys spike sorting
 projectUrl: https://github.com/magland/sortingview
 projectBugTrackerUrl: https://github.com/magland/sortingview/issues
+pythonPackageDir: ./src/python

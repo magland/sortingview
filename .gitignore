@@ -1,3 +1,4 @@
+src/python/dist
 tmp
 devel/start-backend
 .vscode/settings.json
