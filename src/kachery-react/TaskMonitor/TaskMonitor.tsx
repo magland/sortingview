@@ -1,9 +1,9 @@
 import { Button, IconButton, Link as LinkMui, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
 import React, { FunctionComponent, useState } from 'react';
-import NiceTable from '../../../commonComponents/NiceTable/NiceTable';
+import NiceTable from '../../python/sortingview/gui/commonComponents/NiceTable/NiceTable';
 import { Task } from 'kachery-react/initiateTask';
-import { useUpdatingTasks } from './TaskMonitorControl';
+import useUpdatingTasks from 'kachery-react/useUpdatingTasks';
 type Props = {
     onClose: () => void
 }

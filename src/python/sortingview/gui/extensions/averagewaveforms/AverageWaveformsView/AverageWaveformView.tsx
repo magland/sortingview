@@ -1,8 +1,9 @@
 // import { createCalculationPool } from 'labbox';
+import TaskStatusView from 'kachery-react/TaskMonitor/TaskStatusView';
+import usePureCalculationTask from 'kachery-react/usePureCalculationTask';
 import useSelectedChannel from 'python/sortingview/gui/pages/Home/useSelectedChannel';
 import React, { FunctionComponent, useMemo } from 'react';
 import { ActionItem, DividerItem } from '../../../common/Toolbars';
-import { TaskStatusView, usePureCalculationTask } from '../../../labbox';
 import { applyMergesToUnit, Recording, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from '../../../pluginInterface';
 import WaveformWidget, { ElectrodeOpts } from './WaveformWidget';
 

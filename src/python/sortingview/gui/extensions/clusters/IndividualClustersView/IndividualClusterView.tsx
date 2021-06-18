@@ -1,7 +1,8 @@
 // import { createCalculationPool } from 'labbox';
+import TaskStatusView from 'kachery-react/TaskMonitor/TaskStatusView';
 import useSelectedChannel from 'python/sortingview/gui/pages/Home/useSelectedChannel';
 import React, { FunctionComponent, useCallback, useMemo } from 'react';
-import { TaskStatusView, usePureCalculationTask } from '../../../labbox';
+import { usePureCalculationTask } from '../../../labbox';
 import { applyMergesToUnit, Recording, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from "../../../pluginInterface";
 import IndividualClusterWidget from './IndividualClusterWidget';
 

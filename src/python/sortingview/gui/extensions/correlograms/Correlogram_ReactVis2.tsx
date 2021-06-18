@@ -1,6 +1,7 @@
+import TaskStatusView from 'kachery-react/TaskMonitor/TaskStatusView';
 import React, { FunctionComponent } from 'react';
 import { VerticalBarSeries, XAxis, XYPlot, YAxis } from 'react-vis';
-import { TaskStatusView, usePureCalculationTask } from '../../labbox';
+import { usePureCalculationTask } from '../../labbox';
 import useSelectedChannel from '../../pages/Home/useSelectedChannel';
 import { applyMergesToUnit, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from "../../pluginInterface";
 

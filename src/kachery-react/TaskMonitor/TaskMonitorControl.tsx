@@ -1,29 +1,10 @@
+import useUpdatingTasks from 'kachery-react/useUpdatingTasks';
 import React, { FunctionComponent, useMemo } from 'react';
-import Hyperlink from '../../../commonComponents/Hyperlink/Hyperlink';
-import { Task } from 'kachery-react/initiateTask';
+import Hyperlink from '../../python/sortingview/gui/commonComponents/Hyperlink/Hyperlink';
 
 type Props = {
     onOpen: () => void
     color: string
-}
-
-export const useUpdatingTasks = () : Task<any>[] => {
-    // const [tasks, setTasks] = useState<Task<any>[]>([])
-    // const client = useChannels().selectedChannelClient
-    // useEffect(() => {
-    //     if (!client) return
-    //     // this should only get called once
-    //     // (hither should not change, but if it does we might have a problem here)
-    //     const timer1 = setInterval(() => {
-    //         const tasks = client.allTasks
-    //         setTasks(tasks)
-    //     }, 2000)
-    //     return () => {
-    //         clearInterval(timer1)
-    //     }
-    // }, [client])
-    // return tasks
-    return []
 }
 
 const TaskMonitorControl: FunctionComponent<Props> = ({ onOpen, color }) => {

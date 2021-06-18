@@ -26,7 +26,6 @@ export {createExtensionContext} from './extensionSystem/ExtensionContext'
 // export type {CalculationPool} from './channels/tasks/createCalculationPool'
 
 export {default as ApplicationBar} from './ApplicationBar/ApplicationBar'
-export {default as TaskStatusView} from './ApplicationBar/TaskMonitor/TaskStatusView'
 
 export {default as useWindowDimensions} from './misc/useWindowDimensions'
 export {default as useVisible} from './misc/useVisible'

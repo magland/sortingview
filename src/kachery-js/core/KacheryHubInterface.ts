@@ -364,17 +364,25 @@ class KacheryHubInterface {
     async registerTaskFunctions(args: {taskFunctions: RegisteredTaskFunction[], timeoutMsec: DurationMsec}): Promise<RequestedTask[]> {
         return this.#incomingTaskManager.registerTaskFunctions(args)
     }
-    async requestTaskFromChannel(args: {channelName: ChannelName, taskFunctionId: TaskFunctionId, taskKwargs: TaskKwargs, taskFunctionType: TaskFunctionType, timeoutMsec: DurationMsec, queryUseCache?: boolean}): Promise<RequestTaskResult> {
-        await this.initialize()
-
-        const { channelName, taskFunctionId, taskKwargs, taskFunctionType, timeoutMsec, queryUseCache } = args
-        const taskHash = computeTaskHash(taskFunctionId, taskKwargs)
-        let taskId: TaskId
+    createTaskIdForTask(args: {taskFunctionId: TaskFunctionId, taskKwargs: TaskKwargs, taskFunctionType: TaskFunctionType}) {
+        const { taskFunctionId, taskKwargs, taskFunctionType } = args
         if (taskFunctionType === 'pure-calculation') {
-            taskId = toTaskId(taskHash)
+            const taskHash = computeTaskHash(taskFunctionId, taskKwargs)
+            return toTaskId(taskHash)
         }
         else {
-            taskId = toTaskId(randomAlphaString(10))
+            return toTaskId(randomAlphaString(10))
+        }
+    }
+    async requestTaskFromChannel(args: {channelName: ChannelName, taskId: TaskId, taskFunctionId: TaskFunctionId, taskKwargs: TaskKwargs, taskFunctionType: TaskFunctionType, timeoutMsec: DurationMsec, queryUseCache?: boolean}): Promise<RequestTaskResult> {
+        await this.initialize()
+
+        const { channelName, taskId, taskFunctionId, taskKwargs, taskFunctionType, timeoutMsec, queryUseCache } = args
+        const taskHash = computeTaskHash(taskFunctionId, taskKwargs)
+        if (taskFunctionType === 'pure-calculation') {
+            if (taskId !== toTaskId(taskHash)) {
+                throw Error('Unexpected: taskId does not equal taskHash for pure-calculation')
+            }
         }
         if ((taskFunctionType === 'pure-calculation') || ((taskFunctionType === 'query') && (queryUseCache))) {
             const channelBucketUri = await this.getChannelBucketUri(channelName)
