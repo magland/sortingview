@@ -1,4 +1,4 @@
-import { KacheryDaemonNode } from "kachery-js"
+import { KacheryNode } from "kachery-js"
 import { ChannelName } from "kachery-js/types/kacheryTypes"
 import { runPureCalculationTaskAsync } from "kachery-react/runPureCalculationTaskAsync"
 import useKacheryNode from "kachery-react/useKacheryNode"
@@ -18,7 +18,7 @@ export type TimeseriesData = {
   getSampleRate: () => number
 }
 
-const getTimeseriesDataSegment = async (args: {kacheryNode: KacheryDaemonNode | undefined, recordingObject: any, ds_factor: number, segment_num: number, segment_size: number, channelName: ChannelName}): Promise<number[][] | undefined> => {
+const getTimeseriesDataSegment = async (args: {kacheryNode: KacheryNode | undefined, recordingObject: any, ds_factor: number, segment_num: number, segment_size: number, channelName: ChannelName}): Promise<number[][] | undefined> => {
   const { kacheryNode, recordingObject, ds_factor, segment_num, segment_size, channelName } = args
   if (!kacheryNode) return undefined
   if (!recordingObject) return undefined

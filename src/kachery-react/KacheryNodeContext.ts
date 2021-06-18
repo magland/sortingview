@@ -1,6 +1,6 @@
 import React from 'react'
-import KacheryDaemonNode from 'kachery-js/KacheryDaemonNode'
+import { KacheryNode } from 'kachery-js'
 
-const KacheryNodeContext = React.createContext<KacheryDaemonNode | undefined>(undefined)
+const KacheryNodeContext = React.createContext<KacheryNode | undefined>(undefined)
 
 export default KacheryNodeContext

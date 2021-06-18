@@ -5,8 +5,8 @@ import { useSortingInfo } from '../../../common/useSortingInfo';
 import { LabboxPlugin, Recording, Sorting, SortingInfo, SortingSelection, sortingSelectionReducer, sortingViewPlugins, WorkspaceRoute, WorkspaceRouteDispatch } from '../../../pluginInterface';
 import { sortingCurationReducer } from '../../../pluginInterface/workspaceReducer';
 import Hyperlink from '../../../commonComponents/Hyperlink/Hyperlink';
-import useSubfeedReducer from 'python/sortingview/gui/labbox/misc/useSubfeedReducer';
 import { JSONObject, sha1OfObject, SubfeedHash } from 'kachery-js/types/kacheryTypes';
+import useSubfeedReducer from 'kachery-react/useSubfeedReducer'
 
 // const intrange = (a: number, b: number) => {
 //   const lower = a < b ? a : b;
@@ -44,7 +44,8 @@ const SortingView: React.FunctionComponent<Props> = (props) => {
 
   const curationSubfeedName = useMemo(() => ({name: 'sortingCuration', sortingId}), [sortingId])
   const curationSubfeedHash = sha1OfObject(curationSubfeedName as any as JSONObject) as any as SubfeedHash
-  const [curation, curationDispatch] = useSubfeedReducer(feedId, curationSubfeedHash, sortingCurationReducer, {}, {actionField: false})
+  const {state: curation} = useSubfeedReducer(feedId, curationSubfeedHash, sortingCurationReducer, {}, {actionField: false})
+  const curationDispatch = undefined
   // const [curation, curationDispatch2] = useReducer(sortingCurationReducer, useMemo(() => ({}), []))
   // const handleCurationSubfeedMessages = useCallback((messages: any[]) => {
   //   messages.forEach(msg => curationDispatch2(msg))

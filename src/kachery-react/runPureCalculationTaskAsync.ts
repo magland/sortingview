@@ -1,8 +1,8 @@
-import { KacheryDaemonNode } from "kachery-js"
+import { KacheryNode } from "kachery-js"
 import { ChannelName, TaskFunctionId, TaskKwargs } from "kachery-js/types/kacheryTypes"
 import initiateTask from "./initiateTask"
 
-export const runPureCalculationTaskAsync = async <ReturnType>(kacheryNode: KacheryDaemonNode, functionId: TaskFunctionId | string, kwargs: TaskKwargs | {[key: string]: any}, opts: {channelName: ChannelName}): Promise<ReturnType> => {
+export const runPureCalculationTaskAsync = async <ReturnType>(kacheryNode: KacheryNode, functionId: TaskFunctionId | string, kwargs: TaskKwargs | {[key: string]: any}, opts: {channelName: ChannelName}): Promise<ReturnType> => {
     return new Promise((resolve, reject) => {
       const task = initiateTask<ReturnType>({
         kacheryNode,

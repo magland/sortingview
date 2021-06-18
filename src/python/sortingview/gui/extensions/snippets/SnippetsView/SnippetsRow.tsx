@@ -4,7 +4,7 @@ import { getElectrodesAspectRatio } from '../../averagewaveforms/AverageWaveform
 import { applyMergesToUnit, Recording, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from "../../../pluginInterface";
 import SnippetBox from './SnippetBox';
 import useFetchCache from '../../../common/useFetchCache';
-import { KacheryDaemonNode } from 'kachery-js';
+import { KacheryNode } from 'kachery-js';
 import { runPureCalculationTaskAsync } from 'kachery-react/runPureCalculationTaskAsync';
 import { ChannelName } from 'kachery-js/types/kacheryTypes';
 import useKacheryNode from 'kachery-react/useKacheryNode';
@@ -54,7 +54,7 @@ type SnippetsQuery = {
 
 type QueryType = InfoQuery | SnippetsQuery
 
-const getSnippetsInfo = async (args: {recording: Recording, sorting: Sorting, unitId: number | number[], kacheryNode: KacheryDaemonNode, channelName: ChannelName}): Promise<InfoType> => {
+const getSnippetsInfo = async (args: {recording: Recording, sorting: Sorting, unitId: number | number[], kacheryNode: KacheryNode, channelName: ChannelName}): Promise<InfoType> => {
     const { recording, sorting, unitId, kacheryNode, channelName } = args
     const result = await runPureCalculationTaskAsync<{
         channel_ids: number[]
@@ -79,7 +79,7 @@ const getSnippetsInfo = async (args: {recording: Recording, sorting: Sorting, un
     }
 }
 
-const getSnippets = async (args: {recording: Recording, sorting: Sorting, unitId: number | number[], timeRange: {min: number, max: number}, kacheryNode: KacheryDaemonNode, channelName: ChannelName}): Promise<Snippet[]> => {
+const getSnippets = async (args: {recording: Recording, sorting: Sorting, unitId: number | number[], timeRange: {min: number, max: number}, kacheryNode: KacheryNode, channelName: ChannelName}): Promise<Snippet[]> => {
     const { recording, sorting, unitId, timeRange, kacheryNode, channelName } = args
     const result = await runPureCalculationTaskAsync<{
         channel_ids: number[]

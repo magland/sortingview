@@ -1,7 +1,7 @@
 import axios from "axios"
 import NodeStats from "./NodeStats"
-import { ChannelName, JSONValue, urlString } from "./types/kacheryTypes"
-import cacheBust from "./util/cacheBust"
+import { ChannelName, JSONValue, urlString } from "../types/kacheryTypes"
+import cacheBust from "../util/cacheBust"
 
 export type GoogleObjectStorageClientOpts = {
     bucketName: string

@@ -1,5 +1,5 @@
-import GarbageMap from "./util/GarbageMap";
-import { addByteCount, byteCount, ByteCount, ChannelName } from "./types/kacheryTypes";
+import GarbageMap from "../util/GarbageMap";
+import { addByteCount, byteCount, ByteCount, ChannelName } from "../types/kacheryTypes";
 
 // type BytesSentMethod = 'multicastUdp' | 'udp' | 'http' | 'webSocket'
 // type BytesReceivedMethod = 'multicastUdp' | 'udp' | 'http' | 'webSocket'

@@ -1,5 +1,4 @@
-import { ChannelName, isArrayOf, isBoolean, isChannelName, isEqualTo, isNodeId, isNodeLabel, isNumber, isOneOf, isSha1Hash, isSignature, isString, isTaskFunctionId, isTaskId, isTaskKwargs, isTimestamp, isUserId, NodeId, NodeLabel, optional, Sha1Hash, Signature, TaskFunctionId, TaskId, TaskKwargs, Timestamp, UserId, _validateObject } from "./kacheryTypes"
-import { isTaskFunctionType, TaskFunctionType } from "./pubsubMessages"
+import { ChannelName, isArrayOf, isBoolean, isChannelName, isEqualTo, isNodeId, isNodeLabel, isNumber, isOneOf, isSha1Hash, isSignature, isString, isTaskFunctionId, isTaskFunctionType, isTaskId, isTaskKwargs, isTimestamp, isUserId, NodeId, NodeLabel, optional, Sha1Hash, Signature, TaskFunctionId, TaskFunctionType, TaskId, TaskKwargs, Timestamp, UserId, _validateObject } from "./kacheryTypes"
 
 export type GoogleServiceAccountCredentials = {
     type: 'service_account',

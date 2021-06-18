@@ -5,8 +5,6 @@ export interface DataStreamyProgress {
     bytesTotal: ByteCount
 }
 
-const memoryLeakTest = []
-
 class DataStreamyProducer {
     #cancelled = false
     #onCancelledCallbacks: (() => void)[] = []

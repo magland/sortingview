@@ -1,19 +1,19 @@
 import { KacheryStorageManagerInterface, LocalFeedManagerInterface, MutableManagerInterface } from './ExternalInterface'
-import FeedManager from './feeds/FeedManager'
-import FileUploader, { SignedFileUploadUrlCallback } from './FileUploader/FileUploader'
+import FeedManager from '../feeds/FeedManager'
+import FileUploader, { SignedFileUploadUrlCallback } from '../FileUploader/FileUploader'
 import { getStats, GetStatsOpts } from './getStats'
 import KacheryHubInterface from './KacheryHubInterface'
 import NodeStats from './NodeStats'
-import { KacheryNodeRequestBody } from './types/kacheryNodeRequestTypes'
-import { ByteCount, ChannelName, FileKey, isArrayOf, isString, JSONValue, NodeId, NodeLabel, Sha1Hash, Signature, UserId } from './types/kacheryTypes'
-import { KacheryHubPubsubMessageBody } from './types/pubsubMessages'
+import { KacheryNodeRequestBody } from '../types/kacheryNodeRequestTypes'
+import { ByteCount, ChannelName, FileKey, isArrayOf, isString, JSONValue, NodeId, NodeLabel, Sha1Hash, Signature, UserId } from '../types/kacheryTypes'
+import { KacheryHubPubsubMessageBody } from '../types/pubsubMessages'
 
-export interface KacheryDaemonNodeOpts {
+export interface KacheryNodeOpts {
     kacheryHubUrl: string
     verifySubfeedMessageSignatures: boolean
 }
 
-class KacheryDaemonNode {
+class KacheryNode {
     #nodeId: NodeId
     #feedManager: FeedManager
     #mutableManager: MutableManagerInterface
@@ -33,7 +33,7 @@ class KacheryDaemonNode {
         kacheryStorageManager: KacheryStorageManagerInterface,
         mutableManager: MutableManagerInterface,
         localFeedManager: LocalFeedManagerInterface,
-        opts: KacheryDaemonNodeOpts
+        opts: KacheryNodeOpts
     }) {
         this.#nodeId = p.nodeId
         this.#kacheryStorageManager = p.kacheryStorageManager
@@ -65,7 +65,7 @@ class KacheryDaemonNode {
         this.#fileUploader = new FileUploader(signedFileUploadUrlCallback, this.#kacheryStorageManager, this.#stats)
 
         // The feed manager -- each feed is a collection of append-only logs
-        this.#feedManager = new FeedManager(this.#kacheryHubInterface, p.localFeedManager, this.#stats, {verifySignatures: this.p.opts.verifySubfeedMessageSignatures})
+        this.#feedManager = new FeedManager(this.#kacheryHubInterface, p.localFeedManager, this.#stats)
     }
     nodeId() {
         return this.#nodeId
@@ -131,4 +131,4 @@ class KacheryDaemonNode {
     }
 }
 
-export default KacheryDaemonNode
+export default KacheryNode

@@ -1,8 +1,8 @@
 import axios from "axios"
-import KacheryDaemonNode from "kachery-js/KacheryDaemonNode"
+import { KacheryNode } from "kachery-js"
 import { ChannelName, errorMessage, ErrorMessage, isTaskFunctionId, isTaskKwargs, nowTimestamp, scaledDurationMsec, TaskFunctionId, TaskId, TaskKwargs, TaskStatus, Timestamp, UrlString } from "kachery-js/types/kacheryTypes"
-import { TaskFunctionType } from "kachery-js/types/pubsubMessages"
-import cacheBust from "kachery-js/util/cacheBust"
+import { TaskFunctionType } from "kachery-js/types/kacheryTypes"
+import { cacheBust } from "kachery-js/util"
 import deserializeReturnValue from "./deserializeReturnValue"
 
 export class Task<ReturnType> {
@@ -13,7 +13,7 @@ export class Task<ReturnType> {
     #taskId: TaskId | undefined = undefined
     #timestampInitiated: Timestamp = nowTimestamp()
     #timestampCompleted: Timestamp | undefined = undefined
-    constructor(private args: {kacheryNode: KacheryDaemonNode, channelName: ChannelName, functionId: TaskFunctionId, kwargs: TaskKwargs, functionType: TaskFunctionType, onStatusChanged: () => void, queryUseCache?: boolean}) {
+    constructor(private args: {kacheryNode: KacheryNode, channelName: ChannelName, functionId: TaskFunctionId, kwargs: TaskKwargs, functionType: TaskFunctionType, onStatusChanged: () => void, queryUseCache?: boolean}) {
         this._start()
     }
     public get functionId() {
@@ -128,7 +128,7 @@ export class Task<ReturnType> {
     }
 }
 
-const initiateTask = <ReturnType>(args: {kacheryNode: KacheryDaemonNode, channelName: ChannelName, functionId: TaskFunctionId | string | undefined, kwargs: TaskKwargs | {[key: string]: any}, functionType: TaskFunctionType, onStatusChanged: () => void, queryUseCache?: boolean}) => {
+const initiateTask = <ReturnType>(args: {kacheryNode: KacheryNode, channelName: ChannelName, functionId: TaskFunctionId | string | undefined, kwargs: TaskKwargs | {[key: string]: any}, functionType: TaskFunctionType, onStatusChanged: () => void, queryUseCache?: boolean}) => {
     const { kacheryNode, channelName, functionId, kwargs, functionType, onStatusChanged, queryUseCache } = args
     if (!functionId) return undefined
     if (!isTaskFunctionId(functionId)) {

@@ -1,4 +1,4 @@
-import { ErrorMessage, FeedId, FileKey, isEqualTo, isErrorMessage, isFeedId, isFileKey, isMessageCount, isNodeId, isOneOf, isSignature, isString, isSubfeedHash, isSubfeedPosition, isTaskFunctionId, isTaskId, isTaskKwargs, isTaskStatus, MessageCount, NodeId, optional, Signature, SubfeedHash, SubfeedPosition, TaskFunctionId, TaskId, TaskKwargs, TaskStatus, _validateObject } from "./kacheryTypes";
+import { ErrorMessage, FeedId, FileKey, isEqualTo, isErrorMessage, isFeedId, isFileKey, isMessageCount, isNodeId, isOneOf, isSignature, isSubfeedHash, isSubfeedPosition, isTaskFunctionId, isTaskFunctionType, isTaskId, isTaskKwargs, isTaskStatus, MessageCount, NodeId, optional, Signature, SubfeedHash, SubfeedPosition, TaskFunctionId, TaskFunctionType, TaskId, TaskKwargs, TaskStatus, _validateObject } from "./kacheryTypes";
 
 export type RequestFileMessageBody = {
     type: 'requestFile',
@@ -72,12 +72,6 @@ export const isUpdateTaskStatusMessageBody = (x: any): x is UpdateTaskStatusMess
         status: isTaskStatus,
         errorMessage: optional(isErrorMessage)
     })
-}
-
-export type TaskFunctionType = 'pure-calculation' | 'query' | 'action'
-export const isTaskFunctionType = (x: any) => {
-    if (!isString(x)) return false
-    return ['pure-calculation', 'query', 'action'].includes(x)
 }
 
 export type RequestTaskMessageBody = {

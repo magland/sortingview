@@ -1,8 +1,7 @@
-import React, { useCallback, useMemo } from 'react'
-import { FunctionComponent } from "react"
 import { FeedId, isFeedId, sha1OfString, SubfeedHash } from 'kachery-js/types/kacheryTypes'
 import useQueryTask from 'kachery-react/useQueryTask'
-import useSubfeedReducer from '../labbox/misc/useSubfeedReducer'
+import useSubfeedReducer from 'kachery-react/useSubfeedReducer'
+import React, { FunctionComponent, useCallback, useMemo } from 'react'
 import useSelectedChannel from '../pages/Home/useSelectedChannel'
 import useCurrentUserPermissions from '../pages/WorkspacePage/useCurrentUserPermissions'
 import WorkspacesTable from './WorkspacesTable'
@@ -94,7 +93,10 @@ const WorkspaceList: FunctionComponent<Props> = ({onWorkspaceSelected}) => {
         return true
     }, [currentUserPermissions, feedId])
 
-    const [workspaces, workspacesDispatch] = useSubfeedReducer(feedId, subfeedHash, workspaceListReducer, {workspaces: []}, {actionField: true})
+    const {state: workspaces} = useSubfeedReducer(feedId, subfeedHash, workspaceListReducer, {workspaces: []}, {actionField: true})
+    const workspacesDispatch: ((a: WorkspaceListAction) => void) | undefined = useMemo(() => (
+        readOnly ? undefined : (a: WorkspaceListAction) => {}
+    ), [readOnly])
     
     const handleWorkspaceSelected = useCallback((w: WorkspaceListWorkspace) => {
         onWorkspaceSelected(w.uri)

@@ -1,5 +1,5 @@
 import { FeedId, FeedName, isArrayOf, isSignedSubfeedMessage, JSONValue, PrivateKey, SignedSubfeedMessage, SubfeedHash } from "kachery-js/types/kacheryTypes";
-import GarbageMap from "kachery-js/util/GarbageMap";
+import { GarbageMap } from "kachery-js";
 
 class LocalSubfeed {
     #signedMessages: SignedSubfeedMessage[] = []

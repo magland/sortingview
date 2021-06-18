@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
-import { signMessageNew } from '../src/kachery-js/types/crypto_util'
+import { signMessage } from '../src/kachery-js/crypto/signatures'
 import { JSONValue } from '../src/kachery-js/types/kacheryTypes'
 import { isKacheryHubPubsubMessageBody } from '../src/kachery-js/types/pubsubMessages'
 import getKeyPair from './common/getKeyPair'
@@ -25,7 +25,7 @@ module.exports = (req: VercelRequest, res: VercelResponse) => {
         if (!okay) {
             throw Error(`Illegal kachery pubsub message: ${messageBody["type"]}`)
         }
-        const signature = await signMessageNew(messageBody as any as JSONValue, keyPair)
+        const signature = await signMessage(messageBody as any as JSONValue, keyPair)
         return {signature}
     })().then((result) => {
         res.json(result)

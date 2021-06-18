@@ -1,6 +1,6 @@
 import axios from "axios"
 import { useMemo } from "react"
-import KacheryDaemonNode from "kachery-js/KacheryDaemonNode"
+import { KacheryNode } from "kachery-js"
 import { KacheryNodeRequestBody } from "kachery-js/types/kacheryNodeRequestTypes"
 import { isJSONObject, isJSONValue, isNodeId, isSignature, nodeLabel, Signature, userId } from "kachery-js/types/kacheryTypes"
 import { KacheryHubPubsubMessageBody } from "kachery-js/types/pubsubMessages"
@@ -8,7 +8,7 @@ import BrowserKacheryStorageManager from "./BrowserKacheryStorageManager"
 import BrowserLocalFeedManager from "./BrowserLocalFeedManager"
 import BrowserMutableManager from "./BrowserMutableManager"
 
-const useSetupKacheryNode = (): KacheryDaemonNode => {
+const useSetupKacheryNode = (): KacheryNode => {
     // const {channel, setRoute} = useRoute()
 
     const kacheryNode = useMemo(() => {
@@ -44,7 +44,7 @@ const useSetupKacheryNode = (): KacheryDaemonNode => {
         const kacheryStorageManager = new BrowserKacheryStorageManager()
         const mutableManager = new BrowserMutableManager()
         const localFeedManager = new BrowserLocalFeedManager()
-        const x = new KacheryDaemonNode({
+        const x = new KacheryNode({
             verbose: 0,
             nodeId,
             sendKacheryNodeRequest,

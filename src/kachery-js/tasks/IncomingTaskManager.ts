@@ -1,6 +1,5 @@
 import { RegisteredTaskFunction, RequestedTask } from "../types/kacheryHubTypes";
-import { ChannelName, DurationMsec, durationMsecToNumber, elapsedSince, nowTimestamp, TaskFunctionId, TaskId, TaskKwargs, Timestamp } from "../types/kacheryTypes";
-import { TaskFunctionType } from "../types/pubsubMessages";
+import { ChannelName, DurationMsec, durationMsecToNumber, elapsedSince, nowTimestamp, TaskFunctionId, TaskFunctionType, TaskId, TaskKwargs, Timestamp } from "../types/kacheryTypes";
 import computeTaskHash from "../util/computeTaskHash";
 import GarbageMap from "../util/GarbageMap";
 import randomAlphaString from "../util/randomAlphaString";

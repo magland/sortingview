@@ -1,5 +1,4 @@
-import { MutableRecord } from "kachery-js/ExternalInterface"
-import { JSONValue } from "kachery-js/types/kacheryTypes"
+import { JSONValue, MutableRecord } from "kachery-js/types/kacheryTypes"
 
 class BrowserMutableManager {
     async set(key: JSONValue, value: JSONValue) : Promise<void> {

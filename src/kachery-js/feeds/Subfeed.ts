@@ -1,8 +1,8 @@
 import { Mutex } from 'async-mutex';
-import { LocalFeedManagerInterface } from '../ExternalInterface';
-import KacheryHubInterface from '../KacheryHubInterface';
-import { feedIdToPublicKeyHex, hexToPublicKey, signMessageNew, verifySignatureJson } from '../types/crypto_util';
-import { ChannelName, DurationMsec, durationMsecToNumber, FeedId, JSONObject, messageCount, MessageCount, messageCountToNumber, nowTimestamp, PrivateKey, PublicKey, SignedSubfeedMessage, SubfeedHash, SubfeedMessage, subfeedPosition, SubfeedPosition, subfeedPositionToNumber } from '../types/kacheryTypes';
+import { hexToPublicKey, signMessage, verifySignature } from '../crypto/signatures';
+import { LocalFeedManagerInterface } from '../core/ExternalInterface';
+import KacheryHubInterface from '../core/KacheryHubInterface';
+import { ChannelName, DurationMsec, durationMsecToNumber, FeedId, feedIdToPublicKeyHex, JSONObject, messageCount, MessageCount, messageCountToNumber, nowTimestamp, PrivateKey, PublicKey, SignedSubfeedMessage, SubfeedHash, SubfeedMessage, subfeedPosition, SubfeedPosition, subfeedPositionToNumber } from '../types/kacheryTypes';
 import randomAlphaString from '../util/randomAlphaString';
 import LocalSubfeedSignedMessagesManager from './LocalSubfeedSignedMessagesManager';
 import RemoteSubfeedMessageDownloader from './RemoteSubfeedMessageDownloader';
@@ -32,15 +32,15 @@ class Subfeed {
 
     #triggerScheduled = false
 
-    constructor(private kacheryHubInterface: KacheryHubInterface, private feedId: FeedId, private subfeedHash: SubfeedHash, private localFeedManager: LocalFeedManagerInterface, opts: {verifySignatures: boolean}) {
+    constructor(private kacheryHubInterface: KacheryHubInterface, private feedId: FeedId, private subfeedHash: SubfeedHash, private localFeedManager: LocalFeedManagerInterface) {
         this.#publicKey = hexToPublicKey(feedIdToPublicKeyHex(feedId)); // The public key of the feed (which is determined by the feed ID)
         this.#localSubfeedSignedMessagesManager = new LocalSubfeedSignedMessagesManager(localFeedManager, feedId, subfeedHash, this.#publicKey)
-        this.#remoteSubfeedMessageDownloader = new RemoteSubfeedMessageDownloader(this.kacheryHubInterface, this, {verifySignatures: opts.verifySignatures})
+        this.#remoteSubfeedMessageDownloader = new RemoteSubfeedMessageDownloader(this.kacheryHubInterface, this)
     }
     async acquireLock() {
         return await this.#mutex.acquire()
     }
-    async initialize(privateKey: PrivateKey | null, opts: {verifySignatures: boolean}) {
+    async initialize(privateKey: PrivateKey | null) {
         this.#privateKey = privateKey
         if (this.#initialized) return
         if (this.#initializing) {
@@ -53,7 +53,7 @@ class Subfeed {
             // Check whether we have the feed locally (may or may not be locally writeable)
             const existsLocally = await this.localFeedManager.subfeedExistsLocally(this.feedId, this.subfeedHash)
             if (existsLocally) {
-                await this.#localSubfeedSignedMessagesManager.initializeFromLocal({verifySignatures: opts.verifySignatures})
+                await this.#localSubfeedSignedMessagesManager.initializeFromLocal()
             }
             else {
                 // Otherwise, we don't have it locally -- so let's just initialize things
@@ -169,7 +169,7 @@ class Subfeed {
             throw Error(`Cannot get local signed messages (position=${position}, numMessages=${numMessages}, getNumMessages=${this.#localSubfeedSignedMessagesManager.getNumMessages()})`)
         }
     }
-    async appendMessages(messages: SubfeedMessage[], {metaData} : {metaData: Object | undefined}, opts: {verifySignatures: boolean}) {
+    async appendMessages(messages: SubfeedMessage[], {metaData} : {metaData: Object | undefined}) {
         if (!this.#localSubfeedSignedMessagesManager.isInitialized()) {
             /* istanbul ignore next */
             throw Error('signed messages not initialized. Perhaps appendMessages was called before subfeed was initialized.')
@@ -195,21 +195,19 @@ class Subfeed {
             }
             const signedMessage: SignedSubfeedMessage = {
                 body,
-                signature: await signMessageNew(body as any as JSONObject, {publicKey: this.#publicKey, privateKey: this.#privateKey})
+                signature: await signMessage(body as any as JSONObject, {publicKey: this.#publicKey, privateKey: this.#privateKey})
             }
-            if (opts.verifySignatures) {
-                if (!await verifySignatureJson(body as any as JSONObject, await signMessageNew(body as any as JSONObject, {publicKey: this.#publicKey, privateKey: this.#privateKey}), this.#publicKey)) {
-                    throw Error('Error verifying signature')
-                }
+            if (!await verifySignature(body as any as JSONObject, this.#publicKey, await signMessage(body as any as JSONObject, {publicKey: this.#publicKey, privateKey: this.#privateKey}))) {
+                throw Error('Error verifying signature')
             }
             signedMessagesToAppend.push(signedMessage)
             previousSignature = signedMessage.signature
             messageNumber ++;
         }
         // CHAIN:append_messages:step(4)
-        await this.appendSignedMessages(signedMessagesToAppend, {verifySignatures: opts.verifySignatures})
+        await this.appendSignedMessages(signedMessagesToAppend)
     }
-    async appendSignedMessages(signedMessages: SignedSubfeedMessage[], opts: {verifySignatures: boolean}) {
+    async appendSignedMessages(signedMessages: SignedSubfeedMessage[]) {
         if (!this.#localSubfeedSignedMessagesManager.isInitialized()) {
             /* istanbul ignore next */
             throw Error('signed messages not initialized. Perhaps appendSignedMessages was called before subfeed was initialized.');
@@ -231,11 +229,9 @@ class Subfeed {
         for (let signedMessage of signedMessages) {
             const body = signedMessage.body;
             const signature = signedMessage.signature;
-            if (opts.verifySignatures) {
-                if (!await verifySignatureJson(body as any as JSONObject, signature, this.#publicKey)) {
-                    console.warn(JSON.stringify(signedMessage, null, 4))
-                    throw Error(`Error verifying signature when appending signed message for: ${this.feedId} ${this.subfeedHash} ${signature}`);
-                }
+            if (!await verifySignature(body as any as JSONObject, this.#publicKey, signature)) {
+                console.warn(JSON.stringify(signedMessage, null, 4))
+                throw Error(`Error verifying signature when appending signed message for: ${this.feedId} ${this.subfeedHash} ${signature}`);
             }
             if ((body.previousSignature || null) !== (previousSignature || null)) {
                 throw Error(`Error in previousSignature when appending signed message for: ${this.feedId} ${this.subfeedHash} ${body.previousSignature} <> ${previousSignature}`);

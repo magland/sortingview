@@ -1,7 +1,7 @@
 import fs from 'fs'
-import DataStreamy from "./util/DataStreamy"
-import { Address, ByteCount, ChannelName, DurationMsec, FeedId, FeedName, FileKey, JSONObject, JSONValue, LocalFilePath, NodeId, Port, PrivateKey, Sha1Hash, SignedSubfeedMessage, SubfeedHash, UrlPath, UrlString } from "./types/kacheryTypes"
-import NodeStats from "./NodeStats"
+import DataStreamy from "../util/DataStreamy"
+import { Address, ByteCount, ChannelName, DurationMsec, FeedId, FeedName, FileKey, JSONObject, JSONValue, LocalFilePath, MutableRecord, NodeId, Port, PrivateKey, Sha1Hash, SignedSubfeedMessage, SubfeedHash, UrlPath, UrlString } from "../types/kacheryTypes"
+import NodeStats from "../core/NodeStats"
 
 export type HttpPostJsonFunction = ((address: Address, path: UrlPath, data: Object, opts: {timeoutMsec: DurationMsec}) => Promise<JSONObject>)
 export type HttpGetDownloadFunction = ((address: Address, path: UrlPath, stats: NodeStats, channelName: ChannelName | null) => Promise<DataStreamy>)
@@ -69,11 +69,6 @@ export interface LocalFeedManagerInterface {
 }
 
 export type CreateLocalFeedManagerFunction = (mutableManager: MutableManagerInterface) => LocalFeedManagerInterface
-
-export type MutableRecord = {
-    key: JSONValue
-    value: JSONValue
-}
 
 export interface MutableManagerInterface {
     set: (key: JSONValue, value: JSONValue) => Promise<void>

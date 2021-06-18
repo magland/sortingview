@@ -439,6 +439,13 @@ export const isTaskStatus = (x: any): x is TaskStatus => {
     return ['waiting', 'pending', 'running', 'finished', 'error'].includes(x)
 }
 
+// TaskFunctionType
+export type TaskFunctionType = 'pure-calculation' | 'query' | 'action'
+export const isTaskFunctionType = (x: any) => {
+    if (!isString(x)) return false
+    return ['pure-calculation', 'query', 'action'].includes(x)
+}
+
 // Signature
 export interface Signature extends String {
     __signature__: never
@@ -936,4 +943,25 @@ export const JSONStringifyDeterministic = ( obj: any, space: string | number | u
     JSON.stringify( obj, function( key, value ){ allKeys.push( key ); return value; } )
     allKeys.sort();
     return JSON.stringify( obj, allKeys, space );
+}
+
+export const publicKeyHexToFeedId = (publicKeyHex: PublicKeyHex): FeedId => {
+    return publicKeyHex as any as FeedId
+}
+
+export const nodeIdToPublicKeyHex = (nodeId: NodeId): PublicKeyHex => {
+    return nodeId.toString() as any as PublicKeyHex;
+}
+
+export const feedIdToPublicKeyHex = (feedId: FeedId): PublicKeyHex => {
+    return feedId as any as PublicKeyHex;
+}
+
+export const publicKeyHexToNodeId = (x: PublicKeyHex) : NodeId => {
+    return x as any as NodeId;
+}
+
+export type MutableRecord = {
+    key: JSONValue
+    value: JSONValue
 }

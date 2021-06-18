@@ -1,6 +1,5 @@
 import { MenuItem, Select } from '@material-ui/core';
 import React, { FunctionComponent, useCallback } from 'react';
-import sizeMe, { SizeMeProps } from 'react-sizeme';
 
 export type PreprocessingSelection = {
     filterType: 'none' | 'bandpass_filter'
@@ -36,7 +35,7 @@ const choices: {preprocessingSelection: PreprocessingSelection, label: string}[]
     }
 ]
 
-const PreprocessingControl: FunctionComponent<Props & SizeMeProps> = ({ preprocessingSelection, preprocessingSelectionDispatch }) => {
+const PreprocessingControl: FunctionComponent<Props> = ({ preprocessingSelection, preprocessingSelectionDispatch }) => {
     const handleChoice = useCallback((event: React.ChangeEvent<{value: any}>) => {
         const preprocessingSelectionForValue = (val: string) => {
             return choices.filter(choice => (choice.preprocessingSelection.filterType === val))[0].preprocessingSelection
@@ -57,4 +56,4 @@ const PreprocessingControl: FunctionComponent<Props & SizeMeProps> = ({ preproce
     )
 }
 
-export default sizeMe()(PreprocessingControl)
+export default PreprocessingControl

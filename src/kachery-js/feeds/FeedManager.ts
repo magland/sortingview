@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { LocalFeedManagerInterface } from '../ExternalInterface';
-import KacheryHubInterface from '../KacheryHubInterface';
-import NodeStats from '../NodeStats';
+import { LocalFeedManagerInterface } from '../core/ExternalInterface';
+import KacheryHubInterface from '../core/KacheryHubInterface';
+import NodeStats from '../core/NodeStats';
 import { byteCount, ChannelName, DurationMsec, durationMsecToNumber, FeedId, FeedName, feedSubfeedId, FeedSubfeedId, messageCount, MessageCount, messageCountToNumber, scaledDurationMsec, SignedSubfeedMessage, SubfeedHash, SubfeedMessage, SubfeedPosition, subfeedPosition, subfeedPositionToNumber, SubfeedWatch, SubfeedWatchesRAM, SubfeedWatchName } from '../types/kacheryTypes';
 import GarbageMap from '../util/GarbageMap';
 import { sleepMsec } from '../util/util';
@@ -14,7 +14,7 @@ class FeedManager {
     #subfeeds = new GarbageMap<FeedSubfeedId, Subfeed>(scaledDurationMsec(8 * 60 * 1000)) // The subfeed instances (Subfeed()) that have been loaded into memory
     #incomingSubfeedSubscriptionManager: IncomingSubfeedSubscriptionManager
     #outgoingSubfeedSubscriptionManager: OutgoingSubfeedSubscriptionManager
-    constructor(private kacheryHubInterface: KacheryHubInterface, private localFeedManager: LocalFeedManagerInterface, private nodeStats: NodeStats, private opts: {verifySignatures: boolean}) {
+    constructor(private kacheryHubInterface: KacheryHubInterface, private localFeedManager: LocalFeedManagerInterface, private nodeStats: NodeStats) {
         this.#incomingSubfeedSubscriptionManager = new IncomingSubfeedSubscriptionManager()
         this.#outgoingSubfeedSubscriptionManager = new OutgoingSubfeedSubscriptionManager()
 
@@ -35,7 +35,7 @@ class FeedManager {
     async hasWriteableFeed(feedId: FeedId) {
         return await this.localFeedManager.hasWriteableFeed(feedId)
     }
-    async appendMessages(args: { feedId: FeedId, subfeedHash: SubfeedHash, messages: SubfeedMessage[], verifySignatures: boolean}) {
+    async appendMessages(args: { feedId: FeedId, subfeedHash: SubfeedHash, messages: SubfeedMessage[]}) {
         // Append messages to a subfeed (must be in a writeable feed on this node)
 
         // Load the subfeed and make sure it is writeable
@@ -52,7 +52,7 @@ class FeedManager {
         try {
             // Append the messages
             // CHAIN:append_messages:step(3)
-            await subfeed.appendMessages(args.messages, {metaData: undefined}, {verifySignatures: args.verifySignatures});
+            await subfeed.appendMessages(args.messages, {metaData: undefined});
         }
         finally {
             release()
@@ -211,7 +211,7 @@ class FeedManager {
         }
         else {
             // Instantiate and initialize the subfeed
-            subfeed = new Subfeed(this.kacheryHubInterface, feedId, subfeedHash, this.localFeedManager, {verifySignatures: this.opts.verifySignatures})
+            subfeed = new Subfeed(this.kacheryHubInterface, feedId, subfeedHash, this.localFeedManager)
             subfeed.onMessagesAdded(() => {
                 if (!subfeed) throw Error('Unexpected')
                 this._uploadSubfeedMessagesToSubscribedChannels(feedId, subfeedHash)
@@ -227,7 +227,7 @@ class FeedManager {
             const privateKey = await this.localFeedManager.getPrivateKeyForFeed(feedId)
 
             try {
-                await subfeed.initialize(privateKey, {verifySignatures: this.opts.verifySignatures})
+                await subfeed.initialize(privateKey)
             }
             catch(err) {
                 /* istanbul ignore next */

@@ -10,13 +10,14 @@ import { createExtensionContext, ExtensionsSetup } from './python/sortingview/gu
 const extensionContext = createExtensionContext<LabboxPlugin>()
 registerExtensions(extensionContext).then(() => {
   ReactDOM.render(
-    <React.StrictMode>
+    // disable strict mode to supress: "findDOMNode is deprecated in StrictMode" warnings
+    // <React.StrictMode>
       <ExtensionsSetup
         extensionContext={extensionContext}
       >
         <App />
       </ExtensionsSetup>,
-    </React.StrictMode>,
+    // </React.StrictMode>,
     document.getElementById('root')
   );  
 })

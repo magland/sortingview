@@ -16,6 +16,9 @@ const VSplitter: FunctionComponent<Props> = (props) => {
 
     const [gripPosition, setGripPosition] = useState<number>(initialPosition)
 
+    // See: https://stackoverflow.com/questions/63603902/finddomnode-is-deprecated-in-strictmode-finddomnode-was-passed-an-instance-of-d
+    const draggableNodeRef = React.useRef(null)
+
     if (!props.children) throw Error('Unexpected: no props.children')
 
     if (!Array.isArray(props.children)) {
@@ -102,6 +105,7 @@ const VSplitter: FunctionComponent<Props> = (props) => {
                 <child1.type {...child1.props} width={width} height={height1} />
             </div>
             <Draggable
+                nodeRef={draggableNodeRef}
                 key="drag"
                 position={{ x: 0, y: gripPosition - gripThickness / 2 - gripMargin }}
                 axis="y"

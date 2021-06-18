@@ -1,8 +1,8 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import axios from 'axios'
-import { signMessageNew } from '../src/kachery-js/types/crypto_util'
 import { isKacheryNodeRequestBody, KacheryNodeRequest } from '../src/kachery-js/types/kacheryNodeRequestTypes'
 import { JSONValue } from '../src/kachery-js/types/kacheryTypes'
+import { signMessage } from '../src/kachery-js/crypto/signatures'
 import getKeyPair from './common/getKeyPair'
 import getNodeId from './common/getNodeId'
 
@@ -36,7 +36,7 @@ module.exports = (req: VercelRequest, res: VercelResponse) => {
         const request: KacheryNodeRequest = {
             body: requestBody,
             nodeId,
-            signature: await signMessageNew(requestBody as any as JSONValue, keyPair)
+            signature: await signMessage(requestBody as any as JSONValue, keyPair)
         }
         const x = await axios.post(`${kacheryHubUrl}/api/kacheryNode`, request)
         const response: JSONValue = x.data

@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
 import Subfeed from "kachery-js/feeds/Subfeed";
 import { FeedId, messageCount, SubfeedHash, SubfeedMessage, subfeedPosition, unscaledDurationMsec } from "kachery-js/types/kacheryTypes";
+import { sleepMsec } from "kachery-js/util";
+import { useEffect, useState } from "react";
 import useKacheryNode from "./useKacheryNode";
-import { sleepMsecNum } from "kachery-js/util/util";
 
-const useSubfeed = (args: {feedId: FeedId | undefined, subfeedHash: SubfeedHash | undefined}): {messages: SubfeedMessage[] | undefined, appendMessages: ((messages: SubfeedMessage[]) => void) | undefined} => {
+const useSubfeed = (args: {feedId: FeedId | undefined, subfeedHash: SubfeedHash | undefined}): {messages: SubfeedMessage[] | undefined, subfeed: Subfeed | undefined} => {
     const {feedId, subfeedHash} = args
     const [messages, setMessages] = useState<SubfeedMessage[] | undefined>(undefined)
     const [subfeed, setSubfeed] = useState<Subfeed | undefined>(undefined)
@@ -30,7 +30,7 @@ const useSubfeed = (args: {feedId: FeedId | undefined, subfeedHash: SubfeedHash 
                     internalPosition = localMessages.length
                 }
                 else {
-                    await sleepMsecNum(100)
+                    await sleepMsec(unscaledDurationMsec(100))
                 }
             }
         })()
@@ -39,17 +39,7 @@ const useSubfeed = (args: {feedId: FeedId | undefined, subfeedHash: SubfeedHash 
         }
     }, [feedId, subfeedHash, kacheryNode])
 
-    const appendMessages = useMemo(() => {
-        if (!feedId) return undefined
-        if (!subfeedHash) return undefined
-        if (!subfeed) return undefined
-        if (!subfeed.isWriteable()) return undefined
-        return (messages: SubfeedMessage[]) => {
-            subfeed.appendMessages(messages, {metaData: {}}, {verifySignatures: false})
-        }
-    }, [feedId, subfeedHash, subfeed])
-
-    return {messages, appendMessages}
+    return {messages, subfeed}
 }
 
 export default useSubfeed

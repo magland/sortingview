@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import Subfeed from 'kachery-js/feeds/Subfeed'
 import { FeedId, JSONStringifyDeterministic, SubfeedHash, SubfeedMessage } from 'kachery-js/types/kacheryTypes'
-import useSubfeed from 'kachery-react/useSubfeed'
+import { useEffect, useMemo, useState } from 'react'
+import useSubfeed from './useSubfeed'
 
 type CompositeState<State> = {
     feedId: FeedId,
@@ -10,10 +11,10 @@ type CompositeState<State> = {
     state: State
 }
 
-const useSubfeedReducer = <State, Action>(feedId: FeedId | undefined, subfeedHash: SubfeedHash | undefined, reducer: (s: State, a: Action) => State, initialState: State, opts: {actionField: boolean}): [State, ((a: Action) => void) | undefined] => {
+const useSubfeedReducer = <State, Action>(feedId: FeedId | undefined, subfeedHash: SubfeedHash | undefined, reducer: (s: State, a: Action) => State, initialState: State, opts: {actionField: boolean}): {state: State, subfeed: Subfeed | undefined} => {
     const [compositeState, setCompositeState] = useState<CompositeState<State> | undefined>(undefined)
 
-    const {messages: messages2, appendMessages} = useSubfeed({feedId, subfeedHash})
+    const {messages: messages2, subfeed} = useSubfeed({feedId, subfeedHash})
 
     const messages: SubfeedMessage[] | undefined = useMemo(() => {
         if (!messages2) return undefined
@@ -61,15 +62,7 @@ const useSubfeedReducer = <State, Action>(feedId: FeedId | undefined, subfeedHas
         return compositeState ? compositeState.state : initialState
     }, [compositeState, initialState])
 
-    const dispatch = useMemo(() => {
-        if (!appendMessages) return undefined
-        return (action: Action) => {
-            const message = (opts.actionField ? {action} : action) as any as SubfeedMessage
-            appendMessages([message])
-        }
-    }, [appendMessages, opts.actionField])
-
-    return [state, dispatch]
+    return {state, subfeed}
 }
 
 export default useSubfeedReducer

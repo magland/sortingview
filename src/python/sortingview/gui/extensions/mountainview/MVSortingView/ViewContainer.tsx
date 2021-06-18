@@ -154,10 +154,14 @@ const SplitterGrip: FunctionComponent<{onDelta: (delta: number) => void, width: 
         onDelta(newGripPosition)
     }, [onDelta])
 
+    // See: https://stackoverflow.com/questions/63603902/finddomnode-is-deprecated-in-strictmode-finddomnode-was-passed-an-instance-of-d
+    const draggableNodeRef = React.useRef(null)
+
     const innerGripThickness = 4
 
     return (
         <Draggable
+            nodeRef={draggableNodeRef}
             key="drag"
             position={{ x: 0, y: 0 }}
             axis="y"

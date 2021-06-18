@@ -1,5 +1,5 @@
-import { ByteCount, isEqualTo, isOneOf, JSONObject, NodeId, optional, _validateObject } from "./types/kacheryTypes";
-import KacheryDaemonNode from "./KacheryDaemonNode";
+import { ByteCount, isEqualTo, isOneOf, JSONObject, NodeId, optional, _validateObject } from "../types/kacheryTypes";
+import KacheryNode from "./KacheryNode";
 
 export interface NodeStatsInterface {
     nodeId: NodeId,
@@ -18,7 +18,7 @@ export const isGetStatsOpts = (x: any): x is GetStatsOpts => {
     })
 }
 
-export const getStats = (node: KacheryDaemonNode, o: GetStatsOpts): NodeStatsInterface => {
+export const getStats = (node: KacheryNode, o: GetStatsOpts): NodeStatsInterface => {
     const ret: NodeStatsInterface = {
         nodeId: node.nodeId(),
         totalBytesSent: node.stats().totalBytesSent(),

@@ -1,10 +1,10 @@
-import DataStreamy, { DataStreamyProgress } from './util/DataStreamy'
-import { formatByteCount, sha1MatchesFileKey } from './util/util'
-import KacheryDaemonNode from './KacheryDaemonNode'
-import { byteCount, ByteCount, byteCountToNumber, ChannelName, elapsedSince, FileKey, FileManifestChunk, isFileManifest, LocalFilePath, nowTimestamp, Sha1Hash, UrlString } from './types/kacheryTypes'
+import DataStreamy, { DataStreamyProgress } from '../util/DataStreamy'
+import { formatByteCount, sha1MatchesFileKey } from '../util/util'
+import KacheryNode from './KacheryNode'
+import { byteCount, ByteCount, byteCountToNumber, ChannelName, elapsedSince, FileKey, FileManifestChunk, isFileManifest, LocalFilePath, nowTimestamp, Sha1Hash, UrlString } from '../types/kacheryTypes'
 
 
-export const loadFileAsync = async (node: KacheryDaemonNode, fileKey: FileKey, opts: {label: string}): Promise<{found: boolean, size: ByteCount, localFilePath: LocalFilePath | null}> => {
+export const loadFileAsync = async (node: KacheryNode, fileKey: FileKey, opts: {label: string}): Promise<{found: boolean, size: ByteCount, localFilePath: LocalFilePath | null}> => {
     const r = await node.kacheryStorageManager().findFile(fileKey)
     if (r.found) {
         return r
@@ -63,7 +63,7 @@ async function asyncLoop<T>(list: T[], func: (item: T, index: number) => Promise
     })
 }
 
-export const loadFile = async (node: KacheryDaemonNode, fileKey: FileKey, opts: {label: string, _numRetries?: number}): Promise<DataStreamy> => {
+export const loadFile = async (node: KacheryNode, fileKey: FileKey, opts: {label: string, _numRetries?: number}): Promise<DataStreamy> => {
     const r = await node.kacheryStorageManager().findFile(fileKey)
     if (r.found) {
         if (true) { // for debugging (not finding locally) switch to false

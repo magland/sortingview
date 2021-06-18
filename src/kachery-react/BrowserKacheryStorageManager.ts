@@ -1,6 +1,5 @@
-import NodeStats from "kachery-js/NodeStats";
+import { NodeStats, DataStreamy } from "kachery-js";
 import { byteCount, ByteCount, ChannelName, FileKey, localFilePath, LocalFilePath, Sha1Hash, UrlString } from "kachery-js/types/kacheryTypes";
-import DataStreamy from "kachery-js/util/DataStreamy";
 
 class BrowserKacheryStorageManager {
     async hasLocalFile(fileKey: FileKey) : Promise<boolean> {
