@@ -1,9 +1,9 @@
 import React, { FunctionComponent } from 'react';
-import { funcToTransform } from '../../../commonComponents/CanvasWidget';
-import { CanvasPainter } from '../../../commonComponents/CanvasWidget/CanvasPainter';
-import CanvasWidget from '../../../commonComponents/CanvasWidget/CanvasWidget';
-import { CanvasDragEvent, CanvasWidgetLayer, ClickEvent, ClickEventType, useLayer, useLayers } from '../../../commonComponents/CanvasWidget/CanvasWidgetLayer';
-import { Vec2 } from '../../../commonComponents/CanvasWidget/Geometry';
+import { funcToTransform } from 'labbox-react/components/CanvasWidget';
+import { CanvasPainter } from 'labbox-react/components/CanvasWidget/CanvasPainter';
+import CanvasWidget from 'labbox-react/components/CanvasWidget/CanvasWidget';
+import { CanvasDragEvent, CanvasWidgetLayer, ClickEvent, ClickEventType, useLayer, useLayers } from 'labbox-react/components/CanvasWidget/CanvasWidgetLayer';
+import { Vec2 } from 'labbox-react/components/CanvasWidget/Geometry';
 
 
 export interface SpanWidgetInfo {

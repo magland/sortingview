@@ -1,12 +1,12 @@
 import React from 'react'
 import { FunctionComponent } from "react"
-import { useVisible } from '../../labbox'
+import { useVisible } from 'labbox-react'
 import './Home.css'
 import SignInSection from './SignInSection'
 import ChannelSection from './ChannelSection'
 import IntroSection from './IntroSection'
 import WorkspaceSection from './WorkspaceSection'
-import SelectChannelDialog from './SelectChannelDialog'
+import SelectChannelDialog from 'kachery-react/components/SelectChannel/SelectChannelDialog'
 
 type Props = {
     

@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { LabboxPlugin } from './python/sortingview/gui/pluginInterface';
 import registerExtensions from './python/sortingview/gui/extensions/registerExtensions';
-import { createExtensionContext, ExtensionsSetup } from './python/sortingview/gui/labbox';
+import { createExtensionContext, ExtensionsSetup } from 'labbox-react';
 
 const extensionContext = createExtensionContext<LabboxPlugin>()
 registerExtensions(extensionContext).then(() => {

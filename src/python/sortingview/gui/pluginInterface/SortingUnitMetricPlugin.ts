@@ -2,6 +2,8 @@ import { MetricPlugin } from "./MetricPlugin";
 
 export interface SortingUnitMetricPlugin extends MetricPlugin {
     type: 'SortingUnitMetric'
+    name: string
+    label: string
     columnLabel: string
     tooltip: string
     hitherFnName: string

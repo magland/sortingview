@@ -1,12 +1,13 @@
 
 import { Button, Paper } from '@material-ui/core';
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
-import { useKacheryNode, usePlugins } from '../../../labbox';
 import { LabboxPlugin, Recording, SortingUnitMetricPlugin, sortingUnitMetricPlugins, SortingViewProps } from "../../../pluginInterface";
-import sortByPriority from '../../../common/sortByPriority';
 import UnitsTable from './UnitsTable';
-import { runPureCalculationTaskAsync } from 'kachery-react/runPureCalculationTaskAsync';
-import useSelectedChannel from 'python/sortingview/gui/pages/Home/useSelectedChannel';
+import { runPureCalculationTaskAsync } from 'kachery-react';
+import useChannel from 'kachery-react/useChannel'
+import { usePlugins } from 'labbox-react';
+import useKacheryNode from 'kachery-react/useKacheryNode';
+import sortByPriority from 'labbox-react/extensionSystem/sortByPriority';
 
 // const defaultLabelOptions = ['noise', 'MUA', 'artifact', 'accept', 'reject'];
 
@@ -74,7 +75,7 @@ const Units: React.FunctionComponent<SortingViewProps & OwnProps> = (props) => {
     }, [recording, previousRecording, setPreviousRecording, updateMetrics])
 
     const kacheryNode = useKacheryNode()
-    const {selectedChannel: channelName} = useSelectedChannel()
+    const {channelName} = useChannel()
 
 
     const fetchMetric = useCallback(async (metric: SortingUnitMetricPlugin) => {

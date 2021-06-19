@@ -1,7 +1,7 @@
 import React from 'react'
 import { FunctionComponent } from "react"
-import Markdown from '../commonComponents/Markdown/Markdown'
-import useSelectedChannel from '../pages/Home/useSelectedChannel'
+import Markdown from 'labbox-react/components/Markdown/Markdown';
+import useChannel from 'kachery-react/useChannel'
 import addWorkspaceMd from './addWorkspace.md.gen'
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
 }
 
 const AddWorkspaceInstructions: FunctionComponent<Props> = () => {
-    const {selectChannel: channelName} = useSelectedChannel()
+    const {channelName} = useChannel()
     return (
         <Markdown
             source={addWorkspaceMd}

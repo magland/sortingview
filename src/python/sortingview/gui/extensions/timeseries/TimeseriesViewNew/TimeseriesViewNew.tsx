@@ -1,5 +1,5 @@
 import React, { useMemo, useReducer } from 'react';
-import Splitter from '../../../commonComponents/Splitter/Splitter';
+import Splitter from 'labbox-react/components/Splitter/Splitter';
 import { RecordingInfo, RecordingSelection, RecordingSelectionDispatch, recordingSelectionReducer } from '../../../pluginInterface';
 import ElectrodeGeometryView from './ElectrodeGeometryView';
 import TimeseriesWidgetNew from './TimeseriesWidgetNew';

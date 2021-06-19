@@ -1,11 +1,11 @@
 import { KacheryNode } from "kachery-js"
 import { ChannelName } from "kachery-js/types/kacheryTypes"
-import { runPureCalculationTaskAsync } from "kachery-react/runPureCalculationTaskAsync"
+import { runPureCalculationTaskAsync } from "kachery-react"
 import useKacheryNode from "kachery-react/useKacheryNode"
-import useSelectedChannel from "python/sortingview/gui/pages/Home/useSelectedChannel"
+import useChannel from 'kachery-react/useChannel'
 import { useMemo } from "react"
-import useFetchCache from '../../../common/useFetchCache'
 import { RecordingInfo } from '../../../pluginInterface'
+import { useFetchCache } from "labbox-react"
 
 // it may be important to limit this when using a filter
 // const timeseriesCalculationPool = createCalculationPool({maxSimultaneous: 4, method: 'stack'})
@@ -49,7 +49,7 @@ type TimeseriesDataQuery = TimeseriesDataSegmentQuery
 
 const useTimeseriesData = (recordingObject: any, recordingInfo: RecordingInfo): TimeseriesData | null => {
   const kacheryNode = useKacheryNode()
-  const {selectedChannel: channelName} = useSelectedChannel()
+  const {channelName} = useChannel()
   const fetch = useMemo(() => (async (query: TimeseriesDataQuery) => {
     switch(query.type) {
       case 'dataSegment': {

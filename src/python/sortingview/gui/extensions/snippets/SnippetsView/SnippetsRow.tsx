@@ -3,12 +3,12 @@ import React, { FunctionComponent, useMemo } from 'react';
 import { getElectrodesAspectRatio } from '../../averagewaveforms/AverageWaveformsView/setupElectrodes';
 import { applyMergesToUnit, Recording, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from "../../../pluginInterface";
 import SnippetBox from './SnippetBox';
-import useFetchCache from '../../../common/useFetchCache';
 import { KacheryNode } from 'kachery-js';
-import { runPureCalculationTaskAsync } from 'kachery-react/runPureCalculationTaskAsync';
+import { runPureCalculationTaskAsync } from 'kachery-react';
 import { ChannelName } from 'kachery-js/types/kacheryTypes';
 import useKacheryNode from 'kachery-react/useKacheryNode';
-import useSelectedChannel from 'python/sortingview/gui/pages/Home/useSelectedChannel';
+import useChannel from 'kachery-react/useChannel'
+import { useFetchCache } from 'labbox-react';
 
 
 type Props = {
@@ -117,7 +117,7 @@ const createTimeSegments = (timeRange: {min: number, max: number} | null, opts: 
 
 const useSnippets = (args: {recording: Recording, sorting: Sorting, curation: SortingCuration, visibleElectrodeIds: number[] | undefined, selection: SortingSelection, unitId: number, timeRange: {min: number, max: number} | null}) => {
     const kacheryNode = useKacheryNode()
-    const {selectedChannel: channelName} = useSelectedChannel()
+    const {channelName} = useChannel()
     const { recording, sorting, selection, curation, visibleElectrodeIds, unitId, timeRange } = args
     const fetchFunction = useMemo(() => (
         async (query: QueryType) => {

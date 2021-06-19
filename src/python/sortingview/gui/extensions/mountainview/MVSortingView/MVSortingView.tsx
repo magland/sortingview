@@ -4,9 +4,9 @@ import { GraphicEq, Settings, Visibility } from '@material-ui/icons'
 import GrainIcon from '@material-ui/icons/Grain'
 import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser'
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useReducer, useState } from 'react'
-import Expandable from '../../../commonComponents/Expandable/Expandable'
-import Splitter from '../../../commonComponents/Splitter/Splitter'
-import { usePlugins } from '../../../labbox'
+import Expandable from "labbox-react/components/Expandable/Expandable"
+import Splitter from 'labbox-react/components/Splitter/Splitter';
+import { usePlugins } from 'labbox-react'
 import { LabboxPlugin, SortingUnitViewPlugin, SortingViewPlugin, sortingViewPlugins, SortingViewProps } from "../../../pluginInterface"
 import { RecordingViewPlugin } from '../../../pluginInterface/RecordingViewPlugin'
 import '../mountainview.css'

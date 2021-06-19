@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react'
 import { FunctionComponent } from "react"
-import Hyperlink from '../commonComponents/Hyperlink/Hyperlink'
-import NiceTable from '../commonComponents/NiceTable/NiceTable'
+import Hyperlink from 'labbox-react/components/Hyperlink/Hyperlink'
+import NiceTable from 'labbox-react/components/NiceTable/NiceTable';
 import { WorkspaceListWorkspace } from './WorkspaceList'
 
 type Props = {

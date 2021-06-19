@@ -1,8 +1,8 @@
 import React, { useCallback, useMemo } from 'react'
 import { FunctionComponent } from "react"
 import ReactMarkdown from 'react-markdown'
-import Hyperlink from '../../commonComponents/Hyperlink/Hyperlink'
-import Markdown from '../../commonComponents/Markdown/Markdown'
+import Hyperlink from 'labbox-react/components/Hyperlink/Hyperlink'
+import Markdown from 'labbox-react/components/Markdown/Markdown';
 import RoutePath from '../../route/RoutePath'
 import useRoute from '../../route/useRoute'
 import introMd from './intro.md.gen'

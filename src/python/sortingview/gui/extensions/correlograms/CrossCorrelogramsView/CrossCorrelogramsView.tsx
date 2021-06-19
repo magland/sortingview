@@ -2,7 +2,7 @@ import React, { FunctionComponent, useMemo, useState } from 'react'
 import { SortingSelection, SortingSelectionAction, SortingSelectionDispatch, SortingViewProps } from "../../../pluginInterface"
 import SelectUnitsWidget from '../../../commonComponents/SelectUnitsWidget/SelectUnitsWidget'
 import CrossCorrelogramsWidget from './CrossCorrelogramsWidget'
-import Splitter from '../../../commonComponents/Splitter/Splitter'
+import Splitter from 'labbox-react/components/Splitter/Splitter';
 
 const useLocalUnitIds = (selection: SortingSelection, selectionDispatch: SortingSelectionDispatch): [SortingSelection, SortingSelectionDispatch] => {
     const [selectedUnitIds, setSelectedUnitIds] = useState<number[]>([])

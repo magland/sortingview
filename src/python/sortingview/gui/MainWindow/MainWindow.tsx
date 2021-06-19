@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react'
 import { FunctionComponent } from "react"
-import { useWindowDimensions } from '../labbox'
-import { ApplicationBar } from '../labbox'
-import packageName from '../labbox/packageName'
+import { useWindowDimensions } from 'labbox-react'
+import packageName from '../packageName'
 import useRoute from '../route/useRoute'
 import Routes from './Routes'
+import ApplicationBar from './ApplicationBar/ApplicationBar'
 
 type Props = {
 }

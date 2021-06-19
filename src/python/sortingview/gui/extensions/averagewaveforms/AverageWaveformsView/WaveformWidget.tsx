@@ -1,7 +1,6 @@
 import React, { FunctionComponent } from 'react';
-import { ActionItem, DividerItem } from '../../../common/Toolbars';
-import CanvasWidget from '../../../commonComponents/CanvasWidget';
-import { useLayer, useLayers } from '../../../commonComponents/CanvasWidget/CanvasWidgetLayer';
+import CanvasWidget from 'labbox-react/components/CanvasWidget';
+import { useLayer, useLayers } from 'labbox-react/components/CanvasWidget/CanvasWidgetLayer';
 import { RecordingSelection, RecordingSelectionDispatch } from '../../../pluginInterface';
 // import CanvasWidget from '../../../commonComponents/CanvasWidget';
 // import { useLayer, useLayers } from '../../../commonComponents/CanvasWidget/CanvasWidgetLayer';
@@ -9,6 +8,7 @@ import { RecordingSelection, RecordingSelectionDispatch } from '../../../pluginI
 // import { RecordingSelection, RecordingSelectionDispatch } from "../../pluginInterface";
 import { createElectrodesLayer, ElectrodeColors } from './electrodesLayer';
 import { createWaveformLayer, WaveformColors } from './waveformLayer';
+import { ActionItem, DividerItem } from '../../common/Toolbars';
 
 export type Props = {
     waveform?: number[][]

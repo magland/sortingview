@@ -3,8 +3,8 @@
 
 import GrainIcon from '@material-ui/icons/Grain';
 import React, { FunctionComponent, useMemo } from 'react';
-import { useRecordingInfo } from '../../common/useRecordingInfo';
 import { LabboxExtensionContext, RecordingViewProps, SortingViewProps } from '../../pluginInterface';
+import { useRecordingInfo } from '../../pluginInterface/useRecordingInfo';
 import ElectrodeGeometryWidget from './ElectrodeGeometryWidget/ElectrodeGeometryWidget';
 
 const zipElectrodes = (locations: number[][], ids: number[]) => {

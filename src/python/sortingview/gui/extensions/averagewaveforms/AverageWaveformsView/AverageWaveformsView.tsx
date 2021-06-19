@@ -1,12 +1,12 @@
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaArrowDown, FaArrowUp } from 'react-icons/fa';
-import { ActionItem, DividerItem } from '../../../common/Toolbars';
-import { useRecordingInfo } from '../../../common/useRecordingInfo';
-import ViewToolbar from '../../../common/ViewToolbar';
 import SortingUnitPlotGrid from '../../../commonComponents/SortingUnitPlotGrid/SortingUnitPlotGrid';
-import Splitter from '../../../commonComponents/Splitter/Splitter';
+import Splitter from 'labbox-react/components/Splitter/Splitter';
 import { SortingViewProps } from '../../../pluginInterface';
 import AverageWaveformView from './AverageWaveformView';
+import { ActionItem, DividerItem } from '../../common/Toolbars';
+import { useRecordingInfo } from 'python/sortingview/gui/pluginInterface/useRecordingInfo';
+import ViewToolbar from '../../common/ViewToolbar';
 
 export type AverageWaveformAction = ActionItem  | DividerItem
 

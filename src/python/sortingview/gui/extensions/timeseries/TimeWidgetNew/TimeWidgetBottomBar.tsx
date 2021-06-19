@@ -1,6 +1,6 @@
 import { Toolbar } from '@material-ui/core';
 import React, { FunctionComponent, useState } from 'react';
-import Hyperlink from '../../../commonComponents/Hyperlink/Hyperlink';
+import Hyperlink from 'labbox-react/components/Hyperlink/Hyperlink'
 
 
 export interface BottomBarInfo {

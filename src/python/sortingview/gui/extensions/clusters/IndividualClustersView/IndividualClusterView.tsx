@@ -1,8 +1,8 @@
 // import { createCalculationPool } from 'labbox';
-import TaskStatusView from 'kachery-react/TaskMonitor/TaskStatusView';
-import useSelectedChannel from 'python/sortingview/gui/pages/Home/useSelectedChannel';
+import TaskStatusView from 'kachery-react/components/TaskMonitor/TaskStatusView';
+import useChannel from 'kachery-react/useChannel';
 import React, { FunctionComponent, useCallback, useMemo } from 'react';
-import { usePureCalculationTask } from '../../../labbox';
+import { usePureCalculationTask } from 'kachery-react';
 import { applyMergesToUnit, Recording, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from "../../../pluginInterface";
 import IndividualClusterWidget from './IndividualClusterWidget';
 
@@ -26,7 +26,7 @@ type Result = {
 }
 
 const IndividualClusterView: FunctionComponent<Props> = ({ recording, sorting, curation, selection, selectionDispatch, unitId, width, height }) => {
-    const {selectedChannel: channelName} = useSelectedChannel()
+    const {channelName} = useChannel()
     const {returnValue: features, task} = usePureCalculationTask<Result>(
         'individual_cluster_features.1',
         {

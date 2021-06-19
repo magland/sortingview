@@ -2,7 +2,7 @@ import { FeedId, isFeedId, sha1OfString, SubfeedHash } from 'kachery-js/types/ka
 import useQueryTask from 'kachery-react/useQueryTask'
 import useSubfeedReducer from 'kachery-react/useSubfeedReducer'
 import React, { FunctionComponent, useCallback, useMemo } from 'react'
-import useSelectedChannel from '../pages/Home/useSelectedChannel'
+import useChannel from 'kachery-react/useChannel'
 import useCurrentUserPermissions from '../pages/WorkspacePage/useCurrentUserPermissions'
 import WorkspacesTable from './WorkspacesTable'
 
@@ -80,7 +80,7 @@ const workspaceListReducer = (s: WorkspaceListState, a: WorkspaceListAction) => 
 }
 
 const WorkspaceList: FunctionComponent<Props> = ({onWorkspaceSelected}) => {
-    const {selectedChannel: channelName} = useSelectedChannel()
+    const {channelName} = useChannel()
     const {returnValue: workspaceListSubfeedUri, task} = useQueryTask<string>(channelName ? 'sortingview_workspace_list_subfeed.2' : '', {name: 'default'}, {useCache: true, channelName})
     const {feedId, subfeedHash} = parseSubfeedUri(workspaceListSubfeedUri)
 

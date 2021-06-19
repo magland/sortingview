@@ -6,5 +6,3 @@ export const isRoutePath = (x: string): x is RoutePath => {
 }
 
 export default RoutePath
-
-// jinjaroot synctool exclude

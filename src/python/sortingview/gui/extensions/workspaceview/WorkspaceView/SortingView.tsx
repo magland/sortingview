@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useReducer } from 'react';
-import { parseWorkspaceUri, usePlugins } from '../../../labbox';
-import { useRecordingInfo } from '../../../common/useRecordingInfo';
-import { useSortingInfo } from '../../../common/useSortingInfo';
+import { parseWorkspaceUri } from 'labbox-react';
 import { LabboxPlugin, Recording, Sorting, SortingInfo, SortingSelection, sortingSelectionReducer, sortingViewPlugins, WorkspaceRoute, WorkspaceRouteDispatch } from '../../../pluginInterface';
 import { sortingCurationReducer } from '../../../pluginInterface/workspaceReducer';
-import Hyperlink from '../../../commonComponents/Hyperlink/Hyperlink';
+import Hyperlink from 'labbox-react/components/Hyperlink/Hyperlink'
 import { JSONObject, sha1OfObject, SubfeedHash } from 'kachery-js/types/kacheryTypes';
 import useSubfeedReducer from 'kachery-react/useSubfeedReducer'
+import { usePlugins } from 'labbox-react';
+import { useSortingInfo } from 'python/sortingview/gui/pluginInterface/useSortingInfo';
+import { useRecordingInfo } from 'python/sortingview/gui/pluginInterface/useRecordingInfo';
 
 // const intrange = (a: number, b: number) => {
 //   const lower = a < b ? a : b;

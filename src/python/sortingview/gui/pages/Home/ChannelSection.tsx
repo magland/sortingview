@@ -1,9 +1,9 @@
 import React, { FunctionComponent, useCallback } from 'react'
-import Hyperlink from '../../commonComponents/Hyperlink/Hyperlink'
+import Hyperlink from 'labbox-react/components/Hyperlink/Hyperlink'
 import { ChannelName } from 'kachery-js/types/kacheryTypes'
 import useRoute from '../../route/useRoute'
 import hyperlinkStyle from './hyperlinkStyle'
-import RecentlyUsedBackends from './RecentlyUsedChannels'
+import RecentlyUsedBackends from '../../../../../kachery-react/components/SelectChannel/RecentlyUsedChannels'
 
 type Props = {
     onSelectChannel: () => void

@@ -1,6 +1,6 @@
 import { Button } from '@material-ui/core';
 import React, { FunctionComponent, useCallback, useState } from 'react';
-import Splitter from '../../../commonComponents/Splitter/Splitter';
+import Splitter from 'labbox-react/components/Splitter/Splitter';
 import { Recording, Sorting, WorkspaceRoute, WorkspaceRouteDispatch } from "../../../pluginInterface";
 import ImportRecordingsInstructions from './ImportRecordingsInstructions';
 import RecordingsTable from './RecordingsTable';

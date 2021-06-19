@@ -1,6 +1,6 @@
 import { CalculationPool } from "kachery-react/createCalculationPool";
+import { BasePlugin, ExtensionContext, usePlugins } from "labbox-react";
 import { FunctionComponent, useMemo } from "react";
-import { BasePlugin, ExtensionContext, usePlugins } from "../labbox";
 import { RecordingViewPlugin } from "./RecordingViewPlugin";
 import { SortingUnitMetricPlugin } from "./SortingUnitMetricPlugin";
 import { SortingUnitViewPlugin } from "./SortingUnitViewPlugin";
@@ -35,6 +35,8 @@ export type MainWindowProps = {
 }
 export interface MainWindowPlugin extends BaseLabboxPlugin {
     type: 'MainWindow'
+    name: string
+    label: string
     component: FunctionComponent<MainWindowProps>
 }
 

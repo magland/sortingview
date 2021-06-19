@@ -1,7 +1,7 @@
-import { funcToTransform } from "../../../commonComponents/CanvasWidget"
-import { CanvasPainter } from "../../../commonComponents/CanvasWidget/CanvasPainter"
-import { CanvasWidgetLayer, ClickEvent, ClickEventType, DiscreteMouseEventHandler } from "../../../commonComponents/CanvasWidget/CanvasWidgetLayer"
-import { pointIsInEllipse, RectangularRegion, Vec2 } from "../../../commonComponents/CanvasWidget/Geometry"
+import { funcToTransform } from "labbox-react/components/CanvasWidget"
+import { CanvasPainter } from "labbox-react/components/CanvasWidget/CanvasPainter"
+import { CanvasWidgetLayer, ClickEvent, ClickEventType, DiscreteMouseEventHandler } from "labbox-react/components/CanvasWidget/CanvasWidgetLayer"
+import { pointIsInEllipse, RectangularRegion, Vec2 } from "labbox-react/components/CanvasWidget/Geometry"
 
 export type ClusterLayerProps = {
     x: number[]

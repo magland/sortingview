@@ -1,6 +1,6 @@
+import sortByPriority from 'labbox-react/extensionSystem/sortByPriority';
 import React, { FunctionComponent, useCallback } from 'react';
 import { mergeGroupForUnitId, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch, SortingUnitMetricPlugin } from "../../../pluginInterface";
-import sortByPriority from '../../../common/sortByPriority';
 import '../unitstable.css';
 import TableWidget, { Column, Row } from './TableWidget';
 

@@ -1,10 +1,10 @@
 // import { createCalculationPool } from 'labbox';
-import TaskStatusView from 'kachery-react/TaskMonitor/TaskStatusView';
+import TaskStatusView from 'kachery-react/components/TaskMonitor/TaskStatusView';
+import useChannel from 'kachery-react/useChannel';
 import usePureCalculationTask from 'kachery-react/usePureCalculationTask';
-import useSelectedChannel from 'python/sortingview/gui/pages/Home/useSelectedChannel';
 import React, { FunctionComponent, useMemo } from 'react';
-import { ActionItem, DividerItem } from '../../../common/Toolbars';
 import { applyMergesToUnit, Recording, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from '../../../pluginInterface';
+import { ActionItem, DividerItem } from '../../common/Toolbars';
 import WaveformWidget, { ElectrodeOpts } from './WaveformWidget';
 
 type PlotData = {
@@ -30,7 +30,7 @@ type Props = {
 // const calculationPool = createCalculationPool({maxSimultaneous: 6})
 
 const AverageWaveformView: FunctionComponent<Props> = ({ sorting, curation, recording, unitId, selection, selectionDispatch, width, height, noiseLevel, customActions }) => {
-    const {selectedChannel: channelName} = useSelectedChannel()
+    const {channelName} = useChannel()
     const {returnValue: plotData, task} = usePureCalculationTask<PlotData>(
         'fetch_average_waveform.2',
         {

@@ -22,6 +22,8 @@ export interface SortingViewProps {
 
 export interface SortingViewPlugin extends LabboxViewPlugin {
     type: 'SortingView'
+    name: string
+    label: string
     component: React.ComponentType<SortingViewProps>
     notebookCellHeight?: number
     icon?: any

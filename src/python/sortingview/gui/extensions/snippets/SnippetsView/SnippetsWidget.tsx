@@ -1,7 +1,7 @@
 import { Grid } from '@material-ui/core';
+import { useRecordingInfo } from 'python/sortingview/gui/pluginInterface/useRecordingInfo';
 import React, { Fragment, FunctionComponent, useCallback, useState } from 'react';
 import VisibilitySensor from 'react-visibility-sensor';
-import { useRecordingInfo } from '../../../common/useRecordingInfo';
 import { Recording, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from "../../../pluginInterface";
 import SnippetsRow from './SnippetsRow';
 

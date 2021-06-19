@@ -13,5 +13,7 @@ export type WorkspaceViewProps = {
 
 export interface WorkspaceViewPlugin extends BaseLabboxPlugin {
     type: 'WorkspaceView'
+    name: string
+    label: string
     component: FunctionComponent<WorkspaceViewProps>
 }

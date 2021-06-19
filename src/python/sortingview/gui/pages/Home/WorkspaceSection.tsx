@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import { FunctionComponent } from "react"
-import Hyperlink from '../../commonComponents/Hyperlink/Hyperlink'
+import Hyperlink from 'labbox-react/components/Hyperlink/Hyperlink'
 import useRoute from '../../route/useRoute'
 import hyperlinkStyle from './hyperlinkStyle'
 

@@ -1,11 +1,11 @@
 import { Button, Grid } from '@material-ui/core';
 import React, { FunctionComponent, useCallback, useEffect, useReducer } from 'react';
-import { useRecordingInfo } from '../../../common/useRecordingInfo';
-import Hyperlink from '../../../commonComponents/Hyperlink/Hyperlink';
-import Splitter from '../../../commonComponents/Splitter/Splitter';
+import Hyperlink from 'labbox-react/components/Hyperlink/Hyperlink'
+import Splitter from 'labbox-react/components/Splitter/Splitter';
 import { Recording, RecordingSelection, recordingSelectionReducer, Sorting, WorkspaceRoute, WorkspaceRouteDispatch } from "../../../pluginInterface";
 import RecordingInfoView from './RecordingInfoView';
 import SortingsView from './SortingsView';
+import { useRecordingInfo } from 'python/sortingview/gui/pluginInterface/useRecordingInfo';
 
 interface Props {
   recording: Recording

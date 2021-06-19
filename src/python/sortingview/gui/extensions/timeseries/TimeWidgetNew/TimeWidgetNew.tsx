@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { ActionItem, DividerItem } from '../../../common/Toolbars'
-import { CanvasPainter } from '../../../commonComponents/CanvasWidget/CanvasPainter'
-import CanvasWidget from '../../../commonComponents/CanvasWidget/CanvasWidget'
-import { useLayer, useLayers } from '../../../commonComponents/CanvasWidget/CanvasWidgetLayer'
+import { CanvasPainter } from 'labbox-react/components/CanvasWidget/CanvasPainter'
+import CanvasWidget from 'labbox-react/components/CanvasWidget/CanvasWidget'
+import { useLayer, useLayers } from 'labbox-react/components/CanvasWidget/CanvasWidgetLayer'
 import { RecordingSelection, RecordingSelectionDispatch } from '../../../pluginInterface'
 import { createCursorLayer } from './cursorLayer'
 import { createMainLayer } from './mainLayer'
@@ -11,6 +10,7 @@ import { createTimeAxisLayer } from './timeAxisLayer'
 import TimeSpanWidget, { SpanWidgetInfo } from './TimeSpanWidget'
 import TimeWidgetBottomBar from './TimeWidgetBottomBar'
 import TimeWidgetToolbarNew from './TimeWidgetToolbarNew'
+import { ActionItem, DividerItem } from '../../common/Toolbars'
 
 export type TimeWidgetAction = ActionItem | DividerItem
 

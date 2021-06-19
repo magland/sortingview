@@ -1,5 +1,5 @@
 import usePureCalculationTask from 'kachery-react/usePureCalculationTask';
-import useSelectedChannel from 'python/sortingview/gui/pages/Home/useSelectedChannel';
+import useChannel from 'kachery-react/useChannel'
 import React, { Fragment, FunctionComponent, useEffect, useMemo, useRef, useState } from 'react';
 import { Recording, Sorting } from "../../../pluginInterface";
 
@@ -24,7 +24,7 @@ const PreloadCheck: FunctionComponent<Props> = ({ recording, sorting, children, 
         (runningState.current.sortingObject === x.sortingObject) && (runningState.current.recordingObject === x.recordingObject)
     )), [])
 
-    const {selectedChannel: channelName} = useSelectedChannel()
+    const {channelName} = useChannel()
     const {task: preloadExtractSnippetsTask} = usePureCalculationTask('preload_extract_snippets.1', {recording_object: recordingObject, sorting_object: sortingObject}, {channelName})
     const status = preloadExtractSnippetsTask?.status || 'waiting'
     const message = useMemo(() => {

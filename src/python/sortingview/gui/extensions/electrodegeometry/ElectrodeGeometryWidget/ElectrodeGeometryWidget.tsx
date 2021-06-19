@@ -1,6 +1,6 @@
 import React, { useMemo } from "react"
-import CanvasWidget from "../../../commonComponents/CanvasWidget"
-import { useLayer, useLayers } from "../../../commonComponents/CanvasWidget/CanvasWidgetLayer"
+import CanvasWidget from "labbox-react/components/CanvasWidget"
+import { useLayer, useLayers } from "labbox-react/components/CanvasWidget/CanvasWidgetLayer"
 import { RecordingSelection, RecordingSelectionDispatch } from "../../../pluginInterface"
 import { createElectrodesLayer } from "../../averagewaveforms/AverageWaveformsView/electrodesLayer"
 import { ElectrodeLayerProps } from "../../averagewaveforms/AverageWaveformsView/WaveformWidget"

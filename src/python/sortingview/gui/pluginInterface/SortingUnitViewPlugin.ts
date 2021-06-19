@@ -9,6 +9,8 @@ export interface SortingUnitViewProps extends SortingViewProps {
 
 export interface SortingUnitViewPlugin extends LabboxViewPlugin {
     type: 'SortingUnitView'
+    name: string
+    label: string
     component: React.ComponentType<SortingUnitViewProps>
     icon?: any
 }
