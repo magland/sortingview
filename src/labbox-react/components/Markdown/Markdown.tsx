@@ -6,7 +6,7 @@ import MarkdownCodeBlock from "./MarkdownCodeBlock"
 export interface MarkdownProps {
     source: string
     substitute?: { [key: string]: string | undefined | null }
-    linkTarget?: '_blank' | ReactMarkdown.LinkTargetResolver
+    linkTarget?: '' | '_blank' | ReactMarkdown.LinkTargetResolver // default is _blank
     renderers?: ReactMarkdown.Renderers
 }
 
@@ -17,7 +17,7 @@ const Markdown: FunctionComponent<MarkdownProps> = ({ source, substitute, linkTa
             <ReactMarkdown
                 source={source2}
                 renderers={{ code: MarkdownCodeBlock, ...renderers }}
-                linkTarget={linkTarget}
+                linkTarget={linkTarget ? linkTarget : '_blank'}
             />
         </div>
     );

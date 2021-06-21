@@ -1,0 +1,5 @@
+# Kachery channels
+
+The kachery network consists of nodes and channels. Kachery nodes can belong to one or more channels and serve in various roles, such as providing files, feeds, or tasks. When you configure this web app to use a channel, you are effectively connecting to the nodes that belong to that channel, and you may therefore access the resources made available by those nodes.
+
+For more information, visit [kacheryhub.org](https://kacheryhub.org).

@@ -1,16 +1,17 @@
-import React from 'react'
-import { FunctionComponent } from "react"
+import { ChannelName } from 'kachery-js/types/kacheryTypes'
+import SelectChannelDialog from 'kachery-react/components/SelectChannel/SelectChannelDialog'
 import { useVisible } from 'labbox-react'
-import './Home.css'
-import SignInSection from './SignInSection'
+import React, { FunctionComponent } from 'react'
 import ChannelSection from './ChannelSection'
+import './Home.css'
 import IntroSection from './IntroSection'
 import WorkspaceSection from './WorkspaceSection'
-import SelectChannelDialog from 'kachery-react/components/SelectChannel/SelectChannelDialog'
 
 type Props = {
     
 }
+
+const hardCodedChannels = ['ccm'] as any as ChannelName[]
 
 const Home: FunctionComponent<Props> = () => {
     const {visible: selectChannelVisible, show: showSelectChannel, hide: hideSelectChannel} = useVisible()
@@ -19,11 +20,14 @@ const Home: FunctionComponent<Props> = () => {
         <span>
             
             <IntroSection />
-            <SignInSection />
             <ChannelSection onSelectChannel={showSelectChannel} />
             <WorkspaceSection />
             
-            <SelectChannelDialog visible={selectChannelVisible} onClose={hideSelectChannel} />
+            <SelectChannelDialog
+                visible={selectChannelVisible}
+                onClose={hideSelectChannel}
+                hardCodedChannels={hardCodedChannels}
+            />
         </span>
     )
 }

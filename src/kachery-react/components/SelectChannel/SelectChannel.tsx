@@ -1,22 +1,33 @@
 import { Button, TextField } from '@material-ui/core'
-import React, { useCallback, useEffect, useReducer, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
 import { FunctionComponent } from "react"
-import { ChannelName, isChannelName } from 'kachery-js/types/kacheryTypes'
+import { ChannelName, isChannelName, nowTimestamp } from 'kachery-js/types/kacheryTypes'
 import useChannel from 'kachery-react/useChannel'
 import ChannelsTable, { getChannelConfig } from './ChannelsTable'
 import channelItemsReducer, { initialChannelItems } from './channelItemsReducer'
 
 type Props = {
     onClose: () => void
+    hardCodedChannels?: ChannelName[]
 }
 
-const SelectChannel: FunctionComponent<Props> = ({onClose}) => {
+const SelectChannel: FunctionComponent<Props> = ({onClose, hardCodedChannels}) => {
     const {
         channelName: selectedChannel,
         selectChannel
     } = useChannel()
     
     const [channelItems, channelItemsDispatch] = useReducer(channelItemsReducer, initialChannelItems())
+    const channelItems2 = useMemo(() => {
+        const ret = channelItems.filter(item => (!(hardCodedChannels || []).includes(item.channel)))
+        for (let x of (hardCodedChannels || [])) {
+            ret.push({
+                channel: x,
+                lastUsed: 0 // 0 means it is hard-coded
+            })
+        }
+        return ret
+    }, [channelItems, hardCodedChannels])
 
     const [editChannel, setEditChannel] = useState<string>('')
     useEffect(() => {
@@ -32,7 +43,7 @@ const SelectChannel: FunctionComponent<Props> = ({onClose}) => {
                 type: 'addItem',
                 item: {
                     channel,
-                    lastUsed: Number(new Date())
+                    lastUsed: Number(nowTimestamp())
                 }
             })
             selectChannel(channel)
@@ -51,11 +62,11 @@ const SelectChannel: FunctionComponent<Props> = ({onClose}) => {
     }, [handleOkay])
     return (
         <div>
-            <h3>Select a channel</h3>
+            <h3>Select a kachery channel</h3>
             <TextField style={{width: '100%'}} label="Channel" value={editChannel} onChange={handleChange} onKeyDown={handleKeyDown} />
             <Button onClick={handleOkay} disabled={editChannel === (selectedChannel || '').toString()}>Set channel</Button>
             <ChannelsTable
-                channelItems={channelItems}
+                channelItems={channelItems2}
                 channelItemsDispatch={channelItemsDispatch}
                 selectedChannel={editChannel as any as ChannelName}
                 onSelectChannel={handleSelectChannel}

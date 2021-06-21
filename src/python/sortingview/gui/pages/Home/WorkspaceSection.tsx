@@ -3,6 +3,11 @@ import { FunctionComponent } from "react"
 import Hyperlink from 'labbox-react/components/Hyperlink/Hyperlink'
 import useRoute from '../../route/useRoute'
 import hyperlinkStyle from './hyperlinkStyle'
+import { IconButton } from '@material-ui/core'
+import { Help } from '@material-ui/icons'
+import { useVisible } from 'labbox-react'
+import MarkdownDialog from 'labbox-react/components/Markdown/MarkdownDialog'
+import aboutWorkspacesMd from './aboutWorkspaces.md.gen'
 
 type Props = {
     
@@ -19,25 +24,30 @@ const WorkspaceSection: FunctionComponent<Props> = () => {
         setRoute({routePath: '/workspace'})
     }, [setRoute])
 
+    const aboutWorkspacesVisible = useVisible()
+
     return (
         channel ? (
             <div className="WorkspaceSection HomeSection">
+                <h3>Select a workspace <IconButton onClick={aboutWorkspacesVisible.show}><Help /></IconButton></h3>
                 <span>
-                    
                     {
                         workspaceUri ? (
+                            
                             <span>
-                                <p>The selected workspace is: {workspaceUri}</p>
+                                <Hyperlink style={hyperlinkStyle} onClick={handleViewWorkspace}>{workspaceUri}</Hyperlink>
                                 <p><Hyperlink style={hyperlinkStyle} onClick={handleSelectWorkspace}>Select a different workspace</Hyperlink></p>
-                                <Hyperlink style={hyperlinkStyle} onClick={handleViewWorkspace}>View this workspace</Hyperlink>
                             </span>
                         ) : (
-                            <span>
-                                <p>The next step is to <Hyperlink style={hyperlinkStyle} onClick={handleSelectWorkspace}>select a workspace</Hyperlink>.</p>
-                            </span>
+                            <Hyperlink style={hyperlinkStyle} onClick={handleSelectWorkspace}>select a workspace</Hyperlink>
                         )
                     }
                 </span>
+                <MarkdownDialog
+                    visible={aboutWorkspacesVisible.visible}
+                    onClose={aboutWorkspacesVisible.hide}
+                    source={aboutWorkspacesMd}
+                />
             </div>
         ) : (
             <span />

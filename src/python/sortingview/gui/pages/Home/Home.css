@@ -1,8 +1,8 @@
 .HomeSection {
-    background-color: rgb(243, 239, 239);
-    padding: 8px;
-    margin-bottom: 15px;
-    box-shadow: 4px -4px 5px #CCC;
+    /* background-color: rgb(243, 239, 239); */
+    padding-top: 8px;
+    margin-bottom: 0px;
+    /* box-shadow: 4px -4px 5px #CCC; */
 }
 
 .IntroSection {
@@ -13,13 +13,13 @@
     color: gray
 }
 
-.ChannelsSection {
+/* .ChannelsSection {
     color: darkgreen
-}
+} */
 
-.WorkspaceSection {
+/* .WorkspaceSection {
     color: darkblue
-}
+} */
 .HomeSection .Hyperlink {
     font-style: italic;
     color: gray;
