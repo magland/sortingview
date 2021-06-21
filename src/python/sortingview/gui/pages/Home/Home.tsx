@@ -17,7 +17,7 @@ const Home: FunctionComponent<Props> = () => {
     const {visible: selectChannelVisible, show: showSelectChannel, hide: hideSelectChannel} = useVisible()
 
     return (
-        <span>
+        <div style={{margin: 'auto', maxWidth: 1200}}>
             
             <IntroSection />
             <ChannelSection onSelectChannel={showSelectChannel} />
@@ -28,7 +28,7 @@ const Home: FunctionComponent<Props> = () => {
                 onClose={hideSelectChannel}
                 hardCodedChannels={hardCodedChannels}
             />
-        </span>
+        </div>
     )
 }
 

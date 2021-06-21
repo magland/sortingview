@@ -221,10 +221,6 @@ class Subfeed {
         if (signedMessages.length === 0)
             return;
         const signedMessagesToAppend: SignedSubfeedMessage[] = []
-        let previousSignature;
-        if (Number(this.#localSubfeedSignedMessagesManager.getNumMessages()) > 0) {
-            previousSignature = this.#localSubfeedSignedMessagesManager.getSignedMessage(Number(this.#localSubfeedSignedMessagesManager.getNumMessages()) - 1).signature;
-        }
         let messageNumber = Number(this.#localSubfeedSignedMessagesManager.getNumMessages());
         for (let signedMessage of signedMessages) {
             const body = signedMessage.body;
@@ -233,14 +229,10 @@ class Subfeed {
                 console.warn(JSON.stringify(signedMessage, null, 4))
                 throw Error(`Error verifying signature when appending signed message for: ${this.feedId} ${this.subfeedHash} ${signature}`);
             }
-            if ((body.previousSignature || null) !== (previousSignature || null)) {
-                throw Error(`Error in previousSignature when appending signed message for: ${this.feedId} ${this.subfeedHash} ${body.previousSignature} <> ${previousSignature}`);
-            }
             if (body.messageNumber !== messageNumber) {
                 // problem here
                 throw Error(`Error in messageNumber when appending signed message for: ${this.feedId} ${this.subfeedHash} ${body.messageNumber} <> ${messageNumber}`);
             }
-            previousSignature = signedMessage.signature;
             messageNumber ++;
             signedMessagesToAppend.push(signedMessage)
         }

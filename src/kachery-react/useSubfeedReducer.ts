@@ -21,7 +21,7 @@ const useSubfeedReducer = <State, Action>(feedId: FeedId | undefined, subfeedHas
         if (opts.actionField) {
             return messages2.map((m: any) => (m.action)).filter((a: any) => (a !== undefined)) as SubfeedMessage[]
         }
-        else return messages
+        else return messages2
     }, [messages2, opts.actionField])
 
     const initialStateString = JSONStringifyDeterministic(initialState)

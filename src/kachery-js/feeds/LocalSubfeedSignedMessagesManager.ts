@@ -1,5 +1,5 @@
-import { verifySignature } from '../crypto/signatures';
 import { LocalFeedManagerInterface } from '../core/ExternalInterface';
+import { verifySignature } from '../crypto/signatures';
 import { FeedId, JSONObject, messageCount, PublicKey, Signature, SignedSubfeedMessage, SubfeedHash } from '../types/kacheryTypes';
 
 class LocalSubfeedSignedMessagesManager {

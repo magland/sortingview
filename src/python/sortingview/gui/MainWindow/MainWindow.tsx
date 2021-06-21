@@ -23,7 +23,7 @@ const MainWindow: FunctionComponent<Props> = () => {
                 title={packageName}
                 onHome = {handleHome}
             />
-            <div style={{margin: 'auto', maxWidth: 1200}}>
+            <div>
                 <Routes
                     width={width - 20}
                     height = {height - 100}

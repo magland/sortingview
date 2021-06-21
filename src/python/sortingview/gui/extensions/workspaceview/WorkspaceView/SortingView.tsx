@@ -8,6 +8,8 @@ import useSubfeedReducer from 'kachery-react/useSubfeedReducer'
 import { usePlugins } from 'labbox-react';
 import { useSortingInfo } from 'python/sortingview/gui/pluginInterface/useSortingInfo';
 import { useRecordingInfo } from 'python/sortingview/gui/pluginInterface/useRecordingInfo';
+import { SortingCurationAction } from 'python/sortingview/gui/pluginInterface/SortingCuration';
+import { initiateTask, useChannel, useKacheryNode } from 'kachery-react';
 
 // const intrange = (a: number, b: number) => {
 //   const lower = a < b ? a : b;
@@ -46,7 +48,23 @@ const SortingView: React.FunctionComponent<Props> = (props) => {
   const curationSubfeedName = useMemo(() => ({name: 'sortingCuration', sortingId}), [sortingId])
   const curationSubfeedHash = sha1OfObject(curationSubfeedName as any as JSONObject) as any as SubfeedHash
   const {state: curation} = useSubfeedReducer(feedId, curationSubfeedHash, sortingCurationReducer, {}, {actionField: false})
-  const curationDispatch = undefined
+  const kacheryNode = useKacheryNode()
+  const {channelName} = useChannel()
+  const curationDispatch = useCallback((a: SortingCurationAction) => {
+    initiateTask({
+      kacheryNode,
+      channelName,
+      functionId: 'workspace_sorting_curation_action.1',
+      kwargs: {
+        workspace_uri: workspaceRoute.workspaceUri,
+        sorting_id: sortingId,
+        action: a
+      },
+      functionType: 'action',
+      onStatusChanged: () => {}
+    })
+  }, [kacheryNode, channelName, workspaceRoute.workspaceUri, sortingId])
+  // const curationDispatch = undefined
   // const [curation, curationDispatch2] = useReducer(sortingCurationReducer, useMemo(() => ({}), []))
   // const handleCurationSubfeedMessages = useCallback((messages: any[]) => {
   //   messages.forEach(msg => curationDispatch2(msg))

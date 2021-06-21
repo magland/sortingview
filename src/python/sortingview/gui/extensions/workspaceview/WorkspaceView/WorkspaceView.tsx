@@ -61,11 +61,13 @@ const WorkspaceView: FunctionComponent<WorkspaceViewProps> = ({ workspace, works
     })
   }, [workspaceDispatch])
 
+  
+
   switch (workspaceRoute.page) {
     case 'recordings': return (
       <WorkspaceRecordingsView
         onDeleteRecordings={workspaceDispatch ? handleDeleteRecordings : undefined}
-        {...{ width, height, recordings: workspace.recordings, sortings: workspace.sortings, workspaceRoute, workspaceRouteDispatch }}
+        {...{ width, height, workspace, workspaceRoute, workspaceRouteDispatch }}
       />
     )
     case 'recording': {

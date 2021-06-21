@@ -4,3 +4,5 @@ from .recording_info import *
 from .sorting_info import *
 from .preload_extract_snippets import *
 from .workspace_list_subfeed import *
+from .workspace_action import *
+from .workspace_sorting_curation_action import *

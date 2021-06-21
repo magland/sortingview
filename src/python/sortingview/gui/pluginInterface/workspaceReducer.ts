@@ -1,3 +1,4 @@
+import { UserId } from "kachery-js/types/kacheryTypes"
 import { Recording } from "./Recording"
 import { Sorting } from "./Sorting"
 import { SortingCuration, SortingCurationAction } from "./SortingCuration"
@@ -6,9 +7,10 @@ import { SortingCuration, SortingCurationAction } from "./SortingCuration"
 export type WorkspaceState = {
     recordings: Recording[]
     sortings: Sorting[]
+    userPermissions: {[key: string]: {edit?: boolean}}
 }
 
-export const initialWorkspaceState: WorkspaceState = {recordings: [], sortings: []}
+export const initialWorkspaceState: WorkspaceState = {recordings: [], sortings: [], userPermissions: {}}
 
 type AddRecordingWorkspaceAction = {
     type: 'ADD_RECORDING'
@@ -43,7 +45,16 @@ export interface SetUnitMetricsForSortingWorkspaceAction {
     }
 }
 
-export type WorkspaceAction = AddRecordingWorkspaceAction | DeleteRecordingsWorkspaceAction | AddSortingsWorkspaceAction | DeleteSortingsWorkspaceAction | DeleteSortingsForRecordingsWorkspaceAction | SetUnitMetricsForSortingWorkspaceAction
+type SetUserPermissionsAction = {
+    type: 'SET_USER_PERMISSIONS'
+    userId: UserId
+    permissions: {
+        edit?: boolean
+    }
+}
+
+
+export type WorkspaceAction = AddRecordingWorkspaceAction | DeleteRecordingsWorkspaceAction | AddSortingsWorkspaceAction | DeleteSortingsWorkspaceAction | DeleteSortingsForRecordingsWorkspaceAction | SetUnitMetricsForSortingWorkspaceAction | SetUserPermissionsAction
 
 export const sortingCurationReducer = (state: SortingCuration, action: SortingCurationAction): SortingCuration => {
     if (action.type === 'SET_CURATION') {
@@ -109,6 +120,7 @@ const workspaceReducer = (s: WorkspaceState, a: WorkspaceAction): WorkspaceState
         case 'ADD_SORTING': return { ...s, sortings: [...s.sortings.filter(x => (x.sortingId !== a.sorting.sortingId)), a.sorting] }
         case 'DELETE_SORTINGS': return { ...s, sortings: s.sortings.filter(x => !a.sortingIds.includes(x.sortingId)) }
         case 'DELETE_SORTINGS_FOR_RECORDINGS': return { ...s, sortings: s.sortings.filter(x => !a.recordingIds.includes(x.recordingId)) }
+        case 'SET_USER_PERMISSIONS': return {...s, userPermissions: {...s.userPermissions, [a.userId.toString()]: a.permissions}}
         // case 'ADD_UNIT_LABEL':
         // case 'REMOVE_UNIT_LABEL':
         // case 'MERGE_UNITS':
