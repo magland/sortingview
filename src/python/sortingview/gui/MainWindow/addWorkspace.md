@@ -6,7 +6,7 @@ import sortingview
 import labbox_ephys as le
 
 # replace "new-workspace" with the name of the new workspace
-new_workspace_name = 'new-workspace'
+new_workspace_name = # 'new-workspace'
 
 workspace_list = sortingview.WorkspaceList(list_name='default')
 new_workspace = le.create_workspace()

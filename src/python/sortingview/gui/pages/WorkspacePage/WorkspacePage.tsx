@@ -1,5 +1,5 @@
 import { sha1OfString, SubfeedHash } from 'kachery-js/types/kacheryTypes'
-import { initiateTask, runPureCalculationTaskAsync, useChannel, useKacheryNode } from 'kachery-react'
+import { initiateTask, useChannel, useKacheryNode } from 'kachery-react'
 import useSubfeedReducer from 'kachery-react/useSubfeedReducer'
 import { parseWorkspaceUri, useGoogleSignInClient } from 'labbox-react'
 import React, { FunctionComponent, useCallback } from 'react'

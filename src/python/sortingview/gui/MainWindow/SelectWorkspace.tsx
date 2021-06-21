@@ -1,11 +1,10 @@
-import { Button } from '@material-ui/core'
-import React, { useCallback, useEffect, useState } from 'react'
-import { FunctionComponent } from "react"
-import Splitter from 'labbox-react/components/Splitter/Splitter';
-import { useVisible } from 'labbox-react'
-import useRoute from '../route/useRoute'
-import AddWorkspaceInstructions from './AddWorkspaceInstructions'
-import WorkspaceList from './WorkspaceList'
+import { Button } from '@material-ui/core';
+import { useVisible } from 'labbox-react';
+import MarkdownDialog from 'labbox-react/components/Markdown/MarkdownDialog';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import useRoute from '../route/useRoute';
+import addWorkspaceMd from './addWorkspace.md.gen';
+import WorkspaceList from './WorkspaceList';
 
 type Props = {
     onUpdated?: () => void
@@ -16,7 +15,7 @@ type Props = {
 const SelectWorkspace: FunctionComponent<Props> = ({onUpdated, width, height}) => {
     const {setRoute} = useRoute()
     const [closing, setClosing] = useState(false) // hack for now
-    const {visible: instructionsVisible, show: showInstructions} = useVisible()
+    // const {visible: instructionsVisible, show: showInstructions} = useVisible()
 
     // const [editWorkspaceUri, setEditWorkspaceUri] = useState<string>('')
     // useEffect(() => {
@@ -42,28 +41,30 @@ const SelectWorkspace: FunctionComponent<Props> = ({onUpdated, width, height}) =
 
     // const selectDisabled = (!editWorkspaceUri)
 
+    const addWorkspaceInstructionsVisible = useVisible()
+
     return (
-        <Splitter
-            {...{width, height}}
-            initialPosition={300}
-            positionFromRight={true}
-        >
+        <span>
             <div>
                 {
-                    !instructionsVisible && (
-                        <div><Button onClick={showInstructions}>Add workspace</Button></div>
-                    )
+                    <div><Button onClick={addWorkspaceInstructionsVisible.show}>Add workspace</Button></div>
                 }
                 {/* <TextField style={{width: '100%'}} label="Workspace URI" value={editWorkspaceUri} onChange={evt => setEditWorkspaceUri(evt.target.value)} />
                 <Button disabled={selectDisabled} onClick={handleSelect}>Select</Button> */}
                 <WorkspaceList onWorkspaceSelected={handleWorkspaceSelected}/>
             </div>
-            {
+            {/* {
                 instructionsVisible && (
                     <AddWorkspaceInstructions />
                 )
-            }
-        </Splitter>
+            } */}
+            <MarkdownDialog
+                visible={addWorkspaceInstructionsVisible.visible}
+                onClose={addWorkspaceInstructionsVisible.hide}
+                source={addWorkspaceMd}
+            />
+        </span>
+
     )
 }
 
