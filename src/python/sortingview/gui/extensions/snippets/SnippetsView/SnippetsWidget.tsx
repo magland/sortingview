@@ -29,7 +29,7 @@ const WhenVisible: FunctionComponent<{width: number, height: number}> = ({width,
 }
 
 const SnippetsWidget: FunctionComponent<Props> = ({ recording, sorting, selection, selectionDispatch, curation, unitIds, width, height }) => {
-    const recordingInfo = useRecordingInfo(recording.recordingObject)
+    const recordingInfo = useRecordingInfo(recording.recordingPath)
     const noiseLevel = (recordingInfo || {}).noise_level || 1  // fix this
     const rowHeight = 250
     return (

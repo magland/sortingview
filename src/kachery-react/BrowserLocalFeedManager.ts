@@ -2,12 +2,12 @@ import { FeedId, FeedName, isArrayOf, isSignedSubfeedMessage, JSONValue, Private
 import { GarbageMap } from "kachery-js";
 
 class LocalSubfeed {
-    #signedMessages2: SignedSubfeedMessage[] = []
+    #signedMessages: SignedSubfeedMessage[] = []
     constructor(public feedId: FeedId, public subfeedHash: SubfeedHash) {
         const x = localStorageGet(this._localStorageSignedMessagesKey())
         if (x) {
             if (isArrayOf(isSignedSubfeedMessage)(x)) {
-                this.#signedMessages2 = x as any as SignedSubfeedMessage[]
+                this.#signedMessages = x as any as SignedSubfeedMessage[]
             }
             else {
                 console.warn('Problem with local storage signed subfeed messages', x)
@@ -15,14 +15,14 @@ class LocalSubfeed {
         }
     }
     async getSignedMessages(): Promise<SignedSubfeedMessage[]> {
-        return [...this.#signedMessages2] // important to return a copy here
+        return [...this.#signedMessages] // important to return a copy here
     }
     async appendSignedMessages(messages: SignedSubfeedMessage[]) : Promise<void> {
         if (messages.length === 0) return
         for (let m of messages) {
-            this.#signedMessages2.push(m)
+            this.#signedMessages.push(m)
         }
-        localStorageSet(this._localStorageSignedMessagesKey(), this.#signedMessages2)
+        localStorageSet(this._localStorageSignedMessagesKey(), this.#signedMessages)
     }
     _localStorageSignedMessagesKey() {
         return _getLocalStorageSignedMessagesKey(this.feedId, this.subfeedHash)

@@ -5,3 +5,4 @@ from .timeseries import *
 from .electrodegeometry import *
 from .averagewaveforms import *
 from .clusters import *
+from .spikeamplitudes import *

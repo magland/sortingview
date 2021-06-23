@@ -22,7 +22,7 @@ const useSubfeed = (args: {feedId: FeedId | undefined, subfeedHash: SubfeedHash 
             setSubfeed(subfeed)
             let internalPosition = 0
             while (valid) {
-                const messages = await subfeed.waitForSignedMessages({position: subfeedPosition(internalPosition), maxNumMessages: messageCount(0), waitMsec: unscaledDurationMsec(15000)})
+                const messages = await subfeed.waitForSignedMessages({position: subfeedPosition(internalPosition), maxNumMessages: messageCount(0), waitMsec: unscaledDurationMsec(10000)})
                 if (!valid) return
                 if (messages.length > 0) {
                     const localMessages = subfeed.getLocalMessages()

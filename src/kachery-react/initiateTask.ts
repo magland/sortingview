@@ -154,7 +154,10 @@ const initiateTask = <ReturnType>(args: {kacheryNode: KacheryNode, channelName: 
 
     const taskId = kacheryNode.kacheryHubInterface().createTaskIdForTask({taskFunctionId: functionId, taskKwargs: kwargs, taskFunctionType: functionType})
     const existingTask = taskManager.getTask(taskId)
-    if (existingTask) return existingTask
+    if (existingTask) {
+        existingTask.onStatusUpdate(onStatusChanged)
+        return existingTask
+    }
 
     const task = new Task<ReturnType>({kacheryNode, taskId, channelName, functionId, kwargs, functionType, onStatusChanged, queryUseCache})
     taskManager.addTask(task)

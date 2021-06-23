@@ -39,7 +39,7 @@ const SortingView: React.FunctionComponent<Props> = (props) => {
   const initialSortingSelection: SortingSelection = {}
   const [selection, selectionDispatch] = useReducer(sortingSelectionReducer, initialSortingSelection)
   
-  const sortingInfo = useSortingInfo(sorting ? sorting.sortingObject: null)
+  const sortingInfo = useSortingInfo(sorting ? sorting.sortingPath : undefined)
   const recordingInfo = useRecordingInfo(recording.recordingPath)
   const sortingId = sorting ? sorting.sortingId : null
 

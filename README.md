@@ -4,9 +4,7 @@ Interactively view and share results of electrophysiological spike sorting.
 
 **This project is at an early stage of development.**
 
-## Overview
-
-The frontend (GUI) and backend (compute engine) are decoupled, allowing you to view your own data without uploading to our servers. You can also share those views with remote collaborators without uploading any data.
+[List of recent changes](./doc/changelog.md)
 
 ## For developers
 
@@ -31,36 +29,21 @@ vercel dev
 # The local app will automatically update as you code
 ```
 
-If you are not part of the team, then the easiest course is to set up your own (free) vercel account, fork this repo, and add that forked repo as a new vercel project. You will also need to create a (free) [ably](https://ably.com) account, get an API key will full permissions, and set the following environment variable in the vercel project settings:
+If you are not part of the team, then the easiest course is to set up your own (free) vercel account, fork this repo, and add that forked repo as a new vercel project.
 
-```
-ABLY_API_KEY=...
-```
-
-Then you should be able to run the server locally as above.
-
-In the future it will also be possible to run this locally without a vercel and/or ably account.
 
 ### Hosting a backend server
 
-For now you will need to create a bucket on Google Cloud Storage (in the future you will be able to run this locally without a bucket, or alternatively using a S3 bucket on AWS).
-
-After cloning this repo, install the python repo locally:
+Install the python project
 
 ```bash
-pip install -e src/python
+pip install sortingview
 ```
 
-To run the backend server:
+Then the backend task service:
 
 ```bash
-# this section needs to be completed
+sortingview-run-backend --channel <name-of-kachery-channel>
 ```
-
-### Deployment
-
-Merges into the `deploy` branch will be automatically deployed to https://sortingview.vercel.app
-
-<!-- Commits to other branches will generate [preview deployments](https://vercel.com/docs/git#preview-branches). -->
 
 

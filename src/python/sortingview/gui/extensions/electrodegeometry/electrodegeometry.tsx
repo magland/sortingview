@@ -16,7 +16,7 @@ const zipElectrodes = (locations: number[][], ids: number[]) => {
 }
 
 const ElectrodeGeometryRecordingView: FunctionComponent<RecordingViewProps> = ({recording, width, height, selection, selectionDispatch}) => {
-    const ri = useRecordingInfo(recording.recordingObject)
+    const ri = useRecordingInfo(recording.recordingPath)
     const visibleElectrodeIds = selection.visibleElectrodeIds
     const electrodes = useMemo(() => (ri ? zipElectrodes(ri.geom, ri.channel_ids) : []).filter(a => ((!visibleElectrodeIds) || (visibleElectrodeIds.includes(a.id)))), [ri, visibleElectrodeIds])
 

@@ -9,6 +9,7 @@ export interface RecordingSelection {
     currentTimepoint?: number
     timeRange?: {min: number, max: number} | null
     ampScaleFactor?: number
+    numTimepoints?: number
     animation?: {
         currentTimepointVelocity: number // timepoints per second
     }
@@ -75,6 +76,11 @@ type SetCurrentTimepointRecordingSelectionAction = {
     ensureInRange?: boolean
 }
 
+type SetNumTimepointsRecordingSelectionAction = {
+    type: 'SetNumTimepoints',
+    numTimepoints: number
+}
+
 type SetTimeRangeRecordingSelectionAction = {
     type: 'SetTimeRange',
     timeRange: {min: number, max: number} | null
@@ -112,7 +118,7 @@ type SetRecordingSelectionAction = {
     state: RecordingSelection
 }
 
-export type RecordingSelectionAction = SetRecordingSelectionRecordingSelectionAction | SetSelectedElectrodeIdsRecordingSelectionAction | SetVisibleElectrodeIdsRecordingSelectionAction | SetCurrentTimepointRecordingSelectionAction | SetTimeRangeRecordingSelectionAction | ZoomTimeRangeRecordingSelectionAction | SetAmpScaleFactorRecordingSelectionAction | ScaleAmpScaleFactorRecordingSelectionAction | SetCurrentTimepointVelocityRecordingSelectionAction | SetWaveformsModeRecordingSelectionAction | SetRecordingSelectionAction
+export type RecordingSelectionAction = SetRecordingSelectionRecordingSelectionAction | SetSelectedElectrodeIdsRecordingSelectionAction | SetVisibleElectrodeIdsRecordingSelectionAction | SetNumTimepointsRecordingSelectionAction | SetCurrentTimepointRecordingSelectionAction | SetTimeRangeRecordingSelectionAction | ZoomTimeRangeRecordingSelectionAction | SetAmpScaleFactorRecordingSelectionAction | ScaleAmpScaleFactorRecordingSelectionAction | SetCurrentTimepointVelocityRecordingSelectionAction | SetWaveformsModeRecordingSelectionAction | SetRecordingSelectionAction
 
 const adjustTimeRangeToIncludeTimepoint = (timeRange: {min: number, max: number}, timepoint: number) => {
     if ((timeRange.min <= timepoint) && (timepoint < timeRange.max)) return timeRange
@@ -139,6 +145,12 @@ export const recordingSelectionReducer: Reducer<RecordingSelection, RecordingSel
             selectedElectrodeIds: state.selectedElectrodeIds ? state.selectedElectrodeIds.filter(eid => (action.visibleElectrodeIds.includes(eid))) : undefined
         }
     }
+    else if (action.type === 'SetNumTimepoints') {
+        return {
+            ...state,
+            numTimepoints: action.numTimepoints
+        }
+    }
     else if (action.type === 'SetCurrentTimepoint') {
         return {
             ...state,
@@ -147,10 +159,10 @@ export const recordingSelectionReducer: Reducer<RecordingSelection, RecordingSel
         }
     }
     else if (action.type === 'SetTimeRange') {
-        return {
+        return fix({
             ...state,
             timeRange: action.timeRange
-        }
+        })
     }
     else if (action.type === 'ZoomTimeRange') {
         const maxTimeSpan = 30000 * 60 * 5
@@ -170,14 +182,10 @@ export const recordingSelectionReducer: Reducer<RecordingSelection, RecordingSel
         else
             t = currentTimepoint
         const newTimeRange = zoomTimeRange(timeRange, factor, t)
-        return {
+        return fix({
             ...state,
             timeRange: newTimeRange
-        }
-        // return fix({
-        //     ...state,
-        //     timeRange: newTimeRange
-        // })
+        })
     }
     else if (action.type === 'SetAmpScaleFactor') {
         return {
@@ -221,4 +229,22 @@ const zoomTimeRange = (timeRange: {min: number, max: number}, factor: number, an
     const t1 = anchorTime + (oldT1 - anchorTime) / factor
     const t2 = anchorTime + (oldT2 - anchorTime) / factor
     return {min: Math.floor(t1), max: Math.floor(t2)}
+}
+
+const fix = (s: RecordingSelection): RecordingSelection => {
+    if (!s.numTimepoints) return s
+    if (!s.timeRange) return s
+    let newTimeRange = {...s.timeRange}
+    if (newTimeRange.max > s.numTimepoints) {
+        const delta = -(newTimeRange.max - s.numTimepoints)
+        newTimeRange = {min: newTimeRange.min + delta, max: newTimeRange.max + delta}
+    }
+    if (newTimeRange.min < 0) {
+        const delta = -newTimeRange.min
+        newTimeRange = {min: newTimeRange.min + delta, max: newTimeRange.max + delta}
+    }
+    if (newTimeRange.max > s.numTimepoints) {
+        newTimeRange.max = s.numTimepoints
+    }
+    return {...s, timeRange: newTimeRange}
 }

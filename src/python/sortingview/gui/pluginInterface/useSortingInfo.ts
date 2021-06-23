@@ -5,7 +5,7 @@ import usePureCalculationTask from "kachery-react/usePureCalculationTask";
 import { useEffect, useRef, useState } from "react";
 import { Sorting, SortingInfo } from "./Sorting";
 
-export const useSortingInfo = (sortingUri: string): SortingInfo | undefined => {
+export const useSortingInfo = (sortingUri: string | undefined): SortingInfo | undefined => {
     const {channelName} = useChannel()
     const {returnValue: sortingInfo} = usePureCalculationTask<SortingInfo>(sortingUri ? 'sorting_info.3' : '', {sorting_uri: sortingUri}, {channelName})
     return sortingInfo
