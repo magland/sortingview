@@ -1,13 +1,14 @@
-import { ChannelName } from 'kachery-js/types/kacheryTypes'
+import { ChannelName, isFeedId } from 'kachery-js/types/kacheryTypes'
+import { parseWorkspaceUri } from 'labbox-react'
 import QueryString from 'querystring'
 
-type Page = 'recordings' | 'recording' | 'sorting'
+type Page = 'workspace' | 'recording' | 'sorting'
 export const isWorkspacePage = (x: string): x is Page => {
-    return ['recordings', 'recording', 'sorting'].includes(x)
+    return ['workspace', 'recording', 'sorting'].includes(x)
 }
 
 type WorkspaceRecordingsRoute = {
-    page: 'recordings',
+    page: 'workspace',
     workspaceUri?: string,
     channelName?: ChannelName
 }
@@ -25,8 +26,8 @@ type WorspaceSortingRoute = {
     channelName?: ChannelName
 }
 export type WorkspaceRoute = WorkspaceRecordingsRoute | WorspaceRecordingRoute | WorspaceSortingRoute
-type GotoRecordingsPageAction = {
-    type: 'gotoRecordingsPage'
+type GotoWorkspacePageAction = {
+    type: 'gotoWorkspacePage'
 }
 type GotoRecordingPageAction = {
     type: 'gotoRecordingPage',
@@ -37,7 +38,7 @@ type GotoSortingPageAction = {
     recordingId: string,
     sortingId: string
 }
-export type WorkspaceRouteAction = GotoRecordingsPageAction | GotoRecordingPageAction | GotoSortingPageAction
+export type WorkspaceRouteAction = GotoWorkspacePageAction | GotoRecordingPageAction | GotoSortingPageAction
 export type WorkspaceRouteDispatch = (a: WorkspaceRouteAction) => void
 
 export interface LocationInterface {
@@ -54,14 +55,21 @@ export const routeFromLocation = (location: LocationInterface): WorkspaceRoute =
     const pathList = location.pathname.split('/')
 
     const query = QueryString.parse(location.search.slice(1));
-    const workspace = (query.workspace as string) || 'default'
-    const workspaceUri = workspace.startsWith('workspace://') ? workspace : undefined
+    const workspace = (query.workspace as string) || ''
+    let workspaceUri: string | undefined = undefined
+    if (workspace.startsWith('workspace://')) {
+        workspaceUri = workspace
+    }
+    else if (isFeedId(workspace)) {
+        workspaceUri = `workspace://${workspace}`
+    }
     const channelName = ((query.channel as string) || undefined) as ChannelName | undefined
 
-    const page = pathList[2] || 'recordings'
+    let page = pathList[2] || 'workspace'
+    if (page === 'recordings') page = 'workspace'
     if (!isWorkspacePage(page)) throw Error(`Invalid page: ${page}`)
     switch (page) {
-        case 'recordings': return {
+        case 'workspace': return {
             workspaceUri,
             channelName,
             page
@@ -82,7 +90,7 @@ export const routeFromLocation = (location: LocationInterface): WorkspaceRoute =
         default: return {
             workspaceUri,
             channelName,
-            page: 'recordings'
+            page: 'workspace'
         }
     }
 }
@@ -90,13 +98,16 @@ export const routeFromLocation = (location: LocationInterface): WorkspaceRoute =
 export const locationFromRoute = (route: WorkspaceRoute) => {
     const queryParams: { [key: string]: string } = {}
     if (route.workspaceUri) {
-        queryParams['workspace'] = route.workspaceUri
+        const {feedId: workspaceFeedId} = parseWorkspaceUri(route.workspaceUri)
+        if (workspaceFeedId) {
+            queryParams['workspace'] = workspaceFeedId.toString()
+        }
     }
     if (route.channelName) {
         queryParams['channel'] = route.channelName.toString()
     }
     switch (route.page) {
-        case 'recordings': return {
+        case 'workspace': return {
             pathname: `/workspace`,
             search: queryString(queryParams)
         }
@@ -124,8 +135,8 @@ var queryString = (params: { [key: string]: string }) => {
 export const workspaceRouteReducer = (s: WorkspaceRoute, a: WorkspaceRouteAction): WorkspaceRoute => {
     let newRoute: WorkspaceRoute = s
     switch (a.type) {
-        case 'gotoRecordingsPage': newRoute = {
-            page: 'recordings',
+        case 'gotoWorkspacePage': newRoute = {
+            page: 'workspace',
             workspaceUri: s.workspaceUri,
             channelName: s.channelName
         }; break;

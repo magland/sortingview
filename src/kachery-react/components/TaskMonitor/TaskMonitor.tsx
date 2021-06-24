@@ -153,6 +153,10 @@ const TaskMonitorTable: FunctionComponent<{
             label: 'Status'
         },
         {
+            key: 'cacheHit',
+            label: 'Cache hit'
+        },
+        {
             key: 'initiated',
             label: 'Initiated'
         },
@@ -194,6 +198,7 @@ const TaskMonitorTable: FunctionComponent<{
                     <span><span>{j.status} </span><CancelTaskButton onClick={() => {onCancelTask && onCancelTask(j)}}/></span>
                 ) : <span>{j.status}</span>
             },
+            cacheHit: {text: j.isCacheHit === true ? 'yes' : j.isCacheHit === false ? 'no' : ''},
             initiated: {text: j.timestampInitiated ? formatTime(new Date(Number(j.timestampInitiated))) : ''},
             completed: {text: j.timestampCompleted ? formatTime(new Date(Number(j.timestampCompleted))) : ''},
             message: {text: j.errorMessage || ''}

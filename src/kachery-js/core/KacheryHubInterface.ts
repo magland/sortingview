@@ -20,6 +20,7 @@ type RequestTaskResult = {
     status: TaskStatus
     taskResultUrl?: UrlString
     errorMessage?: ErrorMessage
+    cacheHit?: boolean
 }
 
 type WaitForTaskResult = {
@@ -400,7 +401,8 @@ class KacheryHubInterface {
                 return {
                     taskId,
                     status: 'finished',
-                    taskResultUrl: url
+                    taskResultUrl: url,
+                    cacheHit: true
                 }
             }
         }
@@ -422,7 +424,8 @@ class KacheryHubInterface {
             taskId,
             status: x.status,
             taskResultUrl: taskResultUrl,
-            errorMessage: x.errorMessage
+            errorMessage: x.errorMessage,
+            cacheHit: false
         }
     }
     async waitForTaskResult(args: {channelName: ChannelName, taskId: TaskId, taskResultUrl: UrlString | undefined, timeoutMsec: DurationMsec, taskFunctionType: TaskFunctionType}): Promise<WaitForTaskResult> {

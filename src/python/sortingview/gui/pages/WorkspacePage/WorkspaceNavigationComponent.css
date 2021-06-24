@@ -1,0 +1,11 @@
+.WorkspaceNavigationPart {
+    background-color: gray;
+    color: white;
+    padding-left: 3px;
+    padding-right: 3px;
+    margin-right: 5px;
+}
+.WorkspaceNavigationPart:hover {
+    background-color: lightgray;
+    cursor: pointer;
+}

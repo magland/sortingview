@@ -18,7 +18,7 @@ const MainWindow: FunctionComponent<Props> = () => {
     }, [setRoute])
 
     return (
-        <div style={{margin: 0}}>
+        <div>
             <ApplicationBar
                 title={packageName}
                 onHome = {handleHome}
@@ -26,7 +26,7 @@ const MainWindow: FunctionComponent<Props> = () => {
             <div>
                 <Routes
                     width={width - 20}
-                    height = {height - 100}
+                    height = {height - 70}
                 />
             </div>
         </div>

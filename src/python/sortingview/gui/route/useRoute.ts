@@ -2,13 +2,21 @@ import { useCallback, useMemo } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import QueryString from 'querystring'
 import RoutePath, { isRoutePath } from './RoutePath'
-import { ChannelName } from 'kachery-js/types/kacheryTypes'
+import { ChannelName, isFeedId } from 'kachery-js/types/kacheryTypes'
+import { parseWorkspaceUri } from 'labbox-react'
 
 const useRoute = () => {
     const location = useLocation()
     const history = useHistory()
     const query = useMemo(() => (QueryString.parse(location.search.slice(1))), [location.search]);
-    const workspaceUri = (query.workspace as string) || undefined
+    const workspace = (query.workspace as string) || ''
+    let workspaceUri: string | undefined = undefined
+    if (workspace.startsWith('workspace://')) {
+        workspaceUri = workspace
+    }
+    else if (isFeedId(workspace)) {
+        workspaceUri = `workspace://${workspace}`
+    }
     const channel = (query.channel as any as ChannelName) || undefined
     const p = location.pathname
     const routePath: RoutePath = isRoutePath(p) ? p : '/home'
@@ -17,7 +25,12 @@ const useRoute = () => {
         const query2 = {...query}
         let pathname2 = location.pathname
         if (o.routePath) pathname2 = o.routePath
-        if (o.workspaceUri !== undefined) query2.workspace = o.workspaceUri
+        if (o.workspaceUri !== undefined) {
+            const {feedId: workspaceFeedId} = parseWorkspaceUri(o.workspaceUri)
+            if (workspaceFeedId) {
+                query2.workspace = workspaceFeedId.toString()
+            }
+        }
         if (o.channel !== undefined) query2.channel = o.channel.toString()
         const search2 = queryString(query2)
         history.push({...location, pathname: pathname2, search: search2})

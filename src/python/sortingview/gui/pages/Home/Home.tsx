@@ -6,6 +6,7 @@ import ChannelSection from './ChannelSection'
 import './Home.css'
 import IntroSection from './IntroSection'
 import WorkspaceSection from './WorkspaceSection'
+import '../../commonComponents/localStyles.css'
 
 type Props = {
     
@@ -17,7 +18,7 @@ const Home: FunctionComponent<Props> = () => {
     const {visible: selectChannelVisible, show: showSelectChannel, hide: hideSelectChannel} = useVisible()
 
     return (
-        <div style={{margin: 'auto', maxWidth: 1200}}>
+        <div style={{margin: 'auto', maxWidth: 1200, paddingLeft: 10, paddingRight: 10}}>
             
             <IntroSection />
             <ChannelSection onSelectChannel={showSelectChannel} />

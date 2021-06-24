@@ -5,9 +5,10 @@ type Props = {
     href?: string
     target?: string
     style?: React.CSSProperties
+    title?: string
 }
 
-const Hyperlink: FunctionComponent<Props> = ({ style={}, onClick, href, target, children }) => {
+const Hyperlink: FunctionComponent<Props> = ({ style={}, onClick, href, target, title, children }) => {
     let style0: React.CSSProperties = {
         color: 'gray',
         cursor: 'pointer',
@@ -18,7 +19,7 @@ const Hyperlink: FunctionComponent<Props> = ({ style={}, onClick, href, target, 
         <span className="Hyperlink">
             {
                 href ? (
-                    <a href={href} target={target}>{children}</a>
+                    <a href={href} target={target} title={title}>{children}</a>
                 ) : (
                     <span
                         style={style0}

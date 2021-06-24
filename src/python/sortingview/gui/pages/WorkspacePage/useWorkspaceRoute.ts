@@ -1,8 +1,6 @@
-import { useGoogleSignInClient } from "labbox-react"
 import { useCallback, useMemo } from "react"
 import { useHistory, useLocation } from "react-router-dom"
 import { WorkspaceRoute } from "../../pluginInterface"
-import { WorkspaceState } from "../../pluginInterface/workspaceReducer"
 import { locationFromRoute, routeFromLocation, WorkspaceRouteAction, workspaceRouteReducer } from "../../pluginInterface/WorkspaceRoute"
 
 const useWorkspaceRoute = () => {

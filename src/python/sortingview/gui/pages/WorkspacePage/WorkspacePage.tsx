@@ -7,6 +7,7 @@ import WorkspaceView from '../../extensions/workspaceview/WorkspaceView'
 import workspaceReducer, { initialWorkspaceState, WorkspaceAction, WorkspaceState } from '../../pluginInterface/workspaceReducer'
 import useRoute from '../../route/useRoute'
 import useWorkspaceRoute from './useWorkspaceRoute'
+import WorkspaceNavigationComponent from './WorkspaceNavigationComponent'
 type Props = {
     width: number
     height: number
@@ -51,6 +52,14 @@ const useWorkspace = (workspaceUri: string) => {
     return {workspace, workspaceDispatch: workspaceDispatch2}
 }
 
+const workspaceNavigationHeight = 30
+const horizontalPadding = 10
+const paddingTop = 5
+const divStyle: React.CSSProperties = {
+    paddingLeft: horizontalPadding,
+    paddingRight: horizontalPadding,
+    paddingTop: paddingTop
+}
 
 
 const WorkspacePage: FunctionComponent<Props> = ({width, height}) => {
@@ -61,65 +70,23 @@ const WorkspacePage: FunctionComponent<Props> = ({width, height}) => {
     const {workspace, workspaceDispatch} = useWorkspace(workspaceUri)
     const {workspaceRoute, workspaceRouteDispatch} = useWorkspaceRoute()
 
-    // const workspaceRoute = useMemo((): WorkspaceRoute => {
-    //     if (routePath.startsWith('/workspace/recording/')) {
-    //         return {
-    //             page: 'recording',
-    //             recordingId: routePath.split('/')[3],
-    //             workspaceUri
-    //         }
-    //     }
-    //     else if (routePath.startsWith('/workspace/sorting/')) {
-    //         return {
-    //             page: 'sorting',
-    //             recordingId: routePath.split('/')[3],
-    //             sortingId: routePath.split('/')[4],
-    //             workspaceUri
-    //         }
-    //     }
-    //     else {
-    //         return {
-    //             page: 'recordings',
-    //             workspaceUri
-    //         }
-    //     }
-    // }, [workspaceUri, routePath])
-    // const workspaceRouteDispatch = useCallback((action: WorkspaceRouteAction) => {
-    //     if (action.type === 'gotoRecordingPage') {
-    //         setRoute({routePath: `/workspace/recording/${action.recordingId}` as RoutePath})
-    //     }
-    //     else if (action.type === 'gotoSortingPage') {
-    //         setRoute({routePath: `/workspace/sorting/${action.recordingId}/${action.sortingId}` as RoutePath})
-    //     }
-    //     else if (action.type === 'gotoRecordingsPage') {
-    //         setRoute({routePath: '/workspace'})
-    //     }
-    // }, [setRoute])
-
-    // const currentUserPermissions = useCurrentUserPermissions()
-
-
-    // const readOnly = useMemo(() => {
-    //     if (!currentUserPermissions) return true
-    //     if (currentUserPermissions.appendToAllFeeds) return false
-    //     if (((currentUserPermissions.feeds || {})[feedId?.toString() || ''] || {}).append) return false
-    //     return true
-    // }, [currentUserPermissions, feedId])
-    // const workspaceDispatch2 = readOnly ? undefined : workspaceDispatch
-
-    // const userWorkspacePermissions = useCurrentUserWorkspacePermissions(workspace)
-  
-    // const readOnly = userWorkspacePermissions.edit ? false : true
-
     return (
-        <WorkspaceView
-            workspace={workspace}
-            workspaceDispatch={workspaceDispatch}
-            workspaceRoute={workspaceRoute}
-            workspaceRouteDispatch={workspaceRouteDispatch}
-            width={width}
-            height={height}
-        />
+        <div className="WorkspacePage" style={divStyle}>
+            <WorkspaceNavigationComponent
+                workspace={workspace}
+                workspaceRoute={workspaceRoute}
+                workspaceRouteDispatch={workspaceRouteDispatch}
+                height={workspaceNavigationHeight}
+            />
+            <WorkspaceView
+                workspace={workspace}
+                workspaceDispatch={workspaceDispatch}
+                workspaceRoute={workspaceRoute}
+                workspaceRouteDispatch={workspaceRouteDispatch}
+                width={width - horizontalPadding * 2}
+                height={height - workspaceNavigationHeight - paddingTop}
+            />
+        </div>
     )
 }
 

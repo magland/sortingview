@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useCallback } from 'react';
 import { WorkspaceViewProps } from '../../../pluginInterface/WorkspaceViewPlugin';
 import SortingView from './SortingView';
-import WorkspaceRecordingsView from './WorkspaceRecordingsView';
+import WorkspaceHomeView from './WorkspaceHomeView';
 import WorkspaceRecordingView from './WorkspaceRecordingView';
 
 export interface LocationInterface {
@@ -13,38 +13,6 @@ export interface HistoryInterface {
   location: LocationInterface
   push: (x: LocationInterface) => void
 }
-
-// export const useWorkspaceRoute = (location: LocationInterface, history: HistoryInterface, workspaceInfo: WorkspaceInfo | undefined): [WorkspaceRoute, WorkspaceRouteDispatch] => {
-//   const workspaceRouteDispatch = useMemo(() => ((a: WorkspaceRouteAction) => {
-//     const route = routeFromLocation(history.location)
-//     let newRoute: WorkspaceRoute | null = null
-//     switch (a.type) {
-//       case 'gotoRecordingsPage': newRoute = {
-//         page: 'recordings',
-//         workspaceName: route.workspaceName
-//       }; break;
-//       case 'gotoRecordingPage': newRoute = {
-//         page: 'recording',
-//         recordingId: a.recordingId,
-//         workspaceName: route.workspaceName
-//       }; break;
-//       case 'gotoSortingPage': newRoute = {
-//         page: 'sorting',
-//         recordingId: a.recordingId,
-//         sortingId: a.sortingId,
-//         workspaceName: route.workspaceName
-//       }; break
-//     }
-//     if (newRoute) {
-//       history.push(locationFromRoute(newRoute, workspaceInfo || { workspaceName: '', feedUri: '', readOnly: true }))
-//     }
-//   }), [history, workspaceInfo])
-
-//   const workspaceRoute = useMemo(() => {
-//     return routeFromLocation(location)
-//   }, [location])
-//   return [workspaceRoute, workspaceRouteDispatch]
-// }
 
 const WorkspaceView: FunctionComponent<WorkspaceViewProps> = ({ workspace, workspaceDispatch, workspaceRoute, workspaceRouteDispatch, width=500, height=500 }) => {
   const handleDeleteRecordings = useCallback((recordingIds: string[]) => {
@@ -61,11 +29,9 @@ const WorkspaceView: FunctionComponent<WorkspaceViewProps> = ({ workspace, works
     })
   }, [workspaceDispatch])
 
-  
-
   switch (workspaceRoute.page) {
-    case 'recordings': return (
-      <WorkspaceRecordingsView
+    case 'workspace': return (
+      <WorkspaceHomeView
         onDeleteRecordings={workspaceDispatch ? handleDeleteRecordings : undefined}
         {...{ width, height, workspace, workspaceRoute, workspaceRouteDispatch }}
       />

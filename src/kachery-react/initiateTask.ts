@@ -17,6 +17,7 @@ export class Task<ReturnType> {
     #timestampInitiated: Timestamp = nowTimestamp()
     #timestampCompleted: Timestamp | undefined = undefined
     #statusUpdateCallbacks: (() => void)[] = []
+    #isCacheHit: boolean | undefined = undefined
     constructor(private args: {kacheryNode: KacheryNode, channelName: ChannelName, taskId: TaskId, functionId: TaskFunctionId, kwargs: TaskKwargs, functionType: TaskFunctionType, onStatusChanged: () => void, queryUseCache?: boolean}) {
         this.#taskId = args.taskId
         this._start()
@@ -50,6 +51,9 @@ export class Task<ReturnType> {
     }
     public get taskId() {
         return this.#taskId
+    }
+    public get isCacheHit() {
+        return this.#isCacheHit
     }
     onStatusUpdate(cb: () => void) {
         this.#statusUpdateCallbacks.push(cb)
@@ -85,7 +89,10 @@ export class Task<ReturnType> {
             timeoutMsec: scaledDurationMsec(1000),
             queryUseCache
         })
-        const {taskId, status, taskResultUrl, errorMessage} = x
+        const {taskId, status, taskResultUrl, errorMessage, cacheHit} = x
+        if (cacheHit !== undefined) {
+            this.#isCacheHit = cacheHit
+        }
         this.#taskId = taskId
 
         await this._updateStatus(status, taskResultUrl, errorMessage)

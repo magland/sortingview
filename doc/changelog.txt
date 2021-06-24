@@ -4,3 +4,12 @@ Restored external metrics functionality in units table
 Restored spike amplitudes view
 Fix timeseries scrolling issue (do not allow out-of-bounds)
 Released version 0.2.6
+In browser url workspace=<feed-id> rather than workspace=workspace://<feed-id>
+Improve task monitor - report cache hits and waiting tasks
+highlight selected units in correlogram and waveform plots
+
+6/24/2021
+Import recordings instructions in modal window rather than in side splitter
+Workspace navigation component
+Improved padding/margins layout
+Released version 0.2.7
