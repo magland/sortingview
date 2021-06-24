@@ -1,9 +1,11 @@
 import { CircularProgress } from '@material-ui/core';
-import React, { FunctionComponent, useCallback, useMemo } from 'react';
+import Hyperlink from 'labbox-react/components/Hyperlink/Hyperlink';
 import NiceTable from 'labbox-react/components/NiceTable/NiceTable';
+import { useRecordingInfos } from 'python/sortingview/gui/pluginInterface/useRecordingInfo';
+import { useSortingInfos } from 'python/sortingview/gui/pluginInterface/useSortingInfo';
+import React, { FunctionComponent, useCallback, useMemo } from 'react';
 import { Recording, RecordingInfo, Sorting, SortingInfo, WorkspaceRouteDispatch } from "../../../pluginInterface";
 import './WorkspaceView.css';
-import { useRecordingInfos } from 'python/sortingview/gui/pluginInterface/useRecordingInfo';
 
 interface Props {
     recordings: Recording[]
@@ -12,16 +14,20 @@ interface Props {
     workspaceRouteDispatch: WorkspaceRouteDispatch
 }
 
-const sortingElement = (sorting: Sorting, sortingInfo?: SortingInfo) => {
-    return <span key={sorting.sortingId}>{sorting.sortingId} ({sortingInfo ? sortingInfo.unit_ids.length : ''})</span>
+const SortingElement: FunctionComponent<{sorting: Sorting, sortingInfo?: SortingInfo, onClickSorting: (sorting: Sorting) => void}> = ({sorting, sortingInfo, onClickSorting}) => {
+    const handleClick = useCallback(() => {
+        onClickSorting(sorting)
+    }, [onClickSorting, sorting])
+    return <Hyperlink onClick={handleClick} key={sorting.sortingId}>{sorting.sortingLabel} ({sortingInfo ? `${sortingInfo.unit_ids.length} units` : ''})</Hyperlink>
 }
 
-const sortingsElement = (sortings: Sorting[]) => {
+const SortingsElement: FunctionComponent<{sortings: Sorting[], onClickSorting: (sorting: Sorting) => void}> = ({sortings, onClickSorting}) => {
+    const sortingInfos = useSortingInfos(sortings)
     return (
         <span>
             {
                 sortings.map(s => (
-                    sortingElement(s)
+                    <SortingElement onClickSorting={onClickSorting} sorting={s} sortingInfo={sortingInfos[s.sortingId] || undefined} />
                 ))
             }
         </span>
@@ -55,6 +61,14 @@ const RecordingsTable: FunctionComponent<Props> = ({ recordings, sortings, onDel
 
     const recordingInfos: {[key: string]: RecordingInfo | null} = useRecordingInfos(recordings)
 
+    const handleClickSorting = useCallback((sorting: Sorting) => {
+        workspaceRouteDispatch({
+            type: 'gotoSortingPage',
+            recordingId: sorting.recordingId,
+            sortingId: sorting.sortingId
+        })
+    }, [workspaceRouteDispatch])
+
     const rows = useMemo(() => (recordings.map(rec => {
         const recordingInfo = recordingInfos[rec.recordingId]
         return {
@@ -68,10 +82,10 @@ const RecordingsTable: FunctionComponent<Props> = ({ recordings, sortings, onDel
                 numChannels: recordingInfo ? recordingInfo.channel_ids.length : {element: <CircularProgress />},
                 samplingFrequency: recordingInfo ? recordingInfo.sampling_frequency : '',
                 durationMinutes: recordingInfo ? recordingInfo.num_frames / recordingInfo.sampling_frequency / 60 : '',
-                sortings: { element: sortingsElement(sortingsByRecordingId[rec.recordingId]) }
+                sortings: { element: <SortingsElement onClickSorting={handleClickSorting} sortings={sortingsByRecordingId[rec.recordingId]} /> }
             }
         }
-    })), [recordings, sortingsByRecordingId, handleViewRecording, recordingInfos])
+    })), [recordings, sortingsByRecordingId, handleViewRecording, recordingInfos, handleClickSorting])
 
     const handleDeleteRow = useCallback((key: string) => {
         onDeleteRecordings && onDeleteRecordings([key])

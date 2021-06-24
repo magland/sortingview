@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useReducer } from 'react';
 import Splitter from 'labbox-react/components/Splitter/Splitter';
+import React, { useMemo, useReducer } from 'react';
 import { RecordingInfo, RecordingSelection, RecordingSelectionDispatch, recordingSelectionReducer } from '../../../pluginInterface';
 import ElectrodeGeometryView from './ElectrodeGeometryView';
 import TimeseriesWidgetNew from './TimeseriesWidgetNew';
@@ -45,13 +45,6 @@ const TimeseriesViewNew = (props: Props) => {
     const visibleElectrodeIds = useMemo(() => (recordingSelection.visibleElectrodeIds || recordingInfo.channel_ids), [recordingSelection.visibleElectrodeIds, recordingInfo.channel_ids])
 
     const y_scale_factor = 1 / (props.recordingInfo.noise_level || 1) * 1/10
-
-    useEffect(() => {
-        recordingSelectionDispatch({
-            type: 'SetNumTimepoints',
-            numTimepoints: recordingInfo.num_frames
-        })
-    }, [recordingSelectionDispatch, recordingInfo.num_frames])
 
     if (timeseriesData) {
         return (

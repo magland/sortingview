@@ -3,7 +3,7 @@ import { SortingUnitMetricPlugin } from "../../../../pluginInterface";
 
 const UnitSnrs = (record: any) => {
     return (
-        <span>{record !== undefined ? record.toFixed(4) : ''}</span>
+        <span>{record !== undefined ? record.toFixed(2) : ''}</span>
     );
 }
 

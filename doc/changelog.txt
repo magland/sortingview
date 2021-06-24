@@ -13,3 +13,14 @@ Import recordings instructions in modal window rather than in side splitter
 Workspace navigation component
 Improved padding/margins layout
 Released version 0.2.7
+Code: move fetchCache to kachery-react
+Code: separate out generic workspace functionality into labbox-react
+Display sorting labels rather than IDs in recordings table
+Display number of units for sortings in recordings table
+Recordings table: click to go directly to sorting
+Decrease num significant digits in SNR and ISI viol. metrics
+Remove redundant launch buttons in mountainview
+Display version of web app and python package on home page
+Update intro blurb on home page
+Spike icon in application bar
+Released version 0.2.8 of gui

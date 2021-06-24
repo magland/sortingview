@@ -7,9 +7,10 @@ import Routes from './Routes'
 import ApplicationBar from './ApplicationBar/ApplicationBar'
 
 type Props = {
+    logo?: any
 }
 
-const MainWindow: FunctionComponent<Props> = () => {
+const MainWindow: FunctionComponent<Props> = ({logo}) => {
     const {setRoute} = useRoute()
     const {width, height} = useWindowDimensions()
 
@@ -21,7 +22,8 @@ const MainWindow: FunctionComponent<Props> = () => {
         <div>
             <ApplicationBar
                 title={packageName}
-                onHome = {handleHome}
+                onHome={handleHome}
+                logo={logo}
             />
             <div>
                 <Routes

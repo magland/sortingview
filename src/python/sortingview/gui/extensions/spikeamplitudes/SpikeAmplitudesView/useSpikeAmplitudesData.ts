@@ -1,7 +1,6 @@
 import { KacheryNode } from "kachery-js"
 import { ChannelName } from "kachery-js/types/kacheryTypes"
-import { runPureCalculationTaskAsync, useChannel, useKacheryNode } from "kachery-react"
-import { useFetchCache } from "labbox-react"
+import { runPureCalculationTaskAsync, useChannel, useFetchCache, useKacheryNode } from "kachery-react"
 import { useMemo } from "react"
 import { getArrayMax, getArrayMin } from "../../common/utility"
 

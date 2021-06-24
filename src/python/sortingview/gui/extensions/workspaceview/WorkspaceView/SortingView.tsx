@@ -43,6 +43,16 @@ const SortingView: React.FunctionComponent<Props> = (props) => {
   const recordingInfo = useRecordingInfo(recording.recordingPath)
   const sortingId = sorting ? sorting.sortingId : null
 
+  useEffect(() => {
+    const numTimepoints = recordingInfo?.num_frames
+    if (numTimepoints) {
+      selectionDispatch({
+        type: 'SetNumTimepoints',
+        numTimepoints
+      })
+    }
+  }, [recordingInfo?.num_frames])
+
   const {feedId} = parseWorkspaceUri(workspaceRoute.workspaceUri)
 
   const curationSubfeedName = useMemo(() => ({name: 'sortingCuration', sortingId}), [sortingId])

@@ -1,11 +1,10 @@
 import { KacheryNode } from "kachery-js"
 import { ChannelName } from "kachery-js/types/kacheryTypes"
-import { runPureCalculationTaskAsync } from "kachery-react"
-import useKacheryNode from "kachery-react/useKacheryNode"
+import { runPureCalculationTaskAsync, useFetchCache } from "kachery-react"
 import useChannel from 'kachery-react/useChannel'
+import useKacheryNode from "kachery-react/useKacheryNode"
 import { useMemo } from "react"
 import { RecordingInfo } from '../../../pluginInterface'
-import { useFetchCache } from "labbox-react"
 
 // it may be important to limit this when using a filter
 // const timeseriesCalculationPool = createCalculationPool({maxSimultaneous: 4, method: 'stack'})

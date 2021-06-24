@@ -7,6 +7,8 @@ import './Home.css'
 import IntroSection from './IntroSection'
 import WorkspaceSection from './WorkspaceSection'
 import '../../commonComponents/localStyles.css'
+import { pythonProjectVersion, webAppProjectVersion } from '../../version'
+import packageName from '../../packageName'
 
 type Props = {
     
@@ -23,6 +25,10 @@ const Home: FunctionComponent<Props> = () => {
             <IntroSection />
             <ChannelSection onSelectChannel={showSelectChannel} />
             <WorkspaceSection />
+            <span>
+                <hr />
+                <p style={{fontFamily: 'courier', color: 'gray'}}>Python package version: {packageName} {pythonProjectVersion} | GUI version: {webAppProjectVersion}</p>
+            </span>
             
             <SelectChannelDialog
                 visible={selectChannelVisible}

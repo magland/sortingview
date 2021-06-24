@@ -24,22 +24,25 @@ const ViewLauncher: FunctionComponent<Props> = ({ onLaunchSortingView, onLaunchR
     const sortingUnitViewPlugin = sortingUnitViewPlugins(plugins).filter(p => (p.name === 'MVSortingUnitView'))[0]
     return (
         <Fragment>
-            <div key="recordingViews" style={{flexFlow: 'wrap'}}>
-                {
-                    sortByPriority(recordingViewPlugins(plugins)).filter(p => (p.name !== 'MVRecordingView')).map(rv => (
-                        <LaunchRecordingViewButton key={rv.name} plugin={rv} onLaunch={onLaunchRecordingView} />
-                    ))
-                }
-            </div>
-            { hasSorting && (
-                <div key="sortingViews" style={{flexFlow: 'wrap'}}>
-                    {
-                        sortByPriority(sortingViewPlugins(plugins)).filter(p => (p.name !== 'MVSortingView')).map(sv => (
-                            <LaunchSortingViewButton key={sv.name} plugin={sv} onLaunch={onLaunchSortingView} />
-                        ))
-                    }
-                </div>
-            ) }
+            { 
+                hasSorting ? (
+                    <div key="sortingViews" style={{flexFlow: 'wrap'}}>
+                        {
+                            sortByPriority(sortingViewPlugins(plugins)).filter(p => (p.name !== 'MVSortingView')).map(sv => (
+                                <LaunchSortingViewButton key={sv.name} plugin={sv} onLaunch={onLaunchSortingView} />
+                            ))
+                        }
+                    </div>
+                ) : (
+                    <div key="recordingViews" style={{flexFlow: 'wrap'}}>
+                        {
+                            sortByPriority(recordingViewPlugins(plugins)).filter(p => (p.name !== 'MVRecordingView')).map(rv => (
+                                <LaunchRecordingViewButton key={rv.name} plugin={rv} onLaunch={onLaunchRecordingView} />
+                            ))
+                        }
+                    </div>
+                )
+            }
             {/* <hr></hr>
             <div key="sortingUnitViews" style={{flexFlow: 'wrap'}}>
                 {

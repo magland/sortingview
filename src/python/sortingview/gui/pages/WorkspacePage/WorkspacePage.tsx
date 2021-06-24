@@ -1,8 +1,5 @@
-import { sha1OfString, SubfeedHash } from 'kachery-js/types/kacheryTypes'
-import { initiateTask, useChannel, useKacheryNode } from 'kachery-react'
-import useSubfeedReducer from 'kachery-react/useSubfeedReducer'
-import { parseWorkspaceUri, useGoogleSignInClient } from 'labbox-react'
-import React, { FunctionComponent, useCallback } from 'react'
+import useWorkspace from 'labbox-react/workspace/useWorkspace'
+import React, { FunctionComponent } from 'react'
 import WorkspaceView from '../../extensions/workspaceview/WorkspaceView'
 import workspaceReducer, { initialWorkspaceState, WorkspaceAction, WorkspaceState } from '../../pluginInterface/workspaceReducer'
 import useRoute from '../../route/useRoute'
@@ -13,43 +10,14 @@ type Props = {
     height: number
 }
 
-export const useCurrentUserWorkspacePermissions = (workspace: WorkspaceState) => {
-    const signInClient = useGoogleSignInClient()
-    if (!signInClient) return {}
-    const userId = signInClient.userId
-    if (!userId) return {}
-    const p = workspace.userPermissions[userId]
-    if (!p) return {}
-    return p
-}
-
-const useWorkspace = (workspaceUri: string) => {
-    const {feedId} = parseWorkspaceUri(workspaceUri)
-    if (!feedId) throw Error(`Error parsing workspace URI: ${workspaceUri}`)
-
-    const subfeedHash = sha1OfString('main') as any as SubfeedHash
-    const {state: workspace} = useSubfeedReducer(feedId, subfeedHash, workspaceReducer, initialWorkspaceState, {actionField: true})
-    const userWorkspacePermissions = useCurrentUserWorkspacePermissions(workspace)
-    const readOnly = userWorkspacePermissions.edit ? false : true
-    const kacheryNode = useKacheryNode()
-    const {channelName} = useChannel()
-    const workspaceDispatch = useCallback((a: WorkspaceAction) => {
-        initiateTask({
-            kacheryNode,
-            channelName,
-            functionId: 'workspace_action.1',
-            kwargs: {
-                workspace_uri: workspaceUri,
-                action: a
-            },
-            functionType: 'action',
-            onStatusChanged: () => {}
-        })
-    }, [kacheryNode, channelName, workspaceUri])
-
-    const workspaceDispatch2 = readOnly ? undefined : workspaceDispatch
-
-    return {workspace, workspaceDispatch: workspaceDispatch2}
+const useSortingViewWorkspace = (workspaceUri: string) => {
+    return useWorkspace<WorkspaceState, WorkspaceAction>({
+        workspaceUri,
+        workspaceReducer,
+        initialWorkspaceState,
+        actionField: true,
+        actionFunctionId: 'workspace_action.1'
+    })
 }
 
 const workspaceNavigationHeight = 30
@@ -67,7 +35,7 @@ const WorkspacePage: FunctionComponent<Props> = ({width, height}) => {
     if (!workspaceUri) throw Error('Unexpected: workspaceUri is undefined')
     
     // const {feedId} = parseWorkspaceUri(workspaceUri)
-    const {workspace, workspaceDispatch} = useWorkspace(workspaceUri)
+    const {workspace, workspaceDispatch} = useSortingViewWorkspace(workspaceUri)
     const {workspaceRoute, workspaceRouteDispatch} = useWorkspaceRoute()
 
     return (

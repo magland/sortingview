@@ -23,6 +23,16 @@ const WorkspaceRecordingView: FunctionComponent<Props> = ({ recording, sortings,
   const [selection, selectionDispatch] = useReducer(recordingSelectionReducer, initialRecordingSelection)
 
   useEffect(() => {
+    const numTimepoints = recordingInfo?.num_frames
+    if (numTimepoints) {
+      selectionDispatch({
+        type: 'SetNumTimepoints',
+        numTimepoints
+      })
+    }
+  }, [recordingInfo?.num_frames])
+
+  useEffect(() => {
     if ((!selection.timeRange) && (recordingInfo)) {
       selectionDispatch({ type: 'SetTimeRange', timeRange: { min: 0, max: Math.min(recordingInfo.num_frames, recordingInfo.sampling_frequency / 10) } })
     }

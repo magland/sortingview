@@ -1,14 +1,13 @@
 import { GridList, GridListTile } from '@material-ui/core';
-import React, { FunctionComponent, useMemo } from 'react';
-import { getElectrodesAspectRatio } from '../../averagewaveforms/AverageWaveformsView/setupElectrodes';
-import { applyMergesToUnit, Recording, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from "../../../pluginInterface";
-import SnippetBox from './SnippetBox';
 import { KacheryNode } from 'kachery-js';
-import { runPureCalculationTaskAsync } from 'kachery-react';
 import { ChannelName } from 'kachery-js/types/kacheryTypes';
+import { runPureCalculationTaskAsync, useFetchCache } from 'kachery-react';
+import useChannel from 'kachery-react/useChannel';
 import useKacheryNode from 'kachery-react/useKacheryNode';
-import useChannel from 'kachery-react/useChannel'
-import { useFetchCache } from 'labbox-react';
+import React, { FunctionComponent, useMemo } from 'react';
+import { applyMergesToUnit, Recording, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from "../../../pluginInterface";
+import { getElectrodesAspectRatio } from '../../averagewaveforms/AverageWaveformsView/setupElectrodes';
+import SnippetBox from './SnippetBox';
 
 
 type Props = {
