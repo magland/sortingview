@@ -55,9 +55,11 @@ class KacheryHubClient {
         return channelConfig
     }
     async fetchPubsubAuthForChannel(channelName: ChannelName) {
+        if (!this.opts.ownerId) throw Error('No owner ID in fetchPubsubAuthForChannel')
         const reqBody: GetPubsubAuthForChannelRequestBody = {
             type: 'getPubsubAuthForChannel',
             nodeId: this.nodeId,
+            ownerId: this.opts.ownerId,
             channelName
         }
         const pubsubAuth = await this._sendRequest(reqBody)

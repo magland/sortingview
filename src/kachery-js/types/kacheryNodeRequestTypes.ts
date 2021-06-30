@@ -70,7 +70,7 @@ export const isGetChannelConfigResponse = (x: any): x is GetChannelConfigRespons
 export type GetPubsubAuthForChannelRequestBody = {
     type: 'getPubsubAuthForChannel'
     nodeId: NodeId
-    ownerId?: UserId, // not needed
+    ownerId: UserId,
     channelName: ChannelName
 }
 

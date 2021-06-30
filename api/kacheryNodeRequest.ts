@@ -3,13 +3,14 @@ import axios from 'axios'
 import { isKacheryNodeRequestBody, KacheryNodeRequest } from '../src/kachery-js/types/kacheryNodeRequestTypes'
 import { JSONValue } from '../src/kachery-js/types/kacheryTypes'
 import { signMessage } from '../src/kachery-js/crypto/signatures'
-import getKeyPair from './common/getKeyPair'
-import getNodeId from './common/getNodeId'
+import getKeyPair from '../apiHelpers/common/getKeyPair'
+import getNodeId from '../apiHelpers/common/getNodeId'
 
 const keyPair = getKeyPair()
 const nodeId = getNodeId()
 
 const kacheryHubUrl = 'https://kacheryhub.org'
+// const kacheryHubUrl = 'http://localhost:3000'
 
 module.exports = (req: VercelRequest, res: VercelResponse) => {
     const {body: requestBody} = req

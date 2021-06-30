@@ -2,7 +2,7 @@ import { VercelRequest, VercelResponse } from '@vercel/node'
 import { signMessage } from '../src/kachery-js/crypto/signatures'
 import { JSONValue } from '../src/kachery-js/types/kacheryTypes'
 import { isKacheryHubPubsubMessageBody } from '../src/kachery-js/types/pubsubMessages'
-import getKeyPair from './common/getKeyPair'
+import getKeyPair from '../apiHelpers/common/getKeyPair'
 
 const keyPair = getKeyPair()
 
@@ -13,7 +13,7 @@ module.exports = (req: VercelRequest, res: VercelResponse) => {
         res.status(400).send(`Invalid message body: ${JSON.stringify(messageBody)}`)
         return
     }
-
+    
     ;(async () => {
         let okay = false
         if (messageBody.type === 'requestSubfeed') {

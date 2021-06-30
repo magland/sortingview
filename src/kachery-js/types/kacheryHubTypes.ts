@@ -98,6 +98,44 @@ export const isNodeChannelAuthorization = (x: any): x is NodeChannelAuthorizatio
     }, {allowAdditionalFields: true})
 }
 
+export interface Passcode extends String {
+    __passcode__: never // phantom type
+}
+export const isPasscode = (x: any) : x is Passcode => {
+    if (!isString(x)) return false;
+    if (x.length < 6) return false
+    if (x.length > 40) return false
+    return true
+}
+
+export type PasscodeChannelAuthorization = {
+    channelName: ChannelName
+    passcode: Passcode
+    permissions: {
+        requestFiles?: boolean
+        requestFeeds?: boolean
+        requestTasks?: boolean
+        provideFiles?: boolean
+        provideFeeds?: boolean
+        provideTasks?: boolean
+    }
+}
+
+export const isPasscodeChannelAuthorization = (x: any): x is PasscodeChannelAuthorization => {
+    return _validateObject(x, {
+        channelName: isChannelName,
+        passcode: isPasscode,
+        permissions: (a: any) => (_validateObject(a, {
+            requestFiles: optional(isBoolean),
+            requestFeeds: optional(isBoolean),
+            requestTasks: optional(isBoolean),
+            provideFiles: optional(isBoolean),
+            provideFeeds: optional(isBoolean),
+            provideTasks: optional(isBoolean)
+        }, {allowAdditionalFields: true}))
+    })
+}
+
 export type ChannelConfig = {
     channelName: ChannelName
     ownerId: UserId
@@ -106,6 +144,7 @@ export type ChannelConfig = {
     ablyApiKey?: string | '*private*'
     deleted?: boolean
     authorizedNodes?: NodeChannelAuthorization[]
+    authorizedPasscodes?: PasscodeChannelAuthorization[]
 }
 
 export const isChannelConfig = (x: any): x is ChannelConfig => {
@@ -116,7 +155,8 @@ export const isChannelConfig = (x: any): x is ChannelConfig => {
         googleServiceAccountCredentials: optional(isOneOf([isString, isEqualTo('*private*')])),
         ablyApiKey: optional(isOneOf([isString, isEqualTo('*private*')])),
         deleted: optional(isBoolean),
-        authorizedNodes: optional(isArrayOf(isNodeChannelAuthorization))
+        authorizedNodes: optional(isArrayOf(isNodeChannelAuthorization)),
+        authorizedPasscodes: optional(isArrayOf(isPasscodeChannelAuthorization))
     })
 }
 
@@ -137,6 +177,7 @@ export const isNodeReport = (x: any): x is NodeReport => {
 export type NodeChannelMembership = {
     nodeId: NodeId
     channelName: ChannelName
+    channelPasscodes?: Passcode[],
     roles: {
         downloadFiles?: boolean
         downloadFeeds?: boolean
@@ -148,6 +189,7 @@ export type NodeChannelMembership = {
         provideFeeds?: boolean
         provideTasks?: boolean
     }
+    validChannelPasscodes?: Passcode[], // obtained by cross-referencing the channels collection
     channelBucketUri?: string // obtained by cross-referencing the channels collection
     authorization?: NodeChannelAuthorization // obtained by cross-referencing the channels collection
 }
@@ -156,6 +198,7 @@ const isNodeChannelMembership = (x: any): x is NodeChannelMembership => {
     return _validateObject(x, {
         nodeId: isNodeId,
         channelName: isChannelName,
+        channelPasscodes: optional(isArrayOf(isPasscode)),
         roles: (a: any) => (_validateObject(a, {
             downloadFiles: optional(isBoolean),
             downloadFeeds: optional(isBoolean),
@@ -167,6 +210,7 @@ const isNodeChannelMembership = (x: any): x is NodeChannelMembership => {
             provideFeeds: optional(isBoolean),
             provideTasks: optional(isBoolean),
         }, {allowAdditionalFields: true})),
+        validChannelPasscodes: optional(isArrayOf(isPasscode)),
         channelBucketUri: optional(isString),
         authorization: optional(isNodeChannelAuthorization)
     })
@@ -196,12 +240,14 @@ export const isNodeConfig = (x: any): x is NodeConfig => {
 export type Auth = {
     userId?: UserId,
     googleIdToken?: string
+    reCaptchaToken?: string
 }
 
 export const isAuth = (x: any): x is Auth => {
     return _validateObject(x, {
-            userId: optional(isUserId),
-            googleIdToken: optional(isString)
+        userId: optional(isUserId),
+        googleIdToken: optional(isString),
+        reCaptchaToken: optional(isString)
     })
 }
 
@@ -363,6 +409,22 @@ export const isAddAuthorizedNodeRequest = (x: any): x is AddAuthorizedNodeReques
     })
 }
 
+export type AddAuthorizedPasscodeRequest = {
+    type: 'addAuthorizedPasscode'
+    channelName: ChannelName
+    passcode: Passcode
+    auth: Auth
+}
+
+export const isAddAuthorizedPasscodeRequest = (x: any): x is AddAuthorizedPasscodeRequest => {
+    return _validateObject(x, {
+        type: isEqualTo('addAuthorizedPasscode'),
+        channelName: isChannelName,
+        passcode: isPasscode,
+        auth: isAuth
+    })
+}
+
 export type UpdateNodeChannelAuthorizationRequest = {
     type: 'updateNodeChannelAuthorization'
     authorization: NodeChannelAuthorization
@@ -373,6 +435,20 @@ export const isUpdateNodeChannelAuthorizationRequest = (x: any): x is UpdateNode
     return _validateObject(x, {
         type: isEqualTo('updateNodeChannelAuthorization'),
         authorization: isNodeChannelAuthorization,
+        auth: isAuth
+    })
+}
+
+export type UpdatePasscodeChannelAuthorizationRequest = {
+    type: 'updatePasscodeChannelAuthorization'
+    authorization: PasscodeChannelAuthorization
+    auth: Auth
+}
+
+export const isUpdatePasscodeChannelAuthorizationRequest = (x: any): x is UpdatePasscodeChannelAuthorizationRequest => {
+    return _validateObject(x, {
+        type: isEqualTo('updatePasscodeChannelAuthorization'),
+        authorization: isPasscodeChannelAuthorization,
         auth: isAuth
     })
 }
@@ -389,6 +465,22 @@ export const isDeleteNodeChannelAuthorizationRequest = (x: any): x is DeleteNode
         type: isEqualTo('deleteNodeChannelAuthorization'),
         channelName: isChannelName,
         nodeId: isNodeId,
+        auth: isAuth
+    })
+}
+
+export type DeletePasscodeChannelAuthorizationRequest = {
+    type: 'deletePasscodeChannelAuthorization'
+    channelName: ChannelName
+    passcode: Passcode
+    auth: Auth
+}
+
+export const isDeletePasscodeChannelAuthorizationRequest = (x: any): x is DeletePasscodeChannelAuthorizationRequest => {
+    return _validateObject(x, {
+        type: isEqualTo('deletePasscodeChannelAuthorization'),
+        channelName: isChannelName,
+        passcode: isPasscode,
         auth: isAuth
     })
 }
@@ -471,6 +563,7 @@ export const isNodeReportRequest = (x: any): x is NodeReportRequest => {
 
 export type KacheryHubRequest =
     AddAuthorizedNodeRequest |
+    AddAuthorizedPasscodeRequest |
     AddChannelRequest |
     AddNodeRequest |
     AddNodeChannelMembershipRequest |
@@ -478,17 +571,20 @@ export type KacheryHubRequest =
     DeleteNodeRequest |
     DeleteNodeChannelMembershipRequest |
     DeleteNodeChannelAuthorizationRequest |
+    DeletePasscodeChannelAuthorizationRequest |
     GetChannelRequest |
     GetChannelsForUserRequest |
     GetNodeForUserRequest | 
     GetNodesForUserRequest |
     UpdateChannelPropertyRequest |
     UpdateNodeChannelMembershipRequest |
-    UpdateNodeChannelAuthorizationRequest
+    UpdateNodeChannelAuthorizationRequest |
+    UpdatePasscodeChannelAuthorizationRequest
 
 export const isKacheryHubRequest = (x: any): x is KacheryHubRequest => {
     return isOneOf([
         isAddAuthorizedNodeRequest,
+        isAddAuthorizedPasscodeRequest,
         isAddChannelRequest,
         isAddNodeRequest,
         isAddNodeChannelMembershipRequest,
@@ -496,13 +592,15 @@ export const isKacheryHubRequest = (x: any): x is KacheryHubRequest => {
         isDeleteNodeRequest,
         isDeleteNodeChannelMembershipRequest,
         isDeleteNodeChannelAuthorizationRequest,
+        isDeletePasscodeChannelAuthorizationRequest,
         isGetChannelRequest,
         isGetChannelsForUserRequest,
         isGetNodeForUserRequest, 
         isGetNodesForUserRequest,
         isUpdateChannelPropertyRequest,
         isUpdateNodeChannelMembershipRequest,
-        isUpdateNodeChannelAuthorizationRequest
+        isUpdateNodeChannelAuthorizationRequest,
+        isUpdatePasscodeChannelAuthorizationRequest
     ])(x)
 }
 
