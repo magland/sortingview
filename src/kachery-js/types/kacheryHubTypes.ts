@@ -605,7 +605,7 @@ export const isKacheryHubRequest = (x: any): x is KacheryHubRequest => {
 }
 
 export type RegisteredTaskFunction = {
-    channelName: string
+    channelName: ChannelName
     taskFunctionId: TaskFunctionId
     taskFunctionType: TaskFunctionType
 }

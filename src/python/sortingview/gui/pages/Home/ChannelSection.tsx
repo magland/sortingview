@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useCallback } from 'react'
 import Hyperlink from 'labbox-react/components/Hyperlink/Hyperlink'
-import { ChannelName } from 'kachery-js/types/kacheryTypes'
+import { ChannelName, TaskFunctionId } from 'kachery-js/types/kacheryTypes'
 import useRoute from '../../route/useRoute'
 import hyperlinkStyle from './hyperlinkStyle'
 import RecentlyUsedBackends from 'kachery-react/components/SelectChannel/RecentlyUsedChannels'
@@ -9,10 +9,21 @@ import { Help } from '@material-ui/icons'
 import { useVisible } from 'labbox-react'
 import aboutKacheryChannelsMd from './aboutKacheryChannels.md.gen'
 import MarkdownDialog from 'labbox-react/components/Markdown/MarkdownDialog'
+import CheckRegisteredTaskFunctions from './CheckRegisteredTaskFunctions'
 
 type Props = {
     onSelectChannel: () => void
 }
+
+const taskFunctionIds: TaskFunctionId[] = [
+    'sortingview_workspace_list_subfeed.2',
+    'example_recording_sortings', 'recording_info.3', 'sorting_info.3',
+    'preload_extract_snippets.1', 'get_isi_violation_rates.1', 'get_peak_channels.1',
+    'get_unit_snrs.1', 'get_firing_data.1', 'fetch_correlogram_plot_data.1',
+    'get_timeseries_segment.1', 'fetch_average_waveform.2', 'test_delay.1', 'individual_cluster_features.1',
+    'workspace_action.1', 'workspace_sorting_curation_action.1',
+    'fetch_unit_metrics.1', 'fetch_spike_amplitudes.1'
+].map(x => (x as any as TaskFunctionId))
 
 const ChannelSection: FunctionComponent<Props> = ({onSelectChannel}) => {
     const {channel, setRoute} = useRoute()
@@ -46,6 +57,10 @@ const ChannelSection: FunctionComponent<Props> = ({onSelectChannel}) => {
                         } */}
                         <p><Hyperlink style={hyperlinkStyle} onClick={onSelectChannel}>Select a different channel</Hyperlink></p>
                         {/* <p><Hyperlink style={hyperlinkStyle} onClick={showCustomBackendInstructions}>Use your own channel</Hyperlink></p> */}
+                        <CheckRegisteredTaskFunctions
+                            channelName={channel}
+                            taskFunctionIds={taskFunctionIds}
+                        />
                     </span>
                 ) : (
                     <span>

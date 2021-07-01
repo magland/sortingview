@@ -1,5 +1,6 @@
+import { sleepMsec } from "kachery-js/util";
 import { RegisteredTaskFunction, RequestedTask } from "../types/kacheryHubTypes";
-import { ChannelName, DurationMsec, durationMsecToNumber, elapsedSince, nowTimestamp, TaskFunctionId, TaskFunctionType, TaskId, TaskKwargs, Timestamp } from "../types/kacheryTypes";
+import { ChannelName, DurationMsec, durationMsecToNumber, elapsedSince, nowTimestamp, TaskFunctionId, TaskFunctionType, TaskId, TaskKwargs, Timestamp, unscaledDurationMsec } from "../types/kacheryTypes";
 import computeTaskHash from "../util/computeTaskHash";
 import GarbageMap from "../util/GarbageMap";
 import randomAlphaString from "../util/randomAlphaString";
@@ -13,6 +14,10 @@ type RegisteredTaskFunctionGroup = {
 type PendingTaskRequest = {
     requestedTask: RequestedTask
     timestamp: Timestamp
+}
+
+export type ProbeTaskFunctionsResult = {
+    registeredTaskFunctions: RegisteredTaskFunction[]
 }
 
 export default class IncomingTaskManager {
@@ -63,6 +68,37 @@ export default class IncomingTaskManager {
         })
         this._scheduleProcessPendingTaskRequests()
     }
+    async probeTaskFunctions(args: {channelName: ChannelName, taskFunctionIds: TaskFunctionId[]}): Promise<ProbeTaskFunctionsResult> {
+        const {channelName, taskFunctionIds} = args
+        const foundIds = new Set<TaskFunctionId>()
+        const ret: ProbeTaskFunctionsResult = {registeredTaskFunctions: []}
+        for (let pass = 1; pass <= 2; pass++) {
+            for (let id of taskFunctionIds) {
+                if (!foundIds.has(id)) {
+                    const g = this._findRegisteredTaskFunctionGroupForTaskFunction(id, channelName)
+                    if (g) {
+                        const x = g.taskFunctions.filter(a => ((a.taskFunctionId === id) && (a.channelName === channelName)))[0]
+                        if (!x) throw Error('Unexpected, unable to find task function in probeTaskFunctions')
+                        foundIds.add(id)
+                        ret.registeredTaskFunctions.push({
+                            channelName,
+                            taskFunctionId: id,
+                            taskFunctionType: x.taskFunctionType
+                        })
+                    }
+                }
+            }
+            if (pass === 1) {
+                if (ret.registeredTaskFunctions.length === taskFunctionIds.length) {
+                    // already found all of them
+                    break
+                }
+                // otherwise, wait a bit and give the task functions a chance to get registered
+                await sleepMsec(unscaledDurationMsec(500))
+            }
+        }
+        return ret
+    }
     _scheduleProcessPendingTaskRequests() {
         if (this.#processScheduled) return
         this.#processScheduled = true
@@ -77,7 +113,7 @@ export default class IncomingTaskManager {
             let remove = false
             const elapsed = elapsedSince(x.timestamp)
             if (elapsed < 1000 * 4) {
-                const g = this._findRegisteredTaskFunctionGroupForTaskFunction(x.requestedTask.taskFunctionId)
+                const g = this._findRegisteredTaskFunctionGroupForTaskFunction(x.requestedTask.taskFunctionId, x.requestedTask.channelName)
                 if (g) {
                     g.internalRequestedTaskList.push(x.requestedTask)
                     remove = true
@@ -97,12 +133,12 @@ export default class IncomingTaskManager {
             }
         }
     }
-    _findRegisteredTaskFunctionGroupForTaskFunction(taskFunctionId: TaskFunctionId) {
+    _findRegisteredTaskFunctionGroupForTaskFunction(taskFunctionId: TaskFunctionId, channelName: ChannelName) {
         for (let k of this.#registeredTaskFunctionGroups.keys()) {
             const g = this.#registeredTaskFunctionGroups.get(k)
             if (!g) throw Error('Unexpected')
             for (let f of g.taskFunctions) {
-                if (f.taskFunctionId === taskFunctionId) {
+                if ((f.taskFunctionId === taskFunctionId) && (f.channelName === channelName)) {
                     return g
                 }
             }

@@ -47,6 +47,9 @@ export default class GarbageMap<Key extends String, Value> {
     values(): Value[] {
         return Array.from(this.#map.values()).map(v => v.value)
     }
+    clear() {
+        this.#map.clear()
+    }
     async _checkGarbageCollection() {
         const elapsedSinceCheck = elapsedSince(this.#lastCheckTimestamp)
         if (this.#expirationTimeoutMsec !== null) {

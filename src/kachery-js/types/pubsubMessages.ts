@@ -1,4 +1,5 @@
-import { ErrorMessage, FeedId, FileKey, isEqualTo, isErrorMessage, isFeedId, isFileKey, isMessageCount, isNodeId, isOneOf, isSignature, isSubfeedHash, isSubfeedPosition, isTaskFunctionId, isTaskFunctionType, isTaskId, isTaskKwargs, isTaskStatus, MessageCount, NodeId, optional, Signature, SubfeedHash, SubfeedPosition, TaskFunctionId, TaskFunctionType, TaskId, TaskKwargs, TaskStatus, _validateObject } from "./kacheryTypes";
+import { isRegisteredTaskFunction, RegisteredTaskFunction } from "./kacheryHubTypes";
+import { ErrorMessage, FeedId, FileKey, isArrayOf, isEqualTo, isErrorMessage, isFeedId, isFileKey, isMessageCount, isNodeId, isOneOf, isSignature, isSubfeedHash, isSubfeedPosition, isTaskFunctionId, isTaskFunctionType, isTaskId, isTaskKwargs, isTaskStatus, MessageCount, NodeId, optional, Signature, SubfeedHash, SubfeedPosition, TaskFunctionId, TaskFunctionType, TaskId, TaskKwargs, TaskStatus, _validateObject } from "./kacheryTypes";
 
 export type RequestFileMessageBody = {
     type: 'requestFile',
@@ -92,7 +93,31 @@ export const isRequestTaskMessageBody = (x: any): x is RequestTaskMessageBody =>
     })
 }
 
-export type KacheryHubPubsubMessageBody = RequestFileMessageBody | UploadFileStatusMessageBody | UpdateSubfeedMessageCountMessageBody | RequestSubfeedMessageBody | UpdateTaskStatusMessageBody | RequestTaskMessageBody
+export type ProbeTaskFunctionsBody = {
+    type: 'probeTaskFunctions',
+    taskFunctionIds: TaskFunctionId[]
+}
+
+export const isProbeTaskFunctionsBody = (x: any): x is ProbeTaskFunctionsBody => {
+    return _validateObject(x, {
+        type: isEqualTo('probeTaskFunctions'),
+        taskFunctionIds: isArrayOf(isTaskFunctionId)
+    })
+}
+
+export type ReportRegisteredTaskFunctionsBody = {
+    type: 'reportRegisteredTaskFunctions',
+    registeredTaskFunctions: RegisteredTaskFunction[]
+}
+
+export const isReportRegisteredTaskFunctionsBody = (x: any): x is ReportRegisteredTaskFunctionsBody => {
+    return _validateObject(x, {
+        type: isEqualTo('reportRegisteredTaskFunctions'),
+        registeredTaskFunctions: isArrayOf(isRegisteredTaskFunction)
+    })
+}
+
+export type KacheryHubPubsubMessageBody = RequestFileMessageBody | UploadFileStatusMessageBody | UpdateSubfeedMessageCountMessageBody | RequestSubfeedMessageBody | UpdateTaskStatusMessageBody | RequestTaskMessageBody | ProbeTaskFunctionsBody | ReportRegisteredTaskFunctionsBody
 
 export const isKacheryHubPubsubMessageBody = (x: any): x is KacheryHubPubsubMessageBody => {
     return isOneOf([
@@ -101,7 +126,9 @@ export const isKacheryHubPubsubMessageBody = (x: any): x is KacheryHubPubsubMess
         isUpdateSubfeedMessageCountMessageBody,
         isRequestSubfeedMessageBody,
         isUpdateTaskStatusMessageBody,
-        isRequestTaskMessageBody
+        isRequestTaskMessageBody,
+        isProbeTaskFunctionsBody,
+        isReportRegisteredTaskFunctionsBody
     ])(x)
 }
 

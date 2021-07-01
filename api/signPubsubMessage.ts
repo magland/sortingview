@@ -22,6 +22,9 @@ module.exports = (req: VercelRequest, res: VercelResponse) => {
         else if (messageBody.type === 'requestTask') {
             okay = true
         }
+        else if (messageBody.type === 'probeTaskFunctions') {
+            okay = true
+        }
         if (!okay) {
             throw Error(`Illegal kachery pubsub message: ${messageBody["type"]}`)
         }

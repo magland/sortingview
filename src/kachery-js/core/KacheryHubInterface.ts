@@ -1,11 +1,11 @@
 import axios from "axios";
 import KacheryHubClient, { IncomingKacheryHubPubsubMessage } from "../kacheryHubClient/KacheryHubClient";
-import IncomingTaskManager from "../tasks/IncomingTaskManager";
+import IncomingTaskManager, { ProbeTaskFunctionsResult } from "../tasks/IncomingTaskManager";
 import OutgoingTaskManager from "../tasks/outgoingTaskManager";
 import { NodeConfig, RegisteredTaskFunction, RequestedTask } from "../types/kacheryHubTypes";
 import { KacheryNodeRequestBody } from "../types/kacheryNodeRequestTypes";
 import { ByteCount, ChannelName, DurationMsec, durationMsecToNumber, elapsedSince, errorMessage, ErrorMessage, FeedId, FileKey, fileKeyHash, isMessageCount, isSignedSubfeedMessage, JSONValue, MessageCount, NodeId, NodeLabel, nowTimestamp, pathifyHash, pubsubChannelName, PubsubChannelName, Sha1Hash, Signature, SignedSubfeedMessage, SubfeedHash, SubfeedPosition, TaskFunctionId, TaskFunctionType, TaskId, TaskKwargs, TaskStatus, toTaskId, urlString, UrlString, UserId, _validateObject } from "../types/kacheryTypes";
-import { KacheryHubPubsubMessageBody, KacheryHubPubsubMessageData, RequestFileMessageBody, RequestSubfeedMessageBody, RequestTaskMessageBody, UpdateSubfeedMessageCountMessageBody, UpdateTaskStatusMessageBody, UploadFileStatusMessageBody } from "../types/pubsubMessages";
+import { KacheryHubPubsubMessageBody, KacheryHubPubsubMessageData, ProbeTaskFunctionsBody, RequestFileMessageBody, RequestSubfeedMessageBody, RequestTaskMessageBody, UpdateSubfeedMessageCountMessageBody, UpdateTaskStatusMessageBody, UploadFileStatusMessageBody } from "../types/pubsubMessages";
 import cacheBust from "../util/cacheBust";
 import computeTaskHash from "../util/computeTaskHash";
 import randomAlphaString from "../util/randomAlphaString";
@@ -260,6 +260,43 @@ class KacheryHubInterface {
             taskKwargs: kwargs
         }
         this._publishMessageToPubsubChannel(channelName, pubsubChannelName(`${channelName}-requestTasks`), msg)
+    }
+    async probeTaskFunctionsFromChannel(args: {channelName: ChannelName, taskFunctionIds: TaskFunctionId[]}) {
+        const {channelName, taskFunctionIds} = args
+        await this.initialize()
+        const nodeConfig = this.#nodeConfig
+        if (!nodeConfig) {
+            throw Error('Problem initializing kacheryhub interface')
+        }
+        const channelMembership = (nodeConfig.channelMemberships || []).filter(cm => (cm.channelName === channelName))[0]
+        if (!channelMembership) {
+            throw Error(`Not a member of channel: ${channelName}`)
+        }
+        const roles = channelMembership.roles
+        const permissions = (channelMembership.authorization || {}).permissions
+        if (!permissions) {
+            throw Error(`No permissions on channel: ${channelName}`)
+        }
+        if (!permissions.requestTasks) {
+            throw Error(`This node does not have permission to request tasks (probe task functions) on channel: ${channelName}`)
+        }
+        if (!roles.requestTasks) {
+            throw Error(`This node does not have role to request tasks (probe task functions) on channel: ${channelName}`)
+        }
+        const msg: ProbeTaskFunctionsBody = {
+            type: 'probeTaskFunctions',
+            taskFunctionIds
+        }
+        this._publishMessageToPubsubChannel(channelName, pubsubChannelName(`${channelName}-requestTasks`), msg)
+    }
+    getRegisteredTaskFunction(channelName: ChannelName, taskFunctionId: TaskFunctionId) {
+        return this.#outgoingTaskManager.getRegisteredTaskFunction(channelName, taskFunctionId)
+    }
+    clearRegisteredTaskFunctions() {
+        this.#outgoingTaskManager.clearRegisteredTaskFunctions()
+    }
+    onRegisteredTaskFunctionsChanged(cb: () => void) {
+	    return this.#outgoingTaskManager.onRegisteredTaskFunctionsChanged(cb)
     }
     async downloadSignedSubfeedMessages(channelName: ChannelName, feedId: FeedId, subfeedHash: SubfeedHash, start: MessageCount, end: MessageCount): Promise<SignedSubfeedMessage[]> {
         await this.initialize()
@@ -574,6 +611,27 @@ class KacheryHubInterface {
                 return
             }
             this.#incomingTaskManager.requestTask({channelName: x.channelName, taskId: msg.taskId, taskFunctionId: msg.taskFunctionId, taskKwargs: msg.taskKwargs, taskFunctionType: msg.taskFunctionType})
+        }
+        else if (msg.type === 'probeTaskFunctions') {
+            if (x.pubsubChannelName !== pubsubChannelName(`${x.channelName}-requestTasks`)) {
+                console.warn(`Unexpected pubsub channel for probeTaskFunctions: ${x.pubsubChannelName}`)
+                return
+            }
+            this.#incomingTaskManager.probeTaskFunctions({channelName: x.channelName, taskFunctionIds: msg.taskFunctionIds}).then((result: ProbeTaskFunctionsResult) => {
+                if (result.registeredTaskFunctions.length > 0) {
+                    this._publishMessageToPubsubChannel(x.channelName, pubsubChannelName(`${x.channelName}-provideTasks`), {
+                        type: 'reportRegisteredTaskFunctions',
+                        registeredTaskFunctions: result.registeredTaskFunctions
+                    })
+                }                
+            })
+        }
+        else if (msg.type === 'reportRegisteredTaskFunctions') {
+            if (x.pubsubChannelName !== pubsubChannelName(`${x.channelName}-provideTasks`)) {
+                console.warn(`Unexpected pubsub channel for reportRegisteredTaskFunctions: ${x.pubsubChannelName}`)
+                return
+            }
+            this.#outgoingTaskManager.reportRegisteredTaskFunctions(x.channelName, msg.registeredTaskFunctions)
         }
     }
     async _doInitialize() {
