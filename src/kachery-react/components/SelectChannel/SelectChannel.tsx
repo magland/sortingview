@@ -62,6 +62,7 @@ const SelectChannel: FunctionComponent<Props> = ({onClose, hardCodedChannels}) =
     return (
         <div>
             <h3>Select a kachery channel</h3>
+            <p>Manually enter the name of a channel, or select from the list below.</p>
             <TextField style={{width: '100%'}} label="Channel" value={editChannel} onChange={handleChange} onKeyDown={handleKeyDown} />
             <Button onClick={handleOkay} disabled={editChannel === (selectedChannel || '').toString()}>Set channel</Button>
             <ChannelsTable

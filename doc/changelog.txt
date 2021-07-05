@@ -24,3 +24,9 @@ Display version of web app and python package on home page
 Update intro blurb on home page
 Spike icon in application bar
 Released version 0.2.8 of gui
+
+7/25/2021
+In sorting view, provide instructions for importing external metrics
+Update docs
+Test responsiveness - "Start latency test" button
+Released version 0.2.11 of gui / 0.2.11 of python package

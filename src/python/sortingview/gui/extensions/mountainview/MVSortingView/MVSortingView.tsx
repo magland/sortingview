@@ -1,16 +1,18 @@
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { GraphicEq, Settings, Visibility } from '@material-ui/icons'
+import { GraphicEq, Settings, SquareFoot, Visibility } from '@material-ui/icons'
 import GrainIcon from '@material-ui/icons/Grain'
 import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser'
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useReducer, useState } from 'react'
-import Expandable from "labbox-react/components/Expandable/Expandable"
-import Splitter from 'labbox-react/components/Splitter/Splitter';
 import { usePlugins } from 'labbox-react'
+import Expandable from "labbox-react/components/Expandable/Expandable"
+import Splitter from 'labbox-react/components/Splitter/Splitter'
+import useRoute from 'python/sortingview/gui/route/useRoute'
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useReducer, useState } from 'react'
 import { LabboxPlugin, SortingUnitViewPlugin, SortingViewPlugin, sortingViewPlugins, SortingViewProps } from "../../../pluginInterface"
 import { RecordingViewPlugin } from '../../../pluginInterface/RecordingViewPlugin'
 import '../mountainview.css'
 import CurationControl from './CurationControl'
+import MetricsControl from './MetricsControl'
 import OptionsControl from './OptionsControl'
 import PreprocessingControl, { PreprocessingSelection, PreprocessingSelectionAction, preprocessingSelectionReducer } from './PreprocessingControl'
 import ViewContainer from './ViewContainer'
@@ -202,8 +204,11 @@ const MVSortingView: FunctionComponent<SortingViewProps & {preloadStatus?: 'wait
     const launchIcon = <span style={{color: 'gray'}}><OpenInBrowserIcon /></span>
     const curationIcon = <span style={{color: 'gray'}}><FontAwesomeIcon icon={faPencilAlt} /></span>
     const optionsIcon = <span style={{color: 'gray'}}><Settings /></span>
+    const metricsIcon = <span style={{color: 'gray'}}><SquareFoot /></span>
 
     const hasSorting = sorting.sortingObject ? true : false
+
+    const {workspaceUri} = useRoute()
 
     const sortingViewProps = {...props}
     return (
@@ -260,6 +265,11 @@ const MVSortingView: FunctionComponent<SortingViewProps & {preloadStatus?: 'wait
                             />
                         </Expandable>
                     )}
+
+                    {/* Metrics */}
+                    <Expandable icon={metricsIcon} label="Metrics" defaultExpanded={false} unmountOnExit={false}>
+                        <MetricsControl workspaceUri={workspaceUri} sortingId={sorting.sortingId} />
+                    </Expandable>
 
                     {/* Options */}
                     <Expandable icon={optionsIcon} label="Options" defaultExpanded={false} unmountOnExit={false}>

@@ -1,13 +1,12 @@
-import React, { useCallback } from 'react'
-import { FunctionComponent } from "react"
-import Hyperlink from 'labbox-react/components/Hyperlink/Hyperlink'
-import useRoute from '../../route/useRoute'
-import hyperlinkStyle from './hyperlinkStyle'
 import { IconButton } from '@material-ui/core'
 import { Help } from '@material-ui/icons'
 import { useVisible } from 'labbox-react'
+import Hyperlink from 'labbox-react/components/Hyperlink/Hyperlink'
 import MarkdownDialog from 'labbox-react/components/Markdown/MarkdownDialog'
+import React, { FunctionComponent, useCallback } from 'react'
+import useRoute from '../../route/useRoute'
 import aboutWorkspacesMd from './aboutWorkspaces.md.gen'
+import hyperlinkStyle from './hyperlinkStyle'
 
 type Props = {
     
@@ -36,7 +35,7 @@ const WorkspaceSection: FunctionComponent<Props> = () => {
                             
                             <span>
                                 <Hyperlink style={hyperlinkStyle} onClick={handleViewWorkspace}>{workspaceUri}</Hyperlink>
-                                <p><Hyperlink style={hyperlinkStyle} onClick={handleSelectWorkspace}>Select a different workspace</Hyperlink></p>
+                                <p><Hyperlink style={hyperlinkStyle} onClick={handleSelectWorkspace}>Select a different workspace or add a new workspace</Hyperlink></p>
                             </span>
                         ) : (
                             <Hyperlink style={hyperlinkStyle} onClick={handleSelectWorkspace}>select a workspace</Hyperlink>

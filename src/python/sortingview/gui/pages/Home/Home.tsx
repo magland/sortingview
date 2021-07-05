@@ -8,6 +8,7 @@ import { pythonProjectVersion, webAppProjectVersion } from '../../version'
 import ChannelSection from './ChannelSection'
 import './Home.css'
 import IntroSection from './IntroSection'
+import TestResponsivenessSection from './TestResponsivenessSection'
 import WorkspaceSection from './WorkspaceSection'
 
 type Props = {
@@ -25,6 +26,7 @@ const Home: FunctionComponent<Props> = () => {
             <IntroSection />
             <ChannelSection onSelectChannel={selectChannelVisibility.show} />
             <WorkspaceSection />
+            <TestResponsivenessSection />
             <span>
                 <hr />
                 <p style={{fontFamily: 'courier', color: 'gray'}}>Python package version: {packageName} {pythonProjectVersion} | GUI version: {webAppProjectVersion}</p>
