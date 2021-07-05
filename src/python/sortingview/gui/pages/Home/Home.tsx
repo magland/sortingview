@@ -1,4 +1,5 @@
 import { ChannelName } from 'kachery-js/types/kacheryTypes'
+import { useChannel } from 'kachery-react'
 import SelectChannelDialog from 'kachery-react/components/SelectChannel/SelectChannelDialog'
 import { useVisible } from 'labbox-react'
 import React, { FunctionComponent } from 'react'
@@ -19,6 +20,7 @@ const hardCodedChannels = ['ccm'] as any as ChannelName[]
 
 const Home: FunctionComponent<Props> = () => {
     const selectChannelVisibility = useVisible()
+    const {channelName} = useChannel()
 
     return (
         <div style={{margin: 'auto', maxWidth: 1200, paddingLeft: 10, paddingRight: 10}}>
@@ -26,7 +28,9 @@ const Home: FunctionComponent<Props> = () => {
             <IntroSection />
             <ChannelSection onSelectChannel={selectChannelVisibility.show} />
             <WorkspaceSection />
-            <TestResponsivenessSection />
+            {
+                channelName && <TestResponsivenessSection />
+            }
             <span>
                 <hr />
                 <p style={{fontFamily: 'courier', color: 'gray'}}>Python package version: {packageName} {pythonProjectVersion} | GUI version: {webAppProjectVersion}</p>
