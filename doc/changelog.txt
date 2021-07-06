@@ -34,3 +34,5 @@ Add subfeed latency test
 Released version 0.2.12
 Fix autocorrelogram integer overflow
 Release version 0.2.13
+Fix Visible units control
+Release GUI 0.2.14
