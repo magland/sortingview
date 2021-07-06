@@ -25,7 +25,7 @@ Update intro blurb on home page
 Spike icon in application bar
 Released version 0.2.8 of gui
 
-7/25/2021
+7/05/2021
 In sorting view, provide instructions for importing external metrics
 Update docs
 Test responsiveness - "Start latency test" button
