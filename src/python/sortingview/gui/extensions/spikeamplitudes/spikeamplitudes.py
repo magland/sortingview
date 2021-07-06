@@ -9,7 +9,7 @@ from sortingview.config import job_cache, job_handler
 
 
 @hi.function('createjob_fetch_spike_amplitudes', '0.1.1', register_globally=True)
-def createjob_fetch_spike_amplitudes(labbox, recording_object, sorting_object, unit_id):
+def createjob_fetch_spike_amplitudes(labbox, recording_object, sorting_object, unit_id, snippets_len=(50, 80)):
     from labbox_ephys import prepare_snippets_h5
     jh = labbox.get_job_handler('partition1')
     jc = labbox.get_job_cache()
@@ -18,7 +18,7 @@ def createjob_fetch_spike_amplitudes(labbox, recording_object, sorting_object, u
         job_handler=jh,
         use_container=jh.is_remote()
     ):
-        snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object)
+        snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object, snippets_len=snippets_len)
         return fetch_spike_amplitudes.run(
             snippets_h5=snippets_h5,
             unit_id=unit_id
@@ -65,10 +65,10 @@ def fetch_spike_amplitudes(snippets_h5: str, unit_id: int):
     )
 
 @kc.taskfunction('fetch_spike_amplitudes.1', type='pure-calculation')
-def task_fetch_spike_amplitudes(recording_object, sorting_object, unit_id: int):
+def task_fetch_spike_amplitudes(recording_object, sorting_object, unit_id: int, snippets_len=(50, 80)):
     from labbox_ephys import prepare_snippets_h5
     with hi.Config(job_handler=job_handler.misc, job_cache=job_cache):
-        snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object)
+        snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object, snippets_len=snippets_len)
         return fetch_spike_amplitudes.run(
             snippets_h5=snippets_h5,
             unit_id=unit_id

@@ -6,7 +6,7 @@ import numpy as np
 
 
 @hi.function('createjob_get_sorting_unit_snippets', '0.1.0', register_globally=True)
-def createjob_get_sorting_unit_snippets(labbox, recording_object, sorting_object, unit_id, time_range, max_num_snippets):
+def createjob_get_sorting_unit_snippets(labbox, recording_object, sorting_object, unit_id, time_range, max_num_snippets, snippets_len=(50, 80)):
     from labbox_ephys import prepare_snippets_h5
     jh = labbox.get_job_handler('partition1')
     jc = labbox.get_job_cache()
@@ -15,7 +15,7 @@ def createjob_get_sorting_unit_snippets(labbox, recording_object, sorting_object
         job_handler=jh,
         use_container=jh.is_remote()
     ):
-        snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object)
+        snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object, snippets_len=snippets_len)
         return get_sorting_unit_snippets.run(
             snippets_h5=snippets_h5,
             unit_id=unit_id,
@@ -66,7 +66,7 @@ def get_sorting_unit_snippets(snippets_h5, unit_id, time_range, max_num_snippets
     )
 
 @hi.function('createjob_get_sorting_unit_info', '0.1.0', register_globally=True)
-def createjob_get_sorting_unit_info(labbox, recording_object, sorting_object, unit_id):
+def createjob_get_sorting_unit_info(labbox, recording_object, sorting_object, unit_id, snippets_len=(50, 80)):
     from labbox_ephys import prepare_snippets_h5
     jh = labbox.get_job_handler('partition1')
     jc = labbox.get_job_cache()
@@ -75,7 +75,7 @@ def createjob_get_sorting_unit_info(labbox, recording_object, sorting_object, un
         job_handler=jh,
         use_container=jh.is_remote()
     ):
-        snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object)
+        snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object, snippets_len=snippets_len)
         return get_sorting_unit_info.run(
             snippets_h5=snippets_h5,
             unit_id=unit_id

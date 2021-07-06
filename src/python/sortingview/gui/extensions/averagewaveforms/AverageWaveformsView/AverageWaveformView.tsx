@@ -25,18 +25,20 @@ type Props = {
     height: number
     noiseLevel: number
     customActions?: (ActionItem | DividerItem)[]
+    snippetsLen?: [number, number]
 }
 
 // const calculationPool = createCalculationPool({maxSimultaneous: 6})
 
-const AverageWaveformView: FunctionComponent<Props> = ({ sorting, curation, recording, unitId, selection, selectionDispatch, width, height, noiseLevel, customActions }) => {
+const AverageWaveformView: FunctionComponent<Props> = ({ sorting, curation, recording, unitId, selection, selectionDispatch, width, height, noiseLevel, customActions, snippetsLen }) => {
     const {channelName} = useChannel()
     const {returnValue: plotData, task} = usePureCalculationTask<PlotData>(
         'fetch_average_waveform.2',
         {
             sorting_object: sorting.sortingObject,
             recording_object: recording.recordingObject,
-            unit_id: applyMergesToUnit(unitId, curation, selection.applyMerges)
+            unit_id: applyMergesToUnit(unitId, curation, selection.applyMerges),
+            snippets_len: snippetsLen
         },
         {
             channelName

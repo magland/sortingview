@@ -8,7 +8,7 @@ from sortingview.config import job_cache, job_handler
     image=hi.RemoteDockerImage('docker://magland/labbox-ephys-processing:0.3.19'),
     modules=['labbox_ephys']
 )
-def get_firing_data(sorting_object, recording_object, configuration):
+def get_firing_data(sorting_object, recording_object, configuration={}, snippets_len=(50, 80)):
     from decimal import Decimal
     S, R = get_structure(sorting_object, recording_object)
     elapsed = R.get_num_frames()/R.get_sampling_frequency()
@@ -21,7 +21,7 @@ def get_firing_data(sorting_object, recording_object, configuration):
     return keyedCount
 
 @kc.taskfunction('get_firing_data.1', type='pure-calculation')
-def task_get_firing_data(sorting_object, recording_object, configuration):
+def task_get_firing_data(sorting_object, recording_object, configuration={}, snippets_len=(50, 80)):
     with hi.Config(
         job_cache=job_cache,
         job_handler=job_handler.metrics

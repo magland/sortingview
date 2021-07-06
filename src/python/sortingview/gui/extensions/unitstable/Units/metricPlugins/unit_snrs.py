@@ -35,12 +35,12 @@ def _compute_unit_snr_from_waveforms(waveforms):
     return snr
 
 @kc.taskfunction('get_unit_snrs.1', type='pure-calculation')
-def task_get_unit_snrs(sorting_object, recording_object, configuration={}):
+def task_get_unit_snrs(sorting_object, recording_object, configuration={}, snippets_len=(50, 80)):
     with hi.Config(
         job_cache=job_cache,
         job_handler=job_handler.metrics
     ):
-        snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object)
+        snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object, snippets_len=snippets_len)
         return get_unit_snrs.run(
             snippets_h5=snippets_h5
         )

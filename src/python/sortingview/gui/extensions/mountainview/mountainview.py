@@ -109,7 +109,7 @@ import kachery_client as kc
 ###################################################################################
 # preload_extract_snippets
 @hi.function('preload_extract_snippets', '0.1.0', register_globally=True)
-def preload_extract_snippets(labbox, recording_object, sorting_object):
+def preload_extract_snippets(labbox, recording_object, sorting_object, snippets_len=(50, 80)):
     from labbox_ephys import prepare_snippets_h5
     jh = labbox.get_job_handler('partition2')
     jc = labbox.get_job_cache()
@@ -118,5 +118,5 @@ def preload_extract_snippets(labbox, recording_object, sorting_object):
         job_handler=jh,
         use_container=jh.is_remote()
     ):
-        snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object)
+        snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object, snippets_len=snippets_len)
         return snippets_h5

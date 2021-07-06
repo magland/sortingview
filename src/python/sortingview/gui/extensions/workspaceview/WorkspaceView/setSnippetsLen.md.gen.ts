@@ -1,0 +1,3 @@
+const text: string = "## Set workspace snippets length\n\nTo set snippets length for a workspace\n\n```python\nimport sortingview as sv\n\nworkspace_uri = '{workspaceUri}'\nsnippets_len = # (50, 80) - (num. timepoints before peak, num. timepoints after peak)\n\nW = sv.load_workspace(workspace_uri)\nW.set_snippets_len(snippets_len)\n\nprint(f'Snippets length for workspace set to: {W.snippets_len}')\n```"
+
+export default text

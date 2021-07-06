@@ -29,11 +29,12 @@ interface Props {
   workspaceRoute: WorkspaceRoute
   workspaceRouteDispatch: WorkspaceRouteDispatch
   readOnly: boolean
+  snippetsLen?: [number, number]
   // onSetExternalUnitMetrics: (a: { sortingId: string, externalUnitMetrics: ExternalSortingUnitMetric[] }) => void
 }
 
 const SortingView: React.FunctionComponent<Props> = (props) => {
-  const { workspaceRoute, readOnly, sorting, recording, workspaceRouteDispatch } = props
+  const { workspaceRoute, readOnly, sorting, recording, workspaceRouteDispatch, snippetsLen } = props
   // const [externalUnitMetricsStatus, setExternalUnitMetricsStatus] = useState<CalcStatus>('waiting');
   //const initialSortingSelection: SortingSelection = {currentTimepoint: 1000, animation: {currentTimepointVelocity: 100, lastUpdateTimestamp: Number(new Date())}}
   const initialSortingSelection: SortingSelection = {}
@@ -183,6 +184,7 @@ const SortingView: React.FunctionComponent<Props> = (props) => {
             readOnly={readOnly}
             width={contentWidth}
             height={contentHeight}
+            snippetsLen={snippetsLen}
           />
       </div>
       <div style={footerStyle}>

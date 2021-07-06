@@ -14,7 +14,7 @@ export type AverageWaveformAction = ActionItem  | DividerItem
 const TOOLBAR_INITIAL_WIDTH = 36 // hard-coded for now
 
 const AverageWaveformsView: FunctionComponent<SortingViewProps> = (props) => {
-    const {recording, sorting, curation, selection, selectionDispatch, width=600, height=650} = props
+    const {recording, sorting, curation, selection, selectionDispatch, width=600, height=650, snippetsLen} = props
     const recordingInfo = useRecordingInfo(recording.recordingPath)
     const boxHeight = 250
     const boxWidth = 180
@@ -27,8 +27,9 @@ const AverageWaveformsView: FunctionComponent<SortingViewProps> = (props) => {
             height={boxHeight}
             noiseLevel={noiseLevel}
             customActions={scalingActions || []}
+            snippetsLen={snippetsLen}
         />
-    ), [sorting, recording, selection, selectionDispatch, noiseLevel, scalingActions, curation])
+    ), [sorting, recording, selection, selectionDispatch, noiseLevel, scalingActions, curation, snippetsLen])
 
     const _handleScaleAmplitudeUp = useCallback(() => {
         selectionDispatch({type: 'ScaleAmpScaleFactor', direction: 'up'})

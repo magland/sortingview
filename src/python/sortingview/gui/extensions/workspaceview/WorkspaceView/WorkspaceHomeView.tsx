@@ -1,5 +1,6 @@
 import { Button } from '@material-ui/core';
 import { useVisible } from 'labbox-react';
+import Hyperlink from 'labbox-react/components/Hyperlink/Hyperlink';
 import MarkdownDialog from 'labbox-react/components/Markdown/MarkdownDialog';
 import ModalWindow from 'labbox-react/components/ModalWindow/ModalWindow';
 import { WorkspaceState } from 'python/sortingview/gui/pluginInterface/workspaceReducer';
@@ -8,6 +9,7 @@ import { WorkspaceRoute, WorkspaceRouteDispatch } from "../../../pluginInterface
 import ImportRecordingsInstructions from './ImportRecordingsInstructions';
 import RecordingsTable from './RecordingsTable';
 import setWorkspacePermissionsMd from './setWorkspacePermissions.md.gen';
+import setSnippetsLenMd from './setSnippetsLen.md.gen'
 
 type Props = {
     workspace: WorkspaceState
@@ -22,6 +24,7 @@ const WorkspaceHomeView: FunctionComponent<Props> = ({ width, height, workspace,
     const {recordings, sortings} = workspace
     const importInstructionsVisible = useVisible()
     const setWorkspacePermissionsVisible = useVisible()
+    const setSnippetsLengthVisible = useVisible()
     return (
         <span>
             <div>
@@ -41,6 +44,9 @@ const WorkspaceHomeView: FunctionComponent<Props> = ({ width, height, workspace,
                         <div><Button onClick={importInstructionsVisible.show}>Import recordings</Button></div>
                     )
                 }
+                {
+                    <p><Hyperlink onClick={setSnippetsLengthVisible.show}>Snippets length</Hyperlink>: {workspace.snippetsLen ? `(${workspace.snippetsLen[0]}, ${workspace.snippetsLen[1]})` : 'default'}</p>
+                }
                 <RecordingsTable
                     {...{sortings, recordings, onDeleteRecordings, workspaceRouteDispatch}}
                 />
@@ -57,6 +63,14 @@ const WorkspaceHomeView: FunctionComponent<Props> = ({ width, height, workspace,
                 visible={setWorkspacePermissionsVisible.visible}
                 onClose={setWorkspacePermissionsVisible.hide}
                 source={setWorkspacePermissionsMd}
+                substitute={{
+                    workspaceUri: workspaceRoute.workspaceUri || '<unknown>'
+                }}
+            />
+            <MarkdownDialog
+                visible={setSnippetsLengthVisible.visible}
+                onClose={setSnippetsLengthVisible.hide}
+                source={setSnippetsLenMd}
                 substitute={{
                     workspaceUri: workspaceRoute.workspaceUri || '<unknown>'
                 }}
