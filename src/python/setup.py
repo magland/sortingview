@@ -7,11 +7,9 @@ setup(
     ],
     install_requires=[
         'click',
-        'hither',
-        'google-cloud-storage',
-        'paho-mqtt',
-        'CacheControl',
-        'labbox-ephys>=0.5.13',
+        'hither>=0.7.0',
+        'labbox-ephys>=0.7.1',
+        'kachery-client>=1.0.6',
         'pynwb'
     ]
 )

@@ -25,7 +25,7 @@ Update intro blurb on home page
 Spike icon in application bar
 Released version 0.2.8 of gui
 
-7/05/2021
+7/5/2021
 In sorting view, provide instructions for importing external metrics
 Update docs
 Test responsiveness - "Start latency test" button
@@ -37,4 +37,11 @@ Release version 0.2.13
 Fix Visible units control
 Release GUI 0.2.14
 Select units widget - fix to respect visible units
-Rlease GUI 0.2.15
+Release GUI 0.2.15
+
+7/6/2021
+Restore "show accepted"/"hide rejected" units without bug
+Report backend package version
+Update setup.py: include labbox-ephys / hither / kachery-client versions
+Do not crash when daemon is down - retry after 10 seconds
+Release version 0.2.16

@@ -59,8 +59,8 @@ const useSubfeedReducer = <State, Action>(feedId: FeedId | undefined, subfeedHas
     }, [feedId, subfeedHash, compositeState, messages, initialStateString, reducer])
 
     const state = useMemo(() => {
-        return compositeState ? compositeState.state : initialState
-    }, [compositeState, initialState])
+        return compositeState ? compositeState.state : JSON.parse(initialStateString)
+    }, [compositeState, initialStateString])
 
     return {state, subfeed}
 }

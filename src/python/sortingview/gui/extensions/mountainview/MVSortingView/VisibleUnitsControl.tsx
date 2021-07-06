@@ -16,7 +16,7 @@ type Props = {
 const VisibleUnitsControl: FunctionComponent<Props> = ({ sorting, recording, selection, selectionDispatch, curation }) => {
     const [hideRejected, setHideRejected] = useState(false)
     const [showAcceptedOnly, setShowAcceptedOnly] = useState(false)
-    // const [restrictToVisibleElectrodes, setRestrictToVisibleElectrodes] = useState(true)
+    const [restrictToVisibleElectrodes, setRestrictToVisibleElectrodes] = useState(false)
     const visibleElectrodeIds = selection.visibleElectrodeIds
 
     // const {result: peakElectrodeIds} = useHitherJob<PeakElectrodeIds>('createjob_get_peak_channels', {sorting_object: sorting.sortingObject, recording_object: recording.recordingObject}, {useClientCache: true})
@@ -29,9 +29,9 @@ const VisibleUnitsControl: FunctionComponent<Props> = ({ sorting, recording, sel
     const handleHideRejected = useCallback(() => {
         setHideRejected(!hideRejected)
     }, [hideRejected])
-    // const handleRestrictToVisibleElectrodes = useCallback(() => {
-    //     setRestrictToVisibleElectrodes(!restrictToVisibleElectrodes)
-    // }, [restrictToVisibleElectrodes])
+    const handleRestrictToVisibleElectrodes = useCallback(() => {
+        setRestrictToVisibleElectrodes(x => !x)
+    }, [])
     
     // the following was causing a problem
     useEffect(() => {
@@ -56,9 +56,17 @@ const VisibleUnitsControl: FunctionComponent<Props> = ({ sorting, recording, sel
 
     return (
         <div>
-            <span style={{whiteSpace: 'nowrap'}}><Checkbox checked={showAcceptedOnly} onClick={handleShowAcceptedOnly}/> Show accepted only</span>
-            <span style={{whiteSpace: 'nowrap'}}><Checkbox checked={hideRejected} onClick={handleHideRejected} disabled={showAcceptedOnly}/> Hide rejected</span>
-            {/* <span style={{whiteSpace: 'nowrap'}}><Checkbox checked={restrictToVisibleElectrodes} onClick={handleRestrictToVisibleElectrodes} disabled={!visibleElectrodeIds}/> Restrict to visible electrodes</span> */}
+            <span style={{whiteSpace: 'nowrap'}}><Checkbox checked={showAcceptedOnly} onClick={handleShowAcceptedOnly}/>Show accepted only</span>
+            <span style={{whiteSpace: 'nowrap'}}><Checkbox checked={hideRejected} onClick={handleHideRejected} disabled={showAcceptedOnly}/>Hide rejected</span>
+            <span style={{whiteSpace: 'nowrap'}}>
+                <Checkbox
+                    checked={restrictToVisibleElectrodes}
+                    onClick={handleRestrictToVisibleElectrodes}
+                    //disabled={!visibleElectrodeIds}
+                    disabled={true}
+                />
+                <span style={{color: 'gray'}}>Restrict to visible electrodes (disabled for now)</span>
+            </span>
         </div>
     )
 }

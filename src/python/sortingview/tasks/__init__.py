@@ -7,3 +7,4 @@ from .workspace_list_subfeed import *
 from .workspace_action import *
 from .workspace_sorting_curation_action import *
 from .latency_test import *
+from .python_package_version import *
