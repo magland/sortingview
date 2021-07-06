@@ -23,7 +23,7 @@ const taskFunctionIds: TaskFunctionId[] = [
     'get_timeseries_segment.1', 'fetch_average_waveform.2', 'test_delay.1', 'individual_cluster_features.1',
     'workspace_action.1', 'workspace_sorting_curation_action.1',
     'fetch_unit_metrics.1', 'fetch_spike_amplitudes.1',
-    'latency_test_query.1'
+    'latency_test_query.1', 'get_action_latency_test_subfeed.1', 'subfeed_latency_test_append.1'
 ].map(x => (x as any as TaskFunctionId))
 
 const ChannelSection: FunctionComponent<Props> = ({onSelectChannel}) => {

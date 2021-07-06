@@ -30,3 +30,5 @@ In sorting view, provide instructions for importing external metrics
 Update docs
 Test responsiveness - "Start latency test" button
 Released version 0.2.11 of gui / 0.2.11 of python package
+Add subfeed latency test
+Released version 0.2.12

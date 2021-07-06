@@ -1,6 +1,6 @@
 import { Button } from '@material-ui/core'
-import { nowTimestamp, Timestamp } from 'kachery-js/types/kacheryTypes'
-import { useChannel, useKacheryNode } from 'kachery-react'
+import { FeedId, nowTimestamp, SubfeedHash, Timestamp } from 'kachery-js/types/kacheryTypes'
+import { useChannel, useKacheryNode, useQueryTask, useSubfeed } from 'kachery-react'
 import runQueryTaskAsync from 'kachery-react/runQueryTaskAsync'
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
 
@@ -8,14 +8,20 @@ type Props = {
     
 }
 
-const TaskLatencyTest: FunctionComponent<Props> = () => {
+const ActionLatencyTest: FunctionComponent<Props> = () => {
+    const {channelName} = useChannel()
+    const {returnValue: subfeedInfo} = useQueryTask<{feedId: FeedId, subfeedHash: SubfeedHash}>('get_action_latency_test_subfeed.1', {}, {channelName, useCache: true})
+
+    const {messages: subfeedMessages} = useSubfeed({feedId: subfeedInfo ? subfeedInfo.feedId : undefined, subfeedHash: subfeedInfo ? subfeedInfo.subfeedHash : undefined })
+
     const [testCode, setTestCode] = useState<number>(0)
+    const [result, setResult] = useState<{numMessages: number} | undefined>(undefined)
     const incrementTestCode = useCallback(() => setTestCode(c => (c + 1)), [])
     const [timeStarted, setTimeStarted] = useState<Timestamp | undefined>(undefined)
     const [timeFinished, setTimeFinished] = useState<Timestamp | undefined>(undefined)
     const [errorMsg, setErrorMsg] = useState<string | undefined>(undefined)
     const kacheryNode = useKacheryNode()
-    const {channelName} = useChannel()
+    
     const elapsedSec = useMemo(() => {
         if (!timeStarted) return undefined
         if (!timeFinished) return undefined
@@ -34,11 +40,13 @@ const TaskLatencyTest: FunctionComponent<Props> = () => {
             if (canceled) return
             setTimeFinished(undefined)
             if (canceled) return
+            setResult(undefined)
+            if (canceled) return
             setErrorMsg(undefined)
             if (canceled) return
             let result: any
             try {
-                result = await runQueryTaskAsync(kacheryNode, 'latency_test_query.1', {x: 'test1'}, {channelName, useCache: false})
+                result = await runQueryTaskAsync<{numMessages: number}>(kacheryNode, 'subfeed_latency_test_append.1', {message: {a: 'test1'}}, {channelName, useCache: false})
             }
             catch(err) {
                 if (canceled) return
@@ -46,17 +54,21 @@ const TaskLatencyTest: FunctionComponent<Props> = () => {
                 return
             }
             if (canceled) return
-            if (result === 'test1') {
-                setTimeFinished(nowTimestamp)
-            }
-            else {
-                setErrorMsg(`Unexpected result of query: ${result}`)
-            }
+            setResult(result)
         })()
         return () => {
             canceled = true
         }
     }, [testCode, channelName, kacheryNode])
+
+    useEffect(() => {
+        if (!result) return
+        if (!subfeedMessages) return
+        if (!timeStarted) return
+        if (subfeedMessages.length === result.numMessages) {
+            setTimeFinished(nowTimestamp)
+        }
+    }, [subfeedMessages, result, timeStarted])
 
     if ((!timeStarted) || (errorMsg)) {
         return (
@@ -81,7 +93,7 @@ const TaskLatencyTest: FunctionComponent<Props> = () => {
     else if ((timeStarted) && (timeFinished)) {
         return (
             <div>
-                <p>Elapsed for task (sec): {elapsedSec}</p>
+                <p>Elapsed (sec): {elapsedSec}</p>
                 <Button onClick={handleStartLatencyTest}>Rerun latency test</Button>
             </div>
         )
@@ -89,4 +101,4 @@ const TaskLatencyTest: FunctionComponent<Props> = () => {
     else return <div>x</div>
 }
 
-export default TaskLatencyTest
+export default ActionLatencyTest

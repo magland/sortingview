@@ -1,6 +1,7 @@
 import Expandable from 'labbox-react/components/Expandable/Expandable'
 import React, { FunctionComponent } from 'react'
-import TaskLatencyTest from './TaskLatencyTest'
+import QueryLatencyTest from './QueryLatencyTest'
+import SubfeedLatencyTest from './SubfeedLatencyTest'
 
 type Props = {
     
@@ -11,7 +12,10 @@ const TestResponsivenessSection: FunctionComponent<Props> = () => {
         <div>
             <Expandable label="Test responsiveness">
                 <h3>Test responsiveness of the task backend</h3>
-                <TaskLatencyTest />
+                <p>Query test:</p>
+                <QueryLatencyTest />
+                <p>Subfeed test:</p>
+                <SubfeedLatencyTest />
             </Expandable>
         </div>
     )
