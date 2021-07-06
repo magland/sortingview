@@ -13,7 +13,7 @@ type Props = {
 const SelectUnitsWidget: FunctionComponent<Props> = ({ sorting, selection, selectionDispatch, curation }) => {
     const sortingInfo = useSortingInfo(sorting.sortingPath)
     if (!sortingInfo) return <div>No sorting info</div>
-    const unitIds = (sortingInfo?.unit_ids || [])
+    let unitIds = (selection.visibleUnitIds || (sortingInfo?.unit_ids || []))
         .filter(uid => ((!selection.applyMerges) || (isMergeGroupRepresentative(uid, curation))))
     return (
         <UnitsTable

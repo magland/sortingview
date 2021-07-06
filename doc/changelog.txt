@@ -36,3 +36,5 @@ Fix autocorrelogram integer overflow
 Release version 0.2.13
 Fix Visible units control
 Release GUI 0.2.14
+Select units widget - fix to respect visible units
+Rlease GUI 0.2.15
