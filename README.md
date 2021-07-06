@@ -4,7 +4,7 @@ Interactively view and share results of electrophysiological spike sorting.
 
 **This project is at an early stage of development.**
 
-[List of recent changes](./doc/changelog.md)
+[List of recent changes](./doc/changelog.txt)
 
 ### Hosting a backend server
 
