@@ -15,7 +15,7 @@ type Props = {
     unitId: number
     width: number
     height: number
-    snippetsLen?: [number, number]
+    snippetLen?: [number, number]
 }
 
 // const calculationPool = createCalculationPool({maxSimultaneous: 6})
@@ -26,7 +26,7 @@ type Result = {
     y: number[]
 }
 
-const IndividualClusterView: FunctionComponent<Props> = ({ recording, sorting, curation, selection, selectionDispatch, unitId, width, height, snippetsLen }) => {
+const IndividualClusterView: FunctionComponent<Props> = ({ recording, sorting, curation, selection, selectionDispatch, unitId, width, height, snippetLen }) => {
     const {channelName} = useChannel()
     const {returnValue: features, task} = usePureCalculationTask<Result>(
         'individual_cluster_features.1',
@@ -34,7 +34,7 @@ const IndividualClusterView: FunctionComponent<Props> = ({ recording, sorting, c
             recording_object: recording.recordingObject,
             sorting_object: sorting.sortingObject,
             unit_id: applyMergesToUnit(unitId, curation, selection.applyMerges),
-            snippets_len: snippetsLen
+            snippet_len: snippetLen
         },
         {
             channelName

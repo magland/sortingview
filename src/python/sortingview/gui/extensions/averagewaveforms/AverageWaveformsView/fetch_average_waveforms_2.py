@@ -11,7 +11,7 @@ from sortingview.config import job_cache, job_handler
 
 
 @hi.function('createjob_fetch_average_waveform_2', '0.1.1', register_globally=True)
-def createjob_fetch_average_waveform_2(labbox: LabboxContext, recording_object, sorting_object, unit_id, snippets_len=(50, 80)):
+def createjob_fetch_average_waveform_2(labbox: LabboxContext, recording_object, sorting_object, unit_id, snippet_len=(50, 80)):
     from labbox_ephys import prepare_snippets_h5
     jh = labbox.get_job_handler('partition1')
     jc = labbox.get_job_cache()
@@ -20,7 +20,7 @@ def createjob_fetch_average_waveform_2(labbox: LabboxContext, recording_object, 
         job_handler=jh,
         use_container=jh.is_remote()
     ):
-        snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object, snippets_len=snippets_len)
+        snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object, snippet_len=snippet_len)
         return fetch_average_waveform_2.run(
             snippets_h5=snippets_h5,
             unit_id=unit_id
@@ -48,9 +48,9 @@ def fetch_average_waveform_2(snippets_h5, unit_id):
     )
 
 @kc.taskfunction('fetch_average_waveform.2', type='pure-calculation')
-def task_fetch_average_waveform(recording_object, sorting_object, unit_id, snippets_len=(50, 80)):
+def task_fetch_average_waveform(recording_object, sorting_object, unit_id, snippet_len=(50, 80)):
     with hi.Config(job_handler=job_handler.waveforms, job_cache=job_cache):
-        snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object, snippets_len=snippets_len)
+        snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object, snippet_len=snippet_len)
         return fetch_average_waveform_2.run(
             snippets_h5=snippets_h5,
             unit_id=unit_id

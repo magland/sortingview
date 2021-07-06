@@ -66,7 +66,7 @@ const WorkspaceView: FunctionComponent<WorkspaceViewProps> = ({ workspace, works
             readOnly={workspaceDispatch ? false : true}
             workspaceRoute={workspaceRoute}
             workspaceRouteDispatch={workspaceRouteDispatch}
-            snippetsLen={workspace.snippetsLen}
+            snippetLen={workspace.snippetLen}
           />
         )
       }
@@ -81,7 +81,7 @@ const WorkspaceView: FunctionComponent<WorkspaceViewProps> = ({ workspace, works
             readOnly={workspaceDispatch ? false : true}
             workspaceRoute={workspaceRoute}
             workspaceRouteDispatch={workspaceRouteDispatch}
-            snippetsLen={workspace.snippetsLen}
+            snippetLen={workspace.snippetLen}
           />
         )
       }

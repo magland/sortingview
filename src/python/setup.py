@@ -8,8 +8,8 @@ setup(
     install_requires=[
         'click',
         'hither>=0.7.0',
-        'labbox-ephys>=0.7.1',
-        'kachery-client>=1.0.6',
+        'labbox-ephys>=0.7.2',
+        'kachery-client>=1.0.7',
         'pynwb'
     ]
 )

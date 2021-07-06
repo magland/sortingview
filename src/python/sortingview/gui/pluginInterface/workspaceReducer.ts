@@ -8,10 +8,10 @@ export type WorkspaceState = {
     recordings: Recording[]
     sortings: Sorting[]
     userPermissions: {[key: string]: {edit?: boolean}}
-    snippetsLen?: [number, number]
+    snippetLen?: [number, number]
 }
 
-export const initialWorkspaceState: WorkspaceState = {recordings: [], sortings: [], userPermissions: {}, snippetsLen: undefined}
+export const initialWorkspaceState: WorkspaceState = {recordings: [], sortings: [], userPermissions: {}, snippetLen: undefined}
 
 type AddRecordingWorkspaceAction = {
     type: 'ADD_RECORDING'
@@ -54,13 +54,13 @@ type SetUserPermissionsAction = {
     }
 }
 
-type SetSnippetsLenWorkspaceAction = {
-    type: 'SET_SNIPPETS_LEN'
-    snippetsLen?: [number, number]
+type SetsnippetLenWorkspaceAction = {
+    type: 'SET_snippet_len'
+    snippetLen?: [number, number]
 }
 
 
-export type WorkspaceAction = AddRecordingWorkspaceAction | DeleteRecordingsWorkspaceAction | AddSortingsWorkspaceAction | DeleteSortingsWorkspaceAction | DeleteSortingsForRecordingsWorkspaceAction | SetUnitMetricsForSortingWorkspaceAction | SetUserPermissionsAction | SetSnippetsLenWorkspaceAction
+export type WorkspaceAction = AddRecordingWorkspaceAction | DeleteRecordingsWorkspaceAction | AddSortingsWorkspaceAction | DeleteSortingsWorkspaceAction | DeleteSortingsForRecordingsWorkspaceAction | SetUnitMetricsForSortingWorkspaceAction | SetUserPermissionsAction | SetsnippetLenWorkspaceAction
 
 export const sortingCurationReducer = (state: SortingCuration, action: SortingCurationAction): SortingCuration => {
     if (action.type === 'SET_CURATION') {
@@ -134,8 +134,8 @@ const workspaceReducer = (s: WorkspaceState, a: WorkspaceAction): WorkspaceState
         //     return {...s, sortings: s.sortings.map(x => (x.sortingId === a.sortingId) ? {...x, curation: sortingCurationReducer(x.curation || {}, a)} : x)}
         case 'SET_UNIT_METRICS_FOR_SORTING':
             return {...s, sortings: s.sortings.map(x => (x.sortingId === a.unitMetricsForSorting.sortingId) ? {...x, unitMetricsUri: a.unitMetricsForSorting.metricsUri} : x)}
-        case 'SET_SNIPPETS_LEN':
-            return {...s, snippetsLen: a.snippetsLen}
+        case 'SET_snippet_len':
+            return {...s, snippetLen: a.snippetLen}
         default: return s
     }
 }

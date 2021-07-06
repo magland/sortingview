@@ -8,7 +8,7 @@ import kachery_client as kc
     image=hi.RemoteDockerImage('docker://magland/labbox-ephys-processing:0.3.19'),
     modules=['labbox_ephys']
 )
-def get_isi_violation_rates(sorting_object, recording_object, configuration={}, snippets_len=(50, 80)):
+def get_isi_violation_rates(sorting_object, recording_object, configuration={}, snippet_len=(50, 80)):
     import labbox_ephys as le
     import spikemetrics as sm
     S = le.LabboxEphysSortingExtractor(sorting_object)
@@ -31,7 +31,7 @@ def get_isi_violation_rates(sorting_object, recording_object, configuration={}, 
     return ret
 
 @kc.taskfunction('get_isi_violation_rates.1', type='pure-calculation')
-def task_get_isi_violation_rates(sorting_object, recording_object, configuration={}, snippets_len=(50, 80)):
+def task_get_isi_violation_rates(sorting_object, recording_object, configuration={}, snippet_len=(50, 80)):
     with hi.Config(
         job_cache=job_cache,
         job_handler=job_handler.metrics

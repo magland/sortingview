@@ -13,10 +13,10 @@ type Props = {
     children: React.ReactElement<ChildProps>
     width: number
     height: number
-    snippetsLen?: [number, number]
+    snippetLen?: [number, number]
 }
 
-const PreloadCheck: FunctionComponent<Props> = ({ recording, sorting, children, width, height, snippetsLen }) => {
+const PreloadCheck: FunctionComponent<Props> = ({ recording, sorting, children, width, height, snippetLen }) => {
     const sortingObject = sorting.sortingObject
     const recordingObject = recording.recordingObject
     const runningState = useRef<{sortingObject: any, recordingObject: any}>({sortingObject: sorting.sortingObject, recordingObject: recording.recordingObject})
@@ -26,7 +26,7 @@ const PreloadCheck: FunctionComponent<Props> = ({ recording, sorting, children, 
     )), [])
 
     const {channelName} = useChannel()
-    const {task: preloadExtractSnippetsTask} = usePureCalculationTask('preload_extract_snippets.1', {recording_object: recordingObject, sorting_object: sortingObject, snipets_len: snippetsLen}, {channelName})
+    const {task: preloadExtractSnippetsTask} = usePureCalculationTask('preload_extract_snippets.1', {recording_object: recordingObject, sorting_object: sortingObject, snipets_len: snippetLen}, {channelName})
     const status = preloadExtractSnippetsTask?.status || 'waiting'
     const message = useMemo(() => {
         if (status === 'running') return 'Precomputing snippets'

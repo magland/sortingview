@@ -48,5 +48,7 @@ Release version 0.2.16
 Fix int overflow issue with correlograms (again)
 Release version 0.2.17
 Fix draggable issue #15
-Workspace parameter: snippets_len
+Workspace parameter: snippet_len
 Release 0.2.18
+snippets_len => snippet_len
+Release 0.2.19

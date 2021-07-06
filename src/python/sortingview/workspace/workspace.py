@@ -26,7 +26,7 @@ class Workspace:
         self._sortings = _get_sortings_from_subfeed(main_subfeed)
         self._unit_metrics_for_sortings = _get_unit_metrics_for_sortings_from_subfeed(main_subfeed)
         self._user_permissions = _get_user_permissions_from_subfeed(main_subfeed)
-        self._snippets_len: Tuple[int, int] = _get_snippets_len_from_subfeed(main_subfeed)
+        self._snippet_len: Tuple[int, int] = _get_snippet_len_from_subfeed(main_subfeed)
     @property
     def uri(self):
         q = f'?{self._query_string}' if self._query_string else ''
@@ -126,13 +126,13 @@ class Workspace:
         main_subfeed = self._feed.load_subfeed('main')
         _set_user_permissions_for_workspace(main_subfeed, user_id, permissions)
         self._user_permissions[user_id] = permissions
-    def set_snippets_len(self, snippets_len: Tuple[int, int]):
+    def set_snippet_len(self, snippet_len: Tuple[int, int]):
         main_subfeed = self._feed.load_subfeed('main')
-        _set_snippets_len_for_workspace(main_subfeed, snippets_len)
-        self._snippets_len = snippets_len
+        _set_snippet_len_for_workspace(main_subfeed, snippet_len)
+        self._snippet_len = snippet_len
     @property
-    def snippets_len(self):
-        return self._snippets_len
+    def snippet_len(self):
+        return self._snippet_len
     def get_user_permissions(self, user_id: str) -> Union[None, dict]:
         return self._user_permissions.get(user_id, None)
     def get_all_users(self) -> List[str]:
@@ -228,25 +228,25 @@ def _set_user_permissions_for_workspace(subfeed: kc.Subfeed, user_id: str, permi
         }
     })
 
-def _get_snippets_len_from_subfeed(subfeed: kc.Subfeed):
+def _get_snippet_len_from_subfeed(subfeed: kc.Subfeed):
     subfeed.set_position(0)
-    snippets_len = (50, 80)
+    snippet_len = (50, 80)
     while True:
         msg = subfeed.get_next_message(wait_msec=0)
         if msg is None: break
         if 'action' in msg:
             a = msg['action']
-            if a.get('type', '') == 'SET_SNIPPETS_LEN':
-                x = a.get('snippetsLen', None)
+            if a.get('type', '') == 'SET_snippet_len':
+                x = a.get('snippetLen', None)
                 if x:
-                    snippets_len = x
-    return snippets_len
+                    snippet_len = x
+    return snippet_len
 
-def _set_snippets_len_for_workspace(subfeed: kc.Subfeed, snippets_len: Tuple[int, int]):
+def _set_snippet_len_for_workspace(subfeed: kc.Subfeed, snippet_len: Tuple[int, int]):
     subfeed.append_message({
         'action': {
-            'type': 'SET_SNIPPETS_LEN',
-            'snippetsLen': snippets_len
+            'type': 'SET_snippet_len',
+            'snippetLen': snippet_len
         }
     })
 

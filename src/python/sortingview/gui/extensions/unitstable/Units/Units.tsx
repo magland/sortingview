@@ -62,7 +62,7 @@ interface OwnProps {
 
 
 const Units: React.FunctionComponent<SortingViewProps & OwnProps> = (props) => {
-    const { sorting, recording, sortingInfo, selection, selectionDispatch, curation, width, height, snippetsLen } = props
+    const { sorting, recording, sortingInfo, selection, selectionDispatch, curation, width, height, snippetLen } = props
     const [expandedTable, setExpandedTable] = useState(false)
     const [metrics, updateMetrics] = useReducer(updateMetricData, initialMetricDataState)
     const [previousRecording, setPreviousRecording] = useState<Recording | null>(null)
@@ -96,7 +96,7 @@ const Units: React.FunctionComponent<SortingViewProps & OwnProps> = (props) => {
                 {
                     sorting_object: sorting.sortingObject,
                     recording_object: recording.recordingObject,
-                    snippets_len: snippetsLen,
+                    snippet_len: snippetLen,
                     configuration: metric.metricFnParams
                 },
                 {
@@ -108,7 +108,7 @@ const Units: React.FunctionComponent<SortingViewProps & OwnProps> = (props) => {
             console.error(err);
             updateMetrics({metricName: metric.name, status: 'error', error: err.message})
         }
-    }, [kacheryNode, channelName, metrics, sorting.sortingObject, recording.recordingObject, snippetsLen])
+    }, [kacheryNode, channelName, metrics, sorting.sortingObject, recording.recordingObject, snippetLen])
 
     const plugins = usePlugins<LabboxPlugin>()
     useEffect(() => { 

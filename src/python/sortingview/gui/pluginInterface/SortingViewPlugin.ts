@@ -18,7 +18,7 @@ export interface SortingViewProps {
     calculationPool?: CalculationPool
     width: number
     height: number
-    snippetsLen?: [number, number]
+    snippetLen?: [number, number]
 }
 
 export interface SortingViewPlugin extends LabboxViewPlugin {

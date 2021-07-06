@@ -15,7 +15,7 @@ type SpikeAmplitudesDataQuery = {
 
 // const calculationPool = createCalculationPool({maxSimultaneous: 6})
 
-const fetchSpikeAmplitudes = async ({kacheryNode, channelName, recordingObject, sortingObject, unitId, snippetsLen}: {kacheryNode: KacheryNode, channelName: ChannelName, recordingObject: any, sortingObject: any, unitId: number | number[], snippetsLen?: [number, number]}) => {
+const fetchSpikeAmplitudes = async ({kacheryNode, channelName, recordingObject, sortingObject, unitId, snippetLen}: {kacheryNode: KacheryNode, channelName: ChannelName, recordingObject: any, sortingObject: any, unitId: number | number[], snippetLen?: [number, number]}) => {
     const result = await runPureCalculationTaskAsync<{
         timepoints: number[]
         amplitudes: number[]
@@ -26,7 +26,7 @@ const fetchSpikeAmplitudes = async ({kacheryNode, channelName, recordingObject, 
             recording_object: recordingObject,
             sorting_object: sortingObject,
             unit_id: unitId,
-            snippets_len: snippetsLen
+            snippet_len: snippetLen
         },
         {
             channelName
@@ -39,17 +39,17 @@ const fetchSpikeAmplitudes = async ({kacheryNode, channelName, recordingObject, 
     }
 }
 
-const useSpikeAmplitudesData = (recordingObject: any, sortingObject: any, snippetsLen?: [number, number]): SpikeAmplitudesData | null => {
+const useSpikeAmplitudesData = (recordingObject: any, sortingObject: any, snippetLen?: [number, number]): SpikeAmplitudesData | null => {
     const kacheryNode = useKacheryNode()
     const {channelName} = useChannel()
     const fetch = useMemo(() => (async (query: SpikeAmplitudesDataQuery) => {
         switch(query.type) {
             case 'spikeAmplitudes': {
-                return await fetchSpikeAmplitudes({kacheryNode, channelName, recordingObject, sortingObject, unitId: query.unitId, snippetsLen})
+                return await fetchSpikeAmplitudes({kacheryNode, channelName, recordingObject, sortingObject, unitId: query.unitId, snippetLen})
             }
             default: throw Error('Unexpected query type')
         }
-    }), [kacheryNode, channelName, recordingObject, sortingObject, snippetsLen])
+    }), [kacheryNode, channelName, recordingObject, sortingObject, snippetLen])
     const data = useFetchCache<SpikeAmplitudesDataQuery>(fetch)
 
     const getSpikeAmplitudes = useMemo(() => ((unitId: number | number[]): {timepoints: number[], amplitudes: number[], minAmp: number, maxAmp: number} | undefined => {

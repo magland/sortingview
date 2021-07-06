@@ -9,7 +9,7 @@ import { WorkspaceRoute, WorkspaceRouteDispatch } from "../../../pluginInterface
 import ImportRecordingsInstructions from './ImportRecordingsInstructions';
 import RecordingsTable from './RecordingsTable';
 import setWorkspacePermissionsMd from './setWorkspacePermissions.md.gen';
-import setSnippetsLenMd from './setSnippetsLen.md.gen'
+import setSnippetLenMd from './setSnippetLen.md.gen'
 
 type Props = {
     workspace: WorkspaceState
@@ -24,7 +24,7 @@ const WorkspaceHomeView: FunctionComponent<Props> = ({ width, height, workspace,
     const {recordings, sortings} = workspace
     const importInstructionsVisible = useVisible()
     const setWorkspacePermissionsVisible = useVisible()
-    const setSnippetsLengthVisible = useVisible()
+    const setsnippetLengthVisible = useVisible()
     return (
         <span>
             <div>
@@ -45,7 +45,7 @@ const WorkspaceHomeView: FunctionComponent<Props> = ({ width, height, workspace,
                     )
                 }
                 {
-                    <p><Hyperlink onClick={setSnippetsLengthVisible.show}>Snippets length</Hyperlink>: {workspace.snippetsLen ? `(${workspace.snippetsLen[0]}, ${workspace.snippetsLen[1]})` : 'default'}</p>
+                    <p><Hyperlink onClick={setsnippetLengthVisible.show}>Snippets length</Hyperlink>: {workspace.snippetLen ? `(${workspace.snippetLen[0]}, ${workspace.snippetLen[1]})` : 'default'}</p>
                 }
                 <RecordingsTable
                     {...{sortings, recordings, onDeleteRecordings, workspaceRouteDispatch}}
@@ -68,9 +68,9 @@ const WorkspaceHomeView: FunctionComponent<Props> = ({ width, height, workspace,
                 }}
             />
             <MarkdownDialog
-                visible={setSnippetsLengthVisible.visible}
-                onClose={setSnippetsLengthVisible.hide}
-                source={setSnippetsLenMd}
+                visible={setsnippetLengthVisible.visible}
+                onClose={setsnippetLengthVisible.hide}
+                source={setSnippetLenMd}
                 substitute={{
                     workspaceUri: workspaceRoute.workspaceUri || '<unknown>'
                 }}
