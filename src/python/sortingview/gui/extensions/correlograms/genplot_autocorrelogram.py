@@ -9,7 +9,7 @@ from ._correlograms_phy import compute_correlograms
 
 
 @hi.function(
-    'fetch_correlogram_plot_data', '0.2.6',
+    'fetch_correlogram_plot_data', '0.2.7',
     image=hi.RemoteDockerImage('docker://magland/labbox-ephys-processing:0.3.19'),
     modules=['labbox_ephys']
 )
@@ -20,7 +20,7 @@ def fetch_correlogram_plot_data(sorting_object, unit_x, unit_y=None):
         window_size_msec=50, bin_size_msec=1)
     return data
 
-@kc.taskfunction('fetch_correlogram_plot_data.2', type='pure-calculation')
+@kc.taskfunction('fetch_correlogram_plot_data.3', type='pure-calculation')
 def task_fetch_correlogram_plot_data(sorting_object, unit_x, unit_y=None):
     with hi.Config(
         job_cache=job_cache,

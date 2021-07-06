@@ -2,6 +2,7 @@ import { ChannelName } from 'kachery-js/types/kacheryTypes'
 import { useChannel } from 'kachery-react'
 import SelectChannelDialog from 'kachery-react/components/SelectChannel/SelectChannelDialog'
 import { useVisible } from 'labbox-react'
+import Hyperlink from 'labbox-react/components/Hyperlink/Hyperlink'
 import React, { FunctionComponent } from 'react'
 import '../../commonComponents/localStyles.css'
 import packageName from '../../packageName'
@@ -33,7 +34,7 @@ const Home: FunctionComponent<Props> = () => {
             }
             <span>
                 <hr />
-                <p style={{fontFamily: 'courier', color: 'gray'}}>Python package version: {packageName} {pythonProjectVersion} | GUI version: {webAppProjectVersion}</p>
+                <p style={{fontFamily: 'courier', color: 'gray'}}>Python package version: {packageName} {pythonProjectVersion} | GUI version: {webAppProjectVersion} | <a href="https://github.com/magland/sortingview" target="_blank">View on GitHub</a></p>
             </span>
             
             <SelectChannelDialog

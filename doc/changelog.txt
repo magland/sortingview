@@ -45,3 +45,5 @@ Report backend package version
 Update setup.py: include labbox-ephys / hither / kachery-client versions
 Do not crash when daemon is down - retry after 10 seconds
 Release version 0.2.16
+Fix int overflow issue with correlograms (again)
+Release version 0.2.17

@@ -1,1 +1,1 @@
-Interactively view and share results of electrophysiological spike sorting.
+Interactively view, curate, and share results of electrophysiological spike sorting.

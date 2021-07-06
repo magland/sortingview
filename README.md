@@ -1,6 +1,6 @@
 # sortingview
 
-Interactively view and share results of electrophysiological spike sorting.
+Interactively view, curate, and share results of electrophysiological spike sorting.
 
 **This project is at an early stage of development.**
 
@@ -57,3 +57,8 @@ vercel dev
 
 If you are not part of the team, then the easiest course is to set up your own (free) vercel account, fork this repo, and add that forked repo as a new vercel project.
 
+## Authors
+
+Jeremy Magland and Jeff Soules, Center for Computational Mathematics, Flatiron Institute
+
+In collaboration with Kyu Hyun Lee and Loren Frank, Frank Laboratory @ UCSF

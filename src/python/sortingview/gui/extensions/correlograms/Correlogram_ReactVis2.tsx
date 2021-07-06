@@ -35,7 +35,7 @@ const Correlogram_rv2: FunctionComponent<Props> = ({ sorting, unitId1, unitId2, 
     // )
 
     const {channelName} = useChannel()
-    const {returnValue: plotData, task: taskPlotData} = usePureCalculationTask<PlotData>('fetch_correlogram_plot_data.2', {
+    const {returnValue: plotData, task: taskPlotData} = usePureCalculationTask<PlotData>('fetch_correlogram_plot_data.3', {
         sorting_object: sorting.sortingObject,
         unit_x: applyMergesToUnit(unitId1, curation, selection.applyMerges),
         unit_y: unitId2 !== undefined ? applyMergesToUnit(unitId2, curation, selection.applyMerges) : null        
