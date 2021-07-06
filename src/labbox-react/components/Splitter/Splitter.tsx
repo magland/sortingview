@@ -23,7 +23,8 @@ const Splitter: FunctionComponent<Props> = (props) => {
     const [gripPosition, setGripPosition] = useState<number>(initialPosition)
 
     // See: https://stackoverflow.com/questions/63603902/finddomnode-is-deprecated-in-strictmode-finddomnode-was-passed-an-instance-of-d
-    const draggableNodeRef = React.useRef(null)
+    // const draggableNodeRef = React.useRef(null)
+    // this was actually causing an error with Draggable
 
     if (!props.children) throw Error('Unexpected: no props.children')
 
@@ -119,7 +120,7 @@ const Splitter: FunctionComponent<Props> = (props) => {
             {
                 adjustable && (
                     <Draggable
-                        nodeRef={draggableNodeRef}
+                        // nodeRef={draggableNodeRef} // this was actually causing an error with Draggable
                         key="drag"
                         position={{ x: gripPositionFromLeft - gripThickness / 2 - gripMargin, y: 0 }}
                         axis="x"
