@@ -20,7 +20,7 @@ def fetch_correlogram_plot_data(sorting_object, unit_x, unit_y=None):
         window_size_msec=50, bin_size_msec=1)
     return data
 
-@kc.taskfunction('fetch_correlogram_plot_data.1', type='pure-calculation')
+@kc.taskfunction('fetch_correlogram_plot_data.2', type='pure-calculation')
 def task_fetch_correlogram_plot_data(sorting_object, unit_x, unit_y=None):
     with hi.Config(
         job_cache=job_cache,
@@ -69,6 +69,6 @@ def _get_correlogram_data(*, sorting, unit_id1, unit_id2=None, window_size_msec,
     bin_size_sec = bin_size_msec / 1000
     return {
         'bins': bins.astype(np.float32),
-        'bin_counts': bin_counts.astype(np.int16),
+        'bin_counts': bin_counts.astype(np.int32),
         'bin_size_sec': bin_size_sec
     }

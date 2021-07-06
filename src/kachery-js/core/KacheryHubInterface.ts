@@ -590,7 +590,6 @@ class KacheryHubInterface {
             }
         }
         else if (msg.type === 'updateSubfeedMessageCount') {
-            console.log('--- updateSubfeedMessageCount', x.channelName, msg.messageCount)
             if (x.pubsubChannelName !== pubsubChannelName(`${x.channelName}-provideFeeds`)) {
                 console.warn(`Unexpected pubsub channel for updateSubfeedMessageCount: ${x.pubsubChannelName}`)
                 return
