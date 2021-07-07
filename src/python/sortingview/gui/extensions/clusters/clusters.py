@@ -9,26 +9,27 @@ import numpy as np
 from sortingview.config import job_cache, job_handler
 
 
-@hi.function('createjob_individual_cluster_features', '0.1.0', register_globally=True)
-def createjob_individual_cluster_features(labbox, recording_object, sorting_object, unit_id, snippet_len=(50, 80)):
-    from labbox_ephys import prepare_snippets_h5
-    jh = labbox.get_job_handler('partition1')
-    jc = labbox.get_job_cache()
-    with hi.Config(
-        job_cache=jc,
-        job_handler=jh,
-        use_container=jh.is_remote()
-    ):
-        snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object, snippet_len=snippet_len)
-        return individual_cluster_features.run(
-            snippets_h5=snippets_h5,
-            unit_id=unit_id
-        )
+# @hi.function('createjob_individual_cluster_features', '0.1.0', register_globally=True)
+# def createjob_individual_cluster_features(labbox, recording_object, sorting_object, unit_id, snippet_len=(50, 80)):
+#     from labbox_ephys import prepare_snippets_h5
+#     jh = labbox.get_job_handler('partition1')
+#     jc = labbox.get_job_cache()
+#     with hi.Config(
+#         job_cache=jc,
+#         job_handler=jh,
+#         use_container=jh.is_remote()
+#     ):
+#         snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object, snippet_len=snippet_len)
+#         return individual_cluster_features.run(
+#             snippets_h5=snippets_h5,
+#             unit_id=unit_id
+#         )
 
 @kc.taskfunction('individual_cluster_features.1', type='pure-calculation')
 def task_individual_cluster_featurest(recording_object, sorting_object, unit_id, snippet_len=(50, 80)):
     with hi.Config(job_handler=job_handler.clusters, job_cache=job_cache):
-        snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object, snippet_len=snippet_len)
+        with hi.Config(job_handler=job_handler.extract_snippets):
+            snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object, snippet_len=snippet_len)
         return individual_cluster_features.run(
             snippets_h5=snippets_h5,
             unit_id=unit_id

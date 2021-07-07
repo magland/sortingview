@@ -26,12 +26,12 @@ const PreloadCheck: FunctionComponent<Props> = ({ recording, sorting, children, 
     )), [])
 
     const {channelName} = useChannel()
-    const {task: preloadExtractSnippetsTask} = usePureCalculationTask('preload_extract_snippets.1', {recording_object: recordingObject, sorting_object: sortingObject, snipets_len: snippetLen}, {channelName})
+    const {task: preloadExtractSnippetsTask} = usePureCalculationTask('preload_extract_snippets.2', {recording_object: recordingObject, sorting_object: sortingObject, snipets_len: snippetLen}, {channelName})
     const status = preloadExtractSnippetsTask?.status || 'waiting'
     const message = useMemo(() => {
         if (status === 'running') return 'Precomputing snippets'
-        else if (status === 'finished') return ''
-        else return `Status: ${status}`
+        else if (status === 'finished') return 'Finished precomputing snippets'
+        else return `Precompute snippets: ${status}`
     }, [status])
 
     const child = useMemo(() => {

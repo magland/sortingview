@@ -19,7 +19,7 @@ type Props = {
 const taskFunctionIds: TaskFunctionId[] = [
     'sortingview_workspace_list_subfeed.2',
     'example_recording_sortings', 'recording_info.3', 'sorting_info.3',
-    'preload_extract_snippets.1', 'get_isi_violation_rates.1', 'get_peak_channels.1',
+    'preload_extract_snippets.2', 'get_isi_violation_rates.1', 'get_peak_channels.1',
     'get_unit_snrs.1', 'get_firing_data.1', 'fetch_correlogram_plot_data.3',
     'get_timeseries_segment.1', 'fetch_average_waveform.2', 'test_delay.1', 'individual_cluster_features.1',
     'workspace_action.1', 'workspace_sorting_curation_action.1',

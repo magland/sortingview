@@ -1,12 +1,35 @@
-6/23/2021:
-Fixed bug in units table where Num. events was not loading
-Restored external metrics functionality in units table
-Restored spike amplitudes view
-Fix timeseries scrolling issue (do not allow out-of-bounds)
-Released version 0.2.6
-In browser url workspace=<feed-id> rather than workspace=workspace://<feed-id>
-Improve task monitor - report cache hits and waiting tasks
-highlight selected units in correlogram and waveform plots
+7/7/2021
+Reverse chronology of changelog
+Restore precomputing of extract snippets. See: https://github.com/magland/sortingview/issues/16
+Deployed 0.2.20
+
+7/6/2021
+Restore "show accepted"/"hide rejected" units without bug
+Report backend package version
+Update setup.py: include labbox-ephys / hither / kachery-client versions
+Do not crash when daemon is down - retry after 10 seconds
+Release version 0.2.16
+Fix int overflow issue with correlograms (again)
+Release version 0.2.17
+Fix draggable issue #15
+Workspace parameter: snippet_len
+Release 0.2.18
+snippets_len => snippet_len
+Release 0.2.19
+
+7/5/2021
+In sorting view, provide instructions for importing external metrics
+Update docs
+Test responsiveness - "Start latency test" button
+Released version 0.2.11 of gui / 0.2.11 of python package
+Add subfeed latency test
+Released version 0.2.12
+Fix autocorrelogram integer overflow
+Release version 0.2.13
+Fix Visible units control
+Release GUI 0.2.14
+Select units widget - fix to respect visible units
+Release GUI 0.2.15
 
 6/24/2021
 Import recordings instructions in modal window rather than in side splitter
@@ -25,30 +48,12 @@ Update intro blurb on home page
 Spike icon in application bar
 Released version 0.2.8 of gui
 
-7/5/2021
-In sorting view, provide instructions for importing external metrics
-Update docs
-Test responsiveness - "Start latency test" button
-Released version 0.2.11 of gui / 0.2.11 of python package
-Add subfeed latency test
-Released version 0.2.12
-Fix autocorrelogram integer overflow
-Release version 0.2.13
-Fix Visible units control
-Release GUI 0.2.14
-Select units widget - fix to respect visible units
-Release GUI 0.2.15
-
-7/6/2021
-Restore "show accepted"/"hide rejected" units without bug
-Report backend package version
-Update setup.py: include labbox-ephys / hither / kachery-client versions
-Do not crash when daemon is down - retry after 10 seconds
-Release version 0.2.16
-Fix int overflow issue with correlograms (again)
-Release version 0.2.17
-Fix draggable issue #15
-Workspace parameter: snippet_len
-Release 0.2.18
-snippets_len => snippet_len
-Release 0.2.19
+6/23/2021:
+Fixed bug in units table where Num. events was not loading
+Restored external metrics functionality in units table
+Restored spike amplitudes view
+Fix timeseries scrolling issue (do not allow out-of-bounds)
+Released version 0.2.6
+In browser url workspace=<feed-id> rather than workspace=workspace://<feed-id>
+Improve task monitor - report cache hits and waiting tasks
+highlight selected units in correlogram and waveform plots

@@ -1,4 +1,4 @@
-import { sleepMsec } from "kachery-js/util";
+import { sleepMsec } from "../util";
 import { RegisteredTaskFunction, RequestedTask } from "../types/kacheryHubTypes";
 import { ChannelName, DurationMsec, durationMsecToNumber, elapsedSince, nowTimestamp, TaskFunctionId, TaskFunctionType, TaskId, TaskKwargs, Timestamp, unscaledDurationMsec } from "../types/kacheryTypes";
 import computeTaskHash from "../util/computeTaskHash";

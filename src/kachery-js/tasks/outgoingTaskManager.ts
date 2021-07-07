@@ -1,4 +1,4 @@
-import { RegisteredTaskFunction } from "kachery-js/types/kacheryHubTypes";
+import { RegisteredTaskFunction } from "../types/kacheryHubTypes";
 import { ChannelName, ErrorMessage, nowTimestamp, TaskFunctionId, TaskId, TaskStatus, Timestamp } from "../types/kacheryTypes";
 import GarbageMap from "../util/GarbageMap";
 import randomAlphaString from "../util/randomAlphaString";

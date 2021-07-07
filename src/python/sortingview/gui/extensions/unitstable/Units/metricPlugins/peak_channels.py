@@ -38,7 +38,8 @@ def task_get_peak_channels(sorting_object, recording_object, configuration={}, s
         job_cache=job_cache,
         job_handler=job_handler.metrics
     ):
-        snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object, snippet_len=snippet_len)
+        with hi.Config(job_handler=job_handler.extract_snippets):
+            snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object, snippet_len=snippet_len)
         return get_peak_channels.run(
             snippets_h5=snippets_h5
         )

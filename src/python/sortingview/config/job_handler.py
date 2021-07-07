@@ -7,3 +7,4 @@ class job_handler:
     clusters = hi.ParallelJobHandler(num_workers=4)
     metrics = hi.ParallelJobHandler(num_workers=4)
     misc = hi.ParallelJobHandler(num_workers=4)
+    extract_snippets = hi.ParallelJobHandler(num_workers=4)

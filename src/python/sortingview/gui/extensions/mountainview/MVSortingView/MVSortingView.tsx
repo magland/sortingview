@@ -1,6 +1,6 @@
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { GraphicEq, Settings, SquareFoot, Visibility } from '@material-ui/icons'
+import { Settings, SquareFoot, Visibility } from '@material-ui/icons'
 import GrainIcon from '@material-ui/icons/Grain'
 import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser'
 import { usePlugins } from 'labbox-react'
@@ -14,7 +14,7 @@ import '../mountainview.css'
 import CurationControl from './CurationControl'
 import MetricsControl from './MetricsControl'
 import OptionsControl from './OptionsControl'
-import PreprocessingControl, { PreprocessingSelection, PreprocessingSelectionAction, preprocessingSelectionReducer } from './PreprocessingControl'
+import PreloadCheck from './PreloadCheck'
 import ViewContainer from './ViewContainer'
 import ViewLauncher from './ViewLauncher'
 import ViewWidget from './ViewWidget'
@@ -87,51 +87,53 @@ const area = (a: 'north' | 'south') => {
 }
 
 const MVSortingViewWithCheck: FunctionComponent<SortingViewProps> = (props) => {
-    const {recording} = props
+    const {recording, sorting} = props
 
-    const [preprocessingSelection, preprocessingSelectionDispatch] = useReducer(preprocessingSelectionReducer, {filterType: 'none'})
+    // const [preprocessingSelection, preprocessingSelectionDispatch] = useReducer(preprocessingSelectionReducer, {filterType: 'none'})
 
-    const preprocessedRecording = useMemo(() => {
-        if (!recording) return recording
-        if (preprocessingSelection.filterType === 'none') {
-            return recording
-        }
-        else if (preprocessingSelection.filterType === 'bandpass_filter') {
-            return {
-                ...recording,
-                recordingObject: {
-                    recording_format: 'filtered',
-                    data: {
-                        filters: [{type: 'bandpass_filter', freq_min: 300, freq_max: 3000, freq_wid: 1000}],
-                        recording: recording.recordingObject
-                    }
-                }
-            }
-        }
-        else {
-            throw Error(`Unexpected filter type: ${preprocessingSelection.filterType}`)
-        }
-    }, [recording, preprocessingSelection])
+    // const preprocessedRecording = useMemo(() => {
+    //     if (!recording) return recording
+    //     if (preprocessingSelection.filterType === 'none') {
+    //         return recording
+    //     }
+    //     else if (preprocessingSelection.filterType === 'bandpass_filter') {
+    //         return {
+    //             ...recording,
+    //             recordingObject: {
+    //                 recording_format: 'filtered',
+    //                 data: {
+    //                     filters: [{type: 'bandpass_filter', freq_min: 300, freq_max: 3000, freq_wid: 1000}],
+    //                     recording: recording.recordingObject
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     else {
+    //         throw Error(`Unexpected filter type: ${preprocessingSelection.filterType}`)
+    //     }
+    // }, [recording, preprocessingSelection])
+
+    const preprocessedRecording = recording
 
     return (
-        // <PreloadCheck recording={preprocessedRecording} sorting={sorting} width={props.width || 0} height={props.height || 0}>
+        <PreloadCheck recording={preprocessedRecording} sorting={sorting} width={props.width || 0} height={props.height || 0}>
             <MVSortingView
                 {...props}
-                {...{preprocessingSelection, preprocessingSelectionDispatch}}
+                // {...{preprocessingSelection, preprocessingSelectionDispatch}}
                 recording={preprocessedRecording}
             />
-        // </PreloadCheck>
+        </PreloadCheck>
     )
 }
 
-interface PreprocessingProps {
-    preprocessingSelection: PreprocessingSelection
-    preprocessingSelectionDispatch: (a: PreprocessingSelectionAction) => void
-}
+// interface PreprocessingProps {
+//     preprocessingSelection: PreprocessingSelection
+//     preprocessingSelectionDispatch: (a: PreprocessingSelectionAction) => void
+// }
 
-const MVSortingView: FunctionComponent<SortingViewProps & {preloadStatus?: 'waiting' | 'running' | 'finished'} & PreprocessingProps> = (props) => {
+const MVSortingView: FunctionComponent<SortingViewProps & {preloadStatus?: 'waiting' | 'running' | 'finished'}/* & PreprocessingProps*/> = (props) => {
     // useCheckForChanges('MVSortingView', props)
-    const {recording, sorting, recordingInfo, selection, selectionDispatch, curation, preloadStatus, preprocessingSelection, preprocessingSelectionDispatch, curationDispatch} = props
+    const {recording, sorting, recordingInfo, selection, selectionDispatch, curation, preloadStatus, curationDispatch} = props
     const [openViews, openViewsDispatch] = useReducer(openViewsReducer, [])
     const [initializedViews, setInitializedViews] = useState(false)
 
@@ -198,7 +200,7 @@ const MVSortingView: FunctionComponent<SortingViewProps & {preloadStatus?: 'wait
     }, [openViewsDispatch])
     const width = props.width || 600
     const height = props.height || 900
-    const preprocessingIcon = <span style={{color: 'gray'}}><GraphicEq /></span>
+    // const preprocessingIcon = <span style={{color: 'gray'}}><GraphicEq /></span>
     const visibleUnitsIcon = <span style={{color: 'gray'}}><Visibility /></span>
     const visibleElectrodesIcon = <span style={{color: 'gray'}}><GrainIcon /></span>
     const launchIcon = <span style={{color: 'gray'}}><OpenInBrowserIcon /></span>
@@ -212,6 +214,7 @@ const MVSortingView: FunctionComponent<SortingViewProps & {preloadStatus?: 'wait
 
     const sortingViewProps = {...props}
     return (
+        
         <div className="MVSortingView">
             <Splitter
                 width={width}
@@ -245,12 +248,12 @@ const MVSortingView: FunctionComponent<SortingViewProps & {preloadStatus?: 'wait
                     </Expandable>
 
                     {/* Preprocessing */}
-                    <Expandable icon={preprocessingIcon} label="Preprocessing" defaultExpanded={false} unmountOnExit={false}>
+                    {/* <Expandable icon={preprocessingIcon} label="Preprocessing" defaultExpanded={false} unmountOnExit={false}>
                         <PreprocessingControl
                             preprocessingSelection={preprocessingSelection}
                             preprocessingSelectionDispatch={preprocessingSelectionDispatch}
                         />
-                    </Expandable>
+                    </Expandable> */}
                     
                     {/* Curation */}
                     { curationDispatch && hasSorting && (

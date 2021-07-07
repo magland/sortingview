@@ -40,7 +40,8 @@ def task_get_unit_snrs(sorting_object, recording_object, configuration={}, snipp
         job_cache=job_cache,
         job_handler=job_handler.metrics
     ):
-        snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object, snippet_len=snippet_len)
+        with hi.Config(job_handler=job_handler.extract_snippets):
+            snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object, snippet_len=snippet_len)
         return get_unit_snrs.run(
             snippets_h5=snippets_h5
         )
