@@ -91,6 +91,35 @@ class KacheryHubInterface {
         }
         return options
     }
+    async checkForSubfeedInChannelBuckets(feedId: FeedId, subfeedHash: SubfeedHash): Promise<{numMessages: MessageCount, channelName: ChannelName}[] | null> {
+        await this.initialize()
+        const nodeConfig = this.#nodeConfig
+        if (!nodeConfig) return null
+        const options: {numMessages: MessageCount, channelName: ChannelName}[] = []
+        const checkedBucketUrls = new Set<string>()
+        for (let cm of (nodeConfig.channelMemberships || [])) {
+            const channelName = cm.channelName
+            const bucketUri = cm.channelBucketUri
+            if (bucketUri) {
+                const bucketUrl = urlFromUri(bucketUri)
+                if (!checkedBucketUrls.has(bucketUrl)) {
+                    checkedBucketUrls.add(bucketUrl)
+                    const f = feedId.toString()
+                    const s = subfeedHash.toString()
+                    const subfeedPath = `feeds/${f[0]}${f[1]}/${f[2]}${f[3]}/${f[4]}${f[5]}/${f}/subfeeds/${s[0]}${s[1]}/${s[2]}${s[3]}/${s[4]}${s[5]}/${s}`
+                    const url2 = urlString(`${bucketUrl}/${subfeedPath}/subfeed.json`)
+                    const subfeedJson = await downloadJson(url2, {cacheBust: true})
+                    if (subfeedJson) {
+                        if (isSubfeedJson(subfeedJson)) {
+                            options.push({numMessages: subfeedJson.messageCount, channelName})
+                        }
+                    }
+                }
+            }
+        }
+        options.sort((a, b) => (Number(b.numMessages) - Number(a.numMessages))) // sort descending by num. messages
+        return options
+    }
     async requestFileFromChannels(fileKey: FileKey): Promise<boolean> {
         await this.initialize()
         const nodeConfig = this.#nodeConfig
@@ -710,6 +739,24 @@ const checkUrlExists = async (url: UrlString) => {
         return false
     }
 }
+
+const downloadJson = async (url: UrlString, opts: {cacheBust: boolean}): Promise<JSONValue | null> => {
+    if (opts.cacheBust) {
+        url = cacheBust(url)
+    }
+    let resp = null
+    try {
+        resp = await axios.get(url.toString(), {responseType: 'json'})
+    }
+    catch(err) {
+        return null
+    }
+    if ((resp) && (resp.data)) {
+        return resp.data as any as JSONValue
+    }
+    else return null
+}
+
 
 const bucketNameFromUri = (bucketUri: string) => {
     if (!bucketUri.startsWith('gs://')) throw Error(`Invalid bucket uri: ${bucketUri}`)

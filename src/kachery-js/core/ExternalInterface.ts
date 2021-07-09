@@ -53,6 +53,8 @@ export interface KacheryStorageManagerInterface {
     storeFileFromBucketUrl: (url: UrlString, o: {sha1: Sha1Hash, nodeStats: NodeStats, channelName: ChannelName | null}) => Promise<DataStreamy>
     concatenateChunksAndStoreResult: (sha1: Sha1Hash, chunkSha1s: Sha1Hash[]) => Promise<void>
     storageDir: () => LocalFilePath
+    moveFileToTrash: (sha1: Sha1Hash) => Promise<void>
+    onFileStored: (callback: (sha1: Sha1Hash) => void) => void
 }
 
 export type CreateKacheryStorageManagerFunction = () => KacheryStorageManagerInterface

@@ -32,6 +32,12 @@ class BrowserKacheryStorageManager {
     async concatenateChunksAndStoreResult(sha1: Sha1Hash, chunkSha1s: Sha1Hash[]) : Promise<void> {
         throw Error('not implemented')
     }
+    async moveFileToTrash(sha1: Sha1Hash) {
+        throw Error('not implemented')
+    }
+    onFileStored(callback: (sha1: Sha1Hash) => void) {
+        throw Error('not implemented')
+    }
     storageDir() : LocalFilePath {
         return localFilePath('')
     }

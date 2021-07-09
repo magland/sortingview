@@ -42,7 +42,7 @@ class LocalFeed {
             this.#subfeeds.set(subfeedHash, new LocalSubfeed(this.feedId, subfeedHash))
         }
         const sf = this.#subfeeds.get(subfeedHash)
-        if (!sf) throw Error('No local subfeed')
+        if (!sf) throw Error('Unexpected: No local subfeed')
         return sf
     }
 }
@@ -69,7 +69,7 @@ class BrowserLocalFeedManager {
         if (f) {
             if (f.getSubfeed(subfeedHash)) return true
         }
-        const x = _getLocalStorageSignedMessagesKey(feedId, subfeedHash)
+        const x = localStorageGet(_getLocalStorageSignedMessagesKey(feedId, subfeedHash))
         if (x) return true
         return false
     }
@@ -78,15 +78,17 @@ class BrowserLocalFeedManager {
             this.#localFeeds.set(feedId, new LocalFeed(feedId))
         }
         const f = this.#localFeeds.get(feedId)
-        if (!f) throw Error(`No local feed: ${feedId}`)
+        if (!f) throw Error(`Unexpected: no local feed: ${feedId}`)
         const sf = f.getSubfeed(subfeedHash)
         return await sf.getSignedMessages()
     }
     async appendSignedMessagesToSubfeed(feedId: FeedId, subfeedHash: SubfeedHash, messages: SignedSubfeedMessage[]) : Promise<void> {
+        if (!this.#localFeeds.has(feedId)) {
+            this.#localFeeds.set(feedId, new LocalFeed(feedId))
+        }
         const f = this.#localFeeds.get(feedId)
-        if (!f) throw Error(`No local feed: ${feedId}`)
+        if (!f) throw Error(`Unexpected: no local feed: ${feedId}`)
         const sf = f.getSubfeed(subfeedHash)
-        if (!sf) throw Error(`No local subfeed: ${feedId}/${subfeedHash}`)
         await sf.appendSignedMessages(messages)
     }
 }

@@ -73,6 +73,26 @@ class Subfeed {
             throw err
         }
 
+        // try to download messages from buckets
+        const A = await this.kacheryHubInterface.checkForSubfeedInChannelBuckets(this.feedId, this.subfeedHash)
+        if ((A) && (A.length > 0)) {
+            const A0 = A[0]
+            const start0 = this.#localSubfeedSignedMessagesManager.getNumMessages()
+            if (A0.numMessages > start0) {
+                let msgs: SignedSubfeedMessage[] | undefined = undefined
+                try {
+                    msgs = await this.kacheryHubInterface.downloadSignedSubfeedMessages(A0.channelName, this.feedId, this.subfeedHash, start0, A0.numMessages)
+                }
+                catch(err) {
+                    console.warn(`Problem loading signed subfeed messages from channel ${A0.channelName} ${this.feedId} ${this.subfeedHash} ${start0} ${A0.numMessages}: ${err.message}`)
+                }
+                if (msgs) {
+                    console.info(`Loaded ${msgs.length} subfeed messages from channel ${A0.channelName}`)
+                    this.#localSubfeedSignedMessagesManager.appendSignedMessages(msgs)
+                }
+            }
+        }
+
         this.#initializing = false
         this.#initialized = true
 
