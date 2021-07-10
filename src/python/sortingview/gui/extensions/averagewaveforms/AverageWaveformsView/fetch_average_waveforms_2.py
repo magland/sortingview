@@ -6,7 +6,7 @@ import kachery_client as kc
 from labbox_ephys.helpers.prepare_snippets_h5 import prepare_snippets_h5
 import numpy as np
 import labbox_ephys as le
-from labbox import LabboxContext
+# from labbox import LabboxContext
 from sortingview.config import job_cache, job_handler
 
 

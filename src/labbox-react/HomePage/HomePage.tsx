@@ -1,11 +1,11 @@
-import { ChannelName } from 'kachery-js/types/kacheryTypes'
+import { ChannelName, TaskFunctionId } from 'kachery-js/types/kacheryTypes'
 import { useChannel } from 'kachery-react'
 import SelectChannelDialog from 'kachery-react/components/SelectChannel/SelectChannelDialog'
 import { useVisible } from 'labbox-react'
+import packageName from 'python/sortingview/gui/packageName'
+import { pythonProjectVersion, webAppProjectVersion } from 'python/sortingview/gui/version'
 import React, { FunctionComponent } from 'react'
-import '../../commonComponents/localStyles.css'
-import packageName from '../../packageName'
-import { pythonProjectVersion, webAppProjectVersion } from '../../version'
+import './localStyles.css'
 import ChannelSection from './ChannelSection'
 import './Home.css'
 import IntroSection from './IntroSection'
@@ -13,12 +13,12 @@ import TestResponsivenessSection from './TestResponsivenessSection'
 import WorkspaceSection from './WorkspaceSection'
 
 type Props = {
-    
+    taskFunctionIds: TaskFunctionId[]
 }
 
 const hardCodedChannels = ['ccm'] as any as ChannelName[]
 
-const Home: FunctionComponent<Props> = () => {
+const HomePage: FunctionComponent<Props> = ({taskFunctionIds}) => {
     const selectChannelVisibility = useVisible()
     const {channelName} = useChannel()
 
@@ -26,7 +26,7 @@ const Home: FunctionComponent<Props> = () => {
         <div style={{margin: 'auto', maxWidth: 1200, paddingLeft: 10, paddingRight: 10}}>
             
             <IntroSection />
-            <ChannelSection onSelectChannel={selectChannelVisibility.show} />
+            <ChannelSection onSelectChannel={selectChannelVisibility.show} taskFunctionIds={taskFunctionIds} />
             <WorkspaceSection />
             {
                 channelName && <TestResponsivenessSection />
@@ -45,4 +45,4 @@ const Home: FunctionComponent<Props> = () => {
     )
 }
 
-export default Home
+export default HomePage

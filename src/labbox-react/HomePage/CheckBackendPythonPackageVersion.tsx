@@ -1,8 +1,7 @@
 import { useChannel, useQueryTask } from 'kachery-react'
 import TaskStatusView from 'kachery-react/components/TaskMonitor/TaskStatusView'
-import React from 'react'
-import { FunctionComponent } from "react"
-import packageName from '../../packageName'
+import packageName from 'python/sortingview/gui/packageName'
+import React, { FunctionComponent } from 'react'
 
 type Props = {
     

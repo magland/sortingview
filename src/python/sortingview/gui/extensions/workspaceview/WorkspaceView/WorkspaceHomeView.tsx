@@ -24,7 +24,7 @@ const WorkspaceHomeView: FunctionComponent<Props> = ({ width, height, workspace,
     const {recordings, sortings} = workspace
     const importInstructionsVisible = useVisible()
     const setWorkspacePermissionsVisible = useVisible()
-    const setsnippetLengthVisible = useVisible()
+    const setSnippetLengthVisible = useVisible()
     return (
         <span>
             <div>
@@ -45,7 +45,7 @@ const WorkspaceHomeView: FunctionComponent<Props> = ({ width, height, workspace,
                     )
                 }
                 {
-                    <p><Hyperlink onClick={setsnippetLengthVisible.show}>Snippets length</Hyperlink>: {workspace.snippetLen ? `(${workspace.snippetLen[0]}, ${workspace.snippetLen[1]})` : 'default'}</p>
+                    <p><Hyperlink onClick={setSnippetLengthVisible.show}>Snippets length</Hyperlink>: {workspace.snippetLen ? `(${workspace.snippetLen[0]}, ${workspace.snippetLen[1]})` : 'default'}</p>
                 }
                 <RecordingsTable
                     {...{sortings, recordings, onDeleteRecordings, workspaceRouteDispatch}}
@@ -68,8 +68,8 @@ const WorkspaceHomeView: FunctionComponent<Props> = ({ width, height, workspace,
                 }}
             />
             <MarkdownDialog
-                visible={setsnippetLengthVisible.visible}
-                onClose={setsnippetLengthVisible.hide}
+                visible={setSnippetLengthVisible.visible}
+                onClose={setSnippetLengthVisible.hide}
                 source={setSnippetLenMd}
                 substitute={{
                     workspaceUri: workspaceRoute.workspaceUri || '<unknown>'

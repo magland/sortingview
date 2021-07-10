@@ -236,7 +236,7 @@ def _get_snippet_len_from_subfeed(subfeed: kc.Subfeed):
         if msg is None: break
         if 'action' in msg:
             a = msg['action']
-            if a.get('type', '') == 'SET_snippet_len':
+            if a.get('type', '') == 'SET_SNIPPET_LEN':
                 x = a.get('snippetLen', None)
                 if x:
                     snippet_len = x
@@ -245,7 +245,7 @@ def _get_snippet_len_from_subfeed(subfeed: kc.Subfeed):
 def _set_snippet_len_for_workspace(subfeed: kc.Subfeed, snippet_len: Tuple[int, int]):
     subfeed.append_message({
         'action': {
-            'type': 'SET_snippet_len',
+            'type': 'SET_SNIPPET_LEN',
             'snippetLen': snippet_len
         }
     })

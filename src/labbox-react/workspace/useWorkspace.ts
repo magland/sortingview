@@ -3,7 +3,7 @@ import { initiateTask, useChannel, useKacheryNode, useSubfeedReducer } from "kac
 import useGoogleSignInClient from "labbox-react/googleSignIn/useGoogleSignInClient"
 import { useCallback } from "react"
 
-interface BaseWorkspaceState {
+export interface BaseWorkspaceState {
     userPermissions: {
         [key: string]: {
             edit?: boolean

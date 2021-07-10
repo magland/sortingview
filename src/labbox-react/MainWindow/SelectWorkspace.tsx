@@ -2,8 +2,8 @@ import { Button } from '@material-ui/core';
 import { useVisible } from 'labbox-react';
 import MarkdownDialog from 'labbox-react/components/Markdown/MarkdownDialog';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import useRoute from '../route/useRoute';
 import addWorkspaceMd from './addWorkspace.md.gen';
+import useRoute from './useRoute';
 import WorkspaceList from './WorkspaceList';
 
 type Props = {

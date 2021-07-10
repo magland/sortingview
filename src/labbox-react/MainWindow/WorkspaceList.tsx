@@ -3,7 +3,7 @@ import useQueryTask from 'kachery-react/useQueryTask'
 import useSubfeedReducer from 'kachery-react/useSubfeedReducer'
 import React, { FunctionComponent, useCallback, useMemo } from 'react'
 import useChannel from 'kachery-react/useChannel'
-import useCurrentUserPermissions from '../pages/WorkspacePage/useCurrentUserPermissions'
+import useCurrentUserPermissions from '../workspace/useCurrentUserPermissions'
 import WorkspacesTable from './WorkspacesTable'
 
 type Props = {

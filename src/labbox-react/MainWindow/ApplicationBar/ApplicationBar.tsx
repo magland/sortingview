@@ -6,7 +6,7 @@ import TaskMonitorControl from 'kachery-react/components/TaskMonitor/TaskMonitor
 import TaskMonitor from 'kachery-react/components/TaskMonitor/TaskMonitor'
 import SelectChannel from 'kachery-react/components/SelectChannel/SelectChannel';
 import { useGoogleSignInClient, useSignedIn } from 'labbox-react';
-import useRoute from '../../route/useRoute';
+import useRoute from '../useRoute';
 
 const appBarHeight = 50
 

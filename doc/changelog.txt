@@ -1,3 +1,7 @@
+7/9/2021
+Refactoring - moving files to labbox-react
+Deploy 0.2.22
+
 7/7/2021
 Reverse chronology of changelog
 Restore precomputing of extract snippets. See: https://github.com/magland/sortingview/issues/16

@@ -4,7 +4,7 @@ import { useVisible } from 'labbox-react'
 import Hyperlink from 'labbox-react/components/Hyperlink/Hyperlink'
 import MarkdownDialog from 'labbox-react/components/Markdown/MarkdownDialog'
 import React, { FunctionComponent, useCallback } from 'react'
-import useRoute from '../../route/useRoute'
+import useRoute from '../MainWindow/useRoute'
 import aboutWorkspacesMd from './aboutWorkspaces.md.gen'
 import hyperlinkStyle from './hyperlinkStyle'
 
@@ -45,6 +45,7 @@ const WorkspaceSection: FunctionComponent<Props> = () => {
                 <MarkdownDialog
                     visible={aboutWorkspacesVisible.visible}
                     onClose={aboutWorkspacesVisible.hide}
+                    substitute={{workspaceDescription: 'A sortingview workspace is a collection of ephys recordings and sortings together with sorting curations.'}}
                     source={aboutWorkspacesMd}
                 />
             </div>

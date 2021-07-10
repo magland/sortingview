@@ -1,10 +1,10 @@
+import WorkspaceNavigationComponent from 'python/sortingview/gui/WorkspacePage/WorkspaceNavigationComponent/WorkspaceNavigationComponent'
+import useRoute from 'labbox-react/MainWindow/useRoute'
 import useWorkspace from 'labbox-react/workspace/useWorkspace'
 import React, { FunctionComponent } from 'react'
-import WorkspaceView from '../../extensions/workspaceview/WorkspaceView'
-import workspaceReducer, { initialWorkspaceState, WorkspaceAction, WorkspaceState } from '../../pluginInterface/workspaceReducer'
-import useRoute from '../../route/useRoute'
+import WorkspaceView from '../extensions/workspaceview/WorkspaceView'
+import { WorkspaceAction, WorkspaceState, workspaceReducer, initialWorkspaceState } from '../pluginInterface/workspaceReducer'
 import useWorkspaceRoute from './useWorkspaceRoute'
-import WorkspaceNavigationComponent from './WorkspaceNavigationComponent'
 type Props = {
     width: number
     height: number

@@ -432,11 +432,11 @@ export const toTaskId = (x: String) => {
 }
 
 //TaskStatus
-export type TaskStatus = 'waiting' | 'pending' | 'running' | 'finished' | 'error'
+export type TaskStatus = 'waiting' | 'pending' | 'queued' | 'running' | 'finished' | 'error'
 
 export const isTaskStatus = (x: any): x is TaskStatus => {
     if (!isString(x)) return false
-    return ['waiting', 'pending', 'running', 'finished', 'error'].includes(x)
+    return ['waiting', 'pending', 'queued', 'running', 'finished', 'error'].includes(x)
 }
 
 // TaskFunctionType

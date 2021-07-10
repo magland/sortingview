@@ -6,7 +6,7 @@ import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser'
 import { usePlugins } from 'labbox-react'
 import Expandable from "labbox-react/components/Expandable/Expandable"
 import Splitter from 'labbox-react/components/Splitter/Splitter'
-import useRoute from 'python/sortingview/gui/route/useRoute'
+import useRoute from 'labbox-react/MainWindow/useRoute'
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useReducer, useState } from 'react'
 import { LabboxPlugin, SortingUnitViewPlugin, SortingViewPlugin, sortingViewPlugins, SortingViewProps } from "../../../pluginInterface"
 import { RecordingViewPlugin } from '../../../pluginInterface/RecordingViewPlugin'

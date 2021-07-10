@@ -55,7 +55,7 @@ type SetUserPermissionsAction = {
 }
 
 type SetsnippetLenWorkspaceAction = {
-    type: 'SET_snippet_len'
+    type: 'SET_SNIPPET_LEN'
     snippetLen?: [number, number]
 }
 
@@ -119,7 +119,7 @@ export const sortingCurationReducer = (state: SortingCuration, action: SortingCu
     else return state
 }
 
-const workspaceReducer = (s: WorkspaceState, a: WorkspaceAction): WorkspaceState => {
+export const workspaceReducer = (s: WorkspaceState, a: WorkspaceAction): WorkspaceState => {
     switch (a.type) {
         case 'ADD_RECORDING': return { ...s, recordings: [...s.recordings.filter(r => (r.recordingId !== a.recording.recordingId)), a.recording] }
         case 'DELETE_RECORDINGS': return { ...s, recordings: s.recordings.filter(x => !a.recordingIds.includes(x.recordingId)) }
@@ -134,7 +134,7 @@ const workspaceReducer = (s: WorkspaceState, a: WorkspaceAction): WorkspaceState
         //     return {...s, sortings: s.sortings.map(x => (x.sortingId === a.sortingId) ? {...x, curation: sortingCurationReducer(x.curation || {}, a)} : x)}
         case 'SET_UNIT_METRICS_FOR_SORTING':
             return {...s, sortings: s.sortings.map(x => (x.sortingId === a.unitMetricsForSorting.sortingId) ? {...x, unitMetricsUri: a.unitMetricsForSorting.metricsUri} : x)}
-        case 'SET_snippet_len':
+        case 'SET_SNIPPET_LEN':
             return {...s, snippetLen: a.snippetLen}
         default: return s
     }
