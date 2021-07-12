@@ -11,7 +11,7 @@ Interactively view, curate, and share results of electrophysiological spike sort
 Install the python project
 
 ```bash
-pip install sortingview
+pip install --upgrade sortingview
 ```
 
 Then the backend task service:
