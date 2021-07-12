@@ -65,7 +65,7 @@ const SortingView: React.FunctionComponent<Props> = (props) => {
     initiateTask({
       kacheryNode,
       channelName,
-      functionId: 'workspace_sorting_curation_action.1',
+      functionId: 'sortingview_workspace_sorting_curation_action.1',
       kwargs: {
         workspace_uri: workspaceRoute.workspaceUri,
         sorting_id: sortingId,

@@ -9,10 +9,11 @@ import aboutWorkspacesMd from './aboutWorkspaces.md.gen'
 import hyperlinkStyle from './hyperlinkStyle'
 
 type Props = {
-    
+    packageName: string
+    workspaceDescription: string
 }
 
-const WorkspaceSection: FunctionComponent<Props> = () => {
+const WorkspaceSection: FunctionComponent<Props> = ({packageName, workspaceDescription}) => {
     const {setRoute, channel, workspaceUri} = useRoute()
 
     const handleSelectWorkspace = useCallback(() => {
@@ -45,7 +46,10 @@ const WorkspaceSection: FunctionComponent<Props> = () => {
                 <MarkdownDialog
                     visible={aboutWorkspacesVisible.visible}
                     onClose={aboutWorkspacesVisible.hide}
-                    substitute={{workspaceDescription: 'A sortingview workspace is a collection of ephys recordings and sortings together with sorting curations.'}}
+                    substitute={{
+                        packageName,
+                        workspaceDescription
+                    }}
                     source={aboutWorkspacesMd}
                 />
             </div>

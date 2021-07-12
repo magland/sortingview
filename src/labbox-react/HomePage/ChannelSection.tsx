@@ -15,9 +15,10 @@ import hyperlinkStyle from './hyperlinkStyle'
 type Props = {
     onSelectChannel: () => void
     taskFunctionIds: TaskFunctionId[]
+    packageName: string
 }
 
-const ChannelSection: FunctionComponent<Props> = ({onSelectChannel, taskFunctionIds}) => {
+const ChannelSection: FunctionComponent<Props> = ({onSelectChannel, taskFunctionIds, packageName}) => {
     const {channel, setRoute} = useRoute()
     // const channelInfo = useBackendInfo()
     // const backendPythonProjectVersion = backendInfo.backendPythonProjectVersion
@@ -53,7 +54,7 @@ const ChannelSection: FunctionComponent<Props> = ({onSelectChannel, taskFunction
                             channelName={channel}
                             taskFunctionIds={taskFunctionIds}
                         />
-                        <CheckBackendPythonPackageVersion />
+                        <CheckBackendPythonPackageVersion packageName={packageName} />
                     </span>
                 ) : (
                     <span>

@@ -1,17 +1,16 @@
-import { TaskFunctionId } from 'kachery-js/types/kacheryTypes'
 import React, { FunctionComponent } from 'react'
-import HomePage from '../HomePage/HomePage'
+import HomePage, { HomePageProps } from '../HomePage/HomePage'
 import SelectWorkspace from './SelectWorkspace'
 import useRoute from './useRoute'
 
 type Props = {
     width: number
     height: number
-    taskFunctionIds: TaskFunctionId[]
+    homePageProps: HomePageProps
 }
 
 const Routes: FunctionComponent<Props & {children: JSX.Element}> = (props) => {
-    const {width, height, taskFunctionIds} = props
+    const {width, height, homePageProps} = props
     const {routePath, workspaceUri, setRoute} = useRoute()
 
     if (routePath === '/about') {
@@ -23,6 +22,7 @@ const Routes: FunctionComponent<Props & {children: JSX.Element}> = (props) => {
                 onUpdated={() => {setRoute({routePath: '/workspace'})}}
                 width={width}
                 height={height}
+                packageName={homePageProps.packageName}
             />
         )
     }
@@ -32,7 +32,7 @@ const Routes: FunctionComponent<Props & {children: JSX.Element}> = (props) => {
         )
     }
     else {
-        return <HomePage taskFunctionIds={taskFunctionIds} />
+        return <HomePage {...homePageProps} />
     }
 }
 

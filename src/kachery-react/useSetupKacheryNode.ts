@@ -1,14 +1,14 @@
 import axios from "axios"
-import { useMemo } from "react"
 import { KacheryNode } from "kachery-js"
 import { KacheryNodeRequestBody } from "kachery-js/types/kacheryNodeRequestTypes"
-import { isJSONObject, isJSONValue, isNodeId, isSignature, nodeLabel, Signature, userId } from "kachery-js/types/kacheryTypes"
+import { isJSONObject, isJSONValue, isNodeId, isSignature, NodeLabel, Signature, userId } from "kachery-js/types/kacheryTypes"
 import { KacheryHubPubsubMessageBody } from "kachery-js/types/pubsubMessages"
+import { useMemo } from "react"
 import BrowserKacheryStorageManager from "./BrowserKacheryStorageManager"
 import BrowserLocalFeedManager from "./BrowserLocalFeedManager"
 import BrowserMutableManager from "./BrowserMutableManager"
 
-const useSetupKacheryNode = (): KacheryNode => {
+const useSetupKacheryNode = (nodeLabel: NodeLabel): KacheryNode => {
     // const {channel, setRoute} = useRoute()
 
     const kacheryNode = useMemo(() => {
@@ -40,7 +40,7 @@ const useSetupKacheryNode = (): KacheryNode => {
             }
             return signature
         }
-        const label = nodeLabel('surfaceview3')
+        const label = nodeLabel
         const kacheryStorageManager = new BrowserKacheryStorageManager()
         const mutableManager = new BrowserMutableManager()
         const localFeedManager = new BrowserLocalFeedManager()
@@ -60,7 +60,7 @@ const useSetupKacheryNode = (): KacheryNode => {
             }
         })
         return x
-    }, [])
+    }, [nodeLabel])
 
     return kacheryNode
 }

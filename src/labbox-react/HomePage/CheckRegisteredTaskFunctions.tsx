@@ -62,6 +62,13 @@ const CheckRegisteredTaskFunctions: FunctionComponent<Props> = ({channelName, ta
     }, [incrementRefreshCode, kacheryNode])
 
     if ((!registeredTaskFunctions) || ((numRegistered === 0) && (probing))) return <span />
+    if (numRegistered !== taskFunctionIds.length) {
+        for (let id of taskFunctionIds) {
+            if (!registeredTaskFunctions.map(a => (a.taskFunctionId)).includes(id)) {
+                console.log(`Not registered: ${id}`)
+            }
+        }
+    }
     return (
         <div>Task functions: <span style={{color}}>{numRegistered} of {taskFunctionIds.length} registered</span> <Hyperlink onClick={handleRefresh}>refresh</Hyperlink></div>
     )

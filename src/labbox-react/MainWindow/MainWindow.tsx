@@ -1,17 +1,16 @@
-import { TaskFunctionId } from 'kachery-js/types/kacheryTypes'
 import { useWindowDimensions } from 'labbox-react'
+import { HomePageProps } from 'labbox-react/HomePage/HomePage'
 import React, { useCallback } from 'react'
 import ApplicationBar from './ApplicationBar/ApplicationBar'
 import Routes from './Routes'
 import useRoute from './useRoute'
 
 type Props = {
-    packageName: string
     logo?: any
-    taskFunctionIds: TaskFunctionId[]
+    homePageProps: HomePageProps
 }
 
-const MainWindow: React.FunctionComponent<Props & {children: JSX.Element}> = ({logo, packageName, taskFunctionIds, children}) => {
+const MainWindow: React.FunctionComponent<Props & {children: JSX.Element}> = ({logo, children, homePageProps}) => {
     const {setRoute} = useRoute()
     const {width, height} = useWindowDimensions()
 
@@ -24,15 +23,15 @@ const MainWindow: React.FunctionComponent<Props & {children: JSX.Element}> = ({l
     return (
         <div>
             <ApplicationBar
-                title={packageName}
+                title={homePageProps.packageName}
                 onHome={handleHome}
                 logo={logo}
             />
             <div>
                 <Routes
-                    taskFunctionIds={taskFunctionIds}
                     width={width}
                     height={height}
+                    homePageProps={homePageProps}
                 >
                     <workspaceChild.type
                         {...workspaceChild.props}

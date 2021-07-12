@@ -16,7 +16,7 @@ const useSortingViewWorkspace = (workspaceUri: string) => {
         workspaceReducer,
         initialWorkspaceState,
         actionField: true,
-        actionFunctionId: 'workspace_action.1'
+        actionFunctionId: 'sortingview_workspace_action.1'
     })
 }
 

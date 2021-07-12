@@ -4,13 +4,12 @@ import RoutePath from 'labbox-react/MainWindow/RoutePath';
 import useRoute from 'labbox-react/MainWindow/useRoute';
 import React, { FunctionComponent, useCallback, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
-import introMd from './intro.md.gen';
 
 type Props = {
-    
+    introMd: string
 }
 
-const IntroSection: FunctionComponent<Props> = () => {
+const IntroSection: FunctionComponent<Props> = ({introMd}) => {
     const {setRoute} = useRoute()
 
     const linkTargetResolver = useCallback((uri: string, text: string, title?: string) => {

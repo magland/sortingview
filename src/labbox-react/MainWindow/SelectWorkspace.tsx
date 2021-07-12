@@ -10,9 +10,10 @@ type Props = {
     onUpdated?: () => void
     width: number
     height: number
+    packageName: string
 }
 
-const SelectWorkspace: FunctionComponent<Props> = ({onUpdated, width, height}) => {
+const SelectWorkspace: FunctionComponent<Props> = ({onUpdated, width, height, packageName}) => {
     const {setRoute} = useRoute()
     const [closing, setClosing] = useState(false) // hack for now
     // const {visible: instructionsVisible, show: showInstructions} = useVisible()
@@ -51,7 +52,7 @@ const SelectWorkspace: FunctionComponent<Props> = ({onUpdated, width, height}) =
                 }
                 {/* <TextField style={{width: '100%'}} label="Workspace URI" value={editWorkspaceUri} onChange={evt => setEditWorkspaceUri(evt.target.value)} />
                 <Button disabled={selectDisabled} onClick={handleSelect}>Select</Button> */}
-                <WorkspaceList onWorkspaceSelected={handleWorkspaceSelected}/>
+                <WorkspaceList onWorkspaceSelected={handleWorkspaceSelected} packageName={packageName}/>
             </div>
             {/* {
                 instructionsVisible && (

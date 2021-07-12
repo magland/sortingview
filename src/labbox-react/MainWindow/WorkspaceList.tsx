@@ -7,6 +7,7 @@ import useCurrentUserPermissions from '../workspace/useCurrentUserPermissions'
 import WorkspacesTable from './WorkspacesTable'
 
 type Props = {
+    packageName: string
     onWorkspaceSelected: (workspaceUri: string) => void
 }
 
@@ -79,9 +80,9 @@ const workspaceListReducer = (s: WorkspaceListState, a: WorkspaceListAction) => 
     }
 }
 
-const WorkspaceList: FunctionComponent<Props> = ({onWorkspaceSelected}) => {
+const WorkspaceList: FunctionComponent<Props> = ({onWorkspaceSelected, packageName}) => {
     const {channelName} = useChannel()
-    const {returnValue: workspaceListSubfeedUri, task} = useQueryTask<string>(channelName ? 'sortingview_workspace_list_subfeed.2' : '', {name: 'default'}, {useCache: true, channelName})
+    const {returnValue: workspaceListSubfeedUri, task} = useQueryTask<string>(channelName ? `${packageName}_workspace_list_subfeed.2` : '', {name: 'default'}, {useCache: true, channelName})
     const {feedId, subfeedHash} = parseSubfeedUri(workspaceListSubfeedUri)
 
     const currentUserPermissions = useCurrentUserPermissions()

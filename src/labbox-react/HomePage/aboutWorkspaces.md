@@ -1,4 +1,4 @@
-# SortingView Workspaces
+# {packageName} workspaces
 
 {workspaceDescription}
 
