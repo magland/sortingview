@@ -5,6 +5,7 @@ setup(
     scripts=[
         'bin/sortingview-start-backend'
     ],
+    include_package_data = True,
     install_requires=[
         'click',
         'hither>=0.7.0',

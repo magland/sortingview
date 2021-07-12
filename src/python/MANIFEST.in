@@ -1,1 +1,1 @@
-recursive-include sortingview *json
+include sortingview/backend/task_function_ids.json
