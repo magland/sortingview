@@ -10,7 +10,7 @@ setup(
         'click',
         'hither>=0.7.0',
         'labbox-ephys>=0.7.2',
-        'kachery-client>=1.0.8',
+        'kachery-client>=1.0.12',
         'pynwb'
     ]
 )
