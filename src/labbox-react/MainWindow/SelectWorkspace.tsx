@@ -48,7 +48,7 @@ const SelectWorkspace: FunctionComponent<Props> = ({onUpdated, width, height, pa
         <span>
             <div>
                 {
-                    <div><Button onClick={addWorkspaceInstructionsVisible.show}>Add workspace</Button></div>
+                    <div><Button onClick={addWorkspaceInstructionsVisible.show}>Add or remove workspaces</Button></div>
                 }
                 {/* <TextField style={{width: '100%'}} label="Workspace URI" value={editWorkspaceUri} onChange={evt => setEditWorkspaceUri(evt.target.value)} />
                 <Button disabled={selectDisabled} onClick={handleSelect}>Select</Button> */}
