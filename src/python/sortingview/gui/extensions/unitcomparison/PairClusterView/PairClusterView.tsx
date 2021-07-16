@@ -24,12 +24,16 @@ type Result = {
     y: number[]
 }
 
+// The X-axis is the discriminating direction (direction of line connecting the centroids of the two clusters)
+// and the Y-axis is the first PCA component after collapsing the discriminating component.
 
 const PairClusterView: FunctionComponent<Props> = ({recording, sorting, unitIds, selection, curation, snippetLen, width, height}) => {
     const {channelName} = useChannel()
     const unitIdsX = useMemo(() => (unitIds.map(unitId => (applyMergesToUnit(unitId, curation, selection.applyMerges)))), [unitIds, curation, selection])
     const unitId1 = unitIdsX[0]
     const unitId2 = unitIdsX[1]
+    const W = Math.min(width, height)
+    const H = W
     const {returnValue: features, task} = usePureCalculationTask<Result>(
         'pair_cluster_features.4',
         {
@@ -53,7 +57,8 @@ const PairClusterView: FunctionComponent<Props> = ({recording, sorting, unitIds,
             x={features.x}
             y={features.y}
             labels={features.labels}
-            {...{width, height}}
+            width={W}
+            height={H}
         />
     )
 }

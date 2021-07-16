@@ -279,8 +279,8 @@ const TimeWidgetNew = (props: Props) => {
     }, [selectionDispatch])
 
     const handleTimeShiftFrac = useCallback((frac: number) => {
-        // selectionDispatch({type: 'TimeShiftFrac', frac})
-    }, [])
+        selectionDispatch({type: 'TimeShiftFrac', frac})
+    }, [selectionDispatch])
 
     const handleCurrentTimeChanged = useCallback((t: number | null) => {
         selectionDispatch({type: 'SetCurrentTimepoint', currentTimepoint: t})
@@ -315,12 +315,12 @@ const TimeWidgetNew = (props: Props) => {
     }, [selectionDispatch])
 
     const handleShiftTimeLeft = useCallback(() => {
-        // selectionDispatch({type: 'TimeShiftFrac', frac: -0.2})
-    }, [])
+        selectionDispatch({type: 'TimeShiftFrac', frac: -0.2})
+    }, [selectionDispatch])
 
     const handleShiftTimeRight = useCallback(() => {
-        // selectionDispatch({type: 'TimeShiftFrac', frac: 0.2})
-    }, [])
+        selectionDispatch({type: 'TimeShiftFrac', frac: 0.2})
+    }, [selectionDispatch])
 
     const bottomBarInfo = {
         show: true,

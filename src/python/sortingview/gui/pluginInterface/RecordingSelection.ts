@@ -118,7 +118,12 @@ type SetRecordingSelectionAction = {
     state: RecordingSelection
 }
 
-export type RecordingSelectionAction = SetRecordingSelectionRecordingSelectionAction | SetSelectedElectrodeIdsRecordingSelectionAction | SetVisibleElectrodeIdsRecordingSelectionAction | SetNumTimepointsRecordingSelectionAction | SetCurrentTimepointRecordingSelectionAction | SetTimeRangeRecordingSelectionAction | ZoomTimeRangeRecordingSelectionAction | SetAmpScaleFactorRecordingSelectionAction | ScaleAmpScaleFactorRecordingSelectionAction | SetCurrentTimepointVelocityRecordingSelectionAction | SetWaveformsModeRecordingSelectionAction | SetRecordingSelectionAction
+type TimeShiftFrac = {
+    type: 'TimeShiftFrac'
+    frac: number
+}
+
+export type RecordingSelectionAction = SetRecordingSelectionRecordingSelectionAction | SetSelectedElectrodeIdsRecordingSelectionAction | SetVisibleElectrodeIdsRecordingSelectionAction | SetNumTimepointsRecordingSelectionAction | SetCurrentTimepointRecordingSelectionAction | SetTimeRangeRecordingSelectionAction | ZoomTimeRangeRecordingSelectionAction | SetAmpScaleFactorRecordingSelectionAction | ScaleAmpScaleFactorRecordingSelectionAction | SetCurrentTimepointVelocityRecordingSelectionAction | SetWaveformsModeRecordingSelectionAction | SetRecordingSelectionAction | TimeShiftFrac
 
 const adjustTimeRangeToIncludeTimepoint = (timeRange: {min: number, max: number}, timepoint: number) => {
     if ((timeRange.min <= timepoint) && (timepoint < timeRange.max)) return timeRange
@@ -217,6 +222,20 @@ export const recordingSelectionReducer: Reducer<RecordingSelection, RecordingSel
             waveformsMode: action.waveformsMode
         }
     }
+    else if (action.type === 'TimeShiftFrac') {
+        const timeRange = state.timeRange
+        const currentTimepoint = state.currentTimepoint
+        if (!timeRange) return state
+        const span = timeRange.max - timeRange.min
+        const shift = Math.floor(span * action.frac)
+        const newTimeRange = shiftTimeRange(timeRange, shift)
+        const newCurrentTimepoint = currentTimepoint !== undefined ? currentTimepoint + shift : undefined
+        return fix({
+            ...state,
+            currentTimepoint: newCurrentTimepoint,
+            timeRange: newTimeRange
+        })
+    }
     else if (action.type === 'Set') {
         return action.state
     }
@@ -247,4 +266,11 @@ const fix = (s: RecordingSelection): RecordingSelection => {
         newTimeRange.max = s.numTimepoints
     }
     return {...s, timeRange: newTimeRange}
+}
+
+const shiftTimeRange = (timeRange: {min: number, max: number}, shift: number): {min: number, max: number} => {
+    return {
+        min: Math.floor(timeRange.min + shift),
+        max: Math.floor(timeRange.max + shift)
+    }
 }
