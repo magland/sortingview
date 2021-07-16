@@ -107,6 +107,8 @@ export const createElectrodesLayer = () => {
         const opts = props.electrodeOpts
         const colors = opts.colors || defaultColors
         const showLabels = opts.showLabels
+        const offsetLabels = opts.offsetLabels
+        const hideElectrodes = opts.hideElectrodes
         painter.wipe()
         const useLabels = state.pixelRadius > 5
         for (let e of state.electrodeBoxes) {
@@ -125,19 +127,21 @@ export const createElectrodesLayer = () => {
                                     ? colors.hover
                                     : colors.base
             const layoutMode = props.layoutMode
-            if (layoutMode === 'geom') {
-                painter.fillEllipse(e.rect, {color: color})
-                painter.drawEllipse(e.rect, {color: colors.border})
-            }
-            else if (layoutMode === 'vertical') {
-                painter.drawLine(e.rect.xmin, (e.rect.ymin + e.rect.ymax) / 2, e.rect.xmax, (e.rect.ymin + e.rect.ymax) / 2, {color: colors.border})
+            if (!hideElectrodes) {
+                if (layoutMode === 'geom') {
+                    painter.fillEllipse(e.rect, {color: color})
+                    painter.drawEllipse(e.rect, {color: colors.border})
+                }
+                else if (layoutMode === 'vertical') {
+                    painter.drawLine(e.rect.xmin, (e.rect.ymin + e.rect.ymax) / 2, e.rect.xmax, (e.rect.ymin + e.rect.ymax) / 2, {color: colors.border})
+                }
             }
             if (useLabels) {
                 const fontColor = ([colors.selected, colors.draggedSelected, colors.hover, colors.selectedHover].includes(color)) ? colors.textDark : colors.textLight
                 if (showLabels) {
                     painter.drawText({
-                        rect: e.rect, 
-                        alignment: {Horizontal: 'AlignCenter', Vertical: 'AlignCenter'}, 
+                        rect: offsetLabels ? offsetRectForLabel(e.rect) : e.rect, 
+                        alignment: {Horizontal: offsetLabels ? 'AlignRight' : 'AlignCenter', Vertical: offsetLabels ? 'AlignBottom' : 'AlignCenter'}, 
                         font: {pixelSize: state.pixelRadius, family: 'Arial'},
                         pen: {color: fontColor},
                         brush: {color: fontColor},
@@ -166,4 +170,15 @@ export const createElectrodesLayer = () => {
             dragHandlers: [handleDragSelect],
         }
     )
+}
+
+const offsetRectForLabel = (R: RectangularRegion): RectangularRegion => {
+    const xspan = R.xmax - R.xmin
+    const yspan = R.ymax - R.ymin
+    return {
+        xmin: R.xmin - xspan * 0.9,
+        xmax: R.xmax - xspan * 0.9,
+        ymin: R.ymin - yspan * 0.7,
+        ymax: R.ymax - yspan * 0.7
+    }
 }

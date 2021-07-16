@@ -28,6 +28,8 @@ export type Props = {
 export type ElectrodeOpts = {
     colors?: ElectrodeColors
     showLabels?: boolean
+    offsetLabels?: boolean
+    hideElectrodes?: boolean
     disableSelection?: boolean
     maxElectrodePixelRadius?: number
 }
@@ -44,15 +46,15 @@ export type ElectrodeLayerProps = Props
 
 const electrodeColors: ElectrodeColors = {
     border: 'rgb(120, 100, 120)',
-    base: 'rgb(255, 255, 255)',
+    base: 'rgb(240, 240, 240)',
     selected: 'rgb(196, 196, 128)',
     hover: 'rgb(128, 128, 255)',
     selectedHover: 'rgb(200, 200, 196)',
     dragged: 'rgb(0, 0, 196)',
     draggedSelected: 'rgb(180, 180, 150)',
     dragRect: 'rgba(196, 196, 196, 0.5)',
-    textLight: 'rgb(32, 32, 32)',
-    textDark: 'rgb(228, 228, 228)'
+    textLight: 'rgb(32, 92, 92)',
+    textDark: 'rgb(32, 150, 150)'
 }
 const waveformColors: WaveformColors = {
     base: 'black'

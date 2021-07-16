@@ -55,7 +55,10 @@ const AverageWaveformView: FunctionComponent<Props> = ({ sorting, curation, reco
     //     if (test) console.log('test result', test)
     // }, [test])
 
-    const electrodeOpts: ElectrodeOpts = useMemo(() => ({}), [])
+    const electrodeOpts: ElectrodeOpts = useMemo(() => ({
+        showLabels: true,
+        offsetLabels: true
+    }), [])
 
     if (!plotData) {
         return <TaskStatusView task={task} label="fetch avg waveform" />

@@ -13,7 +13,7 @@ const colorList = [
     'purple',
     'cyan'
 ]
-const colorForUnitId = (unitId: number | number[]): string => {
+export const colorForUnitId = (unitId: number | number[]): string => {
     if (Array.isArray(unitId)) return colorForUnitId(Math.min(...unitId))
     while (unitId < 0) unitId += colorList.length
     return colorList[unitId % colorList.length]

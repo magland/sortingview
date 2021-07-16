@@ -9,6 +9,7 @@ const registerExtensions = async (context: LabboxExtensionContext) => {
   ;(await import('./timeseries/timeseries')).activate(context)
   ;(await import('./clusters/clusters')).activate(context)
   ;(await import('./spikeamplitudes/spikeamplitudes')).activate(context)
+  ;(await import('./unitcomparison/unitcomparison')).activate(context)
 }
 
 export default registerExtensions

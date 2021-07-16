@@ -6,3 +6,4 @@ from .electrodegeometry import *
 from .averagewaveforms import *
 from .clusters import *
 from .spikeamplitudes import *
+from .unitcomparison import *
