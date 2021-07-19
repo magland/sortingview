@@ -1,35 +1,12 @@
-import Splitter from 'labbox-react/components/Splitter/Splitter';
-import React, { FunctionComponent, useMemo, useState } from 'react';
-import SelectUnitsWidget from '../../commonComponents/SelectUnitsWidget/SelectUnitsWidget';
-import { SortingSelection, SortingSelectionAction, SortingSelectionDispatch, SortingViewProps } from "../../pluginInterface";
-import UnitComparisonWidget from './UnitComparisonWidget';
-
-const useLocalUnitIds = (selection: SortingSelection, selectionDispatch: SortingSelectionDispatch): [SortingSelection, SortingSelectionDispatch] => {
-    const [selectedUnitIds, setSelectedUnitIds] = useState<number[]>([])
-    const selectionLocal: SortingSelection = useMemo(() => ({
-        ...selection,
-        selectedUnitIds
-    }), [selectedUnitIds, selection])
-
-    const selectionDispatchLocal = useMemo(() => ((action: SortingSelectionAction) => {
-        if (action.type === 'SetSelectedUnitIds') {
-            setSelectedUnitIds(action.selectedUnitIds)
-        }
-        else {
-            selectionDispatch(action)
-        }
-    }), [selectionDispatch])
-    return [selectionLocal, selectionDispatchLocal]
-}
+import Splitter from 'labbox-react/components/Splitter/Splitter'
+import React, { FunctionComponent } from 'react'
+import SelectUnitsWidget from '../../commonComponents/SelectUnitsWidget/SelectUnitsWidget'
+import { SortingViewProps } from "../../pluginInterface"
+import UnitComparisonWidget from './UnitComparisonWidget'
 
 const UnitComparisonView: FunctionComponent<SortingViewProps> = ({recording, sorting, selection, curation, selectionDispatch, width, height, snippetLen}) => {
 
-    // Make a local selection/selectionDispatch pair that overrides the selectedUnitIds
-    const [selectionLocal, selectionDispatchLocal] = useLocalUnitIds(selection, selectionDispatch)
-
-    const selectedUnitIds = useMemo(() => {
-        return selectionLocal.selectedUnitIds || []
-    }, [selectionLocal])
+    const selectedUnitIds = ((selection || {}).selectedUnitIds || [])
 
     return (
         <Splitter
@@ -37,7 +14,7 @@ const UnitComparisonView: FunctionComponent<SortingViewProps> = ({recording, sor
             height={height || 900} // how to determine default height?
             initialPosition={200}
         >
-            <SelectUnitsWidget sorting={sorting} selection={selectionLocal} selectionDispatch={selectionDispatchLocal} curation={curation} />
+            <SelectUnitsWidget sorting={sorting} selection={selection} selectionDispatch={selectionDispatch} curation={curation} />
             {
                 selectedUnitIds.length === 2 ? (
                     <UnitComparisonWidget
