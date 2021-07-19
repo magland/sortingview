@@ -5,7 +5,6 @@ Here is an example script for setting external unit metrics for a sorting. Run t
 ```python
 from typing import cast
 import sortingview as sv
-import labbox_ephys as le
 
 # Specify the workspace URI and the sorting ID
 workspace_uri = '{workspaceUri}'
@@ -16,7 +15,7 @@ W = sv.load_workspace(workspace_uri)
 
 # define external_metrics (this is just an example)
 S = W.get_sorting(sorting_id)
-sorting = le.LabboxEphysSortingExtractor(S['sortingObject'])
+sorting = sv.LabboxEphysSortingExtractor(S['sortingObject'])
 unit_ids = sorting.get_unit_ids()
 metric_name = 'example-metric'
 metric_data = {}

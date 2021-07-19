@@ -1,5 +1,5 @@
 import kachery_client as kc
-import labbox_ephys as le
+from sortingview.workspace import Workspace
 from ..workspace import Workspace
 
 class WorkspaceList:
@@ -24,7 +24,7 @@ class WorkspaceList:
     def get_workspace(self, name):
         w = self._workspaces[name]
         return Workspace(w['uri'])
-    def add_workspace(self, *, name: str, workspace: le.Workspace):
+    def add_workspace(self, *, name: str, workspace: Workspace):
         if name in self.workspace_names:
             raise Exception(f'Workspace with name already exists: {name}')
         sf = kc.load_subfeed(self.get_subfeed_uri())

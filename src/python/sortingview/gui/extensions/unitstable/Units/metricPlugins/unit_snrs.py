@@ -4,13 +4,13 @@ import kachery_client as kc
 import numpy as np
 from sortingview.config import job_cache, job_handler
 
-from labbox_ephys import prepare_snippets_h5
-from labbox_ephys.helpers.get_unit_waveforms import get_unit_waveforms
+from sortingview.helpers import prepare_snippets_h5
+from sortingview.helpers.get_unit_waveforms import get_unit_waveforms
 
 @hi.function(
     'get_unit_snrs', '0.1.0',
     image=hi.RemoteDockerImage('docker://magland/labbox-ephys-processing:0.3.19'),
-    modules=['labbox_ephys']
+    modules=['sortingview']
 )
 def get_unit_snrs(snippets_h5):
     import h5py

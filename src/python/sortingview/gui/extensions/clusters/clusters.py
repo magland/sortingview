@@ -3,27 +3,12 @@ import math
 import hither2 as hi
 from hither2.dockerimage import RemoteDockerImage
 import kachery_client as kc
-import labbox_ephys as le
-from labbox_ephys.helpers.prepare_snippets_h5 import prepare_snippets_h5
 import numpy as np
 from sortingview.config import job_cache, job_handler
+from sortingview.serialize_wrapper import serialize_wrapper
+from sortingview.helpers import get_unit_waveforms_from_snippets_h5
+from sortingview.helpers import prepare_snippets_h5
 
-
-# @hi.function('createjob_individual_cluster_features', '0.1.0', register_globally=True)
-# def createjob_individual_cluster_features(labbox, recording_object, sorting_object, unit_id, snippet_len=(50, 80)):
-#     from labbox_ephys import prepare_snippets_h5
-#     jh = labbox.get_job_handler('partition1')
-#     jc = labbox.get_job_cache()
-#     with hi.Config(
-#         job_cache=jc,
-#         job_handler=jh,
-#         use_container=jh.is_remote()
-#     ):
-#         snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object, snippet_len=snippet_len)
-#         return individual_cluster_features.run(
-#             snippets_h5=snippets_h5,
-#             unit_id=unit_id
-#         )
 
 @kc.taskfunction('individual_cluster_features.1', type='pure-calculation')
 def task_individual_cluster_featurest(recording_object, sorting_object, unit_id, snippet_len=(50, 80)):
@@ -56,9 +41,9 @@ def subsample_inds(n, m):
 @hi.function(
     'individual_cluster_features', '0.1.4',
     image=RemoteDockerImage('docker://magland/labbox-ephys-processing:0.3.19'),
-    modules=['labbox_ephys']
+    modules=['sortingview']
 )
-@le.serialize
+@serialize_wrapper
 def individual_cluster_features(snippets_h5, unit_id, max_num_events=1000):
     import h5py
     h5_path = kc.load_file(snippets_h5)
@@ -76,7 +61,7 @@ def individual_cluster_features(snippets_h5, unit_id, max_num_events=1000):
     #         unit_spike_train = unit_spike_train[inds]
     #         unit_waveforms = unit_waveforms[inds]
     
-    unit_waveforms, unit_waveforms_channel_ids, channel_locations0, sampling_frequency, unit_spike_train = le.get_unit_waveforms_from_snippets_h5(h5_path, unit_id, max_num_events=max_num_events)
+    unit_waveforms, unit_waveforms_channel_ids, channel_locations0, sampling_frequency, unit_spike_train = get_unit_waveforms_from_snippets_h5(h5_path, unit_id, max_num_events=max_num_events)
     
     from sklearn.decomposition import PCA
     nf = 2 # number of features
@@ -107,17 +92,17 @@ def individual_cluster_features(snippets_h5, unit_id, max_num_events=1000):
 @hi.function(
     'pair_cluster_features', '0.1.4',
     image=RemoteDockerImage('docker://magland/labbox-ephys-processing:0.3.19'),
-    modules=['labbox_ephys']
+    modules=['sortingview']
 )
-@le.serialize
+@serialize_wrapper
 def pair_cluster_features(snippets_h5, unit_id1, unit_id2, max_num_events=1000):
     import h5py
     h5_path = kc.load_file(snippets_h5)
     assert h5_path is not None
     
     # Get the unit waveforms
-    unit_waveforms1, unit_waveforms_channel_ids1, channel_locations1, sampling_frequency1, unit_spike_train1 = le.get_unit_waveforms_from_snippets_h5(h5_path, unit_id1, max_num_events=max_num_events)
-    unit_waveforms2, unit_waveforms_channel_ids2, channel_locations2, sampling_frequency2, unit_spike_train2 = le.get_unit_waveforms_from_snippets_h5(h5_path, unit_id2, max_num_events=max_num_events)
+    unit_waveforms1, unit_waveforms_channel_ids1, channel_locations1, sampling_frequency1, unit_spike_train1 = get_unit_waveforms_from_snippets_h5(h5_path, unit_id1, max_num_events=max_num_events)
+    unit_waveforms2, unit_waveforms_channel_ids2, channel_locations2, sampling_frequency2, unit_spike_train2 = get_unit_waveforms_from_snippets_h5(h5_path, unit_id2, max_num_events=max_num_events)
 
     # Find the channel ids
     channel_ids = [ch for ch in unit_waveforms_channel_ids1 if ch in unit_waveforms_channel_ids2]

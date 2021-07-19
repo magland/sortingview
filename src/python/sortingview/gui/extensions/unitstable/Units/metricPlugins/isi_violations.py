@@ -1,18 +1,17 @@
-import os
 import hither2 as hi
 from sortingview.config import job_cache, job_handler
+from sortingview.extractors import LabboxEphysRecordingExtractor, LabboxEphysSortingExtractor
 import kachery_client as kc
 
 @hi.function(
     'get_isi_violation_rates', '0.1.1',
     image=hi.RemoteDockerImage('docker://magland/labbox-ephys-processing:0.3.19'),
-    modules=['labbox_ephys']
+    modules=['sortingview']
 )
 def get_isi_violation_rates(sorting_object, recording_object, configuration={}, snippet_len=(50, 80)):
-    import labbox_ephys as le
     import spikemetrics as sm
-    S = le.LabboxEphysSortingExtractor(sorting_object)
-    R = le.LabboxEphysRecordingExtractor(recording_object)
+    S = LabboxEphysSortingExtractor(sorting_object)
+    R = LabboxEphysRecordingExtractor(recording_object)
 
     samplerate = R.get_sampling_frequency()
 #    duration_sec = R.get_num_frames() / samplerate

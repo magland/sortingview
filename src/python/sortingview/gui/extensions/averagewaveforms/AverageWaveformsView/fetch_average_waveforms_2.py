@@ -3,40 +3,23 @@ from typing import Dict, List, Union
 import hither2 as hi
 from hither2.dockerimage import RemoteDockerImage
 import kachery_client as kc
-from labbox_ephys.helpers.prepare_snippets_h5 import prepare_snippets_h5
 import numpy as np
-import labbox_ephys as le
+from sortingview.serialize_wrapper import serialize_wrapper
 # from labbox import LabboxContext
 from sortingview.config import job_cache, job_handler
-
-
-# @hi.function('createjob_fetch_average_waveform_2', '0.1.1', register_globally=True)
-# def createjob_fetch_average_waveform_2(labbox: LabboxContext, recording_object, sorting_object, unit_id, snippet_len=(50, 80)):
-#     from labbox_ephys import prepare_snippets_h5
-#     jh = labbox.get_job_handler('partition1')
-#     jc = labbox.get_job_cache()
-#     with hi.Config(
-#         job_cache=jc,
-#         job_handler=jh,
-#         use_container=jh.is_remote()
-#     ):
-#         snippets_h5 = prepare_snippets_h5.run(recording_object=recording_object, sorting_object=sorting_object, snippet_len=snippet_len)
-#         return fetch_average_waveform_2.run(
-#             snippets_h5=snippets_h5,
-#             unit_id=unit_id
-#         )
+from sortingview.helpers import prepare_snippets_h5, get_unit_waveforms_from_snippets_h5
 
 @hi.function(
     'fetch_average_waveform_2', '0.2.14',
     image=RemoteDockerImage('docker://magland/labbox-ephys-processing:0.3.19'),
-    modules=['labbox_ephys']
+    modules=['sortingview']
 )
-@le.serialize
+@serialize_wrapper
 def fetch_average_waveform_2(snippets_h5, unit_id):
     import h5py
     h5_path = kc.load_file(snippets_h5)
     assert h5_path is not None
-    unit_waveforms, unit_waveforms_channel_ids, channel_locations0, sampling_frequency, unit_spike_train = le.get_unit_waveforms_from_snippets_h5(h5_path, unit_id)
+    unit_waveforms, unit_waveforms_channel_ids, channel_locations0, sampling_frequency, unit_spike_train = get_unit_waveforms_from_snippets_h5(h5_path, unit_id)
     
     average_waveform = np.mean(unit_waveforms, axis=0)
 
