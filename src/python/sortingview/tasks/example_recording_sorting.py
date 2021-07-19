@@ -1,10 +1,10 @@
 from numpy.core.records import record
 import spikeextractors as se
 import numpy as np
-import labbox_ephys as le
 import hither2 as hi
 import kachery_client as kc
 from sortingview.config import job_cache, job_handler
+from sortingview.extractors import LabboxEphysRecordingExtractor, LabboxEphysSortingExtractor
 
 # adjust these values
 workspace_uri = '{workspaceUri}'
@@ -17,8 +17,8 @@ seed = 1 # random number generator seed
 def prepare_recording_sorting():
     # Simulate a recording (toy example)
     recording, sorting = se.example_datasets.toy_example(duration=duration_sec, num_channels=num_channels, K=num_units, seed=seed)
-    R = le.LabboxEphysRecordingExtractor.from_memory(recording, serialize=True, serialize_dtype=np.int16)
-    S = le.LabboxEphysSortingExtractor.from_memory(sorting, serialize=True)
+    R = LabboxEphysRecordingExtractor.from_memory(recording, serialize=True, serialize_dtype=np.int16)
+    S = LabboxEphysSortingExtractor.from_memory(sorting, serialize=True)
     return R, S
 
 

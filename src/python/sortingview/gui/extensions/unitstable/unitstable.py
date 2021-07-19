@@ -1,4 +1,3 @@
-import labbox_ephys as le
 import kachery_client as kc
 import hither2 as hi
 from sortingview.config.job_handler import job_handler

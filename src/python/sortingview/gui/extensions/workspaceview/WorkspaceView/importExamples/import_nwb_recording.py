@@ -1,7 +1,7 @@
 import spikeextractors as se
 import numpy as np
-import labbox_ephys as le
 import kachery_client as kc
+from sortingview import LabboxEphysSortingExtractor, LabboxEphysRecordingExtractor, load_workspace
 
 
 # Adjust these values
@@ -24,10 +24,10 @@ sorting_uri = kc.store_object({
     }
 })
 
-sorting = le.LabboxEphysSortingExtractor(sorting_uri, samplerate=30000)
-recording = le.LabboxEphysRecordingExtractor(recording_uri, download=True)
+sorting = LabboxEphysSortingExtractor(sorting_uri, samplerate=30000)
+recording = LabboxEphysRecordingExtractor(recording_uri, download=True)
 
-workspace = le.load_workspace(workspace_uri)
+workspace = load_workspace(workspace_uri)
 print(f'Workspace URI: {workspace.uri}')
 R_id = workspace.add_recording(recording=recording, label=recording_label)
 S_id = workspace.add_sorting(sorting=sorting, recording_id=R_id, label=sorting_label)

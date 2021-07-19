@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Tuple, Union
 import uuid
 import kachery_client as kc
 import spikeextractors as se
-from labbox_ephys import LabboxEphysRecordingExtractor, LabboxEphysSortingExtractor
+from sortingview.extractors import LabboxEphysRecordingExtractor, LabboxEphysSortingExtractor
 
 def parse_workspace_uri(workspace_uri: str):
     if not workspace_uri.startswith('workspace://'):

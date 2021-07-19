@@ -1,3 +1,23 @@
+7/19/2021
+move labbox_ephys code to sortingview, remove labbox_ephys dependency #32
+*WIP subsample correlograms to speed up calculations #31
+*WIP Coordinated unit selection across views (jeff) #28
+*WIP avg waveforms view: control number of channels to display around the peak #26
+release 0.2.29
+
+7/16/2021
+Restore left/right arrows on timeseries
+Implement unit comparison view
+
+7/15/2021
+Implement add/remove workspace
+
+7/14/2021
+Force dependency on new version of kachery-client
+
+7/12/2021
+Reorganize and update docs
+
 7/9/2021
 Refactoring - moving files to labbox-react
 Deploy 0.2.22

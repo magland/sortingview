@@ -1,21 +1,22 @@
 import kachery_client as kc
 import hither2 as hi
 import numpy as np
-import labbox_ephys as le
+from sortingview.serialize_wrapper import serialize_wrapper
 import spikeextractors as se
 from sortingview.config import job_cache, job_handler
 
+from sortingview.extractors import LabboxEphysSortingExtractor
 from ._correlograms_phy import compute_correlograms
 
 
 @hi.function(
     'fetch_correlogram_plot_data', '0.2.7',
     image=hi.RemoteDockerImage('docker://magland/labbox-ephys-processing:0.3.19'),
-    modules=['labbox_ephys']
+    modules=['sortingview']
 )
-@le.serialize
+@serialize_wrapper
 def fetch_correlogram_plot_data(sorting_object, unit_x, unit_y=None):
-    S = le.LabboxEphysSortingExtractor(sorting_object)
+    S = LabboxEphysSortingExtractor(sorting_object)
     data = _get_correlogram_data(sorting=S, unit_id1=unit_x, unit_id2=unit_y,
         window_size_msec=50, bin_size_msec=1)
     return data

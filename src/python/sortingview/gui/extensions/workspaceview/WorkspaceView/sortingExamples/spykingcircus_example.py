@@ -6,22 +6,18 @@
 #        apt install qt5-default
 #    For more information: https://spyking-circus.readthedocs.io/en/latest/introduction/install.html
 
-import spikeextractors as se
-import numpy as np
-import labbox_ephys as le
-from labbox_ephys import sorters
-import kachery_client as kc
+from sortingview import load_workspace, LabboxEphysSortingExtractor
 
 if __name__ == '__main__':
     # adjust these values
     workspace_uri = '{workspaceUri}'
     recording_id = '{recordingId}' # {recordingLabel}
 
-    workspace = le.load_workspace(workspace_uri)
+    workspace = load_workspace(workspace_uri)
     le_recording = workspace.get_recording(recording_id)
     recording_object = le_recording['recordingObject']
 
-    sorting_object = sorters.spykingcircus(
+    sorting_object = sorters.spykingcircus( # need to move this over from labbox ephys
         recording_object=recording_object,
         detect_sign=-1,
         adjacency_radius=100,
@@ -34,7 +30,7 @@ if __name__ == '__main__':
         whitening_max_elts=1000,
         clustering_max_elts=10000
     )
-    sorting = le.LabboxEphysSortingExtractor(sorting_object)
+    sorting = LabboxEphysSortingExtractor(sorting_object)
 
     S_id = workspace.add_sorting(
         sorting=sorting,

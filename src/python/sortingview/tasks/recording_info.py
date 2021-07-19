@@ -1,16 +1,16 @@
 from typing import List, cast
 import hither2 as hi
-import labbox_ephys as le
 import numpy as np
 import spikeextractors as se
 import kachery_client as kc
 from sortingview.config import job_cache, job_handler
+from sortingview.extractors import LabboxEphysSortingExtractor, LabboxEphysRecordingExtractor
 
 @hi.function(
     'recording_info', '0.1.3'
 )
 def recording_info(recording_uri):
-    recording = le.LabboxEphysRecordingExtractor(recording_uri, download=False)
+    recording = LabboxEphysRecordingExtractor(recording_uri, download=False)
     return dict(
         sampling_frequency=recording.get_sampling_frequency(),
         channel_ids=recording.get_channel_ids(),

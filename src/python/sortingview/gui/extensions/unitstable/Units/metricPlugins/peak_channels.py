@@ -1,16 +1,14 @@
-import os
 import hither2 as hi
 import kachery_client as kc
 import numpy as np
 from sortingview.config import job_cache, job_handler
+from sortingview.helpers import prepare_snippets_h5
 
-from labbox_ephys import prepare_snippets_h5
-from labbox_ephys.helpers.get_unit_waveforms import get_unit_waveforms
 
 @hi.function(
     'get_peak_channels', '0.1.0',
     image=hi.RemoteDockerImage('docker://magland/labbox-ephys-processing:0.3.19'),
-    modules=['labbox_ephys']
+    modules=['sortingview']
 )
 def get_peak_channels(snippets_h5):
     import h5py

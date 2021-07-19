@@ -1,7 +1,6 @@
 import spikeextractors as se
 import numpy as np
-import labbox_ephys as le
-import kachery_client as kc
+from sortingview import LabboxEphysRecordingExtractor, LabboxEphysSortingExtractor, load_workspace
 
 # Here are some examples to select from
 X1 = {
@@ -30,11 +29,11 @@ workspace_uri = '{workspaceUri}'
 recording_label = X['label']
 recording_uri = X['recording_uri']
 sorting_true_uri = X['sorting_true_uri']
-recording = le.LabboxEphysRecordingExtractor(recording_uri, download=True)
-sorting_true = le.LabboxEphysSortingExtractor(sorting_true_uri, samplerate=30000)
+recording = LabboxEphysRecordingExtractor(recording_uri, download=True)
+sorting_true = LabboxEphysSortingExtractor(sorting_true_uri, samplerate=30000)
 
 sorting_label = 'true'
-workspace = le.load_workspace(workspace_uri)
+workspace = load_workspace(workspace_uri)
 print(f'Workspace URI: {workspace.uri}')
 R_id = workspace.add_recording(recording=recording, label=recording_label)
 S_id = workspace.add_sorting(sorting=sorting_true, recording_id=R_id, label=sorting_label)
