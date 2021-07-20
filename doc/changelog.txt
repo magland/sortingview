@@ -3,6 +3,9 @@ subsample correlograms to speed up calculations #31
 Coordinated unit selection across views (jeff) #28
 *WIP avg waveforms view: control number of channels to display around the peak #26
 release 0.2.30
+fixed error when trying to retrieved curated sorting extractor #36
+release 0.2.31
+
 
 
 7/19/2021
