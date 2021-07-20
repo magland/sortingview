@@ -326,17 +326,23 @@ def _get_sorting_curation(subfeed: kc.Subfeed, sorting_id: str):
         a = subfeed.get_next_message(wait_msec=0)
         if a is None: break
         if a.get('type', '') == 'ADD_UNIT_LABEL':
-            unit_id = a.get('unitId', '')
-            label = a.get('label', '')
-            if unit_id not in labels_by_unit:
-                labels_by_unit[unit_id] = []
-            labels_by_unit[unit_id].append(label)
-            labels_by_unit[unit_id] = sorted(list(set(labels_by_unit[unit_id])))
+            unit_ids = a.get('unitId', []) # allow this to be a list or an int
+            if not isinstance(unit_ids, list):
+                unit_ids = [unit_ids]
+            label = a.get('label', []) # allow this to be a list or an int
+            for unit_id in unit_ids:
+                if unit_id not in labels_by_unit:
+                    labels_by_unit[unit_id] = []
+                labels_by_unit[unit_id].append(label)
+                labels_by_unit[unit_id] = sorted(list(set(labels_by_unit[unit_id])))
         elif a.get('type', '') == 'REMOVE_UNIT_LABEL':
-            unit_id = a.get('unitId', '')
+            unit_ids = a.get('unitId', '')
+            if not isinstance(unit_ids, list):
+                unit_ids = [unit_ids]
             label = a.get('label', '')
-            if unit_id in labels_by_unit:
-                labels_by_unit[unit_id] = [x for x in labels_by_unit[unit_id] if x != label]
+            for unit_id in unit_ids:
+                if unit_id in labels_by_unit:
+                    labels_by_unit[unit_id] = [x for x in labels_by_unit[unit_id] if x != label]
         elif a.get('type', 'MERGE_UNITS'):
             unit_ids = a.get('unitIds', [])
             merge_groups = _simplify_merge_groups(merge_groups + [unit_ids])
