@@ -1,29 +1,12 @@
-import React, { FunctionComponent, useMemo, useState } from 'react'
-import { SortingSelection, SortingSelectionAction, SortingSelectionDispatch, SortingViewProps } from "../../../pluginInterface"
-import SelectUnitsWidget from '../../../commonComponents/SelectUnitsWidget/SelectUnitsWidget'
-import CrossCorrelogramsWidget from './CrossCorrelogramsWidget'
+
 import Splitter from 'labbox-react/components/Splitter/Splitter';
-
-const useLocalUnitIds = (selection: SortingSelection, selectionDispatch: SortingSelectionDispatch): [SortingSelection, SortingSelectionDispatch] => {
-    const [selectedUnitIds, setSelectedUnitIds] = useState<number[]>([])
-    const selectionLocal: SortingSelection = useMemo(() => ({
-        ...selection,
-        selectedUnitIds
-    }), [selectedUnitIds, selection])
-
-    const selectionDispatchLocal = useMemo(() => ((action: SortingSelectionAction) => {
-        if (action.type === 'SetSelectedUnitIds') {
-            setSelectedUnitIds(action.selectedUnitIds)
-        }
-        else {
-            selectionDispatch(action)
-        }
-    }), [selectionDispatch])
-    return [selectionLocal, selectionDispatchLocal]
-}
+import React, { FunctionComponent } from 'react';
+import SelectUnitsWidget from '../../../commonComponents/SelectUnitsWidget/SelectUnitsWidget';
+import { SortingViewProps } from "../../../pluginInterface";
+import useLocalUnitIds from '../../../pluginInterface/useLocalUnitIds';
+import CrossCorrelogramsWidget from './CrossCorrelogramsWidget';
 
 const CrossCorrelogramsView: FunctionComponent<SortingViewProps> = ({sorting, selection, curation, selectionDispatch, width, height}) => {
-
     // Make a local selection/selectionDispatch pair that overrides the selectedUnitIds
     const [selectionLocal, selectionDispatchLocal] = useLocalUnitIds(selection, selectionDispatch)
 

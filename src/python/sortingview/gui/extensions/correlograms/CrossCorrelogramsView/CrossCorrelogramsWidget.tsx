@@ -1,6 +1,11 @@
-import React, { FunctionComponent, useMemo } from 'react';
+import { IconButton } from '@material-ui/core';
+import { Help } from '@material-ui/icons';
+import { useVisible } from 'labbox-react';
+import MarkdownDialog from 'labbox-react/components/Markdown/MarkdownDialog';
+import React, { Fragment, FunctionComponent, useMemo } from 'react';
 import SortingUnitPairPlotGrid from '../../../commonComponents/SortingUnitPairPlotGrid/SortingUnitPairPlotGrid';
 import { Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from "../../../pluginInterface";
+import correlogramSubsamplingInfo from '../CorrelogramSubsamplingInfo.md.gen';
 import CorrelogramRv2 from '../Correlogram_ReactVis2';
 
 type Props = {
@@ -30,15 +35,27 @@ const CrossCorrelogramsWidget: FunctionComponent<Props> = ({ sorting, selection,
             height={plotHeight}
         />
     ), [sorting, selection, selectionDispatch, plotWidth, plotHeight, curation])
+    const subsamplingPopupVisible = useVisible()
+
 
     return (
-        <SortingUnitPairPlotGrid
-            sorting={sorting}
-            selection={selection}
-            selectionDispatch={selectionDispatch}
-            unitIds={unitIds}
-            unitPairComponent={unitPairComponent}
-        />
+        <Fragment>
+            <div>
+                <IconButton onClick={subsamplingPopupVisible.show}><Help /></IconButton>
+            </div>
+            <SortingUnitPairPlotGrid
+                sorting={sorting}
+                selection={selection}
+                selectionDispatch={selectionDispatch}
+                unitIds={unitIds}
+                unitPairComponent={unitPairComponent}
+            />
+            <MarkdownDialog
+                visible={subsamplingPopupVisible.visible}
+                onClose={subsamplingPopupVisible.hide}
+                source={correlogramSubsamplingInfo}
+            />
+        </Fragment>
     )
 }
 
