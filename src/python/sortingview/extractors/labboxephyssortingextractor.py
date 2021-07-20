@@ -1,11 +1,12 @@
 import os
 import stat
+import numpy as np
 from copy import deepcopy
 from typing import Any, Dict, List, Union, cast
 
-import hither2 as hi
 import kachery_client as kc
 import spikeextractors as se
+from spikeextractors.extractors.numpyextractors.numpyextractors import NumpySortingExtractor
 from spikeextractors.sortingextractor import SortingExtractor
 
 from ._in_memory import (_random_string, get_in_memory_object,
@@ -146,6 +147,21 @@ class LabboxEphysSortingExtractor(se.SortingExtractor):
     def set_sampling_frequency(self, freq):
         self._sorting.set_sampling_frequency(freq)
     
+    @staticmethod
+    def from_numpy(samplerate: float, times: np.array, labels: np.array):
+        with kc.TemporaryDirectory() as tmpdir:
+            h5_path = tmpdir + '/sorting.h5'
+            S = NumpySortingExtractor()
+            S.set_sampling_frequency(samplerate)
+            S.set_times_labels(times, labels)
+            H5SortingExtractorV1.write_sorting(sorting=S, save_path=h5_path)
+            return LabboxEphysSortingExtractor({
+                'sorting_format': 'h5_v1',
+                'data': {
+                    'h5_path': kc.store_file(h5_path)
+                }
+            })
+
     @staticmethod
     def from_memory(sorting: se.SortingExtractor, serialize=False):
         if serialize:

@@ -1,8 +1,12 @@
+7/20/2021
+subsample correlograms to speed up calculations #31
+Coordinated unit selection across views (jeff) #28
+*WIP avg waveforms view: control number of channels to display around the peak #26
+release 0.2.30
+
+
 7/19/2021
 move labbox_ephys code to sortingview, remove labbox_ephys dependency #32
-*WIP subsample correlograms to speed up calculations #31
-*WIP Coordinated unit selection across views (jeff) #28
-*WIP avg waveforms view: control number of channels to display around the peak #26
 release 0.2.29
 
 7/16/2021

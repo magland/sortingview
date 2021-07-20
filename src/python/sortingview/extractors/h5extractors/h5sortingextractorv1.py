@@ -1,4 +1,5 @@
 # import h5py
+from typing import List
 import warnings
 
 import numpy as np
@@ -49,9 +50,22 @@ class H5SortingExtractorV1(SortingExtractor):
     def write_sorting(sorting, save_path):
         unit_ids = sorting.get_unit_ids()
         samplerate = sorting.get_sampling_frequency()
+        W = H5SortingExtractorV1Writer(save_path=save_path, samplerate=samplerate)
+        for unit_id in unit_ids:
+            W.add_unit(unit_id=unit_id, times=sorting.get_unit_spike_train(unit_id=unit_id))
+        W.finalize()
+
+class H5SortingExtractorV1Writer:
+    def __init__(self, *, save_path: str, samplerate: float):
+        self._save_path = save_path
+        self._samplerate = samplerate
+        self._unit_ids: List[int] = []
         with h5py.File(save_path, 'w') as f:
-            f.create_dataset('unit_ids', data=np.array(unit_ids).astype(np.int32))
             f.create_dataset('sampling_frequency', data=np.array([samplerate]).astype(np.float64))
-            for unit_id in unit_ids:
-                x = sorting.get_unit_spike_train(unit_id=unit_id)
-                f.create_dataset(f'unit_spike_trains/{unit_id}', data=np.array(x).astype(np.float64))
+    def add_unit(self, *, unit_id: int, times: np.array):
+        with h5py.File(self._save_path, 'a') as f:
+            f.create_dataset(f'unit_spike_trains/{unit_id}', data=np.array(times).astype(np.float64))
+        self._unit_ids.append(unit_id)
+    def finalize(self):
+        with h5py.File(self._save_path, 'a') as f:
+            f.create_dataset('unit_ids', data=np.array(self._unit_ids).astype(np.int32))

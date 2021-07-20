@@ -1,6 +1,7 @@
 import kachery_client as kc
 import hither2 as hi
 import numpy as np
+from sortingview.extractors.h5extractors.h5sortingextractorv1 import H5SortingExtractorV1, H5SortingExtractorV1Writer
 from sortingview.serialize_wrapper import serialize_wrapper
 import spikeextractors as se
 from sortingview.config import job_cache, job_handler
@@ -21,14 +22,73 @@ def fetch_correlogram_plot_data(sorting_object, unit_x, unit_y=None):
         window_size_msec=50, bin_size_msec=1)
     return data
 
-@kc.taskfunction('fetch_correlogram_plot_data.3', type='pure-calculation')
-def task_fetch_correlogram_plot_data(sorting_object, unit_x, unit_y=None):
+def _get_time_segments(max_time: int, segment_size: int, num_segments: int):
+    interval = np.floor(max_time / num_segments)
+    start_times = [
+        i * interval
+        for i in range(num_segments)
+    ]
+    end_times = [
+        i * interval + segment_size
+        for i in range(num_segments)
+    ]
+    return start_times, end_times
+
+@hi.function(
+    'subsample_sorting', '0.1.5',
+    image=hi.RemoteDockerImage('docker://magland/labbox-ephys-processing:0.3.19'),
+    modules=['sortingview']
+)
+def subsample_sorting(sorting_object: dict, segment_size_sec: float, num_segments: int):
+    S = LabboxEphysSortingExtractor(sorting_object)
+    segment_size = np.floor(S.get_sampling_frequency() * segment_size_sec)
+
+    unit_ids = S.get_unit_ids()
+    max_times = [np.max(S.get_unit_spike_train(unit_id)) for unit_id in unit_ids]
+    max_time = np.floor(np.max(max_times))
+
+    if max_time <= segment_size * num_segments * 2:
+        return sorting_object
+    
+    segment_start_times, segment_end_times = _get_time_segments(max_time=max_time, segment_size=segment_size, num_segments=num_segments)
+    with kc.TemporaryDirectory() as tmpdir:
+        save_path = f'{tmpdir}/sorting.h5'
+        W = H5SortingExtractorV1Writer(save_path=save_path, samplerate=S.get_sampling_frequency())
+        for unit_id in unit_ids:
+            st = S.get_unit_spike_train(unit_id)
+            a = [st[(segment_start_times[i] <= st) & (st < segment_end_times[i])] for i in range(len(segment_start_times))]
+            times_subsampled = np.concatenate(a)
+            W.add_unit(unit_id=unit_id, times=times_subsampled)
+        W.finalize()
+        h5_path = kc.store_file(save_path)
+
+    sorting_subsampled = LabboxEphysSortingExtractor({
+        'sorting_format': 'h5_v1',
+        'data': {
+            'h5_path': h5_path
+        }
+    })
+    return sorting_subsampled.object()
+
+@kc.taskfunction('fetch_correlogram_plot_data.6', type='pure-calculation')
+def task_fetch_correlogram_plot_data(*, sorting_object, unit_x, unit_y=None, subsample: bool):
     with hi.Config(
         job_cache=job_cache,
         job_handler=job_handler.correlograms
     ):
+        with hi.Config(
+            job_handler=job_handler.misc
+        ):
+            if subsample:
+                sorting_object_subsampled = subsample_sorting.run(
+                    sorting_object=sorting_object,
+                    segment_size_sec=10,
+                    num_segments=100
+                )
+            else:
+                sorting_object_subsampled = sorting_object
         return fetch_correlogram_plot_data.run(
-            sorting_object=sorting_object,
+            sorting_object=sorting_object_subsampled,
             unit_x=unit_x,
             unit_y=unit_y
         )
