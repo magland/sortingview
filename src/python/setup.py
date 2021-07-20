@@ -10,6 +10,7 @@ setup(
         'click',
         'hither>=0.7.0',
         'kachery-client>=1.0.12',
-        'pynwb'
+        'pynwb',
+        'pyyaml'
     ]
 )
