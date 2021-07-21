@@ -3,12 +3,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Settings, SquareFoot, Visibility } from '@material-ui/icons'
 import GrainIcon from '@material-ui/icons/Grain'
 import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser'
+import { JSONStringifyDeterministic } from 'kachery-js/types/kacheryTypes'
 import { usePlugins } from 'labbox-react'
 import Expandable from "labbox-react/components/Expandable/Expandable"
 import Splitter from 'labbox-react/components/Splitter/Splitter'
 import useRoute from 'labbox-react/MainWindow/useRoute'
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useReducer, useState } from 'react'
-import { LabboxPlugin, SortingUnitViewPlugin, SortingViewPlugin, sortingViewPlugins, SortingViewProps } from "../../../pluginInterface"
+import { LabboxPlugin, SortingComparisonViewPlugin, SortingUnitViewPlugin, SortingViewPlugin, sortingViewPlugins, SortingViewProps } from "../../../pluginInterface"
 import { RecordingViewPlugin } from '../../../pluginInterface/RecordingViewPlugin'
 import '../mountainview.css'
 import CurationControl from './CurationControl'
@@ -23,7 +24,7 @@ import VisibleUnitsControl from './VisibleUnitsControl'
 
 const initialLeftPanelWidth = 320
 
-type ViewPlugin = SortingViewPlugin | RecordingViewPlugin | SortingUnitViewPlugin
+type ViewPlugin = SortingViewPlugin | RecordingViewPlugin | SortingUnitViewPlugin | SortingComparisonViewPlugin
 
 type AddViewAction = {
     type: 'AddView'
@@ -61,7 +62,7 @@ export const openViewsReducer: React.Reducer<View[], OpenViewsAction> = (state: 
         const plugin = action.plugin
         if (plugin.singleton) {
             for (let v0 of state) {
-                if (v0.plugin.name === plugin.name) {
+                if ((v0.plugin.name === plugin.name) && (JSONStringifyDeterministic(v0.extraProps || {}) === (JSONStringifyDeterministic(action.extraProps || {})))) {
                     v0.activate = true
                     return [...state]
                 }
@@ -80,10 +81,6 @@ export const openViewsReducer: React.Reducer<View[], OpenViewsAction> = (state: 
         return state.map(v => (v.viewId === action.viewId ? {...v, area: action.area, activate: true} : v))
     }
     else return state
-}
-
-const area = (a: 'north' | 'south') => {
-    return a
 }
 
 const MVSortingViewWithCheck: FunctionComponent<SortingViewProps> = (props) => {
@@ -142,8 +139,8 @@ const MVSortingView: FunctionComponent<SortingViewProps & {preloadStatus?: 'wait
     const AverageWaveformsPlugin = sortingViewPlugins(plugins).filter(p => (p.name === 'AverageWaveforms'))[0]
 
     const initialPluginViews: {plugin: SortingViewPlugin | undefined, area: 'north' | 'south'}[] = useMemo(() => ([
-        {plugin: UnitsTablePlugin, area: area('north')},
-        {plugin: AverageWaveformsPlugin, area: area('south')}
+        {plugin: UnitsTablePlugin, area: 'north' as 'north' | 'south'},
+        {plugin: AverageWaveformsPlugin, area: 'south' as 'north' | 'south'}
     ]).filter(x => (x.plugin !== undefined)), [UnitsTablePlugin, AverageWaveformsPlugin])
     // const electrodeGeometryPlugin = plugins.sortingViews.ElectrodeGeometrySortingView
     useEffect(() => {

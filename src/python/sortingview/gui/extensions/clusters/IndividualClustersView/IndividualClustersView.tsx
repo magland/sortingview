@@ -3,7 +3,7 @@ import SortingUnitPlotGrid from '../../../commonComponents/SortingUnitPlotGrid/S
 import { SortingViewProps } from '../../../pluginInterface'
 import IndividualClusterView from './IndividualClusterView'
 
-const IndividualClustersView: FunctionComponent<SortingViewProps> = ({recording, sorting, curation, selection, selectionDispatch, snippetLen}) => {
+const IndividualClustersView: FunctionComponent<SortingViewProps> = ({recording, sorting, curation, selection, selectionDispatch, snippetLen, sortingSelector}) => {
     const unitComponent = useMemo(() => (unitId: number) => (
         <IndividualClusterView
             {...{recording, sorting, curation, unitId, selection, selectionDispatch, snippetLen}}
@@ -19,6 +19,7 @@ const IndividualClustersView: FunctionComponent<SortingViewProps> = ({recording,
             curation={curation}
             selectionDispatch={selectionDispatch}
             unitComponent={unitComponent}
+            sortingSelector={sortingSelector}
         />
     )
 }

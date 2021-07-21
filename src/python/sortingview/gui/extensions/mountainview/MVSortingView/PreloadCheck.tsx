@@ -8,7 +8,7 @@ interface ChildProps {
 }
 
 type Props = {
-    sorting: Sorting
+    sorting?: Sorting
     recording: Recording
     children: React.ReactElement<ChildProps>
     width: number
@@ -17,16 +17,16 @@ type Props = {
 }
 
 const PreloadCheck: FunctionComponent<Props> = ({ recording, sorting, children, width, height, snippetLen }) => {
-    const sortingObject = sorting.sortingObject
+    const sortingObject = sorting ? sorting.sortingObject : undefined
     const recordingObject = recording.recordingObject
-    const runningState = useRef<{sortingObject: any, recordingObject: any}>({sortingObject: sorting.sortingObject, recordingObject: recording.recordingObject})
+    const runningState = useRef<{sortingObject: any, recordingObject: any}>({sortingObject, recordingObject})
 
     const matchesRunningState = useMemo(() => ((x: {recordingObject: any, sortingObject: any}) => (
         (runningState.current.sortingObject === x.sortingObject) && (runningState.current.recordingObject === x.recordingObject)
     )), [])
 
     const {channelName} = useChannel()
-    const {task: preloadExtractSnippetsTask} = usePureCalculationTask('preload_extract_snippets.2', {recording_object: recordingObject, sorting_object: sortingObject, snipets_len: snippetLen}, {channelName})
+    const {task: preloadExtractSnippetsTask} = usePureCalculationTask((recordingObject && sortingObject) ? 'preload_extract_snippets.2' : '', {recording_object: recordingObject, sorting_object: sortingObject, snipets_len: snippetLen}, {channelName})
     const status = preloadExtractSnippetsTask?.status || 'waiting'
     const message = useMemo(() => {
         if (status === 'running') return 'Precomputing snippets'
@@ -48,6 +48,10 @@ const PreloadCheck: FunctionComponent<Props> = ({ recording, sorting, children, 
     useEffect(() => {
         if ((status === 'finished') && (matchesRunningState({recordingObject, sortingObject}))) setLastValidChild(child)
     }, [child, status, recordingObject, sortingObject, matchesRunningState])
+
+    if (!sortingObject) {
+        return child
+    }
 
     return (
         <Fragment>

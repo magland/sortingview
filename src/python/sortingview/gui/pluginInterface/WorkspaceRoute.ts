@@ -2,9 +2,9 @@ import { ChannelName, isFeedId } from 'kachery-js/types/kacheryTypes'
 import { parseWorkspaceUri } from 'labbox-react'
 import QueryString from 'querystring'
 
-type Page = 'workspace' | 'recording' | 'sorting'
+type Page = 'workspace' | 'recording' | 'sorting' | 'sortingComparison'
 export const isWorkspacePage = (x: string): x is Page => {
-    return ['workspace', 'recording', 'sorting'].includes(x)
+    return ['workspace', 'recording', 'sorting', 'sortingComparison'].includes(x)
 }
 
 type WorkspaceRecordingsRoute = {
@@ -25,7 +25,15 @@ type WorspaceSortingRoute = {
     workspaceUri?: string
     channelName?: ChannelName
 }
-export type WorkspaceRoute = WorkspaceRecordingsRoute | WorspaceRecordingRoute | WorspaceSortingRoute
+type WorkspaceSortingComparisonRoute = {
+    page: 'sortingComparison',
+    recordingId: string,
+    sortingId1: string,
+    sortingId2: string,
+    workspaceUri?: string
+    channelName?: ChannelName
+}
+export type WorkspaceRoute = WorkspaceRecordingsRoute | WorspaceRecordingRoute | WorspaceSortingRoute | WorkspaceSortingComparisonRoute
 type GotoWorkspacePageAction = {
     type: 'gotoWorkspacePage'
 }
@@ -38,7 +46,13 @@ type GotoSortingPageAction = {
     recordingId: string,
     sortingId: string
 }
-export type WorkspaceRouteAction = GotoWorkspacePageAction | GotoRecordingPageAction | GotoSortingPageAction
+type GotoSortingComparisonPageAction = {
+    type: 'gotoSortingComparisonPage',
+    recordingId: string,
+    sortingId1: string
+    sortingId2: string
+}
+export type WorkspaceRouteAction = GotoWorkspacePageAction | GotoRecordingPageAction | GotoSortingPageAction | GotoSortingComparisonPageAction
 export type WorkspaceRouteDispatch = (a: WorkspaceRouteAction) => void
 
 export interface LocationInterface {
@@ -87,6 +101,14 @@ export const routeFromLocation = (location: LocationInterface): WorkspaceRoute =
             recordingId: pathList[3] || '',
             sortingId: pathList[4] || ''
         }
+        case 'sortingComparison': return {
+            workspaceUri,
+            channelName,
+            page,
+            recordingId: pathList[3] || '',
+            sortingId1: pathList[4] || '',
+            sortingId2: pathList[5] || ''
+        }
         default: return {
             workspaceUri,
             channelName,
@@ -117,6 +139,10 @@ export const locationFromRoute = (route: WorkspaceRoute) => {
         }
         case 'sorting': return {
             pathname: `/workspace/sorting/${route.recordingId}/${route.sortingId}`,
+            search: queryString(queryParams)
+        }
+        case 'sortingComparison': return {
+            pathname: `/workspace/sortingComparison/${route.recordingId}/${route.sortingId1}/${route.sortingId2}`,
             search: queryString(queryParams)
         }
     }
@@ -150,6 +176,14 @@ export const workspaceRouteReducer = (s: WorkspaceRoute, a: WorkspaceRouteAction
             page: 'sorting',
             recordingId: a.recordingId,
             sortingId: a.sortingId,
+            workspaceUri: s.workspaceUri,
+            channelName: s.channelName
+        }; break
+        case 'gotoSortingComparisonPage': newRoute = {
+            page: 'sortingComparison',
+            recordingId: a.recordingId,
+            sortingId1: a.sortingId1,
+            sortingId2: a.sortingId2,
             workspaceUri: s.workspaceUri,
             channelName: s.channelName
         }; break

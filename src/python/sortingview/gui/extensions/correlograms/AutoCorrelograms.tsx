@@ -8,7 +8,9 @@ import { SortingViewProps } from "../../pluginInterface";
 import correlogramSubsamplingInfo from './CorrelogramSubsamplingInfo.md.gen';
 import CorrelogramRv2 from './Correlogram_ReactVis2';
 
-const AutoCorrelograms: React.FunctionComponent<SortingViewProps> = ({ sorting, selection, curation, selectionDispatch }) => {
+// const autocorrelogramsCalculationPool = createCalculationPool({maxSimultaneous: 6});
+
+const AutoCorrelograms: React.FunctionComponent<SortingViewProps> = ({ sorting, selection, curation, selectionDispatch, sortingSelector }) => {
     const unitComponent = useMemo(() => (unitId: number) => (
         <CorrelogramRv2
             {...{sorting, unitId1: unitId, selection, curation, selectionDispatch}}
@@ -30,6 +32,7 @@ const AutoCorrelograms: React.FunctionComponent<SortingViewProps> = ({ sorting, 
                 curation={curation}
                 selectionDispatch={selectionDispatch}
                 unitComponent={unitComponent}
+                sortingSelector={sortingSelector}
             />
             <MarkdownDialog
                 visible={subsamplingPopupVisible.visible}

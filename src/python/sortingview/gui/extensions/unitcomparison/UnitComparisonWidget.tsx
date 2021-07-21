@@ -16,9 +16,10 @@ type Props = {
     snippetLen?: [number, number]
     width: number
     height: number
+    sortingSelector?: string
 }
 
-const UnitComparisonWidget: FunctionComponent<Props> = ({recording, sorting, selection, curation, selectionDispatch, unitIds, snippetLen, width, height}) => {
+const UnitComparisonWidget: FunctionComponent<Props> = ({recording, sorting, selection, curation, selectionDispatch, unitIds, snippetLen, width, height, sortingSelector}) => {
     const viewHeight = 300
     const recordingInfo = useRecordingInfo(recording.recordingPath)
     const noiseLevel = (recordingInfo || {}).noise_level || 1  // fix this
@@ -29,7 +30,7 @@ const UnitComparisonWidget: FunctionComponent<Props> = ({recording, sorting, sel
                 defaultExpanded={false}
             >
                 <CrossCorrelogramsWidget
-                    {...{sorting, selection, curation, selectionDispatch, unitIds, width: width - 40, height: viewHeight}
+                    {...{sorting, selection, curation, selectionDispatch, unitIds, width: width - 40, height: viewHeight, sortingSelector}
                     }
                 />
             </Expandable>

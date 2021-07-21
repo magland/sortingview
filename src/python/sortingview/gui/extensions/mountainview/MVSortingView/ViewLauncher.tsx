@@ -3,7 +3,7 @@ import { LabboxPlugin, RecordingViewPlugin, recordingViewPlugins, SortingSelecti
 import { usePlugins } from 'labbox-react';
 import sortByPriority from 'labbox-react/extensionSystem/sortByPriority';
 
-export type ViewPluginType = 'RecordingView' | 'SortingView' | 'SortingUnitView'
+export type ViewPluginType = 'RecordingView' | 'SortingView' | 'SortingUnitView' | 'SortingComparisonView'
 
 type Props = {
     selection: SortingSelection
@@ -11,6 +11,7 @@ type Props = {
     onLaunchRecordingView: (plugin: RecordingViewPlugin) => void
     onLaunchSortingUnitView: (plugin: SortingUnitViewPlugin, unitId: number, label: string) => void
     hasSorting: boolean
+    sortingSelector?: string
 }
 
 const buttonStyle: React.CSSProperties = {
@@ -19,7 +20,7 @@ const buttonStyle: React.CSSProperties = {
     margin: 1
 }
 
-const ViewLauncher: FunctionComponent<Props> = ({ onLaunchSortingView, onLaunchRecordingView, onLaunchSortingUnitView, selection, hasSorting }) => {
+const ViewLauncher: FunctionComponent<Props> = ({ onLaunchSortingView, onLaunchRecordingView, onLaunchSortingUnitView, selection, hasSorting, sortingSelector }) => {
     const plugins = usePlugins<LabboxPlugin>()
     const sortingUnitViewPlugin = sortingUnitViewPlugins(plugins).filter(p => (p.name === 'MVSortingUnitView'))[0]
     return (
@@ -64,7 +65,7 @@ const ViewLauncher: FunctionComponent<Props> = ({ onLaunchSortingView, onLaunchR
                 <div key="view-single-unit">
                 {
                     sortingUnitViewPlugin && (selection.selectedUnitIds || []).map(unitId => (
-                        <LaunchSortingUnitViewButton key={'unit-' + unitId} plugin={sortingUnitViewPlugin} unitId={unitId} label={`Unit ${unitId}`} onLaunch={onLaunchSortingUnitView} />
+                        <LaunchSortingUnitViewButton key={'unit-' + unitId} plugin={sortingUnitViewPlugin} unitId={unitId} label={`Unit ${unitId}${sortingSelector}`} onLaunch={onLaunchSortingUnitView} />
                     ))
                 }
                 </div>

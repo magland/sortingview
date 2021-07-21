@@ -37,13 +37,13 @@ const WorkspacePart: FunctionComponent<Props> = ({workspaceRoute, workspaceRoute
 
 const RecordingPart: FunctionComponent<Props> = ({workspace, workspaceRoute, workspaceRouteDispatch}) => {
     const handleClick = useCallback(() => {
-        if ((workspaceRoute.page !== 'recording') && (workspaceRoute.page !== 'sorting')) throw Error('Unexpected')
+        if ((workspaceRoute.page !== 'recording') && (workspaceRoute.page !== 'sorting') && (workspaceRoute.page !== 'sortingComparison')) throw Error('Unexpected')
         workspaceRouteDispatch({
             type: 'gotoRecordingPage',
             recordingId: workspaceRoute.recordingId
         })
     }, [workspaceRouteDispatch, workspaceRoute])
-    if ((workspaceRoute.page === 'recording') || (workspaceRoute.page === 'sorting')) {
+    if ((workspaceRoute.page === 'recording') || (workspaceRoute.page === 'sorting') || (workspaceRoute.page === 'sortingComparison')) {
         const rid = workspaceRoute.recordingId
         const recording = workspace.recordings.filter(r => (r.recordingId === rid))[0]
         if (recording) {
@@ -71,6 +71,19 @@ const SortingPart: FunctionComponent<Props> = ({workspace, workspaceRoute, works
             return <Part label={sorting.sortingLabel} title="Go to sorting page" onClick={handleClick} />
         }
         else return <span>Unknown sorting {sid}</span>
+    }
+    else if (workspaceRoute.page === 'sortingComparison') {
+        const sid1 = workspaceRoute.sortingId1
+        const sid2 = workspaceRoute.sortingId2
+        const sorting1 = workspace.sortings.filter(s => (s.sortingId === sid1))[0]
+        const sorting2 = workspace.sortings.filter(s => (s.sortingId === sid2))[0]
+        if (!sorting1) {
+            return <span>Unknown sorting {sid1}</span>
+        }
+        if (!sorting2) {
+            return <span>Unknown sorting {sid2}</span>
+        }
+        return <Part label={`${sorting1.sortingLabel}/${sorting2.sortingLabel}`} title="Go to sorting comparison page" onClick={handleClick} />
     }
     else return <span />
 }

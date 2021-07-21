@@ -14,7 +14,7 @@ export type AverageWaveformAction = ActionItem  | DividerItem
 const TOOLBAR_INITIAL_WIDTH = 36 // hard-coded for now
 
 const AverageWaveformsView: FunctionComponent<SortingViewProps> = (props) => {
-    const {recording, sorting, curation, selection, selectionDispatch, width=600, height=650, snippetLen} = props
+    const {recording, sorting, curation, selection, selectionDispatch, width=600, height=650, snippetLen, sortingSelector} = props
     const recordingInfo = useRecordingInfo(recording.recordingPath)
     const boxHeight = 250
     const boxWidth = 180
@@ -80,6 +80,7 @@ const AverageWaveformsView: FunctionComponent<SortingViewProps> = (props) => {
                         curation={curation}
                         selectionDispatch={selectionDispatch}
                         unitComponent={unitComponent}
+                        sortingSelector={sortingSelector}
                     />
                 }
             </Splitter>

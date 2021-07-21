@@ -5,7 +5,7 @@ import LockableSelectUnitsWidget from '../../../commonComponents/SelectUnitsWidg
 import { SortingViewProps } from "../../../pluginInterface";
 import CrossCorrelogramsWidget from './CrossCorrelogramsWidget';
 
-const CrossCorrelogramsView: FunctionComponent<SortingViewProps> = ({sorting, selection, curation, selectionDispatch, width, height}) => {
+const CrossCorrelogramsView: FunctionComponent<SortingViewProps> = ({sorting, selection, curation, selectionDispatch, width, height, sortingSelector}) => {
     const [locked, setLocked] = useState(false)
     // Make a local selection/selectionDispatch pair that overrides the selectedUnitIds
     const [selectionLocal, selectionDispatchLocal] = useLocalUnitIds(selection, selectionDispatch, locked)
@@ -16,13 +16,16 @@ const CrossCorrelogramsView: FunctionComponent<SortingViewProps> = ({sorting, se
             height={height || 900} // how to determine default height?
             initialPosition={200}
         >
+
             <LockableSelectUnitsWidget
                 sorting={sorting}
                 selection={selectionLocal}
                 selectionDispatch={selectionDispatchLocal}
                 curation={curation}
                 locked={locked}
-                toggleLockStateCallback={() => setLocked(!locked)} />
+                toggleLockStateCallback={() => setLocked(!locked)}
+                sortingSelector={sortingSelector}
+            />
             <CrossCorrelogramsWidget
                 sorting={sorting}
                 selection={selectionLocal}
@@ -30,6 +33,7 @@ const CrossCorrelogramsView: FunctionComponent<SortingViewProps> = ({sorting, se
                 curation={curation}
                 unitIds={selectionLocal.selectedUnitIds || []}
                 {...{width: 0, height: 0}} // filled in by splitter
+                sortingSelector={sortingSelector}
             />
         </Splitter>
     )

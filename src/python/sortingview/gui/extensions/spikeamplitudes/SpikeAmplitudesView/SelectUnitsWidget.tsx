@@ -8,9 +8,10 @@ type Props = {
     selection: SortingSelection
     selectionDispatch: SortingSelectionDispatch
     curation: SortingCuration
+    sortingSelector?: string
 }
 
-const SelectUnitsWidget: FunctionComponent<Props> = ({ sorting, selection, selectionDispatch, curation }) => {
+const SelectUnitsWidget: FunctionComponent<Props> = ({ sorting, selection, selectionDispatch, curation, sortingSelector }) => {
     const sortingInfo = useSortingInfo(sorting.sortingPath)
     if (!sortingInfo) return <div>No sorting info</div>
     let unitIds = (selection.visibleUnitIds || (sortingInfo?.unit_ids || []))
@@ -18,7 +19,7 @@ const SelectUnitsWidget: FunctionComponent<Props> = ({ sorting, selection, selec
     return (
         <UnitsTable
             units={unitIds}
-            {...{selection, selectionDispatch, sorting, curation}}
+            {...{selection, selectionDispatch, sorting, curation, sortingSelector}}
         />
     )
 }

@@ -1,6 +1,7 @@
 import { useChannel, usePureCalculationTask } from 'kachery-react';
 import sortByPriority from 'labbox-react/extensionSystem/sortByPriority';
 import { ExternalSortingUnitMetric } from 'python/sortingview/gui/pluginInterface/Sorting';
+import { SortingComparisonUnitMetricPlugin } from 'python/sortingview/gui/pluginInterface/SortingComparisonUnitMetricPlugin';
 import React, { FunctionComponent, useCallback } from 'react';
 import { mergeGroupForUnitId, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch, SortingUnitMetricPlugin } from "../../../pluginInterface";
 import '../unitstable.css';
@@ -8,20 +9,25 @@ import TableWidget, { Column, Row } from './TableWidget';
 
 interface Props {
     sortingUnitMetrics?: SortingUnitMetricPlugin[]
+    sortingComparisonUnitMetrics?: SortingComparisonUnitMetricPlugin[]
     units: number[]
     metrics?: {[key: string]: {data: {[key: string]: any}, error: string | null}}
     selection: SortingSelection
     selectionDispatch: SortingSelectionDispatch
     sorting: Sorting
+    compareSorting?: Sorting
     curation: SortingCuration
     height?: number
     selectionDisabled?: boolean
+    sortingSelector?: string
 }
 
 const UnitsTable: FunctionComponent<Props> = (props) => {
-    const { sorting, sortingUnitMetrics, units, metrics, selection, selectionDispatch, curation, height, selectionDisabled } = props
+    const { sorting, sortingUnitMetrics, sortingComparisonUnitMetrics, units, metrics, selection, selectionDispatch, curation, height, selectionDisabled, sortingSelector } = props
     const selectedUnitIds = ((selection || {}).selectedUnitIds || [])
     const sortingUnitMetricsList = sortByPriority(Object.values(sortingUnitMetrics || {})).filter(p => (!p.disabled))
+    const sortingComparisonUnitMetricsList = sortByPriority(Object.values(sortingComparisonUnitMetrics || {})).filter(p => (!p.disabled))
+    const allUnitMetricsList = [...sortingComparisonUnitMetricsList, ...sortingUnitMetricsList]
 
     const handleSelectedRowIdsChanged = useCallback((selectedRowIds: string[]) => {
         selectionDispatch({
@@ -44,16 +50,17 @@ const UnitsTable: FunctionComponent<Props> = (props) => {
         fontWeight: 'bold',
         cursor: 'pointer'
     }
+    const ss = sortingSelector || ''
     const unitIdElement = (x: any) => {
         const {unitId, mergeGroup} = x as {unitId: number, mergeGroup: number[] | null}
         return (
             <span>
                 <span key="unitId" style={unitIdStyle}>
-                    {unitId + ''}
+                    {unitId + '' + ss}
                 </span>
                 {
                     ((mergeGroup) && (mergeGroup.length > 0)) && (
-                        <span key="mergeGroup">{` (${mergeGroup.map(id => (id + '')).join(", ")})`}</span>
+                        <span key="mergeGroup">{` (${mergeGroup.map(id => (id + '' + ss)).join(", ")})`}</span>
                     )
                 }
             </span>
@@ -138,7 +145,7 @@ const UnitsTable: FunctionComponent<Props> = (props) => {
         })
     })
 
-    ;(sortingUnitMetricsList).forEach((m: SortingUnitMetricPlugin) => {
+    ;(allUnitMetricsList).forEach((m: SortingUnitMetricPlugin | SortingComparisonUnitMetricPlugin) => {
         const columnName = 'plugin-metric-' + m.name
         const metric = (metrics || {})[m.name] || null
         const metricData = metric ? metric.data : null

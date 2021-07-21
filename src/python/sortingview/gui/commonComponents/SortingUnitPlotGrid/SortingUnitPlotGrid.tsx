@@ -9,9 +9,10 @@ type Props = {
     curation: SortingCuration
     selectionDispatch: SortingSelectionDispatch
     unitComponent: (unitId: number) => React.ReactElement
+    sortingSelector?: string
 }
 
-const SortingUnitPlotGrid: FunctionComponent<Props> = ({ sorting, selection, curation, selectionDispatch, unitComponent }) => {
+const SortingUnitPlotGrid: FunctionComponent<Props> = ({ sorting, selection, curation, selectionDispatch, unitComponent, sortingSelector }) => {
     const maxUnitsVisibleIncrement = 60;
     const [maxUnitsVisible, setMaxUnitsVisible] = useState(30);
     const sortingInfo: SortingInfo | undefined = useSortingInfo(sorting.sortingPath)
@@ -46,7 +47,7 @@ const SortingUnitPlotGrid: FunctionComponent<Props> = ({ sorting, selection, cur
                                 onClick={handleUnitClick}
                             >
                                 <div className='plotUnitLabel'>
-                                    <div>Unit {unitId}</div>
+                                    <div>Unit {unitId}{sortingSelector}</div>
                                 </div>
                                 {
                                     unitComponent(unitId)

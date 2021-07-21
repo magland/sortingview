@@ -4,7 +4,7 @@ import SelectUnitsWidget from '../../commonComponents/SelectUnitsWidget/SelectUn
 import { SortingViewProps } from "../../pluginInterface"
 import UnitComparisonWidget from './UnitComparisonWidget'
 
-const UnitComparisonView: FunctionComponent<SortingViewProps> = ({recording, sorting, selection, curation, selectionDispatch, width, height, snippetLen}) => {
+const UnitComparisonView: FunctionComponent<SortingViewProps> = ({recording, sorting, selection, curation, selectionDispatch, width, height, snippetLen, sortingSelector}) => {
 
     const selectedUnitIds = ((selection || {}).selectedUnitIds || [])
 
@@ -14,7 +14,7 @@ const UnitComparisonView: FunctionComponent<SortingViewProps> = ({recording, sor
             height={height || 900} // how to determine default height?
             initialPosition={200}
         >
-            <SelectUnitsWidget sorting={sorting} selection={selection} selectionDispatch={selectionDispatch} curation={curation} />
+            <SelectUnitsWidget sorting={sorting} selection={selection} selectionDispatch={selectionDispatch} curation={curation} sortingSelector={sortingSelector} />
             {
                 selectedUnitIds.length === 2 ? (
                     <UnitComparisonWidget
@@ -27,6 +27,7 @@ const UnitComparisonView: FunctionComponent<SortingViewProps> = ({recording, sor
                         snippetLen={snippetLen}
                         width={0} // will be filled in by the splitter
                         height={0} // will be filled in by the splitter
+                        sortingSelector={sortingSelector}
                     />
                 ) : (
                     <div>You must select exactly two units.</div>

@@ -19,6 +19,8 @@ export interface SortingViewProps {
     width: number
     height: number
     snippetLen?: [number, number]
+    sortingSelector?: string
+    compareSorting?: Sorting
 }
 
 export interface SortingViewPlugin extends LabboxViewPlugin {

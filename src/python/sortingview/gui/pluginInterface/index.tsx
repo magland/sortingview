@@ -3,8 +3,10 @@ import { BasePlugin, ExtensionContext, usePlugins } from "labbox-react";
 import { FunctionComponent, useMemo } from "react";
 import { RecordingViewPlugin } from "./RecordingViewPlugin";
 import { SortingUnitMetricPlugin } from "./SortingUnitMetricPlugin";
+import { SortingComparisonUnitMetricPlugin } from "./SortingComparisonUnitMetricPlugin";
 import { SortingUnitViewPlugin } from "./SortingUnitViewPlugin";
 import { SortingViewPlugin } from "./SortingViewPlugin";
+import { SortingComparisonViewPlugin } from "./SortingComparisonViewPlugin";
 import { WorkspaceDispatch, WorkspaceState } from "./workspaceReducer";
 import { WorkspaceRoute, WorkspaceRouteDispatch } from './WorkspaceRoute';
 import { WorkspaceViewPlugin } from "./WorkspaceViewPlugin";
@@ -19,8 +21,10 @@ export type { SortingCuration, SortingCurationDispatch } from './SortingCuration
 export { sortingSelectionReducer } from './SortingSelection';
 export type { SortingSelection, SortingSelectionAction, SortingSelectionDispatch } from './SortingSelection';
 export type { SortingUnitMetricPlugin } from './SortingUnitMetricPlugin';
+export type { SortingComparisonUnitMetricPlugin } from './SortingComparisonUnitMetricPlugin';
 export type { SortingUnitViewPlugin, SortingUnitViewProps } from './SortingUnitViewPlugin';
 export type { SortingViewPlugin, SortingViewProps } from './SortingViewPlugin';
+export type { SortingComparisonViewPlugin, SortingComparisonViewProps } from './SortingComparisonViewPlugin';
 export type { WorkspaceRoute, WorkspaceRouteDispatch } from './WorkspaceRoute';
 
 
@@ -69,6 +73,11 @@ export const sortingViewPlugins = (plugins: LabboxPlugin[]): SortingViewPlugin[]
         .map(p => (p as any as SortingViewPlugin))
 }
 
+export const sortingComparisonViewPlugins = (plugins: LabboxPlugin[]): SortingComparisonViewPlugin[] => {
+    return filterPlugins(plugins).filter(p => (p.type === 'SortingComparisonView'))
+        .map(p => (p as any as SortingComparisonViewPlugin))
+}
+
 export const recordingViewPlugins = (plugins: LabboxPlugin[]): RecordingViewPlugin[] => {
     return filterPlugins(plugins).filter(p => (p.type === 'RecordingView'))
         .map(p => (p as any as RecordingViewPlugin))
@@ -84,7 +93,12 @@ export const sortingUnitMetricPlugins = (plugins: LabboxPlugin[]): SortingUnitMe
         .map(p => (p as any as SortingUnitMetricPlugin))
 }
 
-export type LabboxPlugin = MainWindowPlugin | WorkspaceViewPlugin | SortingViewPlugin | RecordingViewPlugin | SortingUnitViewPlugin | SortingUnitMetricPlugin
+export const sortingComparisonUnitMetricPlugins = (plugins: LabboxPlugin[]): SortingComparisonUnitMetricPlugin[] => {
+    return filterPlugins(plugins).filter(p => (p.type === 'SortingComparisonUnitMetric'))
+        .map(p => (p as any as SortingComparisonUnitMetricPlugin))
+}
+
+export type LabboxPlugin = MainWindowPlugin | WorkspaceViewPlugin | SortingViewPlugin | SortingComparisonViewPlugin | RecordingViewPlugin | SortingUnitViewPlugin | SortingUnitMetricPlugin | SortingComparisonUnitMetricPlugin
 
 export type LabboxExtensionContext = ExtensionContext<LabboxPlugin>
 
