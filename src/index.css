@@ -11,3 +11,13 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.lock-switch {
+  padding-left: 15px;
+}
+
+.lock-switch-label {
+  font-size: 12;
+  color: cornflowerblue;
+  /* color:crimson; */
+}

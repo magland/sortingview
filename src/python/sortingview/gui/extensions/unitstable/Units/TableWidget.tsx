@@ -82,8 +82,8 @@ const HeaderRow: FunctionComponent<{
     )
 }
 
-const RowCheckbox = React.memo((props: {rowId: string, selected: boolean, onClick: (rowId: string) => void, isDeselectAll?: boolean}) => {
-    const { rowId, selected, onClick, isDeselectAll } = props
+const RowCheckbox = React.memo((props: {rowId: string, selected: boolean, onClick: (rowId: string) => void, isDeselectAll?: boolean, isDisabled?: boolean}) => {
+    const { rowId, selected, onClick, isDeselectAll, isDisabled } = props
     return (
         <Checkbox
             checked={selected}
@@ -93,6 +93,7 @@ const RowCheckbox = React.memo((props: {rowId: string, selected: boolean, onClic
                 padding: 1
             }}
             title={isDeselectAll ? "Deselect all" : `Select ${rowId}`}
+            disabled={isDisabled}
         />
     );
 });
@@ -104,6 +105,7 @@ interface Props {
     columns: Column[]
     defaultSortColumnName?: string
     height?: number
+    selectionDisabled?: boolean
 }
 
 type sortFieldEntry = {columnName: string, keyOrder: number, sortAscending: boolean}
@@ -119,7 +121,7 @@ const interpretSortFields = (fields: string[]): sortFieldEntry[] => {
 
 const TableWidget: FunctionComponent<Props> = (props) => {
 
-    const { selectedRowIds, onSelectedRowIdsChanged, rows, columns, defaultSortColumnName, height } = props
+    const { selectedRowIds, onSelectedRowIdsChanged, rows, columns, defaultSortColumnName, height, selectionDisabled } = props
 
     const [sortFieldOrder, setSortFieldOrder] = useState<string[]>([])
 
@@ -199,6 +201,7 @@ const TableWidget: FunctionComponent<Props> = (props) => {
                                             rowId={row.rowId}
                                             selected={selected}
                                             onClick = {() => toggleSelectedRowId(row.rowId)}
+                                            isDisabled={selectionDisabled}
                                         />
                                     </TableCell>
                                     {

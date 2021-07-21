@@ -1,31 +1,14 @@
-import React, { FunctionComponent, useMemo, useState } from 'react'
-import { SortingSelection, SortingSelectionAction, SortingSelectionDispatch, SortingViewProps } from "../../../pluginInterface"
-import SelectUnitsWidget from '../../../commonComponents/SelectUnitsWidget/SelectUnitsWidget'
-import CrossCorrelogramsWidget from './CrossCorrelogramsWidget'
 import Splitter from 'labbox-react/components/Splitter/Splitter';
-
-const useLocalUnitIds = (selection: SortingSelection, selectionDispatch: SortingSelectionDispatch): [SortingSelection, SortingSelectionDispatch] => {
-    const [selectedUnitIds, setSelectedUnitIds] = useState<number[]>([])
-    const selectionLocal: SortingSelection = useMemo(() => ({
-        ...selection,
-        selectedUnitIds
-    }), [selectedUnitIds, selection])
-
-    const selectionDispatchLocal = useMemo(() => ((action: SortingSelectionAction) => {
-        if (action.type === 'SetSelectedUnitIds') {
-            setSelectedUnitIds(action.selectedUnitIds)
-        }
-        else {
-            selectionDispatch(action)
-        }
-    }), [selectionDispatch])
-    return [selectionLocal, selectionDispatchLocal]
-}
+import useLocalUnitIds from 'python/sortingview/gui/pluginInterface/useLocalUnitIds';
+import React, { FunctionComponent, useState } from 'react';
+import LockableSelectUnitsWidget from '../../../commonComponents/SelectUnitsWidget/LockableSelectUnitsWidget';
+import { SortingViewProps } from "../../../pluginInterface";
+import CrossCorrelogramsWidget from './CrossCorrelogramsWidget';
 
 const CrossCorrelogramsView: FunctionComponent<SortingViewProps> = ({sorting, selection, curation, selectionDispatch, width, height}) => {
-
+    const [locked, setLocked] = useState(false)
     // Make a local selection/selectionDispatch pair that overrides the selectedUnitIds
-    const [selectionLocal, selectionDispatchLocal] = useLocalUnitIds(selection, selectionDispatch)
+    const [selectionLocal, selectionDispatchLocal] = useLocalUnitIds(selection, selectionDispatch, locked)
 
     return (
         <Splitter
@@ -33,7 +16,13 @@ const CrossCorrelogramsView: FunctionComponent<SortingViewProps> = ({sorting, se
             height={height || 900} // how to determine default height?
             initialPosition={200}
         >
-            <SelectUnitsWidget sorting={sorting} selection={selectionLocal} selectionDispatch={selectionDispatchLocal} curation={curation} />
+            <LockableSelectUnitsWidget
+                sorting={sorting}
+                selection={selectionLocal}
+                selectionDispatch={selectionDispatchLocal}
+                curation={curation}
+                locked={locked}
+                toggleLockStateCallback={() => setLocked(!locked)} />
             <CrossCorrelogramsWidget
                 sorting={sorting}
                 selection={selectionLocal}
