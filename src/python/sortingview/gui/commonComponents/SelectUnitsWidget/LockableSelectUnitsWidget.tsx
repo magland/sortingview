@@ -11,9 +11,10 @@ type Props = {
     curation: SortingCuration
     locked: boolean
     toggleLockStateCallback: () => void
+    sortingSelector?: string
 }
 
-const LockableSelectUnitsWidget: FunctionComponent<Props> = ({ sorting, selection, selectionDispatch, curation, locked, toggleLockStateCallback }) => {
+const LockableSelectUnitsWidget: FunctionComponent<Props> = ({ sorting, selection, selectionDispatch, curation, locked, toggleLockStateCallback, sortingSelector }) => {
     return (
         <Fragment>
             <FormGroup className={"lock-switch"}>
@@ -22,7 +23,7 @@ const LockableSelectUnitsWidget: FunctionComponent<Props> = ({ sorting, selectio
                     label={<Typography variant="caption">Lock selection</Typography>}
                 />
             </FormGroup>
-            <SelectUnitsWidget sorting={sorting} selection={selection} selectionDispatch={selectionDispatch} curation={curation} selectionDisabled={locked} />
+            <SelectUnitsWidget sorting={sorting} selection={selection} selectionDispatch={selectionDispatch} curation={curation} selectionDisabled={locked} sortingSelector={sortingSelector} />
         </Fragment>
     )
 }

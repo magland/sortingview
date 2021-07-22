@@ -61,6 +61,7 @@ const WorkspaceRecordingView: FunctionComponent<Props> = ({ recording, sortings,
       </Grid>
       <Grid item xs={12} xl={6}>
         <SortingsView
+          recording={recording}
           sortings={sortings}
           workspaceRouteDispatch={workspaceRouteDispatch}
           workspaceRoute={workspaceRoute}

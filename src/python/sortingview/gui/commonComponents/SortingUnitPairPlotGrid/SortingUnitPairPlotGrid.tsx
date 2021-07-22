@@ -8,9 +8,10 @@ type Props = {
     selectionDispatch: SortingSelectionDispatch
     unitIds: number[]
     unitPairComponent: (unitId1: number, unitId2: number) => React.ReactElement
+    sortingSelector?: string
 }
 
-const SortingUnitPairPlotGrid: FunctionComponent<Props> = ({ sorting, selection, selectionDispatch, unitIds, unitPairComponent }) => {
+const SortingUnitPairPlotGrid: FunctionComponent<Props> = ({ sorting, selection, selectionDispatch, unitIds, unitPairComponent, sortingSelector }) => {
     return (
         <Grid container spacing={0}>
             {
@@ -27,7 +28,7 @@ const SortingUnitPairPlotGrid: FunctionComponent<Props> = ({ sorting, selection,
                                             // onClick={handleUnitClick}
                                         >
                                             <div className='plotUnitLabel'>
-                                                <div>Units {unitId1} vs {unitId2}</div>
+                                                <div>Units {unitId1}{sortingSelector} vs {unitId2}{sortingSelector}</div>
                                             </div>
                                             {
                                                 unitPairComponent(unitId1, unitId2)

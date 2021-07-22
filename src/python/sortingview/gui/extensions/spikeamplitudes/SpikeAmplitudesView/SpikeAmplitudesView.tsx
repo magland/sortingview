@@ -5,7 +5,7 @@ import SelectUnitsWidget from './SelectUnitsWidget'
 import SpikeAmplitudesTimeWidget from './SpikeAmplitudesTimeWidget'
 import useSpikeAmplitudesData from './useSpikeAmplitudesData'
 
-const SpikeAmplitudesView: FunctionComponent<SortingViewProps> = ({recording, sorting, selection, selectionDispatch, curation, width, height, snippetLen}) => {
+const SpikeAmplitudesView: FunctionComponent<SortingViewProps> = ({recording, sorting, selection, selectionDispatch, curation, width, height, snippetLen, sortingSelector}) => {
     const spikeAmplitudesData = useSpikeAmplitudesData(recording.recordingObject, sorting.sortingObject, snippetLen)
     if (!spikeAmplitudesData) {
         return <div>Creating spike amplitudes data...</div>
@@ -16,7 +16,7 @@ const SpikeAmplitudesView: FunctionComponent<SortingViewProps> = ({recording, so
             height={height || 900} // how to determine default height?
             initialPosition={200}
         >
-            <SelectUnitsWidget sorting={sorting} selection={selection} selectionDispatch={selectionDispatch} curation={curation} />
+            <SelectUnitsWidget sorting={sorting} selection={selection} selectionDispatch={selectionDispatch} curation={curation} sortingSelector={sortingSelector} />
             <SpikeAmplitudesTimeWidget
                 spikeAmplitudesData={spikeAmplitudesData}
                 recording={recording}

@@ -1,13 +1,14 @@
 
 import { Button, Paper } from '@material-ui/core';
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
-import { LabboxPlugin, Recording, SortingUnitMetricPlugin, sortingUnitMetricPlugins, SortingViewProps } from "../../../pluginInterface";
+import { LabboxPlugin, Recording, sortingComparisonUnitMetricPlugins, SortingUnitMetricPlugin, sortingUnitMetricPlugins, SortingViewProps } from "../../../pluginInterface";
 import UnitsTable from './UnitsTable';
 import { runPureCalculationTaskAsync } from 'kachery-react';
 import useChannel from 'kachery-react/useChannel'
 import { usePlugins } from 'labbox-react';
 import useKacheryNode from 'kachery-react/useKacheryNode';
 import sortByPriority from 'labbox-react/extensionSystem/sortByPriority';
+import { SortingComparisonUnitMetricPlugin } from 'python/sortingview/gui/pluginInterface/SortingComparisonUnitMetricPlugin';
 
 // const defaultLabelOptions = ['noise', 'MUA', 'artifact', 'accept', 'reject'];
 
@@ -62,7 +63,7 @@ interface OwnProps {
 
 
 const Units: React.FunctionComponent<SortingViewProps & OwnProps> = (props) => {
-    const { sorting, recording, sortingInfo, selection, selectionDispatch, curation, width, height, snippetLen } = props
+    const { sorting, recording, sortingInfo, selection, selectionDispatch, curation, width, height, snippetLen, sortingSelector, compareSorting } = props
     const [expandedTable, setExpandedTable] = useState(false)
     const [metrics, updateMetrics] = useReducer(updateMetricData, initialMetricDataState)
     const [previousRecording, setPreviousRecording] = useState<Recording | null>(null)
@@ -82,7 +83,7 @@ const Units: React.FunctionComponent<SortingViewProps & OwnProps> = (props) => {
         const name = metric.name;
 
         if (name in metrics) {
-            return metrics[name];
+            return
         }
 
         // TODO: FIXME! THIS STATE IS NOT PRESERVED BETWEEN UNFOLDINGS!!!
@@ -110,12 +111,49 @@ const Units: React.FunctionComponent<SortingViewProps & OwnProps> = (props) => {
         }
     }, [kacheryNode, channelName, metrics, sorting.sortingObject, recording.recordingObject, snippetLen])
 
+    const fetchComparisonMetric = useCallback(async (metric: SortingComparisonUnitMetricPlugin) => {
+        if (!compareSorting) return
+        const name = metric.name;
+
+        if (name in metrics) {
+            return
+        }
+
+        // TODO: FIXME! THIS STATE IS NOT PRESERVED BETWEEN UNFOLDINGS!!!
+        // TODO: May need to bump this up to the parent!!!
+        // new request. Add state to cache, dispatch job, then update state as results come back.
+        updateMetrics({metricName: metric.name, status: 'executing'})
+        try {
+            const data = await runPureCalculationTaskAsync(
+                kacheryNode,
+                metric.hitherFnName,
+                {
+                    sorting_object: sorting.sortingObject,
+                    compare_sorting_object: compareSorting.sortingObject,
+                    sorting_selector: sortingSelector,
+                    recording_object: recording.recordingObject,
+                    snippet_len: snippetLen,
+                    configuration: metric.metricFnParams
+                },
+                {
+                    channelName
+                }
+            )
+            updateMetrics({metricName: metric.name, status: 'completed', data})
+        } catch (err) {
+            console.error(err);
+            updateMetrics({metricName: metric.name, status: 'error', error: err.message})
+        }
+    }, [kacheryNode, channelName, metrics, sorting.sortingObject, compareSorting, sortingSelector, recording.recordingObject, snippetLen])
+
     const plugins = usePlugins<LabboxPlugin>()
     useEffect(() => { 
         sortByPriority(sortingUnitMetricPlugins(plugins)).filter(p => (!p.disabled)).forEach(async mp => await fetchMetric(mp));
-    }, [plugins, metrics, fetchMetric]);
+        sortByPriority(sortingComparisonUnitMetricPlugins(plugins)).filter(p => (!p.disabled)).forEach(async mp => await fetchComparisonMetric(mp));
+    }, [plugins, metrics, fetchMetric, fetchComparisonMetric]);
 
     const metricsPlugins = useMemo(() => (sortingUnitMetricPlugins(plugins)), [plugins])
+    const comparisonMetricsPlugins = useMemo(() => (sortingComparisonUnitMetricPlugins(plugins)), [plugins])
 
     let units = selection.visibleUnitIds || sortingInfo.unit_ids
     let showExpandButton = false;
@@ -129,13 +167,16 @@ const Units: React.FunctionComponent<SortingViewProps & OwnProps> = (props) => {
             <Paper style={{maxHeight: props.maxHeight, overflow: 'auto'}}>
                 <UnitsTable 
                     sortingUnitMetrics={metricsPlugins}
+                    sortingComparisonUnitMetrics={comparisonMetricsPlugins}
                     units={units}
                     metrics={metrics}
                     selection={selection}
                     selectionDispatch={selectionDispatch}
                     sorting={sorting}
+                    compareSorting={compareSorting}
                     curation={curation}
                     height={height}
+                    sortingSelector={sortingSelector}
                 />
                 {
                     showExpandButton && (

@@ -16,9 +16,10 @@ type Props = {
     unitIds: number[]
     width: number
     height: number
+    sortingSelector?: string
 }
 
-const CrossCorrelogramsWidget: FunctionComponent<Props> = ({ sorting, selection, curation, selectionDispatch, unitIds, width, height }) => {
+const CrossCorrelogramsWidget: FunctionComponent<Props> = ({ sorting, selection, curation, selectionDispatch, unitIds, width, height, sortingSelector }) => {
     const plotMargin = 10 // in pixels
     const n = unitIds.length || 1
     const plotWidth = Math.min(240, (width - (plotMargin * (n + 1))) / n)
@@ -49,6 +50,7 @@ const CrossCorrelogramsWidget: FunctionComponent<Props> = ({ sorting, selection,
                 selectionDispatch={selectionDispatch}
                 unitIds={unitIds}
                 unitPairComponent={unitPairComponent}
+                sortingSelector={sortingSelector}
             />
             <MarkdownDialog
                 visible={subsamplingPopupVisible.visible}
