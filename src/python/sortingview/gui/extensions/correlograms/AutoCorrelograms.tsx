@@ -12,7 +12,7 @@ const AutoCorrelograms: React.FunctionComponent<SortingViewProps> = ({ sorting, 
     const unitComponent = useMemo(() => (unitId: number) => (
         <CorrelogramRv2
             {...{sorting, unitId1: unitId, selection, curation, selectionDispatch}}
-            width={180}
+            width={240}
             height={180}
         />
     ), [sorting, selection, selectionDispatch, curation])
