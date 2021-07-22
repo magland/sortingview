@@ -55,7 +55,7 @@ const Correlogram_rv2: FunctionComponent<Props> = ({ sorting, unitId1, unitId2, 
     return (
         <div className="App">
             <XYPlot
-                margin={30}
+                margin={{left: 60, right: 20, top: 20, bottom: 40}}
                 height={height}
                 width={width}
             >

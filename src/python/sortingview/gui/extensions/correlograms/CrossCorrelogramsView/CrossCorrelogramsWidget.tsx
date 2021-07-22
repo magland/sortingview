@@ -21,7 +21,7 @@ type Props = {
 const CrossCorrelogramsWidget: FunctionComponent<Props> = ({ sorting, selection, curation, selectionDispatch, unitIds, width, height }) => {
     const plotMargin = 10 // in pixels
     const n = unitIds.length || 1
-    const plotWidth = Math.min(220, (width - (plotMargin * (n + 1))) / n)
+    const plotWidth = Math.min(240, (width - (plotMargin * (n + 1))) / n)
     const plotHeight = plotWidth
     const unitPairComponent = useMemo(() => (unitId1: number, unitId2: number) => (
         <CorrelogramRv2
