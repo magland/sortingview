@@ -1,16 +1,16 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { SortingSelection, SortingSelectionAction, SortingSelectionDispatch } from "./"
 
 const useLocalUnitIds = (selection: SortingSelection, selectionDispatch: SortingSelectionDispatch, usingLocal: boolean = false):
                         [SortingSelection, SortingSelectionDispatch] => {
-    const globalSelectedIds = selection.selectedUnitIds ?? []
-    const [selectedUnitIds, setSelectedUnitIds] = useState<number[]>(globalSelectedIds)
-    if (!usingLocal &&
-            (selectedUnitIds.length !== globalSelectedIds.length ||
-             !selectedUnitIds.every((e) => globalSelectedIds.includes(e)))
-        ) {
-            setSelectedUnitIds(globalSelectedIds.sort())
-    }
+    const [selectedUnitIds, setSelectedUnitIds] = useState<number[]>([])
+    useEffect(() => {
+        if (!usingLocal) {
+            // keep the local selection in sync with global so that
+            // it has the correct value when if we switch to local
+            setSelectedUnitIds(selection.selectedUnitIds || [])
+        }
+    }, [usingLocal, selection.selectedUnitIds])
 
     const selectionLocal: SortingSelection = useMemo(() => ({
         ...selection,
@@ -18,14 +18,13 @@ const useLocalUnitIds = (selection: SortingSelection, selectionDispatch: Sorting
     }), [selection, selectedUnitIds])
 
     const selectionDispatchLocal = useMemo(() => ((action: SortingSelectionAction) => {
-        if (usingLocal && action.type === 'SetSelectedUnitIds') {
+        if (action.type === 'SetSelectedUnitIds') {
             setSelectedUnitIds(action.selectedUnitIds.sort())
         }
-        else {
-            selectionDispatch(action)
-        }
-    }), [usingLocal, selectionDispatch])
-    return [selectionLocal, selectionDispatchLocal]
+    }), [])
+
+    if (usingLocal) return [selectionLocal, selectionDispatchLocal]
+    else return [selection, selectionDispatch]
 }
 
 export default useLocalUnitIds
