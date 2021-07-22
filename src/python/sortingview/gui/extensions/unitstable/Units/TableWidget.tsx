@@ -27,9 +27,10 @@ const HeaderRow: FunctionComponent<{
     primarySortColumnName: string | undefined
     primarySortColumnDirection: 'ascending' | 'descending' | undefined
     onDeselectAll?: (() => void),
-    onSelectAll?: (() => void)
+    onSelectAll?: (() => void),
+    selectionDisabled?: boolean
 }> = (props) => {
-    const { columns, onColumnClick, primarySortColumnDirection, primarySortColumnName, onDeselectAll, onSelectAll } = props
+    const { columns, onColumnClick, primarySortColumnDirection, primarySortColumnName, onDeselectAll, onSelectAll, selectionDisabled } = props
     return (
         <TableHead>
             <TableRow>
@@ -41,6 +42,7 @@ const HeaderRow: FunctionComponent<{
                                 selected={false}
                                 onClick={onDeselectAll}
                                 isDeselectAll={true}
+                                isDisabled={selectionDisabled}
                             />
                         </TableCell>
                     ) : onSelectAll ? (
@@ -50,6 +52,7 @@ const HeaderRow: FunctionComponent<{
                                 selected={false}
                                 onClick={onSelectAll}
                                 isDeselectAll={false}
+                                isDisabled={selectionDisabled}
                             />
                         </TableCell>
                     ) : (
@@ -208,6 +211,7 @@ const TableWidget: FunctionComponent<Props> = (props) => {
                     }}
                     onDeselectAll={selectedRowIds.length === sortedRows.length ? handleDeselectAll : undefined}
                     onSelectAll={selectedRowIds.length < sortedRows.length ? handleSelectAll : undefined}
+                    selectionDisabled={selectionDisabled}
                 />
                 <TableBody>
                     {
