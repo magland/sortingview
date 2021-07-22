@@ -50,13 +50,13 @@ const unitClickedReducer = (state: SortingSelection, action: UnitClickedSortingS
         if ((state.selectedUnitIds || []).includes(unitId)) {
             return {
                 ...state,
-                selectedUnitIds: (state.selectedUnitIds || []).filter(uid => (uid !== unitId))
+                selectedUnitIds: (state.selectedUnitIds || []).filter(uid => (uid !== unitId)).sort((uid1, uid2) => (uid1 - uid2))
             }
         }
         else {
             return {
                 ...state,
-                selectedUnitIds: [...(state.selectedUnitIds || []), unitId]
+                selectedUnitIds: [...(state.selectedUnitIds || []), unitId].sort((uid1, uid2) => (uid1 - uid2))
             }
         }
     }
@@ -76,7 +76,10 @@ export const sortingSelectionReducer: Reducer<SortingSelection, SortingSelection
     else if (action.type === 'SetSelectedUnitIds') {
         return {
             ...state,
-            selectedUnitIds: action.selectedUnitIds.filter(uid => ((!state.visibleUnitIds) || (state.visibleUnitIds?.includes(uid))))
+            selectedUnitIds:
+                action.selectedUnitIds
+                    .filter(uid => ((!state.visibleUnitIds) || (state.visibleUnitIds?.includes(uid))))
+                    .sort((uid1, uid2) => (uid1 - uid2))
         }
     }
     else if (action.type === 'SetVisibleUnitIds') {
