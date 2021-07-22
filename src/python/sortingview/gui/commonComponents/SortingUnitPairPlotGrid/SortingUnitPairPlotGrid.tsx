@@ -12,6 +12,11 @@ type Props = {
 }
 
 const SortingUnitPairPlotGrid: FunctionComponent<Props> = ({ sorting, selection, selectionDispatch, unitIds, unitPairComponent, sortingSelector }) => {
+    const maxNumUnits = 6
+    if (unitIds.length > maxNumUnits) {
+        return <span>Please select {maxNumUnits} or fewer units</span>
+    }
+    
     return (
         <Grid container spacing={0}>
             {
