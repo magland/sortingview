@@ -28,7 +28,7 @@ const SortingUnitPairPlotGrid: FunctionComponent<Props> = ({ sorting, selection,
                                             // onClick={handleUnitClick}
                                         >
                                             <div className='plotUnitLabel'>
-                                                <div>Units {unitId1}{sortingSelector} vs {unitId2}{sortingSelector}</div>
+                                                <div>Units {unitId1}{sortingSelector || ''} vs {unitId2}{sortingSelector || ''}</div>
                                             </div>
                                             {
                                                 unitPairComponent(unitId1, unitId2)

@@ -37,11 +37,12 @@ type Props = {
     noiseLevel: number
     customActions?: (ActionItem | DividerItem)[]
     snippetLen?: [number, number]
+    sortingSelector?: string
 }
 
 // const calculationPool = createCalculationPool({maxSimultaneous: 6})
 
-const PairWaveformView: FunctionComponent<Props> = ({ sorting, curation, recording, unitIds, selection, selectionDispatch, width, height, noiseLevel, customActions, snippetLen }) => {
+const PairWaveformView: FunctionComponent<Props> = ({ sorting, curation, recording, unitIds, selection, selectionDispatch, width, height, noiseLevel, customActions, snippetLen, sortingSelector }) => {
     const unitIdsX = useMemo(() => (unitIds.map(unitId => (applyMergesToUnit(unitId, curation, selection.applyMerges)))), [unitIds, curation, selection])
     const unitId1 = unitIdsX[0]
     const unitId2 = unitIdsX[1]
@@ -111,8 +112,8 @@ const PairWaveformView: FunctionComponent<Props> = ({ sorting, curation, recordi
         <Table>
             <TableBody>
                 <TableRow>
-                    <TableCell>Unit {unitId1}</TableCell>
-                    <TableCell>Unit {unitId2}</TableCell>
+                    <TableCell>Unit {unitId1}{sortingSelector || ''}</TableCell>
+                    <TableCell>Unit {unitId2}{sortingSelector || ''}</TableCell>
                 </TableRow>
                 <TableRow>
                     <TableCell>

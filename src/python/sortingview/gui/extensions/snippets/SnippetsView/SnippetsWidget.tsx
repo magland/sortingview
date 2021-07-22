@@ -14,6 +14,7 @@ type Props = {
     unitIds: number[]
     width: number
     height: number
+    sortingSelector?: string
 }
 
 const WhenVisible: FunctionComponent<{width: number, height: number}> = ({width, height, children}) => {
@@ -28,7 +29,7 @@ const WhenVisible: FunctionComponent<{width: number, height: number}> = ({width,
     )
 }
 
-const SnippetsWidget: FunctionComponent<Props> = ({ recording, sorting, selection, selectionDispatch, curation, unitIds, width, height }) => {
+const SnippetsWidget: FunctionComponent<Props> = ({ recording, sorting, selection, selectionDispatch, curation, unitIds, width, height, sortingSelector }) => {
     const recordingInfo = useRecordingInfo(recording.recordingPath)
     const noiseLevel = (recordingInfo || {}).noise_level || 1  // fix this
     const rowHeight = 250
@@ -38,7 +39,7 @@ const SnippetsWidget: FunctionComponent<Props> = ({ recording, sorting, selectio
                 {
                     (unitIds || []).map(unitId => (
                         <Grid item key={unitId} style={{border: 'solid 3px lightgray', marginBottom: 2}}>
-                            <h3 style={{paddingTop: 0, paddingBottom: 0, marginTop: 10, marginBottom: 10}}>Snippets for unit {unitId}</h3>
+                            <h3 style={{paddingTop: 0, paddingBottom: 0, marginTop: 10, marginBottom: 10}}>Snippets for unit {unitId}{sortingSelector || ''}</h3>
                             <WhenVisible width={width} height={rowHeight}>
                                 <SnippetsRow {...{recording, sorting, selection, selectionDispatch, curation, unitId, height: rowHeight, noiseLevel}} />
                             </WhenVisible>

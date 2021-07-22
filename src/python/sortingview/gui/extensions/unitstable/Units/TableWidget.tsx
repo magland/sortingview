@@ -26,9 +26,10 @@ const HeaderRow: FunctionComponent<{
     onColumnClick: (column: Column) => void
     primarySortColumnName: string | undefined
     primarySortColumnDirection: 'ascending' | 'descending' | undefined
-    onDeselectAll?: (() => void)
+    onDeselectAll?: (() => void),
+    onSelectAll?: (() => void)
 }> = (props) => {
-    const { columns, onColumnClick, primarySortColumnDirection, primarySortColumnName, onDeselectAll } = props
+    const { columns, onColumnClick, primarySortColumnDirection, primarySortColumnName, onDeselectAll, onSelectAll } = props
     return (
         <TableHead>
             <TableRow>
@@ -38,8 +39,17 @@ const HeaderRow: FunctionComponent<{
                             <RowCheckbox
                                 rowId={''}
                                 selected={false}
-                                onClick={() => {onDeselectAll()}}
+                                onClick={onDeselectAll}
                                 isDeselectAll={true}
+                            />
+                        </TableCell>
+                    ) : onSelectAll ? (
+                        <TableCell key="_checkbox">
+                            <RowCheckbox
+                                rowId={''}
+                                selected={false}
+                                onClick={onSelectAll}
+                                isDeselectAll={false}
                             />
                         </TableCell>
                     ) : (
@@ -162,6 +172,14 @@ const TableWidget: FunctionComponent<Props> = (props) => {
     const primarySortColumnName = primaryRule ? primaryRule.columnName : undefined
     const primarySortColumnDirection = primaryRule ? (primaryRule.sortAscending ? 'ascending' : 'descending') : undefined
     
+    const handleSelectAll = useCallback(() => {
+        onSelectedRowIdsChanged(rows.map(row => (row.rowId)))
+    }, [onSelectedRowIdsChanged, rows])
+
+    const handleDeselectAll = useCallback(() => {
+        onSelectedRowIdsChanged([])
+    }, [onSelectedRowIdsChanged])
+
     return (
         <TableContainer style={height !== undefined ? {maxHeight: height} : {}}>
             <Table stickyHeader className="TableWidget">
@@ -188,7 +206,8 @@ const TableWidget: FunctionComponent<Props> = (props) => {
                         }
                         setSortFieldOrder(newSortFieldOrder)
                     }}
-                    onDeselectAll={selectedRowIds.length > 0 ? () => {onSelectedRowIdsChanged([])} : undefined}
+                    onDeselectAll={selectedRowIds.length === sortedRows.length ? handleDeselectAll : undefined}
+                    onSelectAll={selectedRowIds.length < sortedRows.length ? handleSelectAll : undefined}
                 />
                 <TableBody>
                     {

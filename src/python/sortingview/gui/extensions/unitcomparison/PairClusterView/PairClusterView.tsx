@@ -15,6 +15,7 @@ type Props = {
     snippetLen?: [number, number]
     width: number
     height: number
+    sortingSelector?: string
 }
 
 type Result = {
@@ -27,7 +28,7 @@ type Result = {
 // The X-axis is the discriminating direction (direction of line connecting the centroids of the two clusters)
 // and the Y-axis is the first PCA component after collapsing the discriminating component.
 
-const PairClusterView: FunctionComponent<Props> = ({recording, sorting, unitIds, selection, curation, snippetLen, width, height}) => {
+const PairClusterView: FunctionComponent<Props> = ({recording, sorting, unitIds, selection, curation, snippetLen, width, height, sortingSelector}) => {
     const {channelName} = useChannel()
     const unitIdsX = useMemo(() => (unitIds.map(unitId => (applyMergesToUnit(unitId, curation, selection.applyMerges)))), [unitIds, curation, selection])
     const unitId1 = unitIdsX[0]

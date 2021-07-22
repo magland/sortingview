@@ -20,6 +20,7 @@ const SnippetsView: FunctionComponent<SortingViewProps> = ({recording, sorting, 
                 curation={curation}
                 unitIds={selection.selectedUnitIds || []}
                 {...{width: 0, height: 0}} // filled in by splitter
+                sortingSelector={sortingSelector}
             />
         </Splitter>
     )
