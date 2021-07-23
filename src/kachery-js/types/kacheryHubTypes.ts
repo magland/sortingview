@@ -1,4 +1,4 @@
-import { ChannelName, isArrayOf, isBoolean, isChannelName, isEqualTo, isNodeId, isNodeLabel, isNumber, isOneOf, isSha1Hash, isSignature, isString, isTaskFunctionId, isTaskFunctionType, isTaskId, isTaskKwargs, isTimestamp, isUserId, NodeId, NodeLabel, optional, Sha1Hash, Signature, TaskFunctionId, TaskFunctionType, TaskId, TaskKwargs, Timestamp, UserId, _validateObject } from "./kacheryTypes"
+import { ChannelName, ErrorMessage, isArrayOf, isBoolean, isChannelName, isEqualTo, isErrorMessage, isNodeId, isNodeLabel, isNumber, isOneOf, isSha1Hash, isSignature, isString, isTaskFunctionId, isTaskFunctionType, isTaskId, isTaskKwargs, isTimestamp, isUserId, NodeId, NodeLabel, optional, Sha1Hash, Signature, TaskFunctionId, TaskFunctionType, TaskId, TaskKwargs, Timestamp, UserId, _validateObject } from "./kacheryTypes"
 
 export type GoogleServiceAccountCredentials = {
     type: 'service_account',
@@ -346,6 +346,44 @@ export const isGetChannelRequest = (x: any): x is GetChannelRequest => {
         type: isEqualTo('getChannel'),
         channelName: isChannelName,
         auth: isAuth
+    })
+}
+
+export type TestChannelRequest = {
+    type: 'testChannel'
+    channelName: ChannelName
+    auth: Auth
+}
+
+export const isTestChannelRequest = (x: any): x is TestChannelRequest => {
+    return _validateObject(x, {
+        type: isEqualTo('testChannel'),
+        channelName: isChannelName,
+        auth: isAuth
+    })
+}
+
+type TestResult = {
+    success: boolean
+    errorMessage?: ErrorMessage
+}
+
+const isTestResult = (x: any): x is TestResult => {
+    return _validateObject(x, {
+        success: isBoolean,
+        errorMessage: optional(isErrorMessage)
+    })
+}
+
+export type TestChannelResponse = {
+    bucketTest?: TestResult,
+    pubSubTest?: TestResult
+}
+
+export const isTestChannelResponse = (x: any): x is TestChannelRequest => {
+    return _validateObject(x, {
+        bucketTest: optional(isTestResult),
+        pubSubTest: optional(isTestResult)
     })
 }
 

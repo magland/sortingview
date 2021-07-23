@@ -1,12 +1,3 @@
-const text: string = "# Subsampling\n\nFor efficiency, sortings are subsampled when creating auto- and cross-correlograms.\n " +
-"Sampling using tight time windows poses the risk that one of a pair of firing events\n" +
-"will fall outside the window, and fail to be detected--particularly for units with\n" +
-"lower firing rates. However, using long contiguous windows risks inducing bias\n" +
-"toward particular areas of the recording.\n\n" +
-"The default sampling strategy strikes a balance between these risks by sampling\n" +
-"all units in 100 slices of 10 seconds each, resulting in 1000 seconds of observations\n" +
-"evenly distributed across the duration of the recording. Sampling is only used if\n" +
-"less than half of the recording would be included in the samples; shorter recordings\n" +
-"are used in their entirety."
+const text: string = "# Subsampling\n\nFor efficiency, sortings are subsampled when creating auto- and cross-correlograms.\nSince cross-correlograms make comparisons between different units, the spike trains\nare sampled according to windows of time, rather than sampling firing events--pure\nrandom subsampling of events is not optimal because it is less likely that both\nspikes in an event pair which could appear in the histogram will be part of the\nrandom sample.\n\nEven with time-based sampling, there is a risk of missing pairs of events that\nought to appear in the histogram. In particular, if the sample windows are\nbrief, there is a risk that the window will capture only one-half of a pair of\nfiring events. However, more protracted time samples increase the risk of\ninducing bias toward certain areas of the recording.\n\nThe default sampling strategy strikes a balance between these risks by sampling\nall units in 100 slices of 10 seconds each, resulting in 1000 seconds of observations\nevenly distributed across the duration of the recording. Sampling is only used if\nless than half of the recording would be included in the samples; shorter recordings\nare used in their entirety.\n"
 
 export default text
