@@ -47,7 +47,7 @@ const SortingUnitPlotGrid: FunctionComponent<Props> = ({ sorting, selection, cur
                                 onClick={handleUnitClick}
                             >
                                 <div className='plotUnitLabel'>
-                                    <div>Unit {unitId}{sortingSelector}</div>
+                                    <div>Unit {unitId}{sortingSelector || ''}</div>
                                 </div>
                                 {
                                     unitComponent(unitId)

@@ -65,7 +65,7 @@ const ViewLauncher: FunctionComponent<Props> = ({ onLaunchSortingView, onLaunchR
                 <div key="view-single-unit">
                 {
                     sortingUnitViewPlugin && (selection.selectedUnitIds || []).map(unitId => (
-                        <LaunchSortingUnitViewButton key={'unit-' + unitId} plugin={sortingUnitViewPlugin} unitId={unitId} label={`Unit ${unitId}${sortingSelector}`} onLaunch={onLaunchSortingUnitView} />
+                        <LaunchSortingUnitViewButton key={'unit-' + unitId} plugin={sortingUnitViewPlugin} unitId={unitId} label={`Unit ${unitId}${sortingSelector || ''}`} onLaunch={onLaunchSortingUnitView} />
                     ))
                 }
                 </div>

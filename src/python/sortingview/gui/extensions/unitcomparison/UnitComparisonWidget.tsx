@@ -39,7 +39,7 @@ const UnitComparisonWidget: FunctionComponent<Props> = ({recording, sorting, sel
                 defaultExpanded={false}
             >
                 <PairClusterView
-                    {...{recording, sorting, selection, curation, selectionDispatch, unitIds, width: width - 40, height: viewHeight, snippetLen}
+                    {...{recording, sorting, selection, curation, selectionDispatch, unitIds, width: width - 40, height: viewHeight, snippetLen, sortingSelector}
                     }
                 />
             </Expandable>
@@ -48,7 +48,7 @@ const UnitComparisonWidget: FunctionComponent<Props> = ({recording, sorting, sel
                 defaultExpanded={false}
             >
                 <PairWaveformView
-                    {...{recording, sorting, selection, curation, selectionDispatch, unitIds, width: width - 40, height: viewHeight, snippetLen, noiseLevel}
+                    {...{recording, sorting, selection, curation, selectionDispatch, unitIds, width: width - 40, height: viewHeight, snippetLen, noiseLevel, sortingSelector}
                     }
                 />
             </Expandable>

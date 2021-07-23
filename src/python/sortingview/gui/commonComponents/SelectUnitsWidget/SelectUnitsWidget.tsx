@@ -21,7 +21,6 @@ const SelectUnitsWidget: FunctionComponent<Props> = ({ sorting, selection, selec
         <UnitsTable
             units={unitIds}
             {...{selection, selectionDispatch, sorting, curation, selectionDisabled, sortingSelector}}
-            {...{selection, selectionDispatch, sorting, curation, sortingSelector}}
         />
     )
 }
