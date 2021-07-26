@@ -26,7 +26,7 @@ workspace_list.remove_workspace(name=workspace_name)
 To list workspaces:
 
 ```python
-names = sortingview.workspace_names
+names = workspace_list.workspace_names
 print(names)
 ```
 

@@ -322,10 +322,13 @@ def _get_sorting_curation(subfeed: kc.Subfeed, sorting_id: str):
     subfeed.set_position(0)
     labels_by_unit = {}
     merge_groups = []
+    is_closed = False
     while True:
         a = subfeed.get_next_message(wait_msec=0)
         if a is None: break
-        if a.get('type', '') == 'ADD_UNIT_LABEL':
+        message_type = a.get('type', None)
+        assert message_type is not None, "Feed contained message with no type."
+        if message_type == 'ADD_UNIT_LABEL':
             unit_ids = a.get('unitId', []) # allow this to be a list or an int
             if not isinstance(unit_ids, list):
                 unit_ids = [unit_ids]
@@ -335,7 +338,7 @@ def _get_sorting_curation(subfeed: kc.Subfeed, sorting_id: str):
                     labels_by_unit[unit_id] = []
                 labels_by_unit[unit_id].append(label)
                 labels_by_unit[unit_id] = sorted(list(set(labels_by_unit[unit_id])))
-        elif a.get('type', '') == 'REMOVE_UNIT_LABEL':
+        elif message_type == 'REMOVE_UNIT_LABEL':
             unit_ids = a.get('unitId', '')
             if not isinstance(unit_ids, list):
                 unit_ids = [unit_ids]
@@ -343,17 +346,18 @@ def _get_sorting_curation(subfeed: kc.Subfeed, sorting_id: str):
             for unit_id in unit_ids:
                 if unit_id in labels_by_unit:
                     labels_by_unit[unit_id] = [x for x in labels_by_unit[unit_id] if x != label]
-        elif a.get('type', 'MERGE_UNITS'):
+        elif message_type == 'MERGE_UNITS':
             unit_ids = a.get('unitIds', [])
             merge_groups = _simplify_merge_groups(merge_groups + [unit_ids])
-        elif a.get('type', 'UNMERGE_UNITS'):
+        elif message_type == 'UNMERGE_UNITS':
             unit_ids = a.get('unitIds', [])
             merge_groups = _simplify_merge_groups([[u for u in mg if (u not in unit_ids)] for mg in merge_groups])
     return {
         'labelsByUnit': labels_by_unit,
-        'mergeGroups': merge_groups
+        'mergeGroups': merge_groups,
+        'isClosed': is_closed
     }
-
+    
 def _import_le_recording(subfeed: kc.Subfeed, le_recording):
     le_recordings = _get_recordings_from_subfeed(subfeed)
     id = le_recording['recordingId']
