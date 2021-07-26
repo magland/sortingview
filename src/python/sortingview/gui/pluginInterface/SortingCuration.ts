@@ -2,6 +2,7 @@ export type SortingCuration = {
     labelsByUnit?: {[key: string]: string[]}
     labelChoices?: string[]
     mergeGroups?: (number[])[]
+    isClosed?: boolean
 }
 
 export interface AddUnitLabelCurationAction {
@@ -31,7 +32,15 @@ export interface SetCurationCurationAction {
     curation: SortingCuration
 }
 
-export type SortingCurationAction = AddUnitLabelCurationAction | RemoveUnitLabelCurationAction | MergeUnitsCurationAction | UnmergeUnitsCurationAction | SetCurationCurationAction
+export interface CloseCurationCurationAction {
+    type: 'CLOSE_CURATION'
+}
+
+export interface ReopenCurationCurationAction {
+    type: 'REOPEN_CURATION'
+}
+
+export type SortingCurationAction = AddUnitLabelCurationAction | RemoveUnitLabelCurationAction | MergeUnitsCurationAction | UnmergeUnitsCurationAction | SetCurationCurationAction | CloseCurationCurationAction | ReopenCurationCurationAction
 
 export type SortingCurationDispatch = (action: SortingCurationAction) => void
 

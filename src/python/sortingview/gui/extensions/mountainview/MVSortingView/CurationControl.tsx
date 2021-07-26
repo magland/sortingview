@@ -1,4 +1,4 @@
-import { Checkbox, Grid, Paper } from '@material-ui/core';
+import { Button, Checkbox, Grid, Paper } from '@material-ui/core';
 import React, { FunctionComponent, useCallback, useMemo } from 'react';
 import sizeMe, { SizeMeProps } from 'react-sizeme';
 import { SortingCuration, SortingSelection, SortingSelectionDispatch } from '../../../pluginInterface';
@@ -54,6 +54,13 @@ const CurationControl: FunctionComponent<Props & SizeMeProps> = ({ selection, se
             unitIds: selectedUnitIds
         })
     }, [curationDispatch, selectedUnitIds])
+
+    const handleToggleCurationClosed = useCallback((isClosed: boolean) => {
+        const type = isClosed ? 'REOPEN_CURATION' : 'CLOSE_CURATION'
+        curationDispatch({
+            type: type
+        })
+    }, [curationDispatch])
 
     const handleToggleApplyMerges = useCallback(() => {
         selectionDispatch({type: 'ToggleApplyMerges', curation})
@@ -138,6 +145,11 @@ const CurationControl: FunctionComponent<Props & SizeMeProps> = ({ selection, se
                 <span style={{whiteSpace: 'nowrap'}}>
                     <Checkbox checked={selection.applyMerges || false} onClick={handleToggleApplyMerges}/> Apply merges
                 </span>
+            </Paper>
+            <Paper style={paperStyle} key="close">
+                <Button onClick={() => {handleToggleCurationClosed(curation?.isClosed || false )}}>
+                    { curation.isClosed ? 'Re-open curation' : 'Curation complete' }
+                </Button>
             </Paper>
         </div>
     )

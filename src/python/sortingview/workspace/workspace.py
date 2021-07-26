@@ -194,11 +194,12 @@ def _get_recordings_from_subfeed(subfeed: kc.Subfeed):
         if msg is None: break
         if 'action' in msg:
             a = msg['action']
-            if a.get('type', '') == 'ADD_RECORDING':
+            msg_type = a.get('type', '')
+            if msg_type == 'ADD_RECORDING':
                 r = a.get('recording', {})
                 rid = r.get('recordingId', '')
                 le_recordings[rid] = r
-            elif a.get('type', '') == 'DELETE_RECORDINGS':
+            elif msg_type == 'DELETE_RECORDINGS':
                 for rid in a.get('recordingIds', []):
                     if rid in le_recordings:
                         del le_recordings[rid]
@@ -258,21 +259,22 @@ def _get_sortings_from_subfeed(subfeed: kc.Subfeed):
         if msg is None: break
         if 'action' in msg:
             a = msg['action']
-            if a.get('type', '') == 'ADD_SORTING':
+            msg_type = a.get('type', '')
+            if msg_type == 'ADD_SORTING':
                 s = a.get('sorting', {})
                 sid = s.get('sortingId', '')
                 le_sortings[sid] = s
-            elif a.get('type', '') == 'DELETE_SORTINGS':
+            elif msg_type == 'DELETE_SORTINGS':
                 for sid in a.get('sortingIds', []):
                     if sid in le_sortings:
                         del le_sortings[sid]
-            elif a.get('type', '') == 'DELETE_SORTINGS_FOR_RECORDINGS':
+            elif msg_type == 'DELETE_SORTINGS_FOR_RECORDINGS':
                 for rid in a.get('recordingIds', []):
                     sids = list(le_sortings.keys())
                     for sid in sids:
                         if le_sortings[sid]['recordingId'] == rid:
                             del le_sortings[sid]
-            elif a.get('type', '') == 'DELETE_RECORDINGS':
+            elif msg_type == 'DELETE_RECORDINGS':
                 for rid in a.get('recordingIds', []):
                     sids = list(le_sortings.keys())
                     for sid in sids:
@@ -328,6 +330,8 @@ def _get_sorting_curation(subfeed: kc.Subfeed, sorting_id: str):
         if a is None: break
         message_type = a.get('type', None)
         assert message_type is not None, "Feed contained message with no type."
+        if is_closed and message_type != 'REOPEN_CURATION':
+            raise Exception('ERROR: Subfeed attempts curation on a closed curation object.')
         if message_type == 'ADD_UNIT_LABEL':
             unit_ids = a.get('unitId', []) # allow this to be a list or an int
             if not isinstance(unit_ids, list):
@@ -352,6 +356,10 @@ def _get_sorting_curation(subfeed: kc.Subfeed, sorting_id: str):
         elif message_type == 'UNMERGE_UNITS':
             unit_ids = a.get('unitIds', [])
             merge_groups = _simplify_merge_groups([[u for u in mg if (u not in unit_ids)] for mg in merge_groups])
+        elif message_type == 'CLOSE_CURATION':
+            is_closed = True
+        elif message_type == 'REOPEN_CURATION':
+            is_closed = False
     return {
         'labelsByUnit': labels_by_unit,
         'mergeGroups': merge_groups,

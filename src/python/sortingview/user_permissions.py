@@ -4,8 +4,7 @@ import kachery_client as kc
 key = '_sortingview_user_permissions'
 
 def set_user_permissions(user_id: str, *, append_to_all_feeds: Union[None, bool]=None):
-    p = kc.get(key)
-    if p is None: p = {}
+    p = kc.get(key, {})
     p_user = p.get(user_id, {})
     if append_to_all_feeds is not None:
         p_user['appendToAllFeeds'] = append_to_all_feeds
