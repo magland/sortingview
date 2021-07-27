@@ -96,6 +96,7 @@ export interface Pen {
     color: Color,
     width?: number // N.B. as of right now this is ALWAYS IN PIXELS, regardless of coordinate system.
     // This is somewhat inconsistent, but a) it's probably what you actually want, and b) it'd be annoying to change.
+    lineDash?: [number, number]
 }
 
 export interface Font {
@@ -453,6 +454,7 @@ const applyPen = (ctx: Context2D, pen: Pen) => {
     const lineWidth = (isNumber(pen.width)) ? pen.width : 1
     ctx.strokeStyle = toColorStr(color)
     ctx.lineWidth = lineWidth || 1
+    ctx.setLineDash(pen.lineDash || [])
 }
 
 const applyBrush = (ctx: Context2D, brush: Brush) => {
