@@ -186,7 +186,7 @@ type TimeAction = ZoomTimeRangeAction | SetTimeRangeAction | TimeShiftFrac | Set
 // }
 
 const plotMargins = {
-    left: 40,
+    left: 80,
     top: 20,
     right: 40,
     bottom: 30

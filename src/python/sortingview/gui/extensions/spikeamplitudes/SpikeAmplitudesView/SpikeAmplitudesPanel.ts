@@ -1,5 +1,7 @@
+import { funcToTransform } from "labbox-react/components/CanvasWidget"
 import { Brush, CanvasPainter, Font, Pen } from "labbox-react/components/CanvasWidget/CanvasPainter"
 import { Recording, Sorting } from "python/sortingview/gui/pluginInterface"
+import getAxisTicks, { AxisTick } from "python/sortingview/gui/util/getAxisTicks"
 import { getArrayMax, getArrayMin } from "../../common/utility"
 import { SpikeAmplitudesData } from "./useSpikeAmplitudesData"
 
@@ -28,6 +30,7 @@ class SpikeAmplitudesPanel {
     _globalAmplitudeRange: {min: number, max: number} | null = null
     _includeZero = true
     _amplitudes: number[] | undefined = undefined
+    _effectiveYRange: {min: number, max: number} | null = null
     constructor(private args: {spikeAmplitudesData: SpikeAmplitudesData | null, recording: Recording, sorting: Sorting, unitId: number | number[]}) {
     }
     setTimeRange(timeRange: {min: number, max: number}) {
@@ -50,7 +53,13 @@ class SpikeAmplitudesPanel {
             if (this._includeZero) {
                 yrange = {min: Math.min(0, yrange.min), max: Math.max(0, yrange.max)}
             }
+            this._effectiveYRange = yrange
             painter.drawLine(timeRange.min, 0, timeRange.max, 0, {color: 'gray'})
+            const {majorTicks} = getAxisTicks(yrange.min, yrange.max)
+            for (let t of majorTicks) {
+                const y0 = (t.value - yrange.min) / (yrange.max - yrange.min)
+                painter.drawLine(timeRange.min, y0, timeRange.max, y0, {color: 'lightgray', lineDash: [5, 15]})    
+            }
             const N = timepoints.length
             for (let i = 0; i < N; i++) {
                 const t = timepoints[i]
@@ -62,6 +71,7 @@ class SpikeAmplitudesPanel {
             }
         }
         else {
+            this._effectiveYRange = null
             painter.drawText({
                 rect: {xmin: timeRange.min, xmax: timeRange.max, ymin: 0, ymax: 1},
                 alignment: {Horizontal: 'AlignCenter', Vertical: 'AlignCenter'},
@@ -71,7 +81,10 @@ class SpikeAmplitudesPanel {
         }
     }
     paintYAxis(painter: CanvasPainter, width: number, height: number) {
-        paintYAxis(painter, {xmin: 0, xmax: width, ymin: 0, ymax: height}, {label:'Spike amplitude'})
+        let yrange = this._effectiveYRange
+        if (yrange) {
+            paintYAxis(painter, {xmin: 0, xmax: width, ymin: 0, ymax: height}, {ymin: yrange.min, ymax: yrange.max, label:'Abs. spike amplitude'})
+        }
     }
     label() {
         return this.args.unitId + ''
@@ -99,12 +112,32 @@ class SpikeAmplitudesPanel {
     }
 }
 
-const paintYAxis = (painter: CanvasPainter, pixelRect: {xmin: number, xmax: number, ymin: number, ymax: number}, {label}: {label: string}) => {
-    const {xmin, xmax, ymin, ymax} = pixelRect
-    painter.drawLine(xmax, ymin, xmax, ymax, {color: 'black'})
-    const tickSize = 10
-    painter.drawText({
-        rect: {xmin, xmax: xmax - tickSize - 2, ymin, ymax},
+const drawTick = (painter: CanvasPainter, tick: AxisTick, o: {xmin: number, xmax: number, tickSize: number, majorTickSize: number, drawLabel: boolean}) => {
+    const {xmin, xmax, tickSize, majorTickSize, drawLabel} = o
+    painter.drawLine(xmax - tickSize, tick.value, xmax, tick.value, {color: 'black'})
+    if (drawLabel) {
+        painter.drawText({
+            rect: {xmin, xmax: xmax - majorTickSize - 3, ymin: tick.value, ymax: tick.value},
+            alignment: {Horizontal: 'AlignRight', Vertical: 'AlignCenter'},
+            font: {family: 'Arial', pixelSize: 10},
+            pen: {color: 'black'},
+            brush: {color: 'black'},
+            text: tick.label,
+            orientation: 'Horizontal'
+        })
+    }
+}
+
+const paintYAxis = (painter: CanvasPainter, pixelRect: {xmin: number, xmax: number, ymin: number, ymax: number}, {label, ymin, ymax}: {label: string, ymin: number, ymax: number}) => {
+    const {xmin, xmax, ymin: pixelYMin, ymax: pixelYmax} = pixelRect
+    const painter2 = painter.transform(funcToTransform(p => (
+        [p[0], pixelYmax - (p[1] - ymin) / (ymax - ymin) * (pixelYmax - pixelYMin)]
+    )))
+    painter2.drawLine(xmax, ymin, xmax, ymax, {color: 'black'})
+    const majorTickSize = 10
+    const minorTickSize = 5
+    painter2.drawText({
+        rect: {xmin, xmax: xmax - majorTickSize - 40, ymin, ymax},
         alignment: {Horizontal: 'AlignRight', Vertical: 'AlignCenter'},
         font: {family: 'Arial', pixelSize: 12},
         pen: {color: 'black'},
@@ -112,6 +145,13 @@ const paintYAxis = (painter: CanvasPainter, pixelRect: {xmin: number, xmax: numb
         text: label,
         orientation: 'Vertical'
     })
+    const {majorTicks, minorTicks} = getAxisTicks(ymin, ymax)
+    for (let t of minorTicks) {
+        drawTick(painter2, t, {xmin, xmax, tickSize: minorTickSize, majorTickSize, drawLabel: false})
+    }
+    for (let t of majorTicks) {
+        drawTick(painter2, t, {xmin, xmax, tickSize: majorTickSize, majorTickSize, drawLabel: true})
+    }
 }
 
 class CombinedPanel {
