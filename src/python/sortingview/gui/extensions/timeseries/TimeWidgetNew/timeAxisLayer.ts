@@ -37,10 +37,10 @@ const onPaint = (painter: CanvasPainter, layerProps: TimeWidgetLayerProps, state
     }
     const si = tickData.scale_info
     if (si.label) {
-        painter2.drawLine(si.t1, 0.45, si.t2, 0.45, pen)
-        painter2.drawLine(si.t1, 0.45, si.t1, 0.5, pen)
-        painter2.drawLine(si.t2, 0.45, si.t2, 0.5, pen)
-        let rect: RectangularRegion = {xmin: si.t1, ymin: 0, xmax: si.t2 - si.t1, ymax: 0.35}
+        painter2.drawLine(si.t1, 0.3, si.t2, 0.3, pen)
+        painter2.drawLine(si.t1, 0.3, si.t1, 0.35, pen)
+        painter2.drawLine(si.t2, 0.3, si.t2, 0.35, pen)
+        let rect: RectangularRegion = {xmin: si.t1, ymin: 0, xmax: si.t2, ymax: 0.25}
         let alignment: TextAlignment = {Horizontal: "AlignCenter", Vertical: "AlignTop"}
         painter2.drawText({
             rect, alignment, font, pen, brush, text: si.label
