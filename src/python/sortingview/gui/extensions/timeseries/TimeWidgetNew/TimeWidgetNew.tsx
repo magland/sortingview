@@ -189,7 +189,7 @@ const plotMargins = {
     left: 40,
     top: 20,
     right: 40,
-    bottom: 30
+    bottom: 60
 }
 
 // const useTimeState = (args: {
