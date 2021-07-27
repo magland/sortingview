@@ -1,3 +1,9 @@
+7/27/2021
+y-axis ticks on spike amp view #22
+timeseries view - show timescale label #22
+fix incorrect python deserializer affecting "unmerge" actions #64
+Release 0.2.34
+
 7/23/2021
 Fix correlogram layout #54
 Correlograms: toggle button to lock selection #49
