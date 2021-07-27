@@ -44,7 +44,7 @@ done
 twine upload ./dist/*
 
 # Tag this commit
-git tag v0.2.32
+git tag v0.2.33
 
-echo "Tagged as v0.2.32"
+echo "Tagged as v0.2.33"
 echo "You should increment the version now in jinjaroot.yaml"

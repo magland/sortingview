@@ -1,3 +1,12 @@
+7/23/2021
+Fix correlogram layout #54
+Correlograms: toggle button to lock selection #49
+Implement sorting comparison view: #47
+Ensure consistent order for cross-correlograms #45
+Checkbox to select all visible units #44
+Document correlogram subsampling in app #37
+Release 0.2.33
+
 7/20/2021
 subsample correlograms to speed up calculations #31
 Coordinated unit selection across views (jeff) #28
