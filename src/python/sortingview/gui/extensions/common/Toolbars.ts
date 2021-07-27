@@ -4,7 +4,8 @@ export interface ActionItem {
     callback: () => void
     title: string
     icon: any
-    keyCode: number
+    selected?: boolean
+    keyCode?: number
 }
 
 export interface DividerItem {

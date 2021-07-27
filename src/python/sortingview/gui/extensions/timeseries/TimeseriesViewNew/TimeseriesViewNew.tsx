@@ -1,16 +1,13 @@
 import Splitter from 'labbox-react/components/Splitter/Splitter';
 import React, { useMemo, useReducer } from 'react';
-import { RecordingInfo, RecordingSelection, RecordingSelectionDispatch, recordingSelectionReducer } from '../../../pluginInterface';
+import { RecordingInfo, RecordingSelection, RecordingSelectionDispatch, recordingSelectionReducer, SortingSelection } from '../../../pluginInterface';
+import useSpikeAmplitudesData from '../../spikeamplitudes/SpikeAmplitudesView/useSpikeAmplitudesData';
 import ElectrodeGeometryView from './ElectrodeGeometryView';
 import TimeseriesWidgetNew from './TimeseriesWidgetNew';
 import useTimeseriesData from './useTimeseriesModel';
 
-interface RecordingObject {
-
-}
-
 interface Props {
-    recordingObject: RecordingObject
+    recordingObject: any
     recordingInfo: RecordingInfo
     width: number
     height: number
@@ -19,6 +16,11 @@ interface Props {
     }
     recordingSelection?: RecordingSelection
     recordingSelectionDispatch?: RecordingSelectionDispatch
+
+    // for spike markers
+    sortingObject?: any
+    sortingSelection?: SortingSelection
+    snippetLen?: [number, number]
 }
 
 // interface TimeseriesInfo {
@@ -38,6 +40,8 @@ const TimeseriesViewNew = (props: Props) => {
     const recordingInfo = props.recordingInfo
     const timeseriesData = useTimeseriesData(props.recordingObject, props.recordingInfo)
     const [recordingSelectionInternal, recordingSelectionInternalDispatch] = useReducer(recordingSelectionReducer, {})
+
+    const spikeAmplitudesData = useSpikeAmplitudesData(props.recordingObject, props.sortingObject, props.snippetLen)
 
     const recordingSelection = props.recordingSelection || recordingSelectionInternal
     const recordingSelectionDispatch = props.recordingSelectionDispatch || recordingSelectionInternalDispatch
@@ -81,6 +85,8 @@ const TimeseriesViewNew = (props: Props) => {
                                 visibleChannelIds={opts.channelSelectPanel ? (selectedElectrodeIds.length > 0 ? selectedElectrodeIds : visibleElectrodeIds) : null}
                                 recordingSelection={recordingSelection}
                                 recordingSelectionDispatch={recordingSelectionDispatch}
+                                spikeAmplitudesData={spikeAmplitudesData || undefined}
+                                sortingSelection={props.sortingSelection}
                             />
                         ) : (
                             <div>Select one or more electrodes</div>

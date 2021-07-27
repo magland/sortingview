@@ -56,9 +56,14 @@ const useSpikeAmplitudesData = (recordingObject: any, sortingObject: any, snippe
         return data.get({type: 'spikeAmplitudes', unitId})
     }), [data])
 
-    return useMemo(() => ({
-        getSpikeAmplitudes
-    }), [getSpikeAmplitudes])
+    return useMemo(() => {
+        if ((recordingObject) && (sortingObject)) {
+            return {
+                getSpikeAmplitudes
+            }
+        }
+        else return null
+    }, [getSpikeAmplitudes, recordingObject, sortingObject])
 }
 
 export default useSpikeAmplitudesData

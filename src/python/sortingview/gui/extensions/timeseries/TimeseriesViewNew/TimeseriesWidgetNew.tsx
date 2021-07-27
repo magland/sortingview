@@ -1,8 +1,11 @@
+import { useVisible } from 'labbox-react'
 import { CanvasPainter, PainterPath } from 'labbox-react/components/CanvasWidget/CanvasPainter'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { FaArrowDown, FaArrowUp } from 'react-icons/fa'
-import { RecordingSelection, RecordingSelectionDispatch, recordingSelectionReducer } from '../../../pluginInterface'
+import { FaArrowDown, FaArrowUp, FaEye } from 'react-icons/fa'
+import { RecordingSelection, RecordingSelectionDispatch, recordingSelectionReducer, SortingSelection } from '../../../pluginInterface'
 import useBufferedDispatch from '../../common/useBufferedDispatch'
+import { colorForUnitId } from '../../spikeamplitudes/SpikeAmplitudesView/SpikeAmplitudesPanel'
+import { SpikeAmplitudesData } from '../../spikeamplitudes/SpikeAmplitudesView/useSpikeAmplitudesData'
 import TimeWidgetNew, { TimeWidgetAction } from '../TimeWidgetNew/TimeWidgetNew'
 import { TimeseriesData } from './useTimeseriesModel'
 // import TimeseriesModelNew from './TimeseriesModelNew'
@@ -19,6 +22,10 @@ interface Props {
     visibleChannelIds?: number[] | null
     recordingSelection: RecordingSelection
     recordingSelectionDispatch: RecordingSelectionDispatch
+
+    // for spike markers:
+    spikeAmplitudesData?: SpikeAmplitudesData
+    sortingSelection?: SortingSelection
 }
 
 const channelColors = [
@@ -160,17 +167,18 @@ class Panel {
 }
 
 const TimeseriesWidgetNew = (props: Props) => {
-    const { timeseriesData, width, height, y_scale_factor, channel_ids, visibleChannelIds, recordingSelection: externalSelection, recordingSelectionDispatch: externalSelectionDispatch } = props
+    const { timeseriesData, width, height, y_scale_factor, channel_ids, visibleChannelIds, recordingSelection: externalSelection, recordingSelectionDispatch: externalSelectionDispatch, spikeAmplitudesData, sortingSelection } = props
     const [panels, setPanels] = useState<Panel[]>([])
     const [recordingSelection, recordingSelectionDispatch] = useBufferedDispatch(recordingSelectionReducer, externalSelection, useMemo(() => ((state: RecordingSelection) => {externalSelectionDispatch({type: 'Set', state})}), [externalSelectionDispatch]), 400)
     
-    const [actions, setActions] = useState<TimeWidgetAction[] | null>(null)
     const _handleScaleAmplitudeUp = useCallback(() => {
         recordingSelectionDispatch({type: 'ScaleAmpScaleFactor', direction: 'up'})
     }, [recordingSelectionDispatch])
     const _handleScaleAmplitudeDown = useCallback(() => {
         recordingSelectionDispatch({type: 'ScaleAmpScaleFactor', direction: 'down'})
     }, [recordingSelectionDispatch])
+
+    const spikeMarkersVisibility = useVisible()
 
     useEffect(() => {
         const panels0: Panel[] = []
@@ -186,32 +194,60 @@ const TimeseriesWidgetNew = (props: Props) => {
         }
         setPanels(panels0)
     }, [channel_ids, setPanels, timeseriesData, y_scale_factor, visibleChannelIds, width, recordingSelection.ampScaleFactor, recordingSelection.timeRange])
-    useEffect(() => {
-        if (actions === null) {
-            const a: TimeWidgetAction[] = [
-                {
-                    type: 'button',
-                    callback: _handleScaleAmplitudeUp,
-                    title: 'Scale amplitude up [up arrow]',
-                    icon: <FaArrowUp />,
-                    keyCode: 38
-                },
-                {
-                    type: 'button',
-                    callback: _handleScaleAmplitudeDown,
-                    title: 'Scale amplitude down [down arrow]',
-                    icon: <FaArrowDown />,
-                    keyCode: 40
-                },
-                {
-                    type: 'divider'
-                }
-            ]
-            setActions(a)
+    const actions = useMemo(() => {
+        const a: TimeWidgetAction[] = [
+            {
+                type: 'button',
+                callback: _handleScaleAmplitudeUp,
+                title: 'Scale amplitude up [up arrow]',
+                icon: <FaArrowUp />,
+                keyCode: 38
+            },
+            {
+                type: 'button',
+                callback: _handleScaleAmplitudeDown,
+                title: 'Scale amplitude down [down arrow]',
+                icon: <FaArrowDown />,
+                keyCode: 40
+            },
+            {
+                type: 'divider'
+            }
+        ]
+        if (spikeAmplitudesData) {
+            a.push({
+                type: 'button',
+                selected: spikeMarkersVisibility.visible,
+                callback: spikeMarkersVisibility.toggle,
+                title: 'Toggle view spike markers',
+                icon: <FaEye />
+            })
         }
-    }, [actions, setActions, _handleScaleAmplitudeDown, _handleScaleAmplitudeUp, recordingSelection.ampScaleFactor, width])
+        return a
+    }, [_handleScaleAmplitudeDown, _handleScaleAmplitudeUp, spikeAmplitudesData, spikeMarkersVisibility])
 
     const numTimepoints = useMemo(() => (timeseriesData ? timeseriesData.numTimepoints() : 0), [timeseriesData])
+
+    const markers = useMemo(() => {
+        const x: {t: number, color: string}[] = []
+        if (spikeMarkersVisibility.visible) {
+            if ((spikeAmplitudesData) && (sortingSelection)) {
+                const selectedUnitIds = sortingSelection.selectedUnitIds || []
+                for (let uid of selectedUnitIds) {
+                    // todo: apply merges here
+                    const color = colorForUnitId(uid)
+                    const a = spikeAmplitudesData.getSpikeAmplitudes(uid)
+                    if (a) {
+                        const {timepoints} = a
+                        for (let t of timepoints) {
+                            x.push({t, color})
+                        }
+                    }
+                }
+            }
+        }
+        return x
+    }, [spikeAmplitudesData, sortingSelection, spikeMarkersVisibility.visible])
 
     return (
         <TimeWidgetNew
@@ -225,6 +261,7 @@ const TimeseriesWidgetNew = (props: Props) => {
             numTimepoints={numTimepoints}
             selection={recordingSelection}
             selectionDispatch={recordingSelectionDispatch}
+            markers={markers}
         />
     )
 }

@@ -64,8 +64,9 @@ const TimeWidgetToolbarNew: FunctionComponent<Props> = (props) => {
             {
                 buttons.map((button, ii) => {
                     if (button.type === 'button') {
-                        let color: 'inherit' | 'primary' = 'inherit';
-                        if (button.selected) color = 'primary';
+                        let color: 'primary' | 'secondary' | 'inherit' = 'inherit'
+                        // for some reason, secondary color looks more like a selection than primary
+                        if (button.selected) color = 'secondary'
                         return (
                             <IconButton title={button.title} onClick={button.onClick} key={ii} color={color} style={iconButtonStyle}>
                                 {button.icon}
