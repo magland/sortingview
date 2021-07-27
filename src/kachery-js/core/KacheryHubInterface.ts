@@ -457,7 +457,7 @@ class KacheryHubInterface {
             if (taskFunctionType === 'pure-calculation') {
                 if (taskId.toString() !== taskHash.toString()) throw Error('Task ID for pure function is not equal to task hash')
             }
-            const url = urlString(`${channelBucketUrl}/task_results/${pathifyHash(taskHash)}`)
+            const url = urlString(`${channelBucketUrl}/task_results/${channelName}/${pathifyHash(taskHash)}`)
             const exists = await checkUrlExists(url)
             if (exists) {
                 if (taskFunctionType === 'query') {
@@ -477,7 +477,7 @@ class KacheryHubInterface {
         if ((taskFunctionType === 'pure-calculation') || (taskFunctionType === 'query')) {
             const channelBucketUri = await this.getChannelBucketUri(channelName)
             const channelBucketUrl = urlFromUri(channelBucketUri)
-            taskResultUrl = urlString(`${channelBucketUrl}/task_results/${pathifyHash(taskHash)}`)
+            taskResultUrl = urlString(`${channelBucketUrl}/task_results/${channelName}/${pathifyHash(taskHash)}`)
         }
         else {
             taskResultUrl = undefined
