@@ -11,6 +11,7 @@ import TimeSpanWidget, { SpanWidgetInfo } from './TimeSpanWidget'
 import TimeWidgetBottomBar from './TimeWidgetBottomBar'
 import TimeWidgetToolbarNew from './TimeWidgetToolbarNew'
 import { ActionItem, DividerItem } from '../../common/Toolbars'
+import { createMarkersLayer } from './markersLayer'
 
 export type TimeWidgetAction = ActionItem | DividerItem
 
@@ -25,6 +26,7 @@ interface Props {
     numTimepoints: number
     selection: RecordingSelection
     selectionDispatch: RecordingSelectionDispatch
+    markers?: {t: number, color: string}[]
 }
 
 export interface TimeWidgetPanel {
@@ -228,16 +230,17 @@ const plotMargins = {
 
 const TimeWidgetNew = (props: Props) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const {panels, width, height, customActions, numTimepoints, maxTimeSpan, startTimeSpan, samplerate, selection, selectionDispatch} = props
+    const {panels, width, height, customActions, numTimepoints, maxTimeSpan, startTimeSpan, samplerate, selection, selectionDispatch, markers} = props
 
     const [spanWidgetInfo, setSpanWidgetInfo] = useState<SpanWidgetInfo>({numTimepoints})
 
     const mainLayer = useLayer(createMainLayer)
     const timeAxisLayer = useLayer(createTimeAxisLayer)
     const panelLabelLayer = useLayer(createPanelLabelLayer)
+    const markersLayer = useLayer(createMarkersLayer)
     const cursorLayer = useLayer(createCursorLayer)
 
-    const allLayers = useLayers([mainLayer, timeAxisLayer, panelLabelLayer, cursorLayer])
+    const allLayers = useLayers([mainLayer, timeAxisLayer, panelLabelLayer, markersLayer, cursorLayer])
 
     // schedule repaint when panels change
     useEffect(() => {
@@ -347,7 +350,8 @@ const TimeWidgetNew = (props: Props) => {
         onTimeShiftFrac: handleTimeShiftFrac,
         onGotoHome: handleGotoHome,
         onGotoEnd: handleGotoEnd,
-        onRepaintTimeEstimate: handleRepaintTimeEstimate
+        onRepaintTimeEstimate: handleRepaintTimeEstimate,
+        markers
     }
     allLayers.forEach(L => {
         if (L) L.setProps(layerProps)

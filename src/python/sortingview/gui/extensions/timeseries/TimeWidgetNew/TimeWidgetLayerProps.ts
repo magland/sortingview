@@ -16,6 +16,7 @@ export interface TimeWidgetLayerProps {
     onGotoHome: () => void
     onGotoEnd: () => void
     onRepaintTimeEstimate: (ms: number) => void
+    markers?: {t: number, color: string}[]
 }
 
 export interface Point2D {

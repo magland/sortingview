@@ -16,6 +16,8 @@ type SpikeAmplitudesDataQuery = {
 // const calculationPool = createCalculationPool({maxSimultaneous: 6})
 
 const fetchSpikeAmplitudes = async ({kacheryNode, channelName, recordingObject, sortingObject, unitId, snippetLen}: {kacheryNode: KacheryNode, channelName: ChannelName, recordingObject: any, sortingObject: any, unitId: number | number[], snippetLen?: [number, number]}) => {
+    // Note that although unit_id can be a list, that is meant to handle the case of a merge group (a few units have been merged together)
+    // For proper caching, the intent is to call this task once for every unit (or merge group)
     const result = await runPureCalculationTaskAsync<{
         timepoints: number[]
         amplitudes: number[]
@@ -56,9 +58,14 @@ const useSpikeAmplitudesData = (recordingObject: any, sortingObject: any, snippe
         return data.get({type: 'spikeAmplitudes', unitId})
     }), [data])
 
-    return useMemo(() => ({
-        getSpikeAmplitudes
-    }), [getSpikeAmplitudes])
+    return useMemo(() => {
+        if ((recordingObject) && (sortingObject)) {
+            return {
+                getSpikeAmplitudes
+            }
+        }
+        else return null
+    }, [getSpikeAmplitudes, recordingObject, sortingObject])
 }
 
 export default useSpikeAmplitudesData

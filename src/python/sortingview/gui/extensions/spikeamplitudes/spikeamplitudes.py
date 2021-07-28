@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List, Union
 
 import os
 import hither2 as hi
@@ -22,7 +22,7 @@ def _compute_peak_channel_index_from_average_waveform(average_waveform):
     modules=['sortingview']
 )
 @serialize_wrapper
-def fetch_spike_amplitudes(snippets_h5: str, unit_id: int):
+def fetch_spike_amplitudes(snippets_h5: str, unit_id: Union[int, List[int]]):    
     import h5py
     h5_path = kc.load_file(snippets_h5)
     assert h5_path is not None
@@ -51,6 +51,8 @@ def fetch_spike_amplitudes(snippets_h5: str, unit_id: int):
 
 @kc.taskfunction('fetch_spike_amplitudes.1', type='pure-calculation')
 def task_fetch_spike_amplitudes(recording_object, sorting_object, unit_id: int, snippet_len=(50, 80)):
+    # Note that although unit_id can be a list, that is meant to handle the case of a merge group (a few units have been merged together)
+    # For proper caching, the intent is to call this task once for every unit (or merge group)
     from sortingview.helpers import prepare_snippets_h5
     with hi.Config(job_handler=job_handler.misc, job_cache=job_cache):
         with hi.Config(job_handler=job_handler.extract_snippets):
