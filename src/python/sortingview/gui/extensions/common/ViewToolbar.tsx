@@ -15,6 +15,7 @@ type Button = {
     onClick: () => void
     icon: any
     selected: boolean
+    disabled?: boolean
 }
 
 const ViewToolbar: FunctionComponent<Props> = (props) => {
@@ -31,7 +32,8 @@ const ViewToolbar: FunctionComponent<Props> = (props) => {
                 title: a.title,
                 onClick: a.callback,
                 icon: a.icon,
-                selected: a.selected
+                selected: a.selected,
+                disabled: a.disabled
             });
         }
         return b
@@ -44,7 +46,7 @@ const ViewToolbar: FunctionComponent<Props> = (props) => {
                         let color: 'inherit' | 'primary' = 'inherit';
                         if (button.selected) color = 'primary';
                         return (
-                            <IconButton title={button.title} onClick={button.onClick} key={ii} color={color} style={iconButtonStyle}>
+                            <IconButton title={button.title} onClick={button.onClick} key={ii} color={color} style={iconButtonStyle} disabled={button.disabled ? true : false}>
                                 {button.icon}
                             </IconButton>
                         );

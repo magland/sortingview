@@ -56,7 +56,8 @@ const TimeWidgetToolbarNew: FunctionComponent<Props> = (props) => {
             title: a.title,
             onClick: a.callback,
             icon: a.icon,
-            selected: a.selected
+            selected: a.selected,
+            disabled: a.disabled
         });
     }
     return (
@@ -68,9 +69,12 @@ const TimeWidgetToolbarNew: FunctionComponent<Props> = (props) => {
                         // for some reason, secondary color looks more like a selection than primary
                         if (button.selected) color = 'secondary'
                         return (
-                            <IconButton title={button.title} onClick={button.onClick} key={ii} color={color} style={iconButtonStyle}>
-                                {button.icon}
-                            </IconButton>
+                            // If we don't put the title/tooltip in a span element, it will not be displayed when the button is disabled
+                            <span title={button.title}>
+                                <IconButton onClick={button.onClick} key={ii} color={color} style={iconButtonStyle} disabled={button.disabled ? true : false}>
+                                    {button.icon}
+                                </IconButton>
+                            </span>
                         );
                     }
                     else if (button.type === 'divider') {

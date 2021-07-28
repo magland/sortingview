@@ -6,6 +6,7 @@ export interface ActionItem {
     icon: any
     selected?: boolean
     keyCode?: number
+    disabled?: boolean
 }
 
 export interface DividerItem {

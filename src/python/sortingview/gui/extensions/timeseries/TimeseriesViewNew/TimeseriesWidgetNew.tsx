@@ -214,17 +214,20 @@ const TimeseriesWidgetNew = (props: Props) => {
                 type: 'divider'
             }
         ]
-        if (spikeAmplitudesData) {
+        if ((spikeAmplitudesData) && (sortingSelection)) {
+            const numSelectedUnits = (sortingSelection.selectedUnitIds || []).length
+            const enabled = numSelectedUnits > 0
             a.push({
                 type: 'button',
                 selected: spikeMarkersVisibility.visible,
                 callback: spikeMarkersVisibility.toggle,
-                title: 'Toggle view spike markers',
-                icon: <FaEye />
+                title: enabled ? `Toggle view spike markers for ${numSelectedUnits} selected units` : `Toggle view spike markers (you must select at least one unit)`,
+                icon: <FaEye />,
+                disabled: !enabled
             })
         }
         return a
-    }, [_handleScaleAmplitudeDown, _handleScaleAmplitudeUp, spikeAmplitudesData, spikeMarkersVisibility])
+    }, [_handleScaleAmplitudeDown, _handleScaleAmplitudeUp, spikeAmplitudesData, spikeMarkersVisibility, sortingSelection])
 
     const numTimepoints = useMemo(() => (timeseriesData ? timeseriesData.numTimepoints() : 0), [timeseriesData])
 
