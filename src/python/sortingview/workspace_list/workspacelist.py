@@ -2,8 +2,10 @@ import kachery_client as kc
 from sortingview.workspace import Workspace
 from ..workspace import Workspace
 
+# Obsolete, but needed for now for the migration script to work
 class WorkspaceList:
     def __init__(self, *, list_name: str):
+        print(f'WARNING: WorkspaceList is obsolete (except when migrating to new system). Instead, use get_workspace_list(), set_workspace_list(), and add_workspace_to_list().')
         self._list_name = list_name
         self._workspaces = {}
         sf = kc.load_subfeed(self.get_subfeed_uri())
@@ -20,10 +22,10 @@ class WorkspaceList:
                     del self._workspaces[name]
     @property
     def workspace_names(self):
-        return [name for name in self._workspaces.keys()]
+        return [name for name in list(self._workspaces.keys())]
     def get_workspace(self, name):
         w = self._workspaces[name]
-        return Workspace(w['uri'])
+        return Workspace(workspace_uri=w['uri'], label=w['name'])
     def add_workspace(self, *, name: str, workspace: Workspace):
         if name in self.workspace_names:
             raise Exception(f'Workspace with name already exists: {name}')

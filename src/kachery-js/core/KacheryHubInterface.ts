@@ -4,7 +4,7 @@ import IncomingTaskManager, { ProbeTaskFunctionsResult } from "../tasks/Incoming
 import OutgoingTaskManager from "../tasks/outgoingTaskManager";
 import { NodeConfig, RegisteredTaskFunction, RequestedTask } from "../types/kacheryHubTypes";
 import { KacheryNodeRequestBody } from "../types/kacheryNodeRequestTypes";
-import { ByteCount, ChannelName, DurationMsec, durationMsecToNumber, elapsedSince, errorMessage, ErrorMessage, FeedId, FileKey, fileKeyHash, isMessageCount, isSignedSubfeedMessage, JSONValue, MessageCount, NodeId, NodeLabel, nowTimestamp, pathifyHash, pubsubChannelName, PubsubChannelName, Sha1Hash, Signature, SignedSubfeedMessage, SubfeedHash, SubfeedPosition, TaskFunctionId, TaskFunctionType, TaskId, TaskKwargs, TaskStatus, toTaskId, urlString, UrlString, UserId, _validateObject } from "../types/kacheryTypes";
+import { ByteCount, ChannelName, DurationMsec, durationMsecToNumber, elapsedSince, errorMessage, ErrorMessage, FeedId, FileKey, fileKeyHash, isMessageCount, isSignedSubfeedMessage, JSONValue, MessageCount, NodeId, NodeLabel, nowTimestamp, pathifyHash, pubsubChannelName, PubsubChannelName, scaledDurationMsec, Sha1Hash, Signature, SignedSubfeedMessage, SubfeedHash, SubfeedPosition, TaskFunctionId, TaskFunctionType, TaskId, TaskKwargs, TaskStatus, toTaskId, urlString, UrlString, UserId, _validateObject } from "../types/kacheryTypes";
 import { KacheryHubPubsubMessageBody, KacheryHubPubsubMessageData, ProbeTaskFunctionsBody, RequestFileMessageBody, RequestSubfeedMessageBody, RequestTaskMessageBody, UpdateSubfeedMessageCountMessageBody, UpdateTaskStatusMessageBody, UploadFileStatusMessageBody } from "../types/pubsubMessages";
 import cacheBust from "../util/cacheBust";
 import computeTaskHash from "../util/computeTaskHash";
@@ -441,17 +441,17 @@ class KacheryHubInterface {
             return toTaskId(randomAlphaString(10))
         }
     }
-    async requestTaskFromChannel(args: {channelName: ChannelName, taskId: TaskId, taskFunctionId: TaskFunctionId, taskKwargs: TaskKwargs, taskFunctionType: TaskFunctionType, timeoutMsec: DurationMsec, queryUseCache?: boolean}): Promise<RequestTaskResult> {
+    async requestTaskFromChannel(args: {channelName: ChannelName, taskId: TaskId, taskFunctionId: TaskFunctionId, taskKwargs: TaskKwargs, taskFunctionType: TaskFunctionType, timeoutMsec: DurationMsec, queryUseCache?: boolean, queryFallbackToCache?: boolean}): Promise<RequestTaskResult> {
         await this.initialize()
 
-        const { channelName, taskId, taskFunctionId, taskKwargs, taskFunctionType, timeoutMsec, queryUseCache } = args
+        const { channelName, taskId, taskFunctionId, taskKwargs, taskFunctionType, timeoutMsec, queryUseCache, queryFallbackToCache } = args
         const taskHash = computeTaskHash(taskFunctionId, taskKwargs)
         if (taskFunctionType === 'pure-calculation') {
             if (taskId !== toTaskId(taskHash)) {
                 throw Error('Unexpected: taskId does not equal taskHash for pure-calculation')
             }
         }
-        if ((taskFunctionType === 'pure-calculation') || ((taskFunctionType === 'query') && (queryUseCache))) {
+        if ((taskFunctionType === 'pure-calculation') || ((taskFunctionType === 'query') && ((queryUseCache) || (queryFallbackToCache)))) {
             const channelBucketUri = await this.getChannelBucketUri(channelName)
             const channelBucketUrl = urlFromUri(channelBucketUri)
             if (taskFunctionType === 'pure-calculation') {
@@ -462,7 +462,22 @@ class KacheryHubInterface {
             if (exists) {
                 if (taskFunctionType === 'query') {
                     // even though we are using the cached query result, we care still going to request the query... that way the updated result will be available for next time
+                    this.#outgoingTaskManager.createOutgoingTask(channelName, taskId)
                     this._requestTaskFromChannel({channelName, taskFunctionId, kwargs: taskKwargs, taskFunctionType, taskId})
+                    
+                    if (queryFallbackToCache) {
+                        // we'll wait for the query result, but if it times out, we will fall back to the cached result
+                        const x0 = await this.waitForTaskResult({channelName, taskId, taskResultUrl: url, timeoutMsec: scaledDurationMsec(3000), taskFunctionType})
+                        if (x0.status !== 'waiting') {
+                            return {
+                                taskId,
+                                status: x0.status,
+                                taskResultUrl: url,
+                                errorMessage: x0.errorMessage,
+                                cacheHit: false
+                            }
+                        }
+                    }
                 }
                 return {
                     taskId,

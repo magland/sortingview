@@ -17,7 +17,7 @@ def parse_workspace_uri(workspace_uri: str):
     return feed_id, query_string
 
 class Workspace:
-    def __init__(self, *, workspace_uri: str) -> None:
+    def __init__(self, *, workspace_uri: str, label: Union[None, str]=None) -> None:
         feed_id, query_string = parse_workspace_uri(workspace_uri)
         self._query_string = query_string
         self._feed = kc.load_feed(f'feed://{feed_id}')
@@ -27,6 +27,7 @@ class Workspace:
         self._unit_metrics_for_sortings = _get_unit_metrics_for_sortings_from_subfeed(main_subfeed)
         self._user_permissions = _get_user_permissions_from_subfeed(main_subfeed)
         self._snippet_len: Tuple[int, int] = _get_snippet_len_from_subfeed(main_subfeed)
+        self._label = label
     @property
     def uri(self):
         q = f'?{self._query_string}' if self._query_string else ''
@@ -42,6 +43,8 @@ class Workspace:
         return self._feed
     @property
     def label(self):
+        if self._label is not None:
+            return self._label
         p = _query_string_to_dict(self._query_string)
         return p.get('label', '')
     def get_uri(self):

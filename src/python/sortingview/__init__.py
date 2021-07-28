@@ -7,3 +7,4 @@ from .workspace import load_workspace, Workspace
 from .workspace.workspace import create_workspace
 from .serialize_wrapper import serialize_wrapper
 from .extractors import LabboxEphysRecordingExtractor, LabboxEphysSortingExtractor
+from .workspace_list import get_workspace_list, set_workspace_list, add_workspace_to_list

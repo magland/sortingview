@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import initiateTask, { Task } from "./initiateTask";
 import useKacheryNode from "./useKacheryNode";
 
-const useTask = <ReturnType>(functionId: TaskFunctionId | string | undefined, kwargs: TaskKwargs | {[key: string]: any}, functionType: TaskFunctionType, opts: {channelName?: ChannelName, queryUseCache?: boolean}) => {
+const useTask = <ReturnType>(functionId: TaskFunctionId | string | undefined, kwargs: TaskKwargs | {[key: string]: any}, functionType: TaskFunctionType, opts: {channelName?: ChannelName, queryUseCache?: boolean, queryFallbackToCache?: boolean}) => {
     const [task, setTask] = useState<Task<ReturnType> | undefined>(undefined)
     const kacheryNode = useKacheryNode()
     const [, setUpdateCode] = useState<number>(0)
@@ -28,7 +28,8 @@ const useTask = <ReturnType>(functionId: TaskFunctionId | string | undefined, kw
             kwargs: kwargs2,
             functionType,
             onStatusChanged,
-            queryUseCache: opts.queryUseCache
+            queryUseCache: opts.queryUseCache, // check the cache first, but also submit the query
+            queryFallbackToCache: opts.queryFallbackToCache // submit the query, and if that times out, use the cache
         })
         
         setTask(t)
@@ -36,7 +37,7 @@ const useTask = <ReturnType>(functionId: TaskFunctionId | string | undefined, kw
         return () => {
             valid = false
         }
-    }, [functionId, kwargsString, functionType, opts.channelName, kacheryNode, incrementUpdateCode, opts.queryUseCache])
+    }, [functionId, kwargsString, functionType, opts.channelName, kacheryNode, incrementUpdateCode, opts.queryUseCache, opts.queryFallbackToCache])
     const taskStatus = task ? task.status : undefined
     const returnValue = useMemo(() => {
         if (!task) return undefined
