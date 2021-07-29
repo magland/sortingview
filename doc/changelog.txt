@@ -3,6 +3,7 @@ New method for defining workspace list #71 #72
 Option to view markers for unit spike times in timeseries view #70
 Switch to using channel-specific subdirectory of task_results on bucket
 Release 0.2.35
+Curation complete button #74
 
 7/27/2021
 y-axis ticks on spike amp view #22
