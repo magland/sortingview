@@ -18,7 +18,7 @@ export class Task<ReturnType> {
     #timestampCompleted: Timestamp | undefined = undefined
     #statusUpdateCallbacks: (() => void)[] = []
     #isCacheHit: boolean | undefined = undefined
-    constructor(private args: {kacheryNode: KacheryNode, channelName: ChannelName, taskId: TaskId, functionId: TaskFunctionId, kwargs: TaskKwargs, functionType: TaskFunctionType, onStatusChanged: () => void, queryUseCache?: boolean}) {
+    constructor(private args: {kacheryNode: KacheryNode, channelName: ChannelName, taskId: TaskId, functionId: TaskFunctionId, kwargs: TaskKwargs, functionType: TaskFunctionType, onStatusChanged: () => void, queryUseCache?: boolean, queryFallbackToCache?: boolean}) {
         this.#taskId = args.taskId
         this._start()
     }
@@ -79,7 +79,7 @@ export class Task<ReturnType> {
         }
     }
     async _start() {
-        const { kacheryNode, channelName, functionId, kwargs, functionType, queryUseCache } = this.args
+        const { kacheryNode, channelName, functionId, kwargs, functionType, queryUseCache, queryFallbackToCache } = this.args
         const x = await kacheryNode.kacheryHubInterface().requestTaskFromChannel({
             channelName,
             taskId: this.#taskId,
@@ -87,7 +87,8 @@ export class Task<ReturnType> {
             taskKwargs: kwargs,
             taskFunctionType: functionType,
             timeoutMsec: scaledDurationMsec(1000),
-            queryUseCache
+            queryUseCache,
+            queryFallbackToCache
         })
         const {taskId, status, taskResultUrl, errorMessage, cacheHit} = x
         if (cacheHit !== undefined) {
@@ -148,8 +149,8 @@ export class Task<ReturnType> {
     }
 }
 
-const initiateTask = <ReturnType>(args: {kacheryNode: KacheryNode, channelName: ChannelName, functionId: TaskFunctionId | string | undefined, kwargs: TaskKwargs | {[key: string]: any}, functionType: TaskFunctionType, onStatusChanged: () => void, queryUseCache?: boolean}) => {
-    const { kacheryNode, channelName, functionId, kwargs, functionType, onStatusChanged, queryUseCache } = args
+const initiateTask = <ReturnType>(args: {kacheryNode: KacheryNode, channelName: ChannelName, functionId: TaskFunctionId | string | undefined, kwargs: TaskKwargs | {[key: string]: any}, functionType: TaskFunctionType, onStatusChanged: () => void, queryUseCache?: boolean, queryFallbackToCache?: boolean}) => {
+    const { kacheryNode, channelName, functionId, kwargs, functionType, onStatusChanged, queryUseCache, queryFallbackToCache } = args
     if (!functionId) return undefined
     if (!isTaskFunctionId(functionId)) {
         throw Error(`Invalid task function ID: ${functionId}`)
@@ -166,7 +167,7 @@ const initiateTask = <ReturnType>(args: {kacheryNode: KacheryNode, channelName: 
         return existingTask
     }
 
-    const task = new Task<ReturnType>({kacheryNode, taskId, channelName, functionId, kwargs, functionType, onStatusChanged, queryUseCache})
+    const task = new Task<ReturnType>({kacheryNode, taskId, channelName, functionId, kwargs, functionType, onStatusChanged, queryUseCache, queryFallbackToCache})
     taskManager.addTask(task)
     return task
 }
