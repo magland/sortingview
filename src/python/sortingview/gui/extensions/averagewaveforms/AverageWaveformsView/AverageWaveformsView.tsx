@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { Fragment, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaArrowDown, FaArrowUp } from 'react-icons/fa';
 import SortingUnitPlotGrid from '../../../commonComponents/SortingUnitPlotGrid/SortingUnitPlotGrid';
 import Splitter from 'labbox-react/components/Splitter/Splitter';
@@ -7,6 +7,11 @@ import AverageWaveformView from './AverageWaveformView';
 import { ActionItem, DividerItem } from '../../common/Toolbars';
 import { useRecordingInfo } from 'python/sortingview/gui/pluginInterface/useRecordingInfo';
 import ViewToolbar from '../../common/ViewToolbar';
+import { IconButton } from '@material-ui/core';
+import { useVisible } from 'labbox-react';
+import { Help } from '@material-ui/icons';
+import MarkdownDialog from 'labbox-react/components/Markdown/MarkdownDialog';
+import info from '../../../helpPages/AverageWaveforms.md.gen'
 
 export type AverageWaveformAction = ActionItem  | DividerItem
 
@@ -58,6 +63,8 @@ const AverageWaveformsView: FunctionComponent<SortingViewProps> = (props) => {
         setScalingActions(actions)
     }, [_handleScaleAmplitudeUp, _handleScaleAmplitudeDown])
 
+    const infoVisible = useVisible()
+
     return width ? (
         <div>
             <Splitter
@@ -74,14 +81,24 @@ const AverageWaveformsView: FunctionComponent<SortingViewProps> = (props) => {
                     />
                 }
                 {
-                    <SortingUnitPlotGrid
-                        sorting={sorting}
-                        selection={selection}
-                        curation={curation}
-                        selectionDispatch={selectionDispatch}
-                        unitComponent={unitComponent}
-                        sortingSelector={sortingSelector}
-                    />
+                    <Fragment>
+                        <div>
+                            <IconButton onClick={infoVisible.show}><Help /></IconButton>
+                        </div>
+                        <SortingUnitPlotGrid
+                            sorting={sorting}
+                            selection={selection}
+                            curation={curation}
+                            selectionDispatch={selectionDispatch}
+                            unitComponent={unitComponent}
+                            sortingSelector={sortingSelector}
+                        />
+                        <MarkdownDialog
+                            visible={infoVisible.visible}
+                            onClose={infoVisible.hide}
+                            source={info}
+                        />
+                    </Fragment>
                 }
             </Splitter>
         </div>

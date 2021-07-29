@@ -1,4 +1,4 @@
-# Subsampling
+# Correlogram subsampling
 
 For efficiency, sortings are subsampled when creating auto- and cross-correlograms.
 Since cross-correlograms make comparisons between different units, the spike trains

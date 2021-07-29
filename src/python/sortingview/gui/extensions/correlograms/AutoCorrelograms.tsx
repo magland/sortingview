@@ -5,7 +5,7 @@ import MarkdownDialog from 'labbox-react/components/Markdown/MarkdownDialog';
 import React, { Fragment, useMemo } from 'react';
 import SortingUnitPlotGrid from '../../commonComponents/SortingUnitPlotGrid/SortingUnitPlotGrid';
 import { SortingViewProps } from "../../pluginInterface";
-import correlogramSubsamplingInfo from './CorrelogramSubsamplingInfo.md.gen';
+import correlogramSubsamplingInfo from '../../helpPages/CorrelogramSubsamplingInfo.md.gen';
 import CorrelogramRv2 from './Correlogram_ReactVis2';
 
 // const autocorrelogramsCalculationPool = createCalculationPool({maxSimultaneous: 6});
