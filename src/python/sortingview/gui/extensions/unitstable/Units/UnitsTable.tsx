@@ -27,7 +27,8 @@ const UnitsTable: FunctionComponent<Props> = (props) => {
     const selectedUnitIds = ((selection || {}).selectedUnitIds || [])
     const sortingUnitMetricsList = sortByPriority(Object.values(sortingUnitMetrics || {})).filter(p => (!p.disabled))
     const sortingComparisonUnitMetricsList = sortByPriority(Object.values(sortingComparisonUnitMetrics || {})).filter(p => (!p.disabled))
-    const allUnitMetricsList = [...sortingComparisonUnitMetricsList, ...sortingUnitMetricsList]
+    // If we are in a comparison between sortings, use both sortingUnitMetricList and sortingComparisonUnitMetricList. Otherwise, use only the sortingUnitMetricList 
+    const allUnitMetricsList = sortingSelector ? [...sortingComparisonUnitMetricsList, ...sortingUnitMetricsList] : sortingUnitMetricsList
 
     const handleSelectedRowIdsChanged = useCallback((selectedRowIds: string[]) => {
         selectionDispatch({
