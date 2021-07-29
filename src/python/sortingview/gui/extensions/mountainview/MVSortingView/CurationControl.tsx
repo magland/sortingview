@@ -46,14 +46,20 @@ const CurationControl: FunctionComponent<Props & SizeMeProps> = ({ selection, se
             type: 'MERGE_UNITS',
             unitIds: selectedUnitIds
         })
-    }, [curationDispatch, selectedUnitIds])
+        selectionDispatch({
+            type: 'SetSelectedUnitIds', selectedUnitIds: []
+        })
+    }, [curationDispatch, selectedUnitIds, selectionDispatch])
 
     const handleUnmergeSelected = useCallback(() => {
         curationDispatch({
             type: 'UNMERGE_UNITS',
             unitIds: selectedUnitIds
         })
-    }, [curationDispatch, selectedUnitIds])
+        selectionDispatch({
+            type: 'SetSelectedUnitIds', selectedUnitIds: []
+        })
+    }, [curationDispatch, selectedUnitIds, selectionDispatch])
 
     const handleToggleCurationClosed = useCallback(() => {
         const type = curation?.isClosed ? 'REOPEN_CURATION' : 'CLOSE_CURATION'
