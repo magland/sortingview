@@ -1,4 +1,4 @@
-import { Checkbox, Grid, Paper } from '@material-ui/core';
+import { Button, Checkbox, Grid, Paper } from '@material-ui/core';
 import React, { FunctionComponent, useCallback, useMemo } from 'react';
 import sizeMe, { SizeMeProps } from 'react-sizeme';
 import { SortingCuration, SortingSelection, SortingSelectionDispatch } from '../../../pluginInterface';
@@ -55,6 +55,13 @@ const CurationControl: FunctionComponent<Props & SizeMeProps> = ({ selection, se
         })
     }, [curationDispatch, selectedUnitIds])
 
+    const handleToggleCurationClosed = useCallback(() => {
+        const type = curation?.isClosed ? 'REOPEN_CURATION' : 'CLOSE_CURATION'
+        curationDispatch({
+            type: type
+        })
+    }, [curation.isClosed, curationDispatch])
+
     const handleToggleApplyMerges = useCallback(() => {
         selectionDispatch({type: 'ToggleApplyMerges', curation})
     }, [selectionDispatch, curation])
@@ -66,7 +73,7 @@ const CurationControl: FunctionComponent<Props & SizeMeProps> = ({ selection, se
 
     const labelCounts: {[key: string]: number} = {}
     for (const uid of selectedUnitIds) {
-        const labels = (curation.labelsByUnit || {})[uid + ''] || []
+        const labels = (curation?.labelsByUnit || {})[uid + ''] || []
         for (const label of labels) {
             let c = labelCounts[label] || 0
             c ++
@@ -93,7 +100,7 @@ const CurationControl: FunctionComponent<Props & SizeMeProps> = ({ selection, se
     }
     const enableApply = selectedUnitIds.length > 0
     const standardChoices = ['accept', 'reject', 'noise', 'artifact', 'mua']
-    const labelChoices = [...standardChoices, ...(curation.labelChoices || []).filter(l => (!standardChoices.includes(l)))]
+    const labelChoices = [...standardChoices, ...(curation?.labelChoices || []).filter(l => (!standardChoices.includes(l)))]
     return (
         <div style={{width, position: 'relative'}}>
             <Paper style={paperStyle} key="selected">
@@ -105,7 +112,12 @@ const CurationControl: FunctionComponent<Props & SizeMeProps> = ({ selection, se
                     {
                         labelRecords.map(r => (
                             <Grid item key={r.label}>
-                                <Label label={r.label} partial={r.partial} onClick={() => {r.partial ? _handleApplyLabel(r.label) : _handleRemoveLabel(r.label)}} />
+                                <Label
+                                    label={r.label}
+                                    partial={r.partial}
+                                    onClick={() => {r.partial ? _handleApplyLabel(r.label) : _handleRemoveLabel(r.label)}}
+                                    disabled={curation?.isClosed}
+                                />
                             </Grid>
                         ))
                     }
@@ -119,7 +131,13 @@ const CurationControl: FunctionComponent<Props & SizeMeProps> = ({ selection, se
                             <Grid item key={labelChoice}>
                                 {
                                     (((labelCounts[labelChoice] || 0) < selectedUnitIds.length) || (!enableApply)) ? (
-                                        <button style={buttonStyle} disabled={!enableApply} onClick={() => {_handleApplyLabel(labelChoice)}}>{labelChoice}</button>
+                                        <button
+                                            style={buttonStyle}
+                                            disabled={!enableApply || (curation?.isClosed)}
+                                            onClick={() => {_handleApplyLabel(labelChoice)}}
+                                        >
+                                            {labelChoice}
+                                        </button>
                                     ): <span />
                                 }
                             </Grid>
@@ -130,23 +148,35 @@ const CurationControl: FunctionComponent<Props & SizeMeProps> = ({ selection, se
             <Paper style={paperStyle} key="merge">                
                 Merge:
                 {
-                    selectedUnitIds.length >= 2 && <button key="merge" onClick={handleMergeSelected}>Merge selected units: {selectedUnitIds.join(', ')}</button>
+                    (selectedUnitIds.length >= 2 && !unitsAreInMergeGroups(selectedUnitIds)) &&
+                        <button key="merge" onClick={handleMergeSelected} disabled={curation?.isClosed}>
+                            Merge selected units: {selectedUnitIds.join(', ')}
+                        </button>
                 }
                 {
-                    (selectedUnitIds.length > 0 && unitsAreInMergeGroups(selectedUnitIds)) && <button key="unmerge" onClick={handleUnmergeSelected}>Unmerge units: {selectedUnitIds.join(', ')}</button>
+                    (selectedUnitIds.length > 0 && unitsAreInMergeGroups(selectedUnitIds)) &&
+                        <button key="unmerge" onClick={handleUnmergeSelected} disabled={curation?.isClosed}>
+                            Unmerge units: {selectedUnitIds.join(', ')}
+                        </button>
                 }
                 <span style={{whiteSpace: 'nowrap'}}>
                     <Checkbox checked={selection.applyMerges || false} onClick={handleToggleApplyMerges}/> Apply merges
                 </span>
             </Paper>
+            <Button
+                color={ curation?.isClosed ? "primary" : "secondary" }
+                variant={"contained"}
+                onClick={() => {handleToggleCurationClosed()}}>
+                { curation?.isClosed ? 'Re-open curation' : 'Curation complete' }
+            </Button>
         </div>
     )
 }
 
-const Label: FunctionComponent<{label: string, partial: boolean, onClick: () => void}> = ({label, partial, onClick}) => {
-    const color = partial ? 'gray': 'black'
+const Label: FunctionComponent<{label: string, partial: boolean, onClick: () => void, disabled?: boolean}> = ({label, partial, onClick, disabled}) => {
+    const color = (disabled) ? '' : (partial) ? 'gray': 'black'
     return (
-        <button style={{...buttonStyle, color}} onClick={onClick}>{label}</button>
+        <button style={{...buttonStyle, color}} disabled={disabled} onClick={onClick}>{label}</button>
     )
 }
 

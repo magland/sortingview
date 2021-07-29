@@ -63,8 +63,20 @@ type SetsnippetLenWorkspaceAction = {
 export type WorkspaceAction = AddRecordingWorkspaceAction | DeleteRecordingsWorkspaceAction | AddSortingsWorkspaceAction | DeleteSortingsWorkspaceAction | DeleteSortingsForRecordingsWorkspaceAction | SetUnitMetricsForSortingWorkspaceAction | SetUserPermissionsAction | SetsnippetLenWorkspaceAction
 
 export const sortingCurationReducer = (state: SortingCuration, action: SortingCurationAction): SortingCuration => {
+    // disable state changes for a closed curation
+    if (action.type !== 'REOPEN_CURATION' && state.isClosed) {
+        console.log(`WARNING: Attempt to curate a closed sorting curation:\n\tAction: ${action.type}`)
+        return state
+    }
+
     if (action.type === 'SET_CURATION') {
         return action.curation
+    }
+    else if (action.type === 'CLOSE_CURATION') {
+        return { ...state, isClosed: true }
+    }
+    else if (action.type === 'REOPEN_CURATION') {
+        return { ...state, isClosed: false }
     }
     else if (action.type === 'ADD_UNIT_LABEL') {
         const uids: number[] = typeof(action.unitId) === 'object' ? action.unitId : [action.unitId]
