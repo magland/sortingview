@@ -64,7 +64,10 @@ export type WorkspaceAction = AddRecordingWorkspaceAction | DeleteRecordingsWork
 
 export const sortingCurationReducer = (state: SortingCuration, action: SortingCurationAction): SortingCuration => {
     // disable state changes for a closed curation
-    if (action.type !== 'REOPEN_CURATION' && state.isClosed) return state
+    if (action.type !== 'REOPEN_CURATION' && state.isClosed) {
+        console.log(`WARNING: Attempt to curate a closed sorting curation:\n\tAction: ${action.type}`)
+        return state
+    }
 
     if (action.type === 'SET_CURATION') {
         return action.curation

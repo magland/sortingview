@@ -131,7 +131,13 @@ const CurationControl: FunctionComponent<Props & SizeMeProps> = ({ selection, se
                             <Grid item key={labelChoice}>
                                 {
                                     (((labelCounts[labelChoice] || 0) < selectedUnitIds.length) || (!enableApply)) ? (
-                                        <button style={buttonStyle} disabled={!enableApply || (curation?.isClosed)} onClick={() => {_handleApplyLabel(labelChoice)}}>{labelChoice}</button>
+                                        <button
+                                            style={buttonStyle}
+                                            disabled={!enableApply || (curation?.isClosed)}
+                                            onClick={() => {_handleApplyLabel(labelChoice)}}
+                                        >
+                                            {labelChoice}
+                                        </button>
                                     ): <span />
                                 }
                             </Grid>
