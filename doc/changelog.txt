@@ -6,7 +6,7 @@ Release 0.2.35
 'Curation complete button' #74
 Move tooltip help pages to central location #56
 include spikeextractors package as dependency in setup.py #75
-
+Remove best match metric when not comparing sortings #79 #80
 
 7/27/2021
 y-axis ticks on spike amp view #22
