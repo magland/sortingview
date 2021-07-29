@@ -55,12 +55,12 @@ const CurationControl: FunctionComponent<Props & SizeMeProps> = ({ selection, se
         })
     }, [curationDispatch, selectedUnitIds])
 
-    const handleToggleCurationClosed = useCallback((isClosed: boolean) => {
-        const type = isClosed ? 'REOPEN_CURATION' : 'CLOSE_CURATION'
+    const handleToggleCurationClosed = useCallback(() => {
+        const type = curation?.isClosed ? 'REOPEN_CURATION' : 'CLOSE_CURATION'
         curationDispatch({
             type: type
         })
-    }, [curationDispatch])
+    }, [curation.isClosed, curationDispatch])
 
     const handleToggleApplyMerges = useCallback(() => {
         selectionDispatch({type: 'ToggleApplyMerges', curation})
@@ -116,7 +116,7 @@ const CurationControl: FunctionComponent<Props & SizeMeProps> = ({ selection, se
                                     label={r.label}
                                     partial={r.partial}
                                     onClick={() => {r.partial ? _handleApplyLabel(r.label) : _handleRemoveLabel(r.label)}}
-                                    disabled={curation?.isClosed || false}
+                                    disabled={curation?.isClosed}
                                 />
                             </Grid>
                         ))
@@ -143,13 +143,13 @@ const CurationControl: FunctionComponent<Props & SizeMeProps> = ({ selection, se
                 Merge:
                 {
                     (selectedUnitIds.length >= 2 && !unitsAreInMergeGroups(selectedUnitIds)) &&
-                        <button key="merge" onClick={handleMergeSelected} disabled={curation?.isClosed || false}>
+                        <button key="merge" onClick={handleMergeSelected} disabled={curation?.isClosed}>
                             Merge selected units: {selectedUnitIds.join(', ')}
                         </button>
                 }
                 {
                     (selectedUnitIds.length > 0 && unitsAreInMergeGroups(selectedUnitIds)) &&
-                        <button key="unmerge" onClick={handleUnmergeSelected} disabled={curation?.isClosed || false}>
+                        <button key="unmerge" onClick={handleUnmergeSelected} disabled={curation?.isClosed}>
                             Unmerge units: {selectedUnitIds.join(', ')}
                         </button>
                 }
@@ -160,7 +160,7 @@ const CurationControl: FunctionComponent<Props & SizeMeProps> = ({ selection, se
             <Button
                 color={ curation?.isClosed ? "primary" : "secondary" }
                 variant={"contained"}
-                onClick={() => {handleToggleCurationClosed(curation?.isClosed || false )}}>
+                onClick={() => {handleToggleCurationClosed()}}>
                 { curation?.isClosed ? 'Re-open curation' : 'Curation complete' }
             </Button>
         </div>
