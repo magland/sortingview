@@ -45,7 +45,11 @@ const UnitsTable: FunctionComponent<Props> = (props) => {
     const numericSort = (a: any, b: any) => {
         return (Number(a) - Number(b))
     }
-    const numericElement = (x: any) => (<span>{x + ''}</span>)
+    const formatNumberForDisplay = (x: number) => {
+        if (Number.isInteger(x)) return x + '' // if integer, display the whole thing
+        return x.toPrecision(4) + '' // otherwise, give 4 significant digits
+    }
+    const numericElement = (x: any) => (<span>{formatNumberForDisplay(x as number)}</span>)
     const unitIdStyle: React.CSSProperties = {
         color: 'black',
         fontWeight: 'bold',
