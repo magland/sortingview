@@ -5,7 +5,7 @@ import MarkdownDialog from 'labbox-react/components/Markdown/MarkdownDialog';
 import React, { Fragment, FunctionComponent, useMemo } from 'react';
 import SortingUnitPairPlotGrid from '../../../commonComponents/SortingUnitPairPlotGrid/SortingUnitPairPlotGrid';
 import { Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from "../../../pluginInterface";
-import correlogramSubsamplingInfo from '../CorrelogramSubsamplingInfo.md.gen';
+import correlogramSubsamplingInfo from '../../../helpPages/CorrelogramSubsamplingInfo.md.gen';
 import CorrelogramRv2 from '../Correlogram_ReactVis2';
 
 type Props = {
