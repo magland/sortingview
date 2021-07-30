@@ -18,7 +18,13 @@ const SortingElement: FunctionComponent<{sorting: Sorting, sortingInfo?: Sorting
     const handleClick = useCallback(() => {
         onClickSorting(sorting)
     }, [onClickSorting, sorting])
-    return <Hyperlink onClick={handleClick} key={sorting.sortingId}>{sorting.sortingLabel} ({sortingInfo ? `${sortingInfo.unit_ids.length} units` : ''})</Hyperlink>
+    return (
+        <p>
+            <Hyperlink onClick={handleClick} key={sorting.sortingId}>
+                {sorting.sortingLabel} ({sortingInfo ? `${sortingInfo.unit_ids.length} units` : ''})
+            </Hyperlink>
+        </p>
+    )
 }
 
 const SortingsElement: FunctionComponent<{sortings: Sorting[], onClickSorting: (sorting: Sorting) => void}> = ({sortings, onClickSorting}) => {
