@@ -157,7 +157,8 @@ const Units: React.FunctionComponent<SortingViewProps & OwnProps> = (props) => {
 
     let units = selection.visibleUnitIds || sortingInfo.unit_ids
     let showExpandButton = false;
-    if ((!expandedTable) && (units.length > 30)) {
+    const totalNumUnits = units.length
+    if ((!expandedTable) && (totalNumUnits > 30)) {
         units = units.slice(0, 30);
         showExpandButton = true;
     }
@@ -180,7 +181,7 @@ const Units: React.FunctionComponent<SortingViewProps & OwnProps> = (props) => {
                 />
                 {
                     showExpandButton && (
-                        <Button onClick={() => {setExpandedTable(true)}}>Show all units</Button>
+                        <Button onClick={() => {setExpandedTable(true)}}>Show all {totalNumUnits} units</Button>
                     )
                 }
             </Paper>

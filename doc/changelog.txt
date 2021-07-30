@@ -1,3 +1,11 @@
+7/30/2021
+Implement authorized access to workspace list #84 #85
+Improve sortings layout on recordings view #59 #86
+Significant digits in external unit metrics #43 #81
+Do not show Best match in units table when not comparing sortings #79 #80
+Deselect all units after merge/unmerge operation #42 
+Release 0.2.37
+
 7/29/2021
 New method for defining workspace list #71 #72
 Option to view markers for unit spike times in timeseries view #70
