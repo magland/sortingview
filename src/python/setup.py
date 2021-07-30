@@ -12,6 +12,8 @@ setup(
         'kachery-client>=1.0.12',
         'pynwb',
         'pyyaml',
-        'spikeextractors>=0.9.6'
+        'spikeextractors>=0.9.6',
+        'google-auth',
+        'cachecontrol'
     ]
 )

@@ -1,5 +1,6 @@
 import useChannel from 'kachery-react/useChannel'
 import useQueryTask from 'kachery-react/useQueryTask'
+import useGoogleSignInClient from 'labbox-react/googleSignIn/useGoogleSignInClient'
 import React, { FunctionComponent, useCallback } from 'react'
 import WorkspacesTable from './WorkspacesTable'
 
@@ -16,9 +17,19 @@ export type WorkspaceListWorkspace = {
 
 const WorkspaceList: FunctionComponent<Props> = ({onWorkspaceSelected, packageName}) => {
     const {channelName} = useChannel()
+    const client = useGoogleSignInClient()
 
     // This is the newer system for getting the workspace list
-    const {returnValue: workspaceList, task} = useQueryTask<WorkspaceListWorkspace[]>(channelName ? `sortingview.get_workspace_list.1` : undefined, {name: 'default'}, {fallbackToCache: true, channelName})
+    const {returnValue: workspaceList, task} = useQueryTask<WorkspaceListWorkspace[]>(
+        channelName ? `sortingview.get_workspace_list.1` : undefined,
+        {
+            name: 'default',
+            id_token: client ? client.idToken : undefined
+        }, {
+            fallbackToCache: true,
+            channelName
+        }
+    )
     
     const handleWorkspaceSelected = useCallback((w: WorkspaceListWorkspace) => {
         onWorkspaceSelected(w.workspaceUri)
