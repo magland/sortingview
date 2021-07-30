@@ -19,24 +19,26 @@ const SortingElement: FunctionComponent<{sorting: Sorting, sortingInfo?: Sorting
         onClickSorting(sorting)
     }, [onClickSorting, sorting])
     return (
-        <p>
+        <li>
             <Hyperlink onClick={handleClick} key={sorting.sortingId}>
                 {sorting.sortingLabel} ({sortingInfo ? `${sortingInfo.unit_ids.length} units` : ''})
             </Hyperlink>
-        </p>
+        </li>
     )
 }
 
 const SortingsElement: FunctionComponent<{sortings: Sorting[], onClickSorting: (sorting: Sorting) => void}> = ({sortings, onClickSorting}) => {
     const sortingInfos = useSortingInfos(sortings)
     return (
-        <span>
-            {
-                sortings.map(s => (
-                    <SortingElement onClickSorting={onClickSorting} sorting={s} sortingInfo={sortingInfos[s.sortingId] || undefined} />
-                ))
-            }
-        </span>
+        <div style={{left: "-25px", position: "relative"}}>
+            <ul>
+                {
+                    sortings.map(s => (
+                        <SortingElement onClickSorting={onClickSorting} sorting={s} sortingInfo={sortingInfos[s.sortingId] || undefined} />
+                    ))
+                }
+            </ul>
+        </div>
     )
 }
 
