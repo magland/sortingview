@@ -3,13 +3,14 @@ import { useVisible } from 'labbox-react';
 import Hyperlink from 'labbox-react/components/Hyperlink/Hyperlink';
 import MarkdownDialog from 'labbox-react/components/Markdown/MarkdownDialog';
 import ModalWindow from 'labbox-react/components/ModalWindow/ModalWindow';
+import useStaticTextReplacement from 'labbox-react/misc/useStaticTextReplacement';
 import { WorkspaceState } from 'python/sortingview/gui/pluginInterface/workspaceReducer';
 import React, { FunctionComponent } from 'react';
 import { WorkspaceRoute, WorkspaceRouteDispatch } from "../../../pluginInterface";
 import ImportRecordingsInstructions from './ImportRecordingsInstructions';
 import RecordingsTable from './RecordingsTable';
+import setSnippetLenMd from './setSnippetLen.md.gen';
 import setWorkspacePermissionsMd from './setWorkspacePermissions.md.gen';
-import setSnippetLenMd from './setSnippetLen.md.gen'
 
 type Props = {
     workspace: WorkspaceState
@@ -25,6 +26,7 @@ const WorkspaceHomeView: FunctionComponent<Props> = ({ width, height, workspace,
     const importInstructionsVisible = useVisible()
     const setWorkspacePermissionsVisible = useVisible()
     const setSnippetLengthVisible = useVisible()
+    const interpolatedWorkspacePermissionsMd = useStaticTextReplacement(setWorkspacePermissionsMd, {'USER': 'mom@mom.com'})
     return (
         <span>
             <div>
@@ -62,7 +64,7 @@ const WorkspaceHomeView: FunctionComponent<Props> = ({ width, height, workspace,
             <MarkdownDialog
                 visible={setWorkspacePermissionsVisible.visible}
                 onClose={setWorkspacePermissionsVisible.hide}
-                source={setWorkspacePermissionsMd}
+                source={interpolatedWorkspacePermissionsMd}
                 substitute={{
                     workspaceUri: workspaceRoute.workspaceUri || '<unknown>'
                 }}
