@@ -3,6 +3,7 @@ import { useVisible } from 'labbox-react';
 import Hyperlink from 'labbox-react/components/Hyperlink/Hyperlink';
 import MarkdownDialog from 'labbox-react/components/Markdown/MarkdownDialog';
 import ModalWindow from 'labbox-react/components/ModalWindow/ModalWindow';
+import useGoogleSignInClient from 'labbox-react/googleSignIn/useGoogleSignInClient';
 import useStaticTextReplacement from 'labbox-react/misc/useStaticTextReplacement';
 import { WorkspaceState } from 'python/sortingview/gui/pluginInterface/workspaceReducer';
 import React, { FunctionComponent } from 'react';
@@ -26,7 +27,9 @@ const WorkspaceHomeView: FunctionComponent<Props> = ({ width, height, workspace,
     const importInstructionsVisible = useVisible()
     const setWorkspacePermissionsVisible = useVisible()
     const setSnippetLengthVisible = useVisible()
-    const interpolatedWorkspacePermissionsMd = useStaticTextReplacement(setWorkspacePermissionsMd, {'USER': 'mom@mom.com'})
+    const client = useGoogleSignInClient()
+    const email = client?.userId ?? 'user_id@gmail.com'
+    const interpolatedWorkspacePermissionsMd = useStaticTextReplacement(setWorkspacePermissionsMd, {'USER': email})
     return (
         <span>
             <div>
