@@ -1,8 +1,7 @@
-import React from 'react'
-import { FunctionComponent } from "react"
+import useChannel from 'kachery-react/useChannel';
 import Markdown from 'labbox-react/components/Markdown/Markdown';
-import useChannel from 'kachery-react/useChannel'
-import addWorkspaceMd from './addWorkspace.md.gen'
+import React, { FunctionComponent } from 'react';
+import addWorkspaceMd from './addWorkspace.md.gen';
 
 type Props = {
     
@@ -14,7 +13,8 @@ const AddWorkspaceInstructions: FunctionComponent<Props> = () => {
         <Markdown
             source={addWorkspaceMd}
             substitute={{
-                channelName: channelName ? channelName.toString() : 'undefined'
+                // channelName: channelName ? channelName.toString() : 'undefined'
+                'CHANNEL_NAME': channelName ? channelName.toString() : 'undefined'
             }}
         />
     )

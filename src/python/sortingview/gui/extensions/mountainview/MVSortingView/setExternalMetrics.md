@@ -7,8 +7,8 @@ from typing import cast
 import sortingview as sv
 
 # Specify the workspace URI and the sorting ID
-workspace_uri = '{workspaceUri}'
-sorting_id = '{sortingId}'
+workspace_uri = '<|WORKSPACE_URI|>'
+sorting_id = '<|SORTING_ID|>'
 
 # Load the workspace
 W = sv.load_workspace(workspace_uri)
