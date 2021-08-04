@@ -1,34 +1,52 @@
+import { FigureObject } from 'figurl/types'
+import { ChannelName, isSha1Hash, isString, JSONStringifyDeterministic, Sha1Hash } from 'kachery-js/types/kacheryTypes'
+import QueryString from 'querystring'
 import { useCallback, useMemo } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
-import QueryString from 'querystring'
 import RoutePath, { isRoutePath } from './RoutePath'
-import { ChannelName, isFeedId } from 'kachery-js/types/kacheryTypes'
-import { parseWorkspaceUri } from 'labbox-react'
 
 const useRoute = () => {
     const location = useLocation()
     const history = useHistory()
     const query = useMemo(() => (QueryString.parse(location.search.slice(1))), [location.search]);
-    const workspace = (query.workspace as string) || ''
-    let workspaceUri: string | undefined = undefined
-    if (workspace.startsWith('workspace://')) {
-        workspaceUri = workspace
-    }
-    else if (isFeedId(workspace)) {
-        workspaceUri = `workspace://${workspace}`
-    }
+    const figureObjectOrHash = useMemo(() => {
+        const x = (query.figureObject as string) || undefined
+        if (!x) return undefined
+        if (isSha1Hash(x)) {
+            return x as Sha1Hash
+        }
+        else if (x.startsWith("{")) {
+            try {
+                return JSON.parse(x)
+            }
+            catch {
+                console.warn(`Problem parsing figureObject: ${x}`)
+                return undefined    
+            }
+        }
+        else {
+            console.warn(`Not a valid sha1 hash or object: ${x}`)
+            return undefined
+        }
+    }, [query.figureObject])
     const channel = (query.channel as any as ChannelName) || undefined
     const p = location.pathname
     const routePath: RoutePath = isRoutePath(p) ? p : '/home'
 
-    const setRoute = useCallback((o: {routePath?: RoutePath, workspaceUri?: string, channel?: ChannelName}) => {
+    const setRoute = useCallback((o: {routePath?: RoutePath, figureObjectOrHash?: FigureObject | Sha1Hash, channel?: ChannelName}) => {
         const query2 = {...query}
         let pathname2 = location.pathname
         if (o.routePath) pathname2 = o.routePath
-        if (o.workspaceUri !== undefined) {
-            const {feedId: workspaceFeedId} = parseWorkspaceUri(o.workspaceUri)
-            if (workspaceFeedId) {
-                query2.workspace = workspaceFeedId.toString()
+        if (o.figureObjectOrHash !== undefined) {
+            const x = o.figureObjectOrHash
+            if (isString(x)) {
+                query2.figureObject = x.toString()
+            }
+            else {
+                query2.figureObject = encodeURIComponent(JSONStringifyDeterministic(x))
+            }
+            if (query2.workspace) {
+                delete query2.workspace
             }
         }
         if (o.channel !== undefined) query2.channel = o.channel.toString()
@@ -36,7 +54,7 @@ const useRoute = () => {
         history.push({...location, pathname: pathname2, search: search2})
     }, [location, history, query])
     
-    return {routePath, workspaceUri, channel, setRoute}
+    return {routePath, figureObjectOrHash, channel, query, setRoute}
 }
 
 const queryString = (params: { [key: string]: string | string[] }) => {

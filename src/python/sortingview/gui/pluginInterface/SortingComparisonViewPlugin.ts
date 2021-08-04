@@ -25,6 +25,7 @@ export interface SortingComparisonViewProps {
     width: number
     height: number
     snippetLen?: [number, number]
+    workspaceUri?: string
 }
 
 export interface SortingComparisonViewPlugin extends LabboxViewPlugin {

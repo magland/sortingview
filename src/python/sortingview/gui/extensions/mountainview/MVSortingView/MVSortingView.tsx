@@ -7,7 +7,6 @@ import { JSONStringifyDeterministic } from 'kachery-js/types/kacheryTypes'
 import { usePlugins } from 'labbox-react'
 import Expandable from "labbox-react/components/Expandable/Expandable"
 import Splitter from 'labbox-react/components/Splitter/Splitter'
-import useRoute from 'labbox-react/MainWindow/useRoute'
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useReducer, useState } from 'react'
 import { LabboxPlugin, SortingComparisonViewPlugin, SortingUnitViewPlugin, SortingViewPlugin, sortingViewPlugins, SortingViewProps } from "../../../pluginInterface"
 import { RecordingViewPlugin } from '../../../pluginInterface/RecordingViewPlugin'
@@ -130,7 +129,7 @@ const MVSortingViewWithCheck: FunctionComponent<SortingViewProps> = (props) => {
 
 const MVSortingView: FunctionComponent<SortingViewProps & {preloadStatus?: 'waiting' | 'running' | 'finished'}/* & PreprocessingProps*/> = (props) => {
     // useCheckForChanges('MVSortingView', props)
-    const {recording, sorting, recordingInfo, selection, selectionDispatch, curation, preloadStatus, curationDispatch} = props
+    const {recording, sorting, recordingInfo, selection, selectionDispatch, curation, preloadStatus, curationDispatch, workspaceUri} = props
     const [openViews, openViewsDispatch] = useReducer(openViewsReducer, [])
     const [initializedViews, setInitializedViews] = useState(false)
 
@@ -206,8 +205,6 @@ const MVSortingView: FunctionComponent<SortingViewProps & {preloadStatus?: 'wait
     const metricsIcon = <span style={{color: 'gray'}}><SquareFoot /></span>
 
     const hasSorting = sorting.sortingObject ? true : false
-
-    const {workspaceUri} = useRoute()
 
     const sortingViewProps = {...props}
     return (

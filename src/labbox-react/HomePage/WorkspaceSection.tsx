@@ -14,49 +14,51 @@ type Props = {
 }
 
 const WorkspaceSection: FunctionComponent<Props> = ({packageName, workspaceDescription}) => {
-    const {setRoute, channel, workspaceUri} = useRoute()
+    // No longer used as we migrate to figurl approach
+    return <div>Workspace section</div>
+    // const {setRoute, channel} = useRoute()
 
-    const handleSelectWorkspace = useCallback(() => {
-        setRoute({routePath: '/selectWorkspace'})
-    }, [setRoute])
+    // const handleSelectWorkspace = useCallback(() => {
+    //     setRoute({routePath: '/selectWorkspace'})
+    // }, [setRoute])
 
-    const handleViewWorkspace = useCallback(() => {
-        setRoute({routePath: '/workspace'})
-    }, [setRoute])
+    // const handleViewWorkspace = useCallback(() => {
+    //     setRoute({routePath: '/workspace'})
+    // }, [setRoute])
 
-    const aboutWorkspacesVisible = useVisible()
+    // const aboutWorkspacesVisible = useVisible()
 
-    return (
-        channel ? (
-            <div className="WorkspaceSection HomeSection">
-                <h3>Select a workspace <IconButton onClick={aboutWorkspacesVisible.show}><Help /></IconButton></h3>
-                <span>
-                    {
-                        workspaceUri ? (
+    // return (
+    //     channel ? (
+    //         <div className="WorkspaceSection HomeSection">
+    //             <h3>Select a workspace <IconButton onClick={aboutWorkspacesVisible.show}><Help /></IconButton></h3>
+    //             <span>
+    //                 {
+    //                     workspaceUri ? (
                             
-                            <span>
-                                <Hyperlink style={hyperlinkStyle} onClick={handleViewWorkspace}>{workspaceUri}</Hyperlink>
-                                <p><Hyperlink style={hyperlinkStyle} onClick={handleSelectWorkspace}>Select a different workspace or add a new workspace</Hyperlink></p>
-                            </span>
-                        ) : (
-                            <Hyperlink style={hyperlinkStyle} onClick={handleSelectWorkspace}>select a workspace</Hyperlink>
-                        )
-                    }
-                </span>
-                <MarkdownDialog
-                    visible={aboutWorkspacesVisible.visible}
-                    onClose={aboutWorkspacesVisible.hide}
-                    substitute={{
-                        'PACKAGENAME': packageName,
-                        'WORKSPACE_DESCRIPTION': workspaceDescription
-                    }}
-                    source={aboutWorkspacesMd}
-                />
-            </div>
-        ) : (
-            <span />
-        )
-    )
+    //                         <span>
+    //                             <Hyperlink style={hyperlinkStyle} onClick={handleViewWorkspace}>{workspaceUri}</Hyperlink>
+    //                             <p><Hyperlink style={hyperlinkStyle} onClick={handleSelectWorkspace}>Select a different workspace or add a new workspace</Hyperlink></p>
+    //                         </span>
+    //                     ) : (
+    //                         <Hyperlink style={hyperlinkStyle} onClick={handleSelectWorkspace}>select a workspace</Hyperlink>
+    //                     )
+    //                 }
+    //             </span>
+    //             <MarkdownDialog
+    //                 visible={aboutWorkspacesVisible.visible}
+    //                 onClose={aboutWorkspacesVisible.hide}
+    //                 substitute={{
+    //                     packageName,
+    //                     workspaceDescription
+    //                 }}
+    //                 source={aboutWorkspacesMd}
+    //             />
+    //         </div>
+    //     ) : (
+    //         <span />
+    //     )
+    // )
 }
 
 export default WorkspaceSection
