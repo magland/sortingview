@@ -29,9 +29,10 @@ const SelectWorkspace: FunctionComponent<Props> = ({onUpdated, width, height, pa
     // }, [setRoute, editWorkspaceUri, setClosing])
 
     const handleWorkspaceSelected = useCallback((workspaceUri: string) => {
-        setRoute({workspaceUri})
+        // no longer used
+        // setRoute({workspaceUri})
         setClosing(true) //hack for now
-    }, [setRoute, setClosing])
+    }, [setClosing])
 
     useEffect(() => {
         if (closing) { // hack for now

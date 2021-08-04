@@ -1,16 +1,16 @@
-import WorkspaceNavigationComponent from 'python/sortingview/gui/WorkspacePage/WorkspaceNavigationComponent/WorkspaceNavigationComponent'
-import useRoute from 'labbox-react/MainWindow/useRoute'
 import useWorkspace from 'labbox-react/workspace/useWorkspace'
+import WorkspaceNavigationComponent from 'python/sortingview/gui/WorkspacePage/WorkspaceNavigationComponent/WorkspaceNavigationComponent'
 import React, { FunctionComponent } from 'react'
 import WorkspaceView from '../extensions/workspaceview/WorkspaceView'
-import { WorkspaceAction, WorkspaceState, workspaceReducer, initialWorkspaceState } from '../pluginInterface/workspaceReducer'
+import { initialWorkspaceState, WorkspaceAction, workspaceReducer, WorkspaceState } from '../pluginInterface/workspaceReducer'
 import useWorkspaceRoute from './useWorkspaceRoute'
 type Props = {
     width: number
     height: number
+    workspaceUri?: string
 }
 
-const useSortingViewWorkspace = (workspaceUri: string) => {
+export const useSortingViewWorkspace = (workspaceUri: string) => {
     return useWorkspace<WorkspaceState, WorkspaceAction>({
         workspaceUri,
         workspaceReducer,
@@ -30,8 +30,7 @@ const divStyle: React.CSSProperties = {
 }
 
 
-const WorkspacePage: FunctionComponent<Props> = ({width, height}) => {
-    const {workspaceUri} = useRoute()
+const WorkspacePage: FunctionComponent<Props> = ({width, height, workspaceUri}) => {
     if (!workspaceUri) throw Error('Unexpected: workspaceUri is undefined')
     
     // const {feedId} = parseWorkspaceUri(workspaceUri)

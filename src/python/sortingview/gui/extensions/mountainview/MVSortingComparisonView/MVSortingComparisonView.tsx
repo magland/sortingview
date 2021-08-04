@@ -6,7 +6,6 @@ import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser'
 import { usePlugins } from 'labbox-react'
 import Expandable from "labbox-react/components/Expandable/Expandable"
 import Splitter from 'labbox-react/components/Splitter/Splitter'
-import useRoute from 'labbox-react/MainWindow/useRoute'
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useReducer, useState } from 'react'
 import { LabboxPlugin, SortingComparisonViewPlugin, SortingComparisonViewProps, SortingUnitViewPlugin, SortingViewPlugin, sortingViewPlugins } from "../../../pluginInterface"
 import { RecordingViewPlugin } from '../../../pluginInterface/RecordingViewPlugin'
@@ -41,7 +40,7 @@ const MVSortingComparisonViewWithCheck: FunctionComponent<SortingComparisonViewP
 }
 
 const MVSortingComparisonView: FunctionComponent<SortingComparisonViewProps & {preloadStatus?: 'waiting' | 'running' | 'finished'}/* & PreprocessingProps*/> = (props) => {
-    const {recording, sorting1, recordingInfo, selection1, selection1Dispatch, curation1, preloadStatus, curation1Dispatch} = props
+    const {recording, sorting1, recordingInfo, selection1, selection1Dispatch, curation1, preloadStatus, curation1Dispatch, workspaceUri} = props
     const [openViews, openViewsDispatch] = useReducer(openViewsReducer, [])
     const [initializedViews, setInitializedViews] = useState(false)
 
@@ -138,8 +137,6 @@ const MVSortingComparisonView: FunctionComponent<SortingComparisonViewProps & {p
     const curationIcon = <span style={{color: 'gray'}}><FontAwesomeIcon icon={faPencilAlt} /></span>
     const optionsIcon = <span style={{color: 'gray'}}><Settings /></span>
     const metricsIcon = <span style={{color: 'gray'}}><SquareFoot /></span>
-
-    const {workspaceUri} = useRoute()
 
     const sortingComparisonViewProps = {...props}
     return (

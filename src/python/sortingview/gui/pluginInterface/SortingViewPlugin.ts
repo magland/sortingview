@@ -21,6 +21,7 @@ export interface SortingViewProps {
     snippetLen?: [number, number]
     sortingSelector?: string
     compareSorting?: Sorting
+    workspaceUri?: string
 }
 
 export interface SortingViewPlugin extends LabboxViewPlugin {

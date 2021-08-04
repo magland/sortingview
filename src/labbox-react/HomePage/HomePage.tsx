@@ -14,7 +14,6 @@ export type HomePageProps = {
     taskFunctionIds: TaskFunctionId[]
     introMd: string
     packageName: string
-    workspaceDescription: string
     pythonProjectVersion: string
     webAppProjectVersion: string
     repoUrl: string
@@ -22,7 +21,7 @@ export type HomePageProps = {
 
 const hardCodedChannels = ['ccm'] as any as ChannelName[]
 
-const HomePage: FunctionComponent<HomePageProps> = ({taskFunctionIds, introMd, workspaceDescription, packageName, pythonProjectVersion, webAppProjectVersion, repoUrl}) => {
+const HomePage: FunctionComponent<HomePageProps> = ({taskFunctionIds, introMd, packageName, pythonProjectVersion, webAppProjectVersion, repoUrl}) => {
     const selectChannelVisibility = useVisible()
     const {channelName} = useChannel()
 
@@ -33,7 +32,7 @@ const HomePage: FunctionComponent<HomePageProps> = ({taskFunctionIds, introMd, w
             <ChannelSection onSelectChannel={selectChannelVisibility.show} taskFunctionIds={taskFunctionIds} packageName={packageName} />
             <WorkspaceSection
                 packageName={packageName}
-                workspaceDescription={workspaceDescription}
+                workspaceDescription=""
             />
             {
                 channelName && <TestResponsivenessSection />
