@@ -1,12 +1,14 @@
 import { FigurlPlugin } from "figurl/types"
-import AverageWaveformsPlugin from "./AverageWaveformsPlugin"
+import AverageWaveformsPlugin from "./AverageWaveformsPlugin/AverageWaveformsPlugin"
+import AverageWaveformsNumpyPlugin from "./AverageWaveformsNumpyPlugin/AverageWaveformsNumpyPlugin"
 import MountainViewPlugin from "./MountainViewPlugin"
 import WorkspacePlugin from "./WorkspacePlugin"
 
 const plugins: FigurlPlugin[] = [
     MountainViewPlugin,
     AverageWaveformsPlugin,
-    WorkspacePlugin
+    WorkspacePlugin,
+    AverageWaveformsNumpyPlugin
 ]
 
 export default plugins
