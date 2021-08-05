@@ -47,7 +47,7 @@ const emptySortingInfo: SortingInfo = {
 const AverageWaveformsComponent: FunctionComponent<Props> = ({ data, width, height }) => {
     const { workspaceUri, recordingId, sortingId, unitIds } = data
 
-    const { workspace, workspaceDispatch } = useSortingViewWorkspace(workspaceUri)
+    const { workspace } = useSortingViewWorkspace(workspaceUri)
 
     const initialSortingSelection: SortingSelection = {}
     const [selection, selectionDispatch] = useReducer(sortingSelectionReducer, initialSortingSelection)

@@ -8,7 +8,7 @@ import { pythonProjectVersion, webAppProjectVersion } from 'python/sortingview/g
 import packageName from 'python/sortingview/gui/packageName';
 import taskFunctionIds from 'taskFunctionIds';
 import logo from './spike-icon.png';
-import { createExtensionContext, ExtensionsSetup } from 'labbox-react';
+import { createExtensionContext, ExtensionsSetup } from 'figurl/labbox-react';
 import registerExtensions from 'python/sortingview/gui/extensions/registerExtensions';
 import { LabboxPlugin } from 'python/sortingview/gui/pluginInterface';
 

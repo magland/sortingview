@@ -1,5 +1,5 @@
-import { CalculationPool } from "kachery-react/createCalculationPool";
-import { BasePlugin, ExtensionContext, usePlugins } from "labbox-react";
+import { CalculationPool } from "figurl/kachery-react/createCalculationPool";
+import { BasePlugin, ExtensionContext, usePlugins } from "figurl/labbox-react";
 import { FunctionComponent, useMemo } from "react";
 import { RecordingViewPlugin } from "./RecordingViewPlugin";
 import { SortingComparisonUnitMetricPlugin } from "./SortingComparisonUnitMetricPlugin";

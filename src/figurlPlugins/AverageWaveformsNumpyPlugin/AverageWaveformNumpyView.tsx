@@ -1,5 +1,4 @@
 // import { createCalculationPool } from 'labbox';
-import useChannel from 'kachery-react/useChannel';
 import WaveformWidget, { ElectrodeOpts } from 'python/sortingview/gui/extensions/averagewaveforms/AverageWaveformsView/WaveformWidget';
 import { ActionItem, DividerItem } from 'python/sortingview/gui/extensions/common/Toolbars';
 import { SortingSelection, SortingSelectionDispatch } from 'python/sortingview/gui/pluginInterface';

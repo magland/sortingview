@@ -1,8 +1,9 @@
-import { funcToTransform } from 'labbox-react/components/CanvasWidget';
-import { CanvasPainter } from 'labbox-react/components/CanvasWidget/CanvasPainter';
-import { CanvasWidgetLayer, KeyboardEvent, KeyboardEventHandler } from 'labbox-react/components/CanvasWidget/CanvasWidgetLayer';
-import setupElectrodes, { ElectrodeBox } from '../../common/sharedCanvasLayers/setupElectrodes';
-import { WaveformLayerProps } from './WaveformWidget';
+import { funcToTransform } from 'figurl/labbox-react/components/CanvasWidget';
+import { CanvasPainter } from 'figurl/labbox-react/components/CanvasWidget/CanvasPainter';
+import { CanvasWidgetLayer, KeyboardEventHandler, KeyboardEvent } from 'figurl/labbox-react/components/CanvasWidget/CanvasWidgetLayer';
+import { ActionItem, DividerItem } from '../../common/Toolbars';
+import setupElectrodes, { ElectrodeBox } from './setupElectrodes';
+import { LayerProps } from './WaveformWidget';
 
 export type WaveformColors = {
     base: string

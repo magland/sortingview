@@ -1,12 +1,11 @@
 // import { createCalculationPool } from 'labbox';
-import TaskStatusView from 'kachery-react/components/TaskMonitor/TaskStatusView'
-import useChannel from 'kachery-react/useChannel'
-import usePureCalculationTask from 'kachery-react/usePureCalculationTask'
-import React, { FunctionComponent, useMemo } from 'react'
-import { applyMergesToUnit, Recording, Sorting, SortingCuration, SortingSelectionDispatch } from '../../../pluginInterface'
-import { ElectrodeOpts } from '../../common/sharedCanvasLayers/electrodesLayer'
-import { ActionItem, DividerItem } from '../../common/Toolbars'
-import WaveformWidget, { defaultWaveformOpts } from './WaveformWidget'
+import TaskStatusView from 'figurl/kachery-react/components/TaskMonitor/TaskStatusView';
+import useChannel from 'figurl/kachery-react/useChannel';
+import usePureCalculationTask from 'figurl/kachery-react/usePureCalculationTask';
+import React, { FunctionComponent, useMemo } from 'react';
+import { applyMergesToUnit, Recording, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from '../../../pluginInterface';
+import { ActionItem, DividerItem } from '../../common/Toolbars';
+import WaveformWidget, { ElectrodeOpts } from './WaveformWidget';
 
 
 export type PlotData = {

@@ -1,4 +1,4 @@
-import Splitter from 'labbox-react/components/Splitter/Splitter';
+import Splitter from 'figurl/labbox-react/components/Splitter/Splitter';
 import React, { useMemo, useReducer } from 'react';
 import { RecordingInfo, RecordingSelection, RecordingSelectionDispatch, recordingSelectionReducer, SortingSelection } from '../../../pluginInterface';
 import useSpikeAmplitudesData from '../../spikeamplitudes/SpikeAmplitudesView/useSpikeAmplitudesData';

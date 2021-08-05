@@ -1,6 +1,6 @@
-import { useVisible } from 'labbox-react';
-import Hyperlink from 'labbox-react/components/Hyperlink/Hyperlink';
-import MarkdownDialog from 'labbox-react/components/Markdown/MarkdownDialog';
+import { useVisible } from 'figurl/labbox-react';
+import Hyperlink from 'figurl/labbox-react/components/Hyperlink/Hyperlink';
+import MarkdownDialog from 'figurl/labbox-react/components/Markdown/MarkdownDialog';
 import React, { FunctionComponent } from 'react';
 import setExternalMetricsMd from './setExternalMetrics.md.gen';
 

@@ -1,4 +1,4 @@
-import Expandable from 'labbox-react/components/Expandable/Expandable';
+import Expandable from 'figurl/labbox-react/components/Expandable/Expandable';
 import React, { FunctionComponent } from 'react';
 import { Recording, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from '../../pluginInterface';
 import { useRecordingInfo } from '../../pluginInterface/useRecordingInfo';

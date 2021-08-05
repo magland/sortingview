@@ -1,8 +1,8 @@
 import { JSONObject, sha1OfObject, SubfeedHash } from 'kachery-js/types/kacheryTypes';
-import { initiateTask, useChannel, useKacheryNode } from 'kachery-react';
-import useSubfeedReducer from 'kachery-react/useSubfeedReducer';
-import { parseWorkspaceUri, usePlugins } from 'labbox-react';
-import Hyperlink from 'labbox-react/components/Hyperlink/Hyperlink';
+import { initiateTask, useChannel, useKacheryNode } from 'figurl/kachery-react';
+import useSubfeedReducer from 'figurl/kachery-react/useSubfeedReducer';
+import { parseWorkspaceUri, usePlugins } from 'figurl/labbox-react';
+import Hyperlink from 'figurl/labbox-react/components/Hyperlink/Hyperlink';
 import { SortingCurationAction } from 'python/sortingview/gui/pluginInterface/SortingCuration';
 import { useRecordingInfo } from 'python/sortingview/gui/pluginInterface/useRecordingInfo';
 import { useSortingInfo } from 'python/sortingview/gui/pluginInterface/useSortingInfo';

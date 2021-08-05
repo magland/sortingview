@@ -3,9 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Settings, SquareFoot, Visibility } from '@material-ui/icons'
 import GrainIcon from '@material-ui/icons/Grain'
 import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser'
-import { usePlugins } from 'labbox-react'
-import Expandable from "labbox-react/components/Expandable/Expandable"
-import Splitter from 'labbox-react/components/Splitter/Splitter'
+import { usePlugins } from 'figurl/labbox-react'
+import Expandable from "figurl/labbox-react/components/Expandable/Expandable"
+import Splitter from 'figurl/labbox-react/components/Splitter/Splitter'
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useReducer, useState } from 'react'
 import { LabboxPlugin, SortingComparisonViewPlugin, SortingComparisonViewProps, SortingUnitViewPlugin, SortingViewPlugin, sortingViewPlugins } from "../../../pluginInterface"
 import { RecordingViewPlugin } from '../../../pluginInterface/RecordingViewPlugin'

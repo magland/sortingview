@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useCallback, useState } from 'react';
-import Expandable from "labbox-react/components/Expandable/Expandable"
-import Markdown from 'labbox-react/components/Markdown/Markdown';
+import Expandable from "figurl/labbox-react/components/Expandable/Expandable"
+import Markdown from 'figurl/labbox-react/components/Markdown/Markdown';
 import { WorkspaceRoute } from '../../../pluginInterface';
 import import_example_simulated_recording_py from './importExamples/import_example_simulated_recording.py.gen';
 import import_nwb_recording_py from './importExamples/import_nwb_recording.py.gen';

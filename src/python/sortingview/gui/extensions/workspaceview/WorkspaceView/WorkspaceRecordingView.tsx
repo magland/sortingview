@@ -1,5 +1,5 @@
 import { Grid } from '@material-ui/core';
-import Hyperlink from 'labbox-react/components/Hyperlink/Hyperlink';
+import Hyperlink from 'figurl/labbox-react/components/Hyperlink/Hyperlink';
 import { useRecordingInfo } from 'python/sortingview/gui/pluginInterface/useRecordingInfo';
 import React, { FunctionComponent, useCallback, useEffect, useReducer } from 'react';
 import { Recording, RecordingSelection, recordingSelectionReducer, Sorting, WorkspaceRoute, WorkspaceRouteDispatch } from "../../../pluginInterface";

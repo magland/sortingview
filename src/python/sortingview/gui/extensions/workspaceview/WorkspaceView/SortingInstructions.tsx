@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useCallback, useState } from 'react';
-import Expandable from "labbox-react/components/Expandable/Expandable"
-import Markdown from 'labbox-react/components/Markdown/Markdown';
+import Expandable from "figurl/labbox-react/components/Expandable/Expandable"
+import Markdown from 'figurl/labbox-react/components/Markdown/Markdown';
 import { WorkspaceRoute } from '../../../pluginInterface';
 import spykingcircus_example_py from './sortingExamples/spykingcircus_example.py.gen';
 import instructionsMd from './SortingInstructions.md.gen';

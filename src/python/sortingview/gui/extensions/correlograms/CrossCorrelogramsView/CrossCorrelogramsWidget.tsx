@@ -1,7 +1,7 @@
 import { IconButton } from '@material-ui/core';
 import { Help } from '@material-ui/icons';
-import { useVisible } from 'labbox-react';
-import MarkdownDialog from 'labbox-react/components/Markdown/MarkdownDialog';
+import { useVisible } from 'figurl/labbox-react';
+import MarkdownDialog from 'figurl/labbox-react/components/Markdown/MarkdownDialog';
 import React, { Fragment, FunctionComponent, useMemo } from 'react';
 import SortingUnitPairPlotGrid from '../../../commonComponents/SortingUnitPairPlotGrid/SortingUnitPairPlotGrid';
 import correlogramSubsamplingInfo from '../../../helpPages/CorrelogramSubsamplingInfo.md.gen';

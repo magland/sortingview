@@ -1,8 +1,10 @@
-import CanvasWidget from "labbox-react/components/CanvasWidget"
-import { useLayer, useLayers } from "labbox-react/components/CanvasWidget/CanvasWidgetLayer"
 import React, { useMemo } from "react"
-import { RecordingSelectionDispatch } from "../../../pluginInterface"
-import { createElectrodesLayer, Electrode, ElectrodeLayerProps } from "../../common/sharedCanvasLayers/electrodesLayer"
+import CanvasWidget from "figurl/labbox-react/components/CanvasWidget"
+import { useLayer, useLayers } from "figurl/labbox-react/components/CanvasWidget/CanvasWidgetLayer"
+import { RecordingSelection, RecordingSelectionDispatch } from "../../../pluginInterface"
+import { createElectrodesLayer } from "../../averagewaveforms/AverageWaveformsView/electrodesLayer"
+import { ElectrodeLayerProps } from "../../averagewaveforms/AverageWaveformsView/WaveformWidget"
+import { Electrode } from "./electrodeGeometryLayer"
 
 // Okay, so after some hoop-jumping, we've learned the RecordingInfo has:
 // - sampling frequency (number), - channel_ids (list of number),

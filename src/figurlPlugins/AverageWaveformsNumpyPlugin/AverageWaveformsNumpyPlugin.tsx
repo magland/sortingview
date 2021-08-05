@@ -1,11 +1,7 @@
 import { FigurlPlugin } from "figurl/types";
-import { isArrayOf, isNumber, isString, optional, _validateObject } from "kachery-js/types/kacheryTypes";
-import AverageWaveformsView from "python/sortingview/gui/extensions/averagewaveforms/AverageWaveformsView/AverageWaveformsView";
-import { Recording, Sorting, SortingInfo, SortingSelection, sortingSelectionReducer } from "python/sortingview/gui/pluginInterface";
-import { useRecordingInfo } from "python/sortingview/gui/pluginInterface/useRecordingInfo";
-import { useSortingInfo } from "python/sortingview/gui/pluginInterface/useSortingInfo";
-import { useSortingViewWorkspace } from 'python/sortingview/gui/WorkspacePage/WorkspacePage';
-import React, { FunctionComponent, useMemo, useReducer } from 'react';
+import { isArrayOf, isNumber, _validateObject } from "kachery-js/types/kacheryTypes";
+import { SortingSelection, sortingSelectionReducer } from "python/sortingview/gui/pluginInterface";
+import React, { FunctionComponent, useReducer } from 'react';
 import AverageWaveformsNumpyView from "./AverageWaveformsNumpyView";
 
 export type Waveform = {

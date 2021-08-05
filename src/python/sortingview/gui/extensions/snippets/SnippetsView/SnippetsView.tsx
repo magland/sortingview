@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react'
 import SelectUnitsWidget from '../../../commonComponents/SelectUnitsWidget/SelectUnitsWidget'
-import Splitter from 'labbox-react/components/Splitter/Splitter';
+import Splitter from 'figurl/labbox-react/components/Splitter/Splitter';
 import { SortingViewProps } from "../../../pluginInterface"
 import SnippetsWidget from './SnippetsWidget'
 

@@ -1,5 +1,5 @@
-import ClientSidePlot from 'kachery-react/components/ClientSidePlot/ClientSidePlot'
-import { CalculationPool } from 'kachery-react/createCalculationPool'
+import ClientSidePlot from 'figurl/kachery-react/components/ClientSidePlot/ClientSidePlot'
+import { CalculationPool } from 'figurl/kachery-react/createCalculationPool'
 import React, { FunctionComponent } from 'react'
 import { Sorting } from "../../pluginInterface"
 import Correlogram_rv from './Correlogram_ReactVis'

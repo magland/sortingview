@@ -1,8 +1,8 @@
 // import { createCalculationPool } from 'labbox';
 import { Table, TableBody, TableCell, TableRow } from '@material-ui/core';
-import TaskStatusView from 'kachery-react/components/TaskMonitor/TaskStatusView';
-import useChannel from 'kachery-react/useChannel';
-import usePureCalculationTask from 'kachery-react/usePureCalculationTask';
+import TaskStatusView from 'figurl/kachery-react/components/TaskMonitor/TaskStatusView';
+import useChannel from 'figurl/kachery-react/useChannel';
+import usePureCalculationTask from 'figurl/kachery-react/usePureCalculationTask';
 import React, { FunctionComponent, useMemo } from 'react';
 import { applyMergesToUnit, Recording, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from '../../../pluginInterface';
 import WaveformWidget, { defaultWaveformOpts } from '../../averagewaveforms/AverageWaveformsView/WaveformWidget';

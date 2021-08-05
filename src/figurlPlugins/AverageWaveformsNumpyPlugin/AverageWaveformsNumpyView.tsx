@@ -1,7 +1,7 @@
 import { IconButton } from '@material-ui/core';
 import { Help } from '@material-ui/icons';
-import { useVisible } from 'labbox-react';
-import Splitter from 'labbox-react/components/Splitter/Splitter';
+import { useVisible } from 'figurl/labbox-react';
+import Splitter from 'figurl/labbox-react/components/Splitter/Splitter';
 import { ActionItem, DividerItem } from 'python/sortingview/gui/extensions/common/Toolbars';
 import ViewToolbar from 'python/sortingview/gui/extensions/common/ViewToolbar';
 import { SortingSelection, SortingSelectionDispatch } from 'python/sortingview/gui/pluginInterface';

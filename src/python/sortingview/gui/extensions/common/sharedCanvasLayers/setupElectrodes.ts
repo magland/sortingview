@@ -1,7 +1,7 @@
-import { funcToTransform } from 'labbox-react/components/CanvasWidget';
-import { getBoundingBoxForEllipse, getHeight, getWidth, RectangularRegion, TransformationMatrix, transformDistance, Vec2 } from 'labbox-react/components/CanvasWidget/Geometry';
 import { norm } from 'mathjs';
-import { getArrayMax, getArrayMin } from '../utility';
+import { funcToTransform } from 'figurl/labbox-react/components/CanvasWidget';
+import { getBoundingBoxForEllipse, getHeight, getWidth, RectangularRegion, TransformationMatrix, transformDistance, Vec2 } from 'figurl/labbox-react/components/CanvasWidget/Geometry';
+import { getArrayMax, getArrayMin } from '../../common/utility';
 
 export type ElectrodeBox = {
     label: string

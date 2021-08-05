@@ -1,7 +1,12 @@
-import CanvasWidget from 'labbox-react/components/CanvasWidget';
-import { useLayer, useLayers } from 'labbox-react/components/CanvasWidget/CanvasWidgetLayer';
-import React, { FunctionComponent, useMemo } from 'react';
-import { createElectrodesLayer, ElectrodeColors, ElectrodeLayerProps } from '../../common/sharedCanvasLayers/electrodesLayer';
+import React, { FunctionComponent } from 'react';
+import CanvasWidget from 'figurl/labbox-react/components/CanvasWidget';
+import { useLayer, useLayers } from 'figurl/labbox-react/components/CanvasWidget/CanvasWidgetLayer';
+import { RecordingSelection, RecordingSelectionDispatch } from '../../../pluginInterface';
+// import CanvasWidget from '../../../commonComponents/CanvasWidget';
+// import { useLayer, useLayers } from '../../../commonComponents/CanvasWidget/CanvasWidgetLayer';
+// import { ActionItem, DividerItem } from '../../common/Toolbars';
+// import { RecordingSelection, RecordingSelectionDispatch } from "../../pluginInterface";
+import { createElectrodesLayer, ElectrodeColors } from './electrodesLayer';
 import { createWaveformLayer, WaveformColors } from './waveformLayer';
 
 export type WaveformLayerProps = ElectrodeLayerProps & {

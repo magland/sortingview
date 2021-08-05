@@ -1,6 +1,6 @@
 import { KacheryNode } from "kachery-js"
 import { ChannelName } from "kachery-js/types/kacheryTypes"
-import { runPureCalculationTaskAsync, useChannel, useFetchCache, useKacheryNode } from "kachery-react"
+import { runPureCalculationTaskAsync, useChannel, useFetchCache, useKacheryNode } from "figurl/kachery-react"
 import { useMemo } from "react"
 import { getArrayMax, getArrayMin } from "../../common/utility"
 
