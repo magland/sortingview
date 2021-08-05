@@ -9,7 +9,7 @@ type Props = {
     recording: Recording
     sorting: Sorting
     selection: SortingSelection
-    curation: SortingCuration
+    curation?: SortingCuration
     selectionDispatch: SortingSelectionDispatch
     unitIds: number[]
     snippetLen?: [number, number]

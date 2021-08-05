@@ -16,7 +16,7 @@ type Props = {
     noiseLevel: number
     selection: SortingSelection
     selectionDispatch: SortingSelectionDispatch
-    curation: SortingCuration
+    curation?: SortingCuration
     unitId: number
     height: number
 }
@@ -114,7 +114,7 @@ const createTimeSegments = (timeRange: {min: number, max: number} | null, opts: 
     return ret
 }
 
-const useSnippets = (args: {recording: Recording, sorting: Sorting, curation: SortingCuration, visibleElectrodeIds: number[] | undefined, selection: SortingSelection, unitId: number, timeRange: {min: number, max: number} | null}) => {
+const useSnippets = (args: {recording: Recording, sorting: Sorting, curation?: SortingCuration, visibleElectrodeIds: number[] | undefined, selection: SortingSelection, unitId: number, timeRange: {min: number, max: number} | null}) => {
     const kacheryNode = useKacheryNode()
     const {channelName} = useChannel()
     const { recording, sorting, selection, curation, visibleElectrodeIds, unitId, timeRange } = args

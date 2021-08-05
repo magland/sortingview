@@ -9,7 +9,7 @@ import IndividualClusterWidget from './IndividualClusterWidget';
 type Props = {
     recording: Recording
     sorting: Sorting
-    curation: SortingCuration
+    curation?: SortingCuration
     selection: SortingSelection
     selectionDispatch: SortingSelectionDispatch
     unitId: number

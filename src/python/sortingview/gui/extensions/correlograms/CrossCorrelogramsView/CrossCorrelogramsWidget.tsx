@@ -11,7 +11,7 @@ import CorrelogramRv2 from '../Correlogram_ReactVis2';
 type Props = {
     sorting: Sorting
     selection: SortingSelection
-    curation: SortingCuration
+    curation?: SortingCuration
     selectionDispatch: SortingSelectionDispatch
     unitIds: number[]
     width: number

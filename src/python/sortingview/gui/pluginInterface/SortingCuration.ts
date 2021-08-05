@@ -44,7 +44,7 @@ export type SortingCurationAction = AddUnitLabelCurationAction | RemoveUnitLabel
 
 export type SortingCurationDispatch = (action: SortingCurationAction) => void
 
-export const mergeGroupForUnitId = (unitId: number, curation: SortingCuration | undefined) => {
+export const mergeGroupForUnitId = (unitId: number, curation?: SortingCuration | undefined) => {
     const mergeGroups = (curation || {}).mergeGroups || []
     return mergeGroups.filter(g => (g.includes(unitId)))[0] || null
 }
@@ -55,7 +55,7 @@ export const applyMergesToUnit = (unitId: number, curation: SortingCuration | un
     ) : unitId
 }
 
-export const isMergeGroupRepresentative = (unitId: number, curation: SortingCuration | undefined) => {
+export const isMergeGroupRepresentative = (unitId: number, curation?: SortingCuration | undefined) => {
     const mg = mergeGroupForUnitId(unitId, curation)
     if (!mg) return true
     return (Math.min(...mg) === unitId)

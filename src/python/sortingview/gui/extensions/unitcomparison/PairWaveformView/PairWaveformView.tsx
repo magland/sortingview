@@ -31,7 +31,7 @@ type Props = {
     unitIds: number[]
     selection: SortingSelection
     selectionDispatch: SortingSelectionDispatch
-    curation: SortingCuration
+    curation?: SortingCuration
     width: number
     height: number
     noiseLevel: number

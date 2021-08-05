@@ -143,7 +143,7 @@ export const workspaceReducer = (s: WorkspaceState, a: WorkspaceAction): Workspa
         // case 'REMOVE_UNIT_LABEL':
         // case 'MERGE_UNITS':
         // case 'UNMERGE_UNITS':
-        //     return {...s, sortings: s.sortings.map(x => (x.sortingId === a.sortingId) ? {...x, curation: sortingCurationReducer(x.curation || {}, a)} : x)}
+        //     return {...s, sortings: s.sortings.map(x => (x.sortingId === a.sortingId) ? {...x, curation?: SortingCurationReducer(x.curation || {}, a)} : x)}
         case 'SET_UNIT_METRICS_FOR_SORTING':
             return {...s, sortings: s.sortings.map(x => (x.sortingId === a.unitMetricsForSorting.sortingId) ? {...x, unitMetricsUri: a.unitMetricsForSorting.metricsUri} : x)}
         case 'SET_SNIPPET_LEN':

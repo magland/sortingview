@@ -16,7 +16,7 @@ interface Props {
     selectionDispatch: SortingSelectionDispatch
     sorting: Sorting
     compareSorting?: Sorting
-    curation: SortingCuration
+    curation?: SortingCuration
     height?: number
     selectionDisabled?: boolean
     sortingSelector?: string
@@ -197,7 +197,7 @@ const UnitsTable: FunctionComponent<Props> = (props) => {
     )
 }
 
-const getLabelsForUnitId = (unitId: number, curation: SortingCuration) => {
+const getLabelsForUnitId = (unitId: number, curation?: SortingCuration) => {
     const labelsByUnit = (curation || {}).labelsByUnit || {};
     return labelsByUnit[unitId] || []
 }
