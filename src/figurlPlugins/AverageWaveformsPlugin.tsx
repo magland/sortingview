@@ -1,5 +1,5 @@
 import { FigurlPlugin } from "figurl/types";
-import { isArrayOf, isNumber, isString, _validateObject } from "kachery-js/types/kacheryTypes";
+import { isArrayOf, isNumber, isString, optional, _validateObject } from "kachery-js/types/kacheryTypes";
 import AverageWaveformsView from "python/sortingview/gui/extensions/averagewaveforms/AverageWaveformsView/AverageWaveformsView";
 import { Recording, Sorting, SortingInfo, SortingSelection, sortingSelectionReducer } from "python/sortingview/gui/pluginInterface";
 import { useRecordingInfo } from "python/sortingview/gui/pluginInterface/useRecordingInfo";
@@ -11,14 +11,14 @@ type AverageWaveformsData = {
     workspaceUri: string,
     recordingId: string,
     sortingId: string,
-    unitIds: number[]
+    unitIds?: number[]
 }
 const isAverageWaveformsData = (x: any): x is AverageWaveformsData => {
     return _validateObject(x, {
         workspaceUri: isString,
         recordingId: isString,
         sortingId: isString,
-        unitIds: isArrayOf(isNumber)
+        unitIds: optional(isArrayOf(isNumber))
     })
 }
 
@@ -45,7 +45,7 @@ const emptySortingInfo: SortingInfo = {
 }
 
 const AverageWaveformsComponent: FunctionComponent<Props> = ({ data, width, height }) => {
-    const { workspaceUri, recordingId, sortingId } = data
+    const { workspaceUri, recordingId, sortingId, unitIds } = data
 
     const { workspace, workspaceDispatch } = useSortingViewWorkspace(workspaceUri)
 
@@ -61,6 +61,13 @@ const AverageWaveformsComponent: FunctionComponent<Props> = ({ data, width, heig
     const snippetLen: [number, number] = useMemo(() => (
         [50, 80]
     ), [])
+
+    const selection2 = useMemo(() => {
+        if (unitIds) {
+            return {...selection, visibleUnitIds: unitIds}
+        }
+        else return selection
+    }, [selection, unitIds])
 
     if ((!recording) && (sorting)) {
         return <h3>{`Recording not found: ${sorting.recordingId}`}</h3>
@@ -78,7 +85,7 @@ const AverageWaveformsComponent: FunctionComponent<Props> = ({ data, width, heig
             recording={recording}
             sortingInfo={sortingInfo || emptySortingInfo}
             recordingInfo={recordingInfo}
-            selection={selection}
+            selection={selection2}
             selectionDispatch={selectionDispatch}
             curation={undefined}
             curationDispatch={undefined}
