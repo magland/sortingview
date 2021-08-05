@@ -18,7 +18,7 @@ type Props = {
     height: number,
     selection: SortingSelection
     selectionDispatch: SortingSelectionDispatch
-    curation: SortingCuration
+    curation?: SortingCuration
 }
 
 const SpikeAmplitudesTimeWidget: FunctionComponent<Props> = ({ spikeAmplitudesData, recording, sorting, curation, unitIds, width, height, selection: externalSelection, selectionDispatch: externalSelectionDispatch }) => {

@@ -10,7 +10,7 @@ type Props = {
     sorting: Sorting
     selection: SortingSelection
     selectionDispatch: SortingSelectionDispatch
-    curation: SortingCuration
+    curation?: SortingCuration
     unitIds: number[]
     width: number
     height: number

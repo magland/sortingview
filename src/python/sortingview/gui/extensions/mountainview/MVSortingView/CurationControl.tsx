@@ -6,7 +6,7 @@ import { SortingCurationAction } from '../../../pluginInterface/SortingCuration'
 
 type Props = {
     sortingId: string
-    curation: SortingCuration
+    curation?: SortingCuration
     curationDispatch: (a: SortingCurationAction) => void
     selection: SortingSelection
     selectionDispatch: SortingSelectionDispatch
@@ -66,7 +66,7 @@ const CurationControl: FunctionComponent<Props & SizeMeProps> = ({ selection, se
         curationDispatch({
             type: type
         })
-    }, [curation.isClosed, curationDispatch])
+    }, [curation?.isClosed, curationDispatch])
 
     const handleToggleApplyMerges = useCallback(() => {
         selectionDispatch({type: 'ToggleApplyMerges', curation})
@@ -97,7 +97,7 @@ const CurationControl: FunctionComponent<Props & SizeMeProps> = ({ selection, se
         backgroundColor: '#f9f9ff'
     }
     const unitsAreInMergeGroups = (unitIds: number[]) => {
-        const mg = curation.mergeGroups || []
+        const mg = curation?.mergeGroups || []
         const all = mg.reduce((prev, g) => [...prev, ...g], []) // all units in merge groups
         for (let unitId of unitIds) {
             if (!all.includes(unitId)) return false

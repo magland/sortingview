@@ -17,8 +17,9 @@ type Props = {
     sorting: Sorting
     unitId1: number
     unitId2?: number
-    applyMerges?: boolean
-    curation: SortingCuration
+    selection: SortingSelection
+    curation?: SortingCuration
+    selectionDispatch: SortingSelectionDispatch
     width: number
     height: number
 }

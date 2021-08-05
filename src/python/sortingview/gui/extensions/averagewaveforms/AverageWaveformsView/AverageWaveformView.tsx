@@ -21,7 +21,7 @@ type Props = {
     recording: Recording
     unitId: number
     selectionDispatch: SortingSelectionDispatch
-    curation: SortingCuration
+    curation?: SortingCuration
     width: number
     height: number
     noiseLevel: number

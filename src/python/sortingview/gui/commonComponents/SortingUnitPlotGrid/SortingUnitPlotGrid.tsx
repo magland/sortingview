@@ -6,7 +6,7 @@ import { useSortingInfo } from '../../pluginInterface/useSortingInfo';
 type Props = {
     sorting: Sorting
     selection: SortingSelection
-    curation: SortingCuration
+    curation?: SortingCuration
     selectionDispatch: SortingSelectionDispatch
     unitComponent: (unitId: number) => React.ReactElement
     sortingSelector?: string

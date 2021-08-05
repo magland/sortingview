@@ -16,7 +16,7 @@ interface Props {
     selectionDispatch: SortingSelectionDispatch
     unitMetricsUri?: string
     compareSorting?: Sorting
-    curation: SortingCuration
+    curation?: SortingCuration
     height?: number
     selectionDisabled?: boolean
     sortingSelector?: string
@@ -225,5 +225,37 @@ const UnitsTable: FunctionComponent<Props> = (props) => {
         />
     )
 }
+
+const getLabelsForUnitId = (unitId: number, curation?: SortingCuration) => {
+    const labelsByUnit = (curation || {}).labelsByUnit || {};
+    return labelsByUnit[unitId] || []
+}
+
+// const UnitIdCell = React.memo((props: {id: number, mergeGroup: number[] | null, sortingId: string}) => {
+//     const g = props.mergeGroup
+//     return <TableCell><span>{props.id + ''}{g && ' (' + [...g].sort().join(', ') + ')'}</span></TableCell>
+// })
+
+// const UnitLabelCell = React.memo((props: {labels: string}) => (
+//     <TableCell><span>{props.labels}</span></TableCell>
+// ));
+
+// const MetricCell = React.memo((a: {title?: string, error: string, data: any, PayloadComponent: React.ComponentType<{record: any}>}) => {
+//     const { error, data, PayloadComponent } = a
+//     if (error !== '') {
+//         return (<TableCell><span>{`Error: ${error}`}</span></TableCell>);
+//     }
+//     if (data === null || data === '') { // 0 is a valid value!!
+//         return (<TableCell><LinearProgress style={{'width': '60%'}}/></TableCell>);
+//     } else {
+//         return (
+//             <TableCell>
+//                 <span title={a.title}>
+//                     <PayloadComponent record = {data} />
+//                 </span>
+//             </TableCell>
+//         );
+//     }
+// });
 
 export default UnitsTable

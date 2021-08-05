@@ -8,7 +8,7 @@ type Props = {
     sorting: Sorting
     selection: SortingSelection
     selectionDispatch: SortingSelectionDispatch
-    curation: SortingCuration
+    curation?: SortingCuration
     locked: boolean
     toggleLockStateCallback: () => void
     sortingSelector?: string

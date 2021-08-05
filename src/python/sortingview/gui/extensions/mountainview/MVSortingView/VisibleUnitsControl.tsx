@@ -8,7 +8,7 @@ type Props = {
     recording: Recording
     selection: SortingSelection
     selectionDispatch: SortingSelectionDispatch
-    curation: SortingCuration
+    curation?: SortingCuration
 }
 
 // type PeakElectrodeIds = {[key: string]: number}
@@ -71,7 +71,7 @@ const VisibleUnitsControl: FunctionComponent<Props> = ({ sorting, recording, sel
     )
 }
 
-const getLabelsForUnitId = (unitId: number, curation: SortingCuration) => {
+const getLabelsForUnitId = (unitId: number, curation?: SortingCuration) => {
     const labelsByUnit = (curation || {}).labelsByUnit || {};
     return labelsByUnit[unitId] || []
 }
