@@ -1,8 +1,8 @@
-import TaskStatusView from 'kachery-react/components/TaskMonitor/TaskStatusView';
+import TaskStatusView from 'figurl/kachery-react/components/TaskMonitor/TaskStatusView';
 import React, { FunctionComponent } from 'react';
 import { VerticalBarSeries, XAxis, XYPlot, YAxis } from 'react-vis';
-import { usePureCalculationTask } from 'kachery-react';
-import useChannel from 'kachery-react/useChannel'
+import { usePureCalculationTask } from 'figurl/kachery-react';
+import useChannel from 'figurl/kachery-react/useChannel'
 import { applyMergesToUnit, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from "../../pluginInterface";
 
 type PlotData = {

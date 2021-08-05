@@ -1,5 +1,5 @@
 import { ChannelName, isFeedId } from 'kachery-js/types/kacheryTypes'
-import { parseWorkspaceUri } from 'labbox-react'
+import { parseWorkspaceUri } from 'figurl/labbox-react'
 import QueryString from 'querystring'
 
 type Page = 'workspace' | 'recording' | 'sorting' | 'sortingComparison'

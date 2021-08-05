@@ -1,4 +1,4 @@
-import Splitter from 'labbox-react/components/Splitter/Splitter'
+import Splitter from 'figurl/labbox-react/components/Splitter/Splitter'
 import { SortingViewProps } from 'python/sortingview/gui/pluginInterface'
 import React, { FunctionComponent } from 'react'
 import SelectUnitsWidget from './SelectUnitsWidget'

@@ -1,5 +1,5 @@
-import { useChannel, usePureCalculationTask } from 'kachery-react';
-import TaskStatusView from 'kachery-react/components/TaskMonitor/TaskStatusView';
+import { useChannel, usePureCalculationTask } from 'figurl/kachery-react';
+import TaskStatusView from 'figurl/kachery-react/components/TaskMonitor/TaskStatusView';
 import { applyMergesToUnit, Recording, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from 'python/sortingview/gui/pluginInterface';
 import React, { FunctionComponent } from 'react';
 import { useMemo } from 'react';

@@ -3,11 +3,11 @@ import { Button, Paper } from '@material-ui/core';
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { LabboxPlugin, Recording, sortingComparisonUnitMetricPlugins, SortingUnitMetricPlugin, sortingUnitMetricPlugins, SortingViewProps } from "../../../pluginInterface";
 import UnitsTable from './UnitsTable';
-import { runPureCalculationTaskAsync } from 'kachery-react';
-import useChannel from 'kachery-react/useChannel'
-import { usePlugins } from 'labbox-react';
-import useKacheryNode from 'kachery-react/useKacheryNode';
-import sortByPriority from 'labbox-react/extensionSystem/sortByPriority';
+import { runPureCalculationTaskAsync } from 'figurl/kachery-react';
+import useChannel from 'figurl/kachery-react/useChannel'
+import { usePlugins } from 'figurl/labbox-react';
+import useKacheryNode from 'figurl/kachery-react/useKacheryNode';
+import sortByPriority from 'figurl/labbox-react/extensionSystem/sortByPriority';
 import { SortingComparisonUnitMetricPlugin } from 'python/sortingview/gui/pluginInterface/SortingComparisonUnitMetricPlugin';
 
 // const defaultLabelOptions = ['noise', 'MUA', 'artifact', 'accept', 'reject'];

@@ -1,8 +1,8 @@
 import { norm } from "mathjs"
-import { funcToTransform } from "labbox-react/components/CanvasWidget"
-import { CanvasPainter } from "labbox-react/components/CanvasWidget/CanvasPainter"
-import { CanvasDragEvent, CanvasWidgetLayer, ClickEvent, ClickEventType, DiscreteMouseEventHandler, DragHandler } from "labbox-react/components/CanvasWidget/CanvasWidgetLayer"
-import { getBoundingBoxForEllipse, getHeight, getWidth, pointIsInEllipse, RectangularRegion, rectangularRegionsIntersect, transformDistance, Vec2 } from "labbox-react/components/CanvasWidget/Geometry"
+import { funcToTransform } from "figurl/labbox-react/components/CanvasWidget"
+import { CanvasPainter } from "figurl/labbox-react/components/CanvasWidget/CanvasPainter"
+import { CanvasDragEvent, CanvasWidgetLayer, ClickEvent, ClickEventType, DiscreteMouseEventHandler, DragHandler } from "figurl/labbox-react/components/CanvasWidget/CanvasWidgetLayer"
+import { getBoundingBoxForEllipse, getHeight, getWidth, pointIsInEllipse, RectangularRegion, rectangularRegionsIntersect, transformDistance, Vec2 } from "figurl/labbox-react/components/CanvasWidget/Geometry"
 import { getArrayMax, getArrayMin } from "../../common/utility"
 
 interface ElectrodeBoundingBox extends Electrode {

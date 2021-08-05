@@ -1,16 +1,16 @@
 import React, { Fragment, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaArrowDown, FaArrowUp } from 'react-icons/fa';
 import SortingUnitPlotGrid from '../../../commonComponents/SortingUnitPlotGrid/SortingUnitPlotGrid';
-import Splitter from 'labbox-react/components/Splitter/Splitter';
+import Splitter from 'figurl/labbox-react/components/Splitter/Splitter';
 import { SortingViewProps } from '../../../pluginInterface';
 import AverageWaveformView from './AverageWaveformView';
 import { ActionItem, DividerItem } from '../../common/Toolbars';
 import { useRecordingInfo } from 'python/sortingview/gui/pluginInterface/useRecordingInfo';
 import ViewToolbar from '../../common/ViewToolbar';
 import { IconButton } from '@material-ui/core';
-import { useVisible } from 'labbox-react';
+import { useVisible } from 'figurl/labbox-react';
 import { Help } from '@material-ui/icons';
-import MarkdownDialog from 'labbox-react/components/Markdown/MarkdownDialog';
+import MarkdownDialog from 'figurl/labbox-react/components/Markdown/MarkdownDialog';
 import info from '../../../helpPages/AverageWaveforms.md.gen'
 
 export type AverageWaveformAction = ActionItem  | DividerItem

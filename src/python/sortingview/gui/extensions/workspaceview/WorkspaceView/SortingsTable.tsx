@@ -1,6 +1,6 @@
 import { Button, CircularProgress } from '@material-ui/core';
 import React, { FunctionComponent, useCallback, useMemo, useState } from 'react';
-import NiceTable from 'labbox-react/components/NiceTable/NiceTable';
+import NiceTable from 'figurl/labbox-react/components/NiceTable/NiceTable';
 import { Recording, Sorting, WorkspaceRouteDispatch } from "../../../pluginInterface";
 import { useSortingInfos } from 'python/sortingview/gui/pluginInterface/useSortingInfo';
 

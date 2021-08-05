@@ -14,7 +14,6 @@ const SortingUnitPlotGridNumpy: FunctionComponent<Props> = ({ unitIds, selection
     const maxUnitsVisibleIncrement = 60;
     const [maxUnitsVisible, setMaxUnitsVisible] = useState(30);
 
-    const visibleUnitIds = selection.visibleUnitIds
     let unit_ids = [...unitIds]
     let showExpandButton = false;
     if (unit_ids.length > maxUnitsVisible) {

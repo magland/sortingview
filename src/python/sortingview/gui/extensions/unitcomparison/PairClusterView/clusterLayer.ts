@@ -1,7 +1,7 @@
-import { funcToTransform } from "labbox-react/components/CanvasWidget"
-import { CanvasPainter } from "labbox-react/components/CanvasWidget/CanvasPainter"
-import { CanvasWidgetLayer, ClickEvent, ClickEventType, DiscreteMouseEventHandler } from "labbox-react/components/CanvasWidget/CanvasWidgetLayer"
-import { pointIsInEllipse, RectangularRegion, Vec2 } from "labbox-react/components/CanvasWidget/Geometry"
+import { funcToTransform } from "figurl/labbox-react/components/CanvasWidget"
+import { CanvasPainter } from "figurl/labbox-react/components/CanvasWidget/CanvasPainter"
+import { CanvasWidgetLayer, ClickEvent, ClickEventType, DiscreteMouseEventHandler } from "figurl/labbox-react/components/CanvasWidget/CanvasWidgetLayer"
+import { pointIsInEllipse, RectangularRegion, Vec2 } from "figurl/labbox-react/components/CanvasWidget/Geometry"
 import { colorForUnitId } from "../../spikeamplitudes/SpikeAmplitudesView/SpikeAmplitudesPanel"
 
 export type ClusterLayerProps = {

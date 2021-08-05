@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
-import CanvasWidget from 'labbox-react/components/CanvasWidget';
-import { useLayer, useLayers } from 'labbox-react/components/CanvasWidget/CanvasWidgetLayer';
+import CanvasWidget from 'figurl/labbox-react/components/CanvasWidget';
+import { useLayer, useLayers } from 'figurl/labbox-react/components/CanvasWidget/CanvasWidgetLayer';
 import { RecordingSelection, RecordingSelectionDispatch } from '../../../pluginInterface';
 // import CanvasWidget from '../../../commonComponents/CanvasWidget';
 // import { useLayer, useLayers } from '../../../commonComponents/CanvasWidget/CanvasWidgetLayer';

@@ -1,6 +1,6 @@
-import { funcToTransform } from 'labbox-react/components/CanvasWidget';
-import { CanvasPainter } from 'labbox-react/components/CanvasWidget/CanvasPainter';
-import { CanvasWidgetLayer, KeyboardEventHandler, KeyboardEvent } from 'labbox-react/components/CanvasWidget/CanvasWidgetLayer';
+import { funcToTransform } from 'figurl/labbox-react/components/CanvasWidget';
+import { CanvasPainter } from 'figurl/labbox-react/components/CanvasWidget/CanvasPainter';
+import { CanvasWidgetLayer, KeyboardEventHandler, KeyboardEvent } from 'figurl/labbox-react/components/CanvasWidget/CanvasWidgetLayer';
 import { ActionItem, DividerItem } from '../../common/Toolbars';
 import setupElectrodes, { ElectrodeBox } from './setupElectrodes';
 import { LayerProps } from './WaveformWidget';

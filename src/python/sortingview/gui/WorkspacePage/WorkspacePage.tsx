@@ -1,4 +1,4 @@
-import useWorkspace from 'labbox-react/workspace/useWorkspace'
+import useWorkspace from 'figurl/labbox-react/workspace/useWorkspace'
 import WorkspaceNavigationComponent from 'python/sortingview/gui/WorkspacePage/WorkspaceNavigationComponent/WorkspaceNavigationComponent'
 import React, { FunctionComponent } from 'react'
 import WorkspaceView from '../extensions/workspaceview/WorkspaceView'

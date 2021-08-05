@@ -1,7 +1,7 @@
-import { usePureCalculationTask } from 'kachery-react';
-import initiateTask, { Task } from "kachery-react/initiateTask";
-import useChannel from "kachery-react/useChannel";
-import useKacheryNode from "kachery-react/useKacheryNode";
+import { usePureCalculationTask } from 'figurl/kachery-react';
+import initiateTask, { Task } from "figurl/kachery-react/initiateTask";
+import useChannel from "figurl/kachery-react/useChannel";
+import useKacheryNode from "figurl/kachery-react/useKacheryNode";
 import { useEffect, useRef, useState } from "react";
 import { Recording, RecordingInfo } from "../pluginInterface";
 

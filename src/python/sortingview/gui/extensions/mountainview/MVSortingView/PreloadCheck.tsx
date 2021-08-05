@@ -1,5 +1,5 @@
-import usePureCalculationTask from 'kachery-react/usePureCalculationTask';
-import useChannel from 'kachery-react/useChannel'
+import usePureCalculationTask from 'figurl/kachery-react/usePureCalculationTask';
+import useChannel from 'figurl/kachery-react/useChannel'
 import React, { Fragment, FunctionComponent, useEffect, useMemo, useRef, useState } from 'react';
 import { Recording, Sorting } from "../../../pluginInterface";
 

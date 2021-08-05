@@ -1,4 +1,4 @@
-import Splitter from 'labbox-react/components/Splitter/Splitter';
+import Splitter from 'figurl/labbox-react/components/Splitter/Splitter';
 import useLocalUnitIds from 'python/sortingview/gui/pluginInterface/useLocalUnitIds';
 import React, { FunctionComponent, useState } from 'react';
 import LockableSelectUnitsWidget from '../../../commonComponents/SelectUnitsWidget/LockableSelectUnitsWidget';

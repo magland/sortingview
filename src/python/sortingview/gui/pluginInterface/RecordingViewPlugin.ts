@@ -1,4 +1,4 @@
-import { CalculationPool } from "kachery-react/createCalculationPool";
+import { CalculationPool } from "figurl/kachery-react/createCalculationPool";
 import { LabboxViewPlugin } from ".";
 import { Recording, RecordingInfo } from "./Recording";
 import { RecordingSelection, RecordingSelectionDispatch } from "./RecordingSelection";

@@ -1,5 +1,5 @@
-import { useChannel, usePureCalculationTask } from 'kachery-react';
-import sortByPriority from 'labbox-react/extensionSystem/sortByPriority';
+import { useChannel, usePureCalculationTask } from 'figurl/kachery-react';
+import sortByPriority from 'figurl/labbox-react/extensionSystem/sortByPriority';
 import { ExternalSortingUnitMetric } from 'python/sortingview/gui/pluginInterface/Sorting';
 import { SortingComparisonUnitMetricPlugin } from 'python/sortingview/gui/pluginInterface/SortingComparisonUnitMetricPlugin';
 import React, { FunctionComponent, useCallback } from 'react';

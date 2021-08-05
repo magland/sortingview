@@ -1,8 +1,8 @@
 import { Button } from '@material-ui/core';
-import { useVisible } from 'labbox-react';
-import Hyperlink from 'labbox-react/components/Hyperlink/Hyperlink';
-import MarkdownDialog from 'labbox-react/components/Markdown/MarkdownDialog';
-import ModalWindow from 'labbox-react/components/ModalWindow/ModalWindow';
+import { useVisible } from 'figurl/labbox-react';
+import Hyperlink from 'figurl/labbox-react/components/Hyperlink/Hyperlink';
+import MarkdownDialog from 'figurl/labbox-react/components/Markdown/MarkdownDialog';
+import ModalWindow from 'figurl/labbox-react/components/ModalWindow/ModalWindow';
 import { WorkspaceState } from 'python/sortingview/gui/pluginInterface/workspaceReducer';
 import React, { FunctionComponent } from 'react';
 import { WorkspaceRoute, WorkspaceRouteDispatch } from "../../../pluginInterface";

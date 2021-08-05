@@ -1,8 +1,8 @@
 // import { createCalculationPool } from 'labbox';
-import TaskStatusView from 'kachery-react/components/TaskMonitor/TaskStatusView';
-import useChannel from 'kachery-react/useChannel';
+import TaskStatusView from 'figurl/kachery-react/components/TaskMonitor/TaskStatusView';
+import useChannel from 'figurl/kachery-react/useChannel';
 import React, { FunctionComponent, useCallback, useMemo } from 'react';
-import { usePureCalculationTask } from 'kachery-react';
+import { usePureCalculationTask } from 'figurl/kachery-react';
 import { applyMergesToUnit, Recording, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from "../../../pluginInterface";
 import IndividualClusterWidget from './IndividualClusterWidget';
 

@@ -1,6 +1,6 @@
 import { FigurlPlugin } from "figurl/types";
 import { isString, _validateObject } from "kachery-js/types/kacheryTypes";
-import { useChannel } from 'kachery-react';
+import { useChannel } from 'figurl/kachery-react';
 import WorkspaceView from 'python/sortingview/gui/extensions/workspaceview/WorkspaceView';
 import { WorkspaceRoute } from 'python/sortingview/gui/pluginInterface';
 import { useSortingViewWorkspace } from 'python/sortingview/gui/WorkspacePage/WorkspacePage';
