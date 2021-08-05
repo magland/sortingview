@@ -58,6 +58,7 @@ const Figure: FunctionComponent<Props> = ({plugins, width, height, figureObjectO
         return <TaskStatusView task={task} label="Loading figure object" />
     }
     if (!plugin) {
+        // will never happen, but we need it for typescript to be happy
         return <TaskStatusView task={task} label="Loading figure plugin" />
     }
 
