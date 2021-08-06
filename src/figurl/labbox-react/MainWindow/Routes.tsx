@@ -37,6 +37,32 @@ const Routes: FunctionComponent<Props> = (props) => {
             }
             setRoute({routePath: `/fig`, figureObjectOrHash: figureObject})
         }
+        else if (routePath.startsWith('/workspace/recording/')) {
+            // const a = routePath.split('/')
+            // const recordingId = a[3]
+            const w = query.workspace
+            if (!isFeedId(w)) return
+            const workspaceUri = `workspace://${w}`
+            const figureObject: FigureObject = {
+                type: 'sortingview.workspace.1',
+                data: {
+                    workspaceUri
+                }
+            }
+            setRoute({routePath: `/fig`, figureObjectOrHash: figureObject})
+        }
+        else if (routePath + '' === '/workspace') {
+            const w = query.workspace
+            if (!isFeedId(w)) return
+            const workspaceUri = `workspace://${w}`
+            const figureObject: FigureObject = {
+                type: 'sortingview.workspace.1',
+                data: {
+                    workspaceUri
+                }
+            }
+            setRoute({routePath: `/fig`, figureObjectOrHash: figureObject})
+        }
     }, [routePath, query, setRoute])
 
     if (routePath === '/about') {
