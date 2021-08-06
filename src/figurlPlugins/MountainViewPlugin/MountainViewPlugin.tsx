@@ -69,10 +69,15 @@ const MountainViewComponent: FunctionComponent<Props> = ({data, width, height}) 
     )
 }
 
+const getLabel = (x: MountainViewData) => {
+    return `MountainView ${x.workspaceUri.slice(0, 20)}.../${x.recordingId}/${x.sortingId}`
+}
+
 const MountainViewPlugin: FigurlPlugin = {
     type: 'sortingview.mountainview.1',
     validateData: isMountainViewData,
-    component: MountainViewComponent
+    component: MountainViewComponent,
+    getLabel
 }
 
 export default MountainViewPlugin

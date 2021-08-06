@@ -34,7 +34,7 @@ const SortingsElement: FunctionComponent<{sortings: Sorting[], onClickSorting: (
             <ul>
                 {
                     sortings.map(s => (
-                        <SortingElement onClickSorting={onClickSorting} sorting={s} sortingInfo={sortingInfos[s.sortingId] || undefined} />
+                        <SortingElement key={s.sortingId} onClickSorting={onClickSorting} sorting={s} sortingInfo={sortingInfos[s.sortingId] || undefined} />
                     ))
                 }
             </ul>

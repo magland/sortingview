@@ -64,10 +64,15 @@ const AverageWaveformsNumpyComponent: FunctionComponent<Props> = ({ data, width,
     )
 }
 
+const getLabel = (x: AverageWaveformsNumpyData) => {
+    return `Average waveforms numpy`
+}
+
 const AverageWaveformsPlugin: FigurlPlugin = {
     type: 'sortingview.average-waveforms-numpy.1',
     validateData: isAverageWaveformsNumpyData,
-    component: AverageWaveformsNumpyComponent
+    component: AverageWaveformsNumpyComponent,
+    getLabel
 }
 
 export default AverageWaveformsPlugin

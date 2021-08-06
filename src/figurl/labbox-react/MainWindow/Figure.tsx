@@ -3,6 +3,9 @@ import { isJSONObject, JSONObject, Sha1Hash } from 'kachery-js/types/kacheryType
 import { useChannel, usePureCalculationTask } from 'figurl/kachery-react';
 import TaskStatusView from 'figurl/kachery-react/components/TaskMonitor/TaskStatusView';
 import React, { FunctionComponent } from 'react';
+import { RecentFiguresAction } from 'figurl/RecentFigures';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 type Props = {
     plugins: FigurlPlugin[]
@@ -10,6 +13,7 @@ type Props = {
     height: number
     packageName: string
     figureObjectOrHash?: JSONObject | Sha1Hash
+    recentFiguresDispatch: (a: RecentFiguresAction) => void
 }
 
 const useFigureObject = (packageName: string, plugins: FigurlPlugin[], figureObjectOrHash?: JSONObject | Sha1Hash) => {
@@ -48,8 +52,24 @@ const useFigureObject = (packageName: string, plugins: FigurlPlugin[], figureObj
     return {task}
 }
 
-const Figure: FunctionComponent<Props> = ({plugins, width, height, figureObjectOrHash, packageName}) => {
+const Figure: FunctionComponent<Props> = ({plugins, width, height, figureObjectOrHash, packageName, recentFiguresDispatch}) => {
     const {plugin, figureData, task, error} = useFigureObject(packageName, plugins, figureObjectOrHash)
+    const {channelName} = useChannel()
+    const location = useLocation()
+
+    useEffect(() => {
+        if (!plugin) return
+        if (!figureData) return
+        recentFiguresDispatch({type: 'add', recentFigure: {
+            channel: channelName,
+            type: plugin.type,
+            data: figureData,
+            location: {
+                pathname: location.pathname,
+                search: location.search
+            }
+        }})
+    }, [channelName, plugin, figureData, recentFiguresDispatch, location])
 
     if (error) {
         return <div><pre>{error}</pre></div>

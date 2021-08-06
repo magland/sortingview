@@ -1,7 +1,7 @@
+import { RecentFiguresAction } from 'figurl/RecentFigures'
 import { FigureObject, FigurlPlugin } from 'figurl/types'
 import { isFeedId } from 'kachery-js/types/kacheryTypes'
-import React, { FunctionComponent } from 'react'
-import { useEffect } from 'react'
+import React, { FunctionComponent, useEffect } from 'react'
 import HomePage, { HomePageProps } from '../HomePage/HomePage'
 import Figure from './Figure'
 import useRoute from './useRoute'
@@ -12,10 +12,11 @@ type Props = {
     width: number
     height: number
     homePageProps: HomePageProps
+    recentFiguresDispatch: (a: RecentFiguresAction) => void
 }
 
 const Routes: FunctionComponent<Props> = (props) => {
-    const {packageName, plugins, width, height, homePageProps} = props
+    const {packageName, plugins, width, height, homePageProps, recentFiguresDispatch} = props
     const {routePath, figureObjectOrHash, query, setRoute} = useRoute()
 
     useEffect(() => {
@@ -76,6 +77,7 @@ const Routes: FunctionComponent<Props> = (props) => {
                 figureObjectOrHash={figureObjectOrHash}
                 width={width}
                 height={height}
+                recentFiguresDispatch={recentFiguresDispatch}
             />
         )
     }

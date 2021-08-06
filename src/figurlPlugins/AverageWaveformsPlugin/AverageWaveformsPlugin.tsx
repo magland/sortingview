@@ -97,10 +97,15 @@ const AverageWaveformsComponent: FunctionComponent<Props> = ({ data, width, heig
     )
 }
 
+const getLabel = (x: AverageWaveformsData) => {
+    return `Average waveforms: ${x.workspaceUri.slice(0, 20)}.../${x.recordingId}/${x.sortingId} ${(x.unitIds || []).join(', ')}`
+}
+
 const AverageWaveformsPlugin: FigurlPlugin = {
     type: 'sortingview.average-waveforms.1',
     validateData: isAverageWaveformsData,
-    component: AverageWaveformsComponent
+    component: AverageWaveformsComponent,
+    getLabel
 }
 
 export default AverageWaveformsPlugin
