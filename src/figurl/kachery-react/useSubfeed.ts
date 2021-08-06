@@ -2,12 +2,14 @@ import Subfeed from "kachery-js/feeds/Subfeed";
 import { FeedId, messageCount, SubfeedHash, SubfeedMessage, subfeedPosition, unscaledDurationMsec } from "kachery-js/types/kacheryTypes";
 import { sleepMsec } from "kachery-js/util";
 import { useEffect, useState } from "react";
+import useChannel from "./useChannel";
 import useKacheryNode from "./useKacheryNode";
 
 const useSubfeed = (args: {feedId: FeedId | undefined, subfeedHash: SubfeedHash | undefined}): {messages: SubfeedMessage[] | undefined, subfeed: Subfeed | undefined} => {
     const {feedId, subfeedHash} = args
     const [messages, setMessages] = useState<SubfeedMessage[] | undefined>(undefined)
     const [subfeed, setSubfeed] = useState<Subfeed | undefined>(undefined)
+    const {channelName} = useChannel()
 
     const kacheryNode = useKacheryNode()
 
@@ -18,7 +20,7 @@ const useSubfeed = (args: {feedId: FeedId | undefined, subfeedHash: SubfeedHash 
         if (!subfeedHash) return
         let valid = true
         ;(async () => {
-            const subfeed = await kacheryNode.feedManager()._loadSubfeed(feedId, subfeedHash)
+            const subfeed = await kacheryNode.feedManager()._loadSubfeed(feedId, subfeedHash, channelName)
             setSubfeed(subfeed)
             let internalPosition = 0
             while (valid) {

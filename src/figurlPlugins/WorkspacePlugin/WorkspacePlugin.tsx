@@ -87,12 +87,6 @@ const WorkspaceComponent: FunctionComponent<Props> = ({data, width, height}) => 
     )
 }
 
-const WorkspacePlugin: FigurlPlugin = {
-    type: 'sortingview.workspace.1',
-    validateData: isWorkspaceData,
-    component: WorkspaceComponent
-}
-
 const queryString = (params: { [key: string]: string | string[] }) => {
     const keys = Object.keys(params)
     if (keys.length === 0) return ''
@@ -107,6 +101,17 @@ const queryString = (params: { [key: string]: string | string[] }) => {
             }
         }).join('&')
     )
+}
+
+const getLabel = (x: WorkspaceData) => {
+    return `Workspace ${x.workspaceUri.slice(0, 20)}...`
+}
+
+const WorkspacePlugin: FigurlPlugin = {
+    type: 'sortingview.workspace.1',
+    validateData: isWorkspaceData,
+    component: WorkspaceComponent,
+    getLabel
 }
 
 export default WorkspacePlugin

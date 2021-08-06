@@ -198,12 +198,12 @@ class FeedManager {
         const subfeed = await this._loadSubfeed(feedId, subfeedHash)
         subfeed.reportNumRemoteMessages(channelName, numRemoteMessages)
     }
-    async _loadSubfeed(feedId: FeedId, subfeedHash: SubfeedHash): Promise<Subfeed> {
+    async _loadSubfeed(feedId: FeedId, subfeedHash: SubfeedHash, channelName?: ChannelName): Promise<Subfeed> {
         // const timer = nowTimestamp()
         // Load a subfeed (Subfeed() instance
 
         // If we have already loaded it into memory, then do not reload
-        const k = feedSubfeedId(feedId, subfeedHash)
+        const k = feedSubfeedId(feedId, subfeedHash, channelName)
         let subfeed = this.#subfeeds.get(k) || null
 
         if (subfeed) {

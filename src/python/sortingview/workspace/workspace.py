@@ -133,6 +133,13 @@ class Workspace:
         main_subfeed = self._feed.load_subfeed('main')
         _set_snippet_len_for_workspace(main_subfeed, snippet_len)
         self._snippet_len = snippet_len
+    def figurl(self, channel: str, base_url='https://sortingview.vercel.app'):
+        url = figurl_workspace(
+            channel=channel,
+            base_url=base_url,
+            workspace_uri=self.uri
+        )
+        return url
     @property
     def snippet_len(self):
         return self._snippet_len
@@ -171,6 +178,20 @@ class Workspace:
                 'merge_groups': sc.get('mergeGroups', [])
             }
         })
+
+def figurl_workspace(*, channel: str, workspace_uri: str, base_url: str):
+    """
+    Generate a sortingview url that shows the average waveforms page
+    """
+    object_uri = kc.store_json({
+        'type': 'sortingview.workspace.1',
+        'data': {
+            'workspaceUri': workspace_uri
+        }
+    })
+    object_hash = object_uri.split('/')[2]
+    url = f'{base_url}/fig?channel={channel}&figureObject={object_hash}'
+    return url
 
 def create_workspace(*, label: Union[str, None]=None):
     feed = kc.create_feed()

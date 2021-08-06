@@ -1,12 +1,16 @@
 import { useChannel } from 'figurl/kachery-react'
 import SelectChannelDialog from 'figurl/kachery-react/components/SelectChannel/SelectChannelDialog'
+import { RecentFigure, RecentFigures } from 'figurl/RecentFigures'
+import { FigurlPlugin } from 'figurl/types'
 import { ChannelName, TaskFunctionId } from 'kachery-js/types/kacheryTypes'
 import React, { FunctionComponent } from 'react'
 import { useVisible } from '..'
 import ChannelSection from './ChannelSection'
 import './Home.css'
+import HowToSection from './HowToSection'
 import IntroSection from './IntroSection'
 import './localStyles.css'
+import RecentFiguresSection from './RecentFiguresSection'
 import TestResponsivenessSection from './TestResponsivenessSection'
 
 export type HomePageProps = {
@@ -16,11 +20,14 @@ export type HomePageProps = {
     pythonProjectVersion: string
     webAppProjectVersion: string
     repoUrl: string
+    recentFigures: RecentFigures
+    plugins: FigurlPlugin[]
+    onOpenFigure?: (recentFigure: RecentFigure) => void
 }
 
 const hardCodedChannels = ['ccm'] as any as ChannelName[]
 
-const HomePage: FunctionComponent<HomePageProps> = ({taskFunctionIds, introMd, packageName, pythonProjectVersion, webAppProjectVersion, repoUrl}) => {
+const HomePage: FunctionComponent<HomePageProps> = ({taskFunctionIds, introMd, packageName, pythonProjectVersion, webAppProjectVersion, repoUrl, recentFigures, plugins, onOpenFigure}) => {
     const selectChannelVisibility = useVisible()
     const {channelName} = useChannel()
 
@@ -29,6 +36,8 @@ const HomePage: FunctionComponent<HomePageProps> = ({taskFunctionIds, introMd, p
             
             <IntroSection introMd={introMd} />
             <ChannelSection onSelectChannel={selectChannelVisibility.show} taskFunctionIds={taskFunctionIds} packageName={packageName} />
+            <RecentFiguresSection recentFigures={recentFigures} plugins={plugins} onOpenFigure={onOpenFigure} />
+            <HowToSection />
             {
                 channelName && <TestResponsivenessSection />
             }
