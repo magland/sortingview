@@ -46,6 +46,12 @@ const WorkspaceRecordingView: FunctionComponent<Props> = ({ recording, sortings,
       })
   }, [workspaceRouteDispatch, recording.recordingId])
 
+  const handleBackToWorkspace = useCallback(() => {
+    workspaceRouteDispatch({
+      type: 'gotoWorkspacePage'
+    })
+  }, [workspaceRouteDispatch])
+
   if (!recordingInfo) return <div>Loading recording info</div>
 
   return (
@@ -57,7 +63,8 @@ const WorkspaceRecordingView: FunctionComponent<Props> = ({ recording, sortings,
       </Grid>
 
       <Grid item xs={12} xl={6}>
-        <Hyperlink onClick={handleExploreRecording}>Explore recording</Hyperlink>
+        <Hyperlink onClick={handleExploreRecording}>Explore recording</Hyperlink><br />
+        <Hyperlink onClick={handleBackToWorkspace}>Back to workspace</Hyperlink>
       </Grid>
       <Grid item xs={12} xl={6}>
         <SortingsView
