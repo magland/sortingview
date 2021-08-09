@@ -678,8 +678,8 @@ export const feedName = (x: string): FeedName => {
 export interface FeedSubfeedId extends String {
     __feedSubfeedId__: never; // phantom
 }
-export const feedSubfeedId = (feedId: FeedId, subfeedHash: SubfeedHash): FeedSubfeedId => {
-    return (feedId.toString() + ':' + subfeedHash.toString()) as any as FeedSubfeedId; 
+export const feedSubfeedId = (feedId: FeedId, subfeedHash: SubfeedHash, channelName: ChannelName | undefined): FeedSubfeedId => {
+    return (feedId.toString() + ':' + subfeedHash.toString() + ':' + (channelName?.toString() || '')) as any as FeedSubfeedId; 
 }
 export const isFeedSubfeedId = (x: any): x is FeedSubfeedId => {
     if (!isString(x)) return false;

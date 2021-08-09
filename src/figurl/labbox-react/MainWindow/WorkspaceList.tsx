@@ -48,7 +48,7 @@ const WorkspaceList: FunctionComponent<Props> = ({onWorkspaceSelected, packageNa
                     <span>Error: {task.errorMessage}</span>
                 ) :
                 (
-                    <span>Loading workspace list</span>
+                    <span>Loading workspace list...</span>
                 )
             }
         </div>

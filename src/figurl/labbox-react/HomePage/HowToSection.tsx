@@ -21,7 +21,7 @@ const HowToSection: FunctionComponent<Props> = () => {
                 onClose={createWorkspaceV.hide}
                 source={createWorkspaceMd}
                 substitute={{
-                    channel: channelName.toString(),
+                    channel: (channelName || '').toString(),
                     baseUrl: `${loc.protocol}//${loc.host}`
                 }}
             />

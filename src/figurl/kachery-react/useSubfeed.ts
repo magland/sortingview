@@ -39,7 +39,7 @@ const useSubfeed = (args: {feedId: FeedId | undefined, subfeedHash: SubfeedHash 
         return () => {
             valid = false
         }
-    }, [feedId, subfeedHash, kacheryNode])
+    }, [feedId, subfeedHash, kacheryNode, channelName])
 
     return {messages, subfeed}
 }

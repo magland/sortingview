@@ -4,6 +4,7 @@ import { isFeedId } from 'kachery-js/types/kacheryTypes'
 import React, { FunctionComponent, useEffect } from 'react'
 import HomePage, { HomePageProps } from '../HomePage/HomePage'
 import Figure from './Figure'
+import SelectWorkspace from './SelectWorkspace'
 import useRoute from './useRoute'
 
 type Props = {
@@ -68,6 +69,15 @@ const Routes: FunctionComponent<Props> = (props) => {
 
     if (routePath === '/about') {
         return <div>About</div>
+    }
+    else if (routePath === '/selectWorkspace') {
+        return (
+            <SelectWorkspace
+                width={width}
+                height={height}
+                packageName={homePageProps.packageName}
+            />
+        )
     }
     else if (routePath === '/fig') {
         return (

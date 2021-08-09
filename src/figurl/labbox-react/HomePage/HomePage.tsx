@@ -12,6 +12,7 @@ import IntroSection from './IntroSection'
 import './localStyles.css'
 import RecentFiguresSection from './RecentFiguresSection'
 import TestResponsivenessSection from './TestResponsivenessSection'
+import WorkspaceSection from './WorkspaceSection'
 
 export type HomePageProps = {
     taskFunctionIds: TaskFunctionId[]
@@ -36,6 +37,10 @@ const HomePage: FunctionComponent<HomePageProps> = ({taskFunctionIds, introMd, p
             
             <IntroSection introMd={introMd} />
             <ChannelSection onSelectChannel={selectChannelVisibility.show} taskFunctionIds={taskFunctionIds} packageName={packageName} />
+            <WorkspaceSection
+                packageName={packageName}
+                workspaceDescription=""
+            />
             <RecentFiguresSection recentFigures={recentFigures} plugins={plugins} onOpenFigure={onOpenFigure} />
             <HowToSection />
             {
