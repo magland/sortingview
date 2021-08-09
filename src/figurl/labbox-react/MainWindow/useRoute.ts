@@ -49,6 +49,12 @@ const useRoute = () => {
                 delete query2.workspace
             }
         }
+        if (o.routePath !== '/fig') {
+            delete query2['figureObject']
+        }
+        if (!o.routePath?.startsWith('/workspace')) {
+            delete query2['workspaceRoute']
+        }
         if (o.channel !== undefined) query2.channel = o.channel.toString()
         const search2 = queryString(query2)
         history.push({...location, pathname: pathname2, search: search2})
