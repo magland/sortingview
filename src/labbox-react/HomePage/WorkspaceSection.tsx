@@ -47,8 +47,8 @@ const WorkspaceSection: FunctionComponent<Props> = ({packageName, workspaceDescr
                     visible={aboutWorkspacesVisible.visible}
                     onClose={aboutWorkspacesVisible.hide}
                     substitute={{
-                        packageName,
-                        workspaceDescription
+                        'PACKAGENAME': packageName,
+                        'WORKSPACE_DESCRIPTION': workspaceDescription
                     }}
                     source={aboutWorkspacesMd}
                 />

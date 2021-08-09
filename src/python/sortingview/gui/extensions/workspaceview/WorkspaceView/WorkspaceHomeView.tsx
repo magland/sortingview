@@ -3,13 +3,14 @@ import { useVisible } from 'labbox-react';
 import Hyperlink from 'labbox-react/components/Hyperlink/Hyperlink';
 import MarkdownDialog from 'labbox-react/components/Markdown/MarkdownDialog';
 import ModalWindow from 'labbox-react/components/ModalWindow/ModalWindow';
+import useGoogleSignInClient from 'labbox-react/googleSignIn/useGoogleSignInClient';
 import { WorkspaceState } from 'python/sortingview/gui/pluginInterface/workspaceReducer';
 import React, { FunctionComponent } from 'react';
 import { WorkspaceRoute, WorkspaceRouteDispatch } from "../../../pluginInterface";
 import ImportRecordingsInstructions from './ImportRecordingsInstructions';
 import RecordingsTable from './RecordingsTable';
+import setSnippetLenMd from './setSnippetLen.md.gen';
 import setWorkspacePermissionsMd from './setWorkspacePermissions.md.gen';
-import setSnippetLenMd from './setSnippetLen.md.gen'
 
 type Props = {
     workspace: WorkspaceState
@@ -25,6 +26,8 @@ const WorkspaceHomeView: FunctionComponent<Props> = ({ width, height, workspace,
     const importInstructionsVisible = useVisible()
     const setWorkspacePermissionsVisible = useVisible()
     const setSnippetLengthVisible = useVisible()
+    const workspaceUri = workspaceRoute.workspaceUri || '<unknown>'
+    const loggedInUserEmail = useGoogleSignInClient()?.userId ?? 'user_id@gmail.com'
     return (
         <span>
             <div>
@@ -64,7 +67,8 @@ const WorkspaceHomeView: FunctionComponent<Props> = ({ width, height, workspace,
                 onClose={setWorkspacePermissionsVisible.hide}
                 source={setWorkspacePermissionsMd}
                 substitute={{
-                    workspaceUri: workspaceRoute.workspaceUri || '<unknown>'
+                    'WORKSPACE_URI': workspaceUri,
+                    'USER': loggedInUserEmail
                 }}
             />
             <MarkdownDialog
@@ -72,7 +76,7 @@ const WorkspaceHomeView: FunctionComponent<Props> = ({ width, height, workspace,
                 onClose={setSnippetLengthVisible.hide}
                 source={setSnippetLenMd}
                 substitute={{
-                    workspaceUri: workspaceRoute.workspaceUri || '<unknown>'
+                    'WORKSPACE_URI': workspaceUri
                 }}
             />
         </span>
