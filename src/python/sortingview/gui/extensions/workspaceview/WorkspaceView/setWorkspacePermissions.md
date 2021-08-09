@@ -5,8 +5,8 @@ To set workspace permissions for a user, run the following script on the backend
 ```python
 import sortingview as sv
 
-workspace_uri = '{workspaceUri}'
-user_id = # 'user_id@gmail.com'
+workspace_uri = '<|WORKSPACE_URI|>'
+user_id = # '<|USER|>'
 permissions = {'edit': True}
 
 W = sv.load_workspace(workspace_uri)

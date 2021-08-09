@@ -2,7 +2,7 @@ import { useVisible } from 'figurl/labbox-react';
 import Hyperlink from 'figurl/labbox-react/components/Hyperlink/Hyperlink';
 import MarkdownDialog from 'figurl/labbox-react/components/Markdown/MarkdownDialog';
 import React, { FunctionComponent } from 'react';
-import setExternalMetricsMd from './setExternalMetrics.md.gen'
+import setExternalMetricsMd from './setExternalMetrics.md.gen';
 
 type Props = {
     workspaceUri?: string
@@ -19,8 +19,8 @@ const MetricsControl: FunctionComponent<Props> = ({workspaceUri, sortingId}) => 
                 visible={setExternalMetricsVisibility.visible}
                 onClose={setExternalMetricsVisibility.hide}
                 substitute={{
-                    workspaceUri,
-                    sortingId
+                    'WORKSPACE_URI': workspaceUri,
+                    'SORTING_ID': sortingId
                 }}
             />
         </div>

@@ -1,3 +1,9 @@
+8/9/2021
+Allow import H5SortingExtractorV1 - #98
+Fix problem with units table #89
+Deselect all units after merge/unmerge operation #42 #82
+Release 0.2.38
+
 7/30/2021
 Implement authorized access to workspace list #84 #85
 Improve sortings layout on recordings view #59 #86
