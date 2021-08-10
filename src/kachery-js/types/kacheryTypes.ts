@@ -150,7 +150,7 @@ export const _validateObject = (x: any, spec: ValidateObjectSpec, opts?: {callba
         o.callback && o.callback('x is undefined/null.')
         return false;
     }
-    if (!isObject(x)) {
+    if (typeof(x) !== 'object') {
         o.callback && o.callback('x is not an Object.')
         return false;
     }
