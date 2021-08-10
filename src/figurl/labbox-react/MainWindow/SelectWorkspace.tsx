@@ -1,4 +1,3 @@
-import { Button } from '@material-ui/core';
 import { FigureObject } from 'figurl/types';
 import React, { FunctionComponent, useCallback } from 'react';
 import { useVisible } from '..';

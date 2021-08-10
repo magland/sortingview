@@ -1,23 +1,23 @@
-import { FigureObject, FigurlPlugin, isFigureObject } from 'figurl/types';
-import { isJSONObject, JSONObject, Sha1Hash } from 'kachery-js/types/kacheryTypes';
 import { useChannel, usePureCalculationTask } from 'figurl/kachery-react';
 import TaskStatusView from 'figurl/kachery-react/components/TaskMonitor/TaskStatusView';
-import React, { FunctionComponent } from 'react';
 import { RecentFiguresAction } from 'figurl/RecentFigures';
-import { useEffect } from 'react';
+import { FigureObject, isFigureObject } from 'figurl/types';
+import useFigurlPlugins from 'figurl/useFigurlPlugins';
+import { isJSONObject, JSONObject, Sha1Hash } from 'kachery-js/types/kacheryTypes';
+import React, { FunctionComponent, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 type Props = {
-    plugins: FigurlPlugin[]
     width: number
     height: number
     packageName: string
     figureObjectOrHash?: JSONObject | Sha1Hash
-    recentFiguresDispatch: (a: RecentFiguresAction) => void
+    recentFiguresDispatch?: (a: RecentFiguresAction) => void
 }
 
-const useFigureObject = (packageName: string, plugins: FigurlPlugin[], figureObjectOrHash?: JSONObject | Sha1Hash) => {
+const useFigureObject = (packageName: string, figureObjectOrHash?: JSONObject | Sha1Hash) => {
     const {channelName} = useChannel()
+    const plugins = useFigurlPlugins()
     let {returnValue: object, task} = usePureCalculationTask<FigureObject>(
         figureObjectOrHash && (typeof(figureObjectOrHash) === 'string') ? `${packageName}.get_figure_object.1` : undefined,
         {figure_object_hash: figureObjectOrHash},
@@ -41,6 +41,7 @@ const useFigureObject = (packageName: string, plugins: FigurlPlugin[], figureObj
             return {error: `Figure plugin not found: ${o.type}`}
         }
         if (!p.validateData(o.data)) {
+            console.warn(o.data)
             return {error: `Problem validating figure data for figure of type: ${o.type}`}
         }
         return {
@@ -52,15 +53,15 @@ const useFigureObject = (packageName: string, plugins: FigurlPlugin[], figureObj
     return {task}
 }
 
-const Figure: FunctionComponent<Props> = ({plugins, width, height, figureObjectOrHash, packageName, recentFiguresDispatch}) => {
-    const {plugin, figureData, task, error} = useFigureObject(packageName, plugins, figureObjectOrHash)
+const Figure: FunctionComponent<Props> = ({width, height, figureObjectOrHash, packageName, recentFiguresDispatch}) => {
+    const {plugin, figureData, task, error} = useFigureObject(packageName, figureObjectOrHash)
     const {channelName} = useChannel()
     const location = useLocation()
 
     useEffect(() => {
         if (!plugin) return
         if (!figureData) return
-        recentFiguresDispatch({type: 'add', recentFigure: {
+        recentFiguresDispatch && recentFiguresDispatch({type: 'add', recentFigure: {
             channel: channelName,
             type: plugin.type,
             data: figureData,

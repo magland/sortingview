@@ -1,26 +1,16 @@
 import numpy as np
 from typing import Any, List
-import kachery_client as kc
-from sortingview.serialize_wrapper import _serialize
+import sortingview.figurl as fig
 
-def store_json(x: dict):
-    return kc.store_json(_serialize(x))
-
-def figurl_average_waveforms_numpy(*, channel: str, waveforms: List[Any], electrode_channels: List[Any]):
+def figurl_average_waveforms_numpy(*, waveforms: List[Any], electrode_channels: List[Any]):
     """
-    Generate a sortingview url that shows the average waveforms numpy page
+    Generate a sortingview figure that shows the average waveforms numpy page
     """
-    base_url = 'http://localhost:3000'
-    object_uri = store_json({
-        'type': 'sortingview.average-waveforms-numpy.1',
-        'data': {
-            'waveforms': waveforms,
-            'electrodeChannels': electrode_channels
-        }
-    })
-    object_hash = object_uri.split('/')[2]
-    url = f'{base_url}/fig?channel={channel}&figureObject={object_hash}'
-    return url
+    data = {
+        'waveforms': waveforms,
+        'electrodeChannels': electrode_channels
+    }
+    return fig.Figure(type='sortingview.average-waveforms-numpy.1', data=data)
 
 waveforms = [
     {
@@ -64,8 +54,7 @@ electrode_channels = [
 ]
 
 url = figurl_average_waveforms_numpy(
-    channel='ccm',
     waveforms=waveforms,
     electrode_channels=electrode_channels
-)
+).url()
 print(url)

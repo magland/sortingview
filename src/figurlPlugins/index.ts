@@ -3,12 +3,16 @@ import AverageWaveformsPlugin from "./AverageWaveformsPlugin/AverageWaveformsPlu
 import AverageWaveformsNumpyPlugin from "./AverageWaveformsNumpyPlugin/AverageWaveformsNumpyPlugin"
 import MountainViewPlugin from "./MountainViewPlugin/MountainViewPlugin"
 import WorkspacePlugin from "./WorkspacePlugin/WorkspacePlugin"
+import VegaLitePlugin from "./VegaLitePlugin/VegaLitePlugin"
+import BoxLayoutPlugin from "./BoxLayoutPlugin/BoxLayoutPlugin"
 
 const plugins: FigurlPlugin[] = [
     MountainViewPlugin,
     AverageWaveformsPlugin,
     WorkspacePlugin,
-    AverageWaveformsNumpyPlugin
+    AverageWaveformsNumpyPlugin,
+    VegaLitePlugin,
+    BoxLayoutPlugin
 ]
 
 export default plugins

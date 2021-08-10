@@ -1,0 +1,5 @@
+/* See https://github.com/vega/react-vega/issues/85#issuecomment-795138175 */
+.vega-embed {
+    width: 100%;
+    height: 100%;
+}
