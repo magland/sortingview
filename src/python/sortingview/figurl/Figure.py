@@ -2,12 +2,13 @@ import os
 from typing import Any, Union
 import kachery_client as kc
 from ..serialize_wrapper import _serialize
+from .Sync import Sync
 
 class Figure:
     def __init__(self, type: str, data: Any):
         self._type = type
-        self._data = data
-        self._object = {'type': type, 'data': data}
+        self._data = _replace_sync_objects(data)
+        self._object = {'type': type, 'data': self._data}
         self._object_uri: Union[str, None] = None
     @property
     def object(self):
@@ -33,6 +34,21 @@ class Figure:
 
 def store_json(x: dict):
     return kc.store_json(_serialize(x))
+
+def _replace_sync_objects(x: Any):
+    if isinstance(x, Sync):
+        return x.object
+    elif isinstance(x, dict):
+        ret = {}
+        for k, v in x.items():
+            ret[k] = _replace_sync_objects(v)
+        return ret
+    elif isinstance(x, list):
+        return [_replace_sync_objects(a) for a in x]
+    elif isinstance(x, tuple):
+        return tuple([_replace_sync_objects(a) for a in x])
+    else:
+        return x
 
 default_base_url = os.getenv('FIGURL_BASE_URL', 'https://sortingview.vercel.app')
 default_channel = os.getenv('FIGURL_CHANNEL', None)
