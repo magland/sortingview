@@ -23,6 +23,8 @@ export interface Column {
     calculating?: boolean
 }
 
+type Modifier = null | 'shift' | 'ctrl'
+
 type HeaderRowProps = {
     headers: ColumnHeaderInfo[]
     onColumnClick: (columnName: string) => void
@@ -97,18 +99,22 @@ const HeaderRow: FunctionComponent<HeaderRowProps> = (props) => {
 type CheckboxProps = {
     rowId: string,
     selected: boolean,
-    onClick: (rowId: string) => void,
+    onClick: (m: Modifier) => void,
     isDeselectAll?: boolean,
     isDisabled?: boolean
 }
 
 const RowCheckbox: FunctionComponent<CheckboxProps> = (props: CheckboxProps) => {
     const { rowId, selected, onClick, isDeselectAll, isDisabled } = props
+    const handleClick: React.MouseEventHandler<HTMLButtonElement> = useCallback((evt) => {
+        const modifier = evt.ctrlKey ? 'ctrl' : evt.shiftKey ? 'shift' : null
+        onClick(modifier)
+    }, [onClick])
     return (
         <Checkbox
             checked={selected}
             indeterminate={isDeselectAll ? true : false}
-            onClick={() => onClick(rowId)}
+            onClick={handleClick}
             style={{
                 padding: 1
             }}
@@ -121,18 +127,20 @@ const RowCheckbox: FunctionComponent<CheckboxProps> = (props: CheckboxProps) => 
 type RowProps = {
     rowId: string,
     selected: boolean,
-    onClick: (rowId: string) => void,
+    // onClick: (sortedRowIds: string[], rowId: string, m: Modifier) => void,
+    // handleClick: (sortedRowIds: string[], rowId: string, m: Modifier) => void,
+    handleClick: (m: Modifier) => void,
     isDisabled: boolean,
     contentRepository: {[key: string]: JSX.Element[]}
 }
 const ContentRow: FunctionComponent<RowProps> = (props: RowProps) => {
-    const {rowId, selected, onClick, isDisabled, contentRepository} = props
+    const {rowId, selected, handleClick, isDisabled, contentRepository} = props
     return <TableRow key={rowId} className={selected ? "selectedRow": ""}>
         <TableCell key="_checkbox">
             <RowCheckbox
                 rowId={rowId}
                 selected={selected}
-                onClick={() => onClick(rowId)}
+                onClick={(m: Modifier) => handleClick(m)}
                 isDisabled={isDisabled}
             />
         </TableCell>
@@ -178,6 +186,59 @@ const TableWidget: FunctionComponent<TableProps> = (props) => {
         }
     }, [sortFieldOrder, setSortFieldOrder, defaultSortColumnName])
 
+    // const toggleAllSelectedRowIds = useCallback(
+    //     (rowCount: number) => {
+    //         const invertedResult = [...Array(rowCount + 1).keys()]
+    //                             .filter(r => !selectedRowIds.includes(r.toString()))
+    //                             .map((rowId) => rowId.toString())
+    //         onSelectedRowIdsChanged(invertedResult)
+    //     },
+    //     [selectedRowIds, onSelectedRowIdsChanged]
+    // )
+
+    const toggleSelectedRegion = useCallback(
+        (sortedRowIds: string[], clickedRowId: string) => {
+            // We don't know the IDs of each row, only that they're in
+            // sorted order.
+            // We want to toggle the selection status of the row that was
+            // clicked, as well as the contiguous block with the same status
+            // on either side.
+            // To do this without repeatedly iterating through the list of
+            // rows, we'll maintain the current 'run' of units, restarting it
+            // every time the selection status ('polarity') changes, until we've
+            // found the row with the clicked ID. At that point, we'll flip the
+            // selection status of the current run when it ends.
+
+            // Make a Set: closer-to-constant-time lookups of selection status
+            let run: string[] = []
+            let runPolarity: boolean = selectedRowsSet.has(sortedRowIds[0])
+            let pastClickedRow: boolean = false
+            for (const r of sortedRowIds) {
+                if (selectedRowsSet.has(r) !== runPolarity) {
+                    // We don't care what else is in the list if we've
+                    // reached the end of the run that includes the
+                    // clicked row.
+                    if (pastClickedRow) break
+
+                    // if we aren't past the clicked row when the run ended,
+                    // then the current run didn't contain the clicked row, so
+                    // it wasn't the right run. Flip polarity & start a new one.
+                    runPolarity = !runPolarity
+                    run = []
+                }
+                run.push(r)
+                pastClickedRow = pastClickedRow || r === clickedRowId
+            }
+            // Done finding the run; now we need to update the selection.
+            // - If runPolarity is true, the run has selected items to deselect.
+            // - Otherwise they're to be added to the selection set.
+            onSelectedRowIdsChanged(runPolarity
+                ? selectedRowIds.filter(x => !run.includes(x))
+                : [...selectedRowIds, ...run])
+        },
+        [selectedRowsSet, selectedRowIds, onSelectedRowIdsChanged]
+    )
+
     const toggleSelectedRowId = useCallback(
         (rowId: string) => {
             const newSelectedRowIds = selectedRowsSet.has(rowId) ? _selections.filter(x => (x !== rowId)) : [..._selections, rowId]
@@ -188,6 +249,17 @@ const TableWidget: FunctionComponent<TableProps> = (props) => {
 
     const columnForName = useCallback((columnName: string): Column => (columns.filter(c => (c.columnName === columnName))[0]), [columns])
     const sortingRules = useMemoCompare<sortFieldEntry[]>('sortingRules', interpretSortFields(sortFieldOrder), [])
+    const handleRowClick = useCallback(
+        (sortedRowIds: string[], rowId: string, modifier: Modifier) => {
+            if(!modifier) toggleSelectedRowId(rowId)
+            if (modifier === 'shift') {
+                toggleSelectedRegion(sortedRowIds, rowId)
+            }
+            // if (modifier === 'ctrl') {
+            //     toggleAllSelectedRowIds(sortedRows.length)
+            // }
+        }, [toggleSelectedRowId, toggleSelectedRegion]
+    )
 
     const sortedRows = useMemo(() => {
         let _draft = [...rows]
@@ -316,18 +388,19 @@ const TableWidget: FunctionComponent<TableProps> = (props) => {
     // every time the selections change, instead of just touching the rows whose selection
     // status changed...
     const _unitrows = useMemo(() => {
+        const sortedRowIds = sortedRows.map((row) => row.rowId)
         return sortedRows.map((row) => {
             return (
                 <ContentRow
                     rowId={row.rowId}
                     selected={selectedRowsSet.has(row.rowId)}
-                    onClick={toggleSelectedRowId}
+                    handleClick={(m: Modifier) => handleRowClick(sortedRowIds, row.rowId, m)}
                     isDisabled={selectionDisabled || false}
                     contentRepository={_metricsByRow}
                 />
             )
         })
-    }, [selectedRowsSet, sortedRows, _metricsByRow, selectionDisabled, toggleSelectedRowId])
+    }, [selectedRowsSet, sortedRows, handleRowClick, _metricsByRow, selectionDisabled])
 
     return (
         <TableContainer style={height !== undefined ? {maxHeight: height} : {}}>
