@@ -1,3 +1,6 @@
+8/11/2021
+export H5RecordingExtractorV1
+
 8/9/2021
 Allow import H5SortingExtractorV1 - #98
 Fix problem with units table #89
