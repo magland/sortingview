@@ -829,8 +829,8 @@ export const durationMsecToNumber = (x: DurationMsec): number => {
     return x as any as number;
 }
 export const scaledDurationMsec = (n: number) => {
-    if (process.env.KACHERY_P2P_SPEEDUP_FACTOR) {
-        n /= Number(process.env.KACHERY_P2P_SPEEDUP_FACTOR)
+    if (process.env.KACHERY_TEST_SPEEDUP_FACTOR) {
+        n /= Number(process.env.KACHERY_TEST_SPEEDUP_FACTOR)
     }
     return n as any as DurationMsec
 }

@@ -47,7 +47,7 @@ def _try_mda_create_object(arg: Union[str, dict]) -> Union[None, dict]:
         path = arg
         if path.startswith('sha1dir') or path.startswith('/'):
             raise Exception('sha1dir no longer supported for labbox-ephys recording extractor')
-            # dd = kp.read_dir(path)
+            # dd = kc.read_dir(path)
             # if dd is not None:
             #     if 'raw.mda' in dd['files'] and 'params.json' in dd['files'] and 'geom.csv' in dd['files']:
             #         raw_path = path + '/raw.mda'
@@ -85,7 +85,7 @@ def _try_nrs_create_object(arg: Union[str, dict]) -> Union[None, dict]:
         path = arg
         if path.startswith('sha1dir') or path.startswith('/'):
             raise Exception('sha1dir no longer supported for labbox-ephys recording extractor')
-            # dd = kp.read_dir(path)
+            # dd = kc.read_dir(path)
             # if dd is not None:
             #     probe_file = None
             #     xml_file = None
