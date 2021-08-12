@@ -7,6 +7,7 @@ import { nodeLabel, TaskFunctionId } from 'kachery-js/types/kacheryTypes';
 import React, { FunctionComponent, useMemo, useReducer } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import './App.css';
+import FigurlSetup from './FigurlSetup';
 import './index.css';
 import { initialRecentFigures, recentFiguresReducer } from './RecentFigures';
 // import logo from './logo.svg';
@@ -39,14 +40,15 @@ const FigurlApp: FunctionComponent<Props> = ({
         <BrowserRouter>
           <GoogleSignInSetup>
             <KacheryNodeSetup nodeLabel={nodeLabel("sortingview")}>
-              <MainWindow
-                packageName={packageName}
-                plugins={plugins}
-                logo={logo}
-                homePageProps={homePageProps}
-                recentFigures={recentFigures}
-                recentFiguresDispatch={recentFiguresDispatch}
-              />
+              <FigurlSetup plugins={plugins}>
+                <MainWindow
+                  packageName={packageName}
+                  logo={logo}
+                  homePageProps={homePageProps}
+                  recentFigures={recentFigures}
+                  recentFiguresDispatch={recentFiguresDispatch}
+                />
+              </FigurlSetup>
             </KacheryNodeSetup>
           </GoogleSignInSetup>
         </BrowserRouter>
