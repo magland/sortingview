@@ -53,8 +53,8 @@ const BoxLayoutComponent: FunctionComponent<Props> = ({data, width, height}) => 
             spacing={0}
         >
             {
-                itemInfos.map((x) => (
-                    <div style={x.style}>
+                itemInfos.map((x, ii) => (
+                    <div key={ii} style={x.style}>
                         <BoxLayoutItem
                             figureObject={x.figureObject}
                             width={x.width}

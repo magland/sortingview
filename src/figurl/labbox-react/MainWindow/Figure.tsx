@@ -3,8 +3,9 @@ import TaskStatusView from 'figurl/kachery-react/components/TaskMonitor/TaskStat
 import { RecentFiguresAction } from 'figurl/RecentFigures';
 import { FigureObject, isFigureObject } from 'figurl/types';
 import useFigurlPlugins from 'figurl/useFigurlPlugins';
-import { isJSONObject, JSONObject, Sha1Hash } from 'kachery-js/types/kacheryTypes';
-import React, { FunctionComponent, useEffect } from 'react';
+import useSyncHive from 'figurl/useSyncHive';
+import { JSONObject, Sha1Hash } from 'kachery-js/types/kacheryTypes';
+import React, { FunctionComponent, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 
 type Props = {
@@ -15,38 +16,50 @@ type Props = {
     recentFiguresDispatch?: (a: RecentFiguresAction) => void
 }
 
-const useFigureObject = (packageName: string, figureObjectOrHash?: JSONObject | Sha1Hash) => {
+const useFigureObjectHelper = (packageName: string, figureObjectOrHash?: JSONObject | Sha1Hash) => {
     const {channelName} = useChannel()
-    const plugins = useFigurlPlugins()
     let {returnValue: object, task} = usePureCalculationTask<FigureObject>(
         figureObjectOrHash && (typeof(figureObjectOrHash) === 'string') ? `${packageName}.get_figure_object.1` : undefined,
         {figure_object_hash: figureObjectOrHash},
         {channelName}
     )
     if (!figureObjectOrHash) {
-        return {error: 'No figure object'}
+        return {task, object: undefined, error: 'No figure object'}
     }
-    if (isJSONObject(figureObjectOrHash)) {
+    if (typeof(figureObjectOrHash) === 'object') {
         if (isFigureObject(figureObjectOrHash)) {
             object = figureObjectOrHash
         }
         else {
-            return {error: `Invalid figure object: ${JSON.stringify(figureObjectOrHash)}`}
+            return {task, object: undefined, error: `Invalid figure object: ${JSON.stringify(figureObjectOrHash)}`}
         }
     }
+    return {task, object, error: undefined}
+}
+
+const useFigureObject = (packageName: string, figureObjectOrHash?: JSONObject | Sha1Hash) => {
+    const {task, object, error} = useFigureObjectHelper(packageName, figureObjectOrHash)
+    const syncHive = useSyncHive()
+    const figureData = useMemo(() => {
+        if (!object) return undefined
+        return syncHive(object.data)
+    }, [object, syncHive])
+    const plugins = useFigurlPlugins()
+
+    if (error) return {error}
     if (object !== undefined) {
         const o = object
         const p = plugins.filter(x => (x.type === o.type))[0]
         if (!p) {
             return {error: `Figure plugin not found: ${o.type}`}
         }
-        if (!p.validateData(o.data)) {
-            console.warn(o.data)
+        if (!p.validateData(figureData)) {
+            console.warn(figureData)
             return {error: `Problem validating figure data for figure of type: ${o.type}`}
         }
         return {
             plugin: p,
-            figureData: o.data,
+            figureData,
             task
         }
     }

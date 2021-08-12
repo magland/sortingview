@@ -1,17 +1,17 @@
-import React, { Fragment, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import { IconButton } from '@material-ui/core';
+import { Help } from '@material-ui/icons';
+import { useVisible } from 'figurl/labbox-react';
+import MarkdownDialog from 'figurl/labbox-react/components/Markdown/MarkdownDialog';
+import Splitter from 'figurl/labbox-react/components/Splitter/Splitter';
+import { useRecordingInfo } from 'python/sortingview/gui/pluginInterface/useRecordingInfo';
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaArrowDown, FaArrowUp } from 'react-icons/fa';
 import SortingUnitPlotGrid from '../../../commonComponents/SortingUnitPlotGrid/SortingUnitPlotGrid';
-import Splitter from 'figurl/labbox-react/components/Splitter/Splitter';
+import info from '../../../helpPages/AverageWaveforms.md.gen';
 import { SortingViewProps } from '../../../pluginInterface';
-import AverageWaveformView from './AverageWaveformView';
 import { ActionItem, DividerItem } from '../../common/Toolbars';
-import { useRecordingInfo } from 'python/sortingview/gui/pluginInterface/useRecordingInfo';
 import ViewToolbar from '../../common/ViewToolbar';
-import { IconButton } from '@material-ui/core';
-import { useVisible } from 'figurl/labbox-react';
-import { Help } from '@material-ui/icons';
-import MarkdownDialog from 'figurl/labbox-react/components/Markdown/MarkdownDialog';
-import info from '../../../helpPages/AverageWaveforms.md.gen'
+import AverageWaveformView from './AverageWaveformView';
 
 export type AverageWaveformAction = ActionItem  | DividerItem
 
@@ -81,7 +81,7 @@ const AverageWaveformsView: FunctionComponent<SortingViewProps> = (props) => {
                     />
                 }
                 {
-                    <Fragment>
+                    <div>
                         <div>
                             <IconButton onClick={infoVisible.show}><Help /></IconButton>
                         </div>
@@ -98,7 +98,7 @@ const AverageWaveformsView: FunctionComponent<SortingViewProps> = (props) => {
                             onClose={infoVisible.hide}
                             source={info}
                         />
-                    </Fragment>
+                    </div>
                 }
             </Splitter>
         </div>

@@ -6,20 +6,33 @@ import { useRecordingInfo } from "python/sortingview/gui/pluginInterface/useReco
 import { useSortingInfo } from "python/sortingview/gui/pluginInterface/useSortingInfo";
 import { useSortingViewWorkspace } from 'python/sortingview/gui/WorkspacePage/WorkspacePage';
 import React, { FunctionComponent, useMemo, useReducer } from 'react';
+import { useCallback } from "react";
+import { useEffect } from "react";
+
+const isSyncState = (testFunction: (x: any) => boolean) => {
+    return (y: any) => {
+        return _validateObject(y, {
+            value: optional(testFunction),
+            setValue: () => (true)
+        })
+    }
+}
 
 type AverageWaveformsData = {
     workspaceUri: string,
     recordingId: string,
     sortingId: string,
     unitIds?: number[]
+    selectedUnitIds?: {value: number[], setValue: (a: number[]) => void}
 }
 const isAverageWaveformsData = (x: any): x is AverageWaveformsData => {
     return _validateObject(x, {
         workspaceUri: isString,
         recordingId: isString,
         sortingId: isString,
-        unitIds: optional(isArrayOf(isNumber))
-    })
+        unitIds: optional(isArrayOf(isNumber)),
+        selectedUnitIds: optional(isSyncState(isArrayOf(isNumber))),
+    }, {callback: (a) => {console.warn(a)}})
 }
 
 type Props = {
@@ -44,13 +57,42 @@ const emptySortingInfo: SortingInfo = {
     sorting_object: {}
 }
 
+const useSyncState = (args: {external?: {value: any, setValue: (a: any) => void}, local?: {value: any, setValue: (a: any) => void}}) => {
+    const {external, local} = args
+    const localValue = local?.value
+    const localSetValue = useMemo(() => (local?.setValue || ((a: any) => {})), [local?.setValue])
+    const externalValue = external?.value
+    const externalSetValue = useMemo(() => (external?.setValue || ((a: any) => {})), [external?.setValue])
+    useEffect(() => {
+        if (localValue === undefined) return
+        externalSetValue(localValue)
+    }, [localValue, externalSetValue])
+    useEffect(() => {
+        if (externalValue === undefined) return
+        localSetValue(externalValue)
+    }, [externalValue, localSetValue])
+}
+
 const AverageWaveformsComponent: FunctionComponent<Props> = ({ data, width, height }) => {
-    const { workspaceUri, recordingId, sortingId, unitIds } = data
+    const { workspaceUri, recordingId, sortingId, unitIds, selectedUnitIds } = data
 
     const { workspace } = useSortingViewWorkspace(workspaceUri)
 
     const initialSortingSelection: SortingSelection = {}
     const [selection, selectionDispatch] = useReducer(sortingSelectionReducer, initialSortingSelection)
+
+    useSyncState({
+        external: selectedUnitIds,
+        local: {
+            value: selection.selectedUnitIds,
+            setValue: useCallback((x: number[]) => {
+                selectionDispatch({
+                    type: 'SetSelectedUnitIds',
+                    selectedUnitIds: x
+                })
+            }, [selectionDispatch])
+        }
+    })
 
     const sorting: Sorting | undefined = workspace.sortings.filter(s => (s.recordingId === recordingId && s.sortingId === sortingId))[0]
     const recording: Recording | undefined = workspace.recordings.filter(r => (r.recordingId === recordingId))[0]
