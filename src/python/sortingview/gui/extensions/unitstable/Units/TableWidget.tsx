@@ -107,7 +107,8 @@ type CheckboxProps = {
 const RowCheckbox: FunctionComponent<CheckboxProps> = (props: CheckboxProps) => {
     const { rowId, selected, onClick, isDeselectAll, isDisabled } = props
     const handleClick: React.MouseEventHandler<HTMLButtonElement> = useCallback((evt) => {
-        const modifier = evt.ctrlKey ? 'ctrl' : evt.shiftKey ? 'shift' : null
+        // const modifier = evt.ctrlKey ? 'ctrl' : evt.shiftKey ? 'shift' : null
+        const modifier = evt.shiftKey ? 'shift' : null
         onClick(modifier)
     }, [onClick])
     return (
@@ -258,7 +259,7 @@ const TableWidget: FunctionComponent<TableProps> = (props) => {
             // if (modifier === 'ctrl') {
             //     toggleAllSelectedRowIds(sortedRows.length)
             // }
-        }, [toggleSelectedRowId, toggleSelectedRegion]
+        }, [toggleSelectedRowId, toggleSelectedRegion]//, toggleAllSelectedRowIds]
     )
 
     const sortedRows = useMemo(() => {
