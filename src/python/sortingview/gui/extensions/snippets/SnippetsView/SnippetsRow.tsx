@@ -6,7 +6,7 @@ import useChannel from 'kachery-react/useChannel';
 import useKacheryNode from 'kachery-react/useKacheryNode';
 import React, { FunctionComponent, useMemo } from 'react';
 import { applyMergesToUnit, Recording, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from "../../../pluginInterface";
-import { getElectrodesAspectRatio } from '../../averagewaveforms/AverageWaveformsView/setupElectrodes';
+import { getElectrodesAspectRatio } from '../../common/sharedCanvasLayers/setupElectrodes';
 import SnippetBox from './SnippetBox';
 
 

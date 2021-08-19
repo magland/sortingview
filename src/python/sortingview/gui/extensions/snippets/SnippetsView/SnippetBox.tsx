@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useCallback, useMemo, useState } from 'react';
 import VisibilitySensor from 'react-visibility-sensor';
-import WaveformWidget from '../../averagewaveforms/AverageWaveformsView/WaveformWidget';
 import { SortingSelection, SortingSelectionDispatch } from "../../../pluginInterface";
+import WaveformWidget, { defaultWaveformOpts } from '../../averagewaveforms/AverageWaveformsView/WaveformWidget';
 import { Snippet } from './SnippetsRow';
 
 type Props = {
@@ -37,8 +37,11 @@ const SnippetBox: FunctionComponent<Props> = ({ snippet, noiseLevel, samplingFre
                         <WaveformWidget
                             waveform={snippet.waveform}
                             layoutMode={selection.waveformsMode || 'geom'}
-                            {...{selection, selectionDispatch, noiseLevel, samplingFrequency, electrodeIds, electrodeLocations, width, height}}
+                            ampScaleFactor={selection.ampScaleFactor || 1}
+                            selectedElectrodeIds={selection.selectedElectrodeIds ?? []}
+                            {...{selectionDispatch, noiseLevel, samplingFrequency, electrodeIds, electrodeLocations, width, height}}
                             electrodeOpts={{disableSelection: true}}
+                            waveformOpts={defaultWaveformOpts}
                         />
                     </div>
                 ) : (

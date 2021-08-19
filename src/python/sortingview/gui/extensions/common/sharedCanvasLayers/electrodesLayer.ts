@@ -1,21 +1,42 @@
 import { CanvasPainter } from "labbox-react/components/CanvasWidget/CanvasPainter";
 import { CanvasDragEvent, CanvasWidgetLayer, ClickEvent, ClickEventType, DiscreteMouseEventHandler, DragHandler } from "labbox-react/components/CanvasWidget/CanvasWidgetLayer";
 import { pointIsInEllipse, RectangularRegion, rectangularRegionsIntersect } from "labbox-react/components/CanvasWidget/Geometry";
+import { RecordingSelectionDispatch } from '../../../pluginInterface';
+import { ActionItem, DividerItem } from "../Toolbars";
 import setupElectrodes, { ElectrodeBox } from './setupElectrodes';
-import { ElectrodeLayerProps } from './WaveformWidget';
 
-export type ElectrodeColors = {
-    border: string,
-    base: string,
-    selected: string,
-    hover: string,
-    selectedHover: string,
-    dragged: string,
-    draggedSelected: string,
-    dragRect: string,
-    textLight: string,
-    textDark: string
+export type Electrode = {
+    id: number
+    label: string,
+    x: number,
+    y: number,
+    color?: string
 }
+
+export type ElectrodeOpts = {
+    colors?: ElectrodeColors
+    showLabels?: boolean
+    offsetLabels?: boolean
+    hideElectrodes?: boolean
+    disableSelection?: boolean
+    maxElectrodePixelRadius?: number
+}
+
+export type ElectrodeLayerProps = {
+    waveform?: number[][]
+    layoutMode: 'geom' | 'vertical'
+    noiseLevel: number
+    electrodeIds: number[]
+    electrodeLocations: number[][]
+    samplingFrequency: number
+    width: number
+    height: number
+    selectedElectrodeIds: number[]
+    selectionDispatch: RecordingSelectionDispatch
+    electrodeOpts: ElectrodeOpts
+    customActions?: (ActionItem | DividerItem)[]
+}
+
 type LayerState = {
     electrodeBoxes: ElectrodeBox[]
     radius: number
@@ -31,6 +52,19 @@ const initialLayerState = {
     dragRegion: null,
     draggedElectrodeIds: [],
     hoveredElectrodeId: null
+}
+
+export type ElectrodeColors = {
+    border: string,
+    base: string,
+    selected: string,
+    hover: string,
+    selectedHover: string,
+    dragged: string,
+    draggedSelected: string,
+    dragRect: string,
+    textLight: string,
+    textDark: string
 }
 
 const defaultColors: ElectrodeColors = {
@@ -65,7 +99,7 @@ const handleClick: DiscreteMouseEventHandler = (event: ClickEvent, layer: Canvas
     // Since we've already handled the case where it's 0, now it must be 1.
     const hitId = hitIds[0]
     
-    const currentSelection = layer.getProps().selection.selectedElectrodeIds || []
+    const currentSelection = layer.getProps().selectedElectrodeIds || []
     const newSelection = event.modifiers.ctrl  // ctrl-click: toggle state of clicked item
                             ? currentSelection.includes(hitId)
                                 ? currentSelection.filter(id => id !== hitId)
@@ -93,7 +127,7 @@ const handleDragSelect: DragHandler = (layer: CanvasWidgetLayer<ElectrodeLayerPr
     if (state === null) return // state not set; can't happen but keeps linter happy
     const hits = state.electrodeBoxes.filter((r) => rectangularRegionsIntersect(r.rect, drag.dragRect)) ?? []
     if (drag.released) {
-        const currentSelected = drag.shift ? layer.getProps()?.selection.selectedElectrodeIds ?? [] : []
+        const currentSelected = drag.shift ? layer.getProps()?.selectedElectrodeIds ?? [] : []
         selectionDispatch({type: 'SetSelectedElectrodeIds', selectedElectrodeIds: [...currentSelected, ...hits.map(r => r.id)]})
         layer.setState({...state, dragRegion: null, draggedElectrodeIds: []})
     } else {
@@ -111,8 +145,8 @@ export const createElectrodesLayer = () => {
         const hideElectrodes = opts.hideElectrodes
         painter.wipe()
         const useLabels = state.pixelRadius > 5
-        for (let e of state.electrodeBoxes) {
-            const selected = (!opts.disableSelection) && (props.selection.selectedElectrodeIds?.includes(e.id) || false)
+        for (const e of state.electrodeBoxes) {
+            const selected = (!opts.disableSelection) && (props.selectedElectrodeIds?.includes(e.id) || false)
             const hovered = (!opts.disableSelection) && (state.hoveredElectrodeId === e.id)
             const dragged = (!opts.disableSelection) && (state.draggedElectrodeIds?.includes(e.id) || false)
             const color = selected 
@@ -120,13 +154,15 @@ export const createElectrodesLayer = () => {
                                 ? colors.draggedSelected
                                 : hovered
                                     ? colors.selectedHover
-                                    : colors.selectedHover
+                                    : colors.selected
                             : dragged
                                 ? colors.dragged
                                 : hovered
                                     ? colors.hover
                                     : colors.base
             const layoutMode = props.layoutMode
+            // TODO: Does it make sense to print labels but hide electrodes? If not, we could move this check higher up
+            // and avoid doing some more computations
             if (!hideElectrodes) {
                 if (layoutMode === 'geom') {
                     painter.fillEllipse(e.rect, {color: color})
@@ -165,6 +201,7 @@ export const createElectrodesLayer = () => {
         onPaint,
         onPropsChange,
         initialLayerState,
+        // TODO: Add 'opts.disableSelection' check here to avoid populating handlers if selection is disabled
         {
             discreteMouseEventHandlers: [handleClick, handleHover],
             dragHandlers: [handleDragSelect],

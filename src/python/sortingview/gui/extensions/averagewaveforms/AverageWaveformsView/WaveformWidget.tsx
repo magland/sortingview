@@ -1,48 +1,16 @@
-import React, { FunctionComponent } from 'react';
 import CanvasWidget from 'labbox-react/components/CanvasWidget';
 import { useLayer, useLayers } from 'labbox-react/components/CanvasWidget/CanvasWidgetLayer';
-import { RecordingSelection, RecordingSelectionDispatch } from '../../../pluginInterface';
-// import CanvasWidget from '../../../commonComponents/CanvasWidget';
-// import { useLayer, useLayers } from '../../../commonComponents/CanvasWidget/CanvasWidgetLayer';
-// import { ActionItem, DividerItem } from '../../common/Toolbars';
-// import { RecordingSelection, RecordingSelectionDispatch } from "../../pluginInterface";
-import { createElectrodesLayer, ElectrodeColors } from './electrodesLayer';
+import React, { FunctionComponent } from 'react';
+import { createElectrodesLayer, ElectrodeColors, ElectrodeLayerProps } from '../../common/sharedCanvasLayers/electrodesLayer';
 import { createWaveformLayer, WaveformColors } from './waveformLayer';
-import { ActionItem, DividerItem } from '../../common/Toolbars';
 
-export type Props = {
-    waveform?: number[][]
-    layoutMode: 'geom' | 'vertical'
-    noiseLevel: number
-    electrodeIds: number[]
-    electrodeLocations: number[][]
-    samplingFrequency: number
-    width: number
-    height: number
-    selection: RecordingSelection
-    selectionDispatch: RecordingSelectionDispatch
-    electrodeOpts: ElectrodeOpts
-    customActions?: (ActionItem | DividerItem)[]
-}
-
-export type ElectrodeOpts = {
-    colors?: ElectrodeColors
-    showLabels?: boolean
-    offsetLabels?: boolean
-    hideElectrodes?: boolean
-    disableSelection?: boolean
-    maxElectrodePixelRadius?: number
-}
-
-export type LayerProps = Props & {
-    layoutMode: 'geom' | 'vertical'
+export type WaveformLayerProps = ElectrodeLayerProps & {
+    ampScaleFactor: number
     waveformOpts: {
         colors?: WaveformColors
         waveformWidth: number
     }
 }
-
-export type ElectrodeLayerProps = Props
 
 const electrodeColors: ElectrodeColors = {
     border: 'rgb(120, 100, 120)',
@@ -65,16 +33,16 @@ const defaultElectrodeOpts = {
     showLabels: false
 }
 
-const defaultWaveformOpts = {
+export const defaultWaveformOpts = {
     colors: waveformColors,
     waveformWidth: 2
 }
 
-const WaveformWidget: FunctionComponent<Props> = (props) => {
-    const layerProps: LayerProps = {
+const WaveformWidget: FunctionComponent<WaveformLayerProps> = (props) => {
+    const layerProps: WaveformLayerProps = {
         ...props,
         electrodeOpts: {...defaultElectrodeOpts, ...props.electrodeOpts},
-        waveformOpts: defaultWaveformOpts,
+        waveformOpts: {...defaultWaveformOpts, ...props.waveformOpts},
     }
     const electrodeLayerProps: ElectrodeLayerProps = {
         ...props,
