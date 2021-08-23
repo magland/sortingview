@@ -1,6 +1,6 @@
 import CanvasWidget from 'labbox-react/components/CanvasWidget';
 import { useLayer, useLayers } from 'labbox-react/components/CanvasWidget/CanvasWidgetLayer';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useMemo } from 'react';
 import { createElectrodesLayer, ElectrodeColors, ElectrodeLayerProps } from '../../common/sharedCanvasLayers/electrodesLayer';
 import { createWaveformLayer, WaveformColors } from './waveformLayer';
 
@@ -39,14 +39,17 @@ export const defaultWaveformOpts = {
 }
 
 const WaveformWidget: FunctionComponent<WaveformLayerProps> = (props) => {
+    const electrodeOpts = useMemo(() => ({...defaultElectrodeOpts, ...props.electrodeOpts}), [props.electrodeOpts])
+    const waveformOpts = useMemo(() => ({...defaultWaveformOpts, ...props.waveformOpts}), [props.waveformOpts])
+
     const layerProps: WaveformLayerProps = {
         ...props,
-        electrodeOpts: {...defaultElectrodeOpts, ...props.electrodeOpts},
-        waveformOpts: {...defaultWaveformOpts, ...props.waveformOpts},
+        electrodeOpts,
+        waveformOpts,
     }
     const electrodeLayerProps: ElectrodeLayerProps = {
         ...props,
-        electrodeOpts: {...defaultElectrodeOpts, ...props.electrodeOpts},
+        electrodeOpts,
     }
     const electrodesLayer = useLayer(createElectrodesLayer, electrodeLayerProps)
     const waveformLayer = useLayer(createWaveformLayer, layerProps)
