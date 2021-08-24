@@ -4,7 +4,7 @@ import { useVisible } from 'labbox-react'
 import MarkdownDialog from 'labbox-react/components/Markdown/MarkdownDialog'
 import Splitter from 'labbox-react/components/Splitter/Splitter'
 import { useRecordingInfo } from 'python/sortingview/gui/pluginInterface/useRecordingInfo'
-import React, { Fragment, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
 import { FaArrowDown, FaArrowUp } from 'react-icons/fa'
 import SortingUnitPlotGrid from '../../../commonComponents/SortingUnitPlotGrid/SortingUnitPlotGrid'
 import info from '../../../helpPages/AverageWaveforms.md.gen'
@@ -94,7 +94,7 @@ const AverageWaveformsView: FunctionComponent<SortingViewProps> = (props) => {
                     />
                 }
                 {
-                    <Fragment>
+                    <div>
                         <div>
                             <IconButton onClick={infoVisible.show}><Help /></IconButton>
                         </div>
@@ -111,7 +111,7 @@ const AverageWaveformsView: FunctionComponent<SortingViewProps> = (props) => {
                             onClose={infoVisible.hide}
                             source={info}
                         />
-                    </Fragment>
+                    </div>
                 }
             </Splitter>
         </div>

@@ -17,6 +17,11 @@ interface WidgetProps {
     height: number
 }
 
+const defaultElectrodeLayerElectrodeOpts = {
+    showLabels: true,
+    maxElectrodePixelRadius: 25
+}
+
 const ElectrodeGeometryWidget = (props: WidgetProps) => {
     const electrodeLayerProps: ElectrodeLayerProps = useMemo(() => ({
         layoutMode: 'geom',
@@ -26,10 +31,7 @@ const ElectrodeGeometryWidget = (props: WidgetProps) => {
         height: props.height,
         selectedElectrodeIds: props.selectedElectrodeIds ?? [],
         selectionDispatch: props.selectionDispatch,
-        electrodeOpts: {
-            showLabels: true,
-            maxElectrodePixelRadius: 25
-        },
+        electrodeOpts: defaultElectrodeLayerElectrodeOpts,
         noiseLevel: 0, // not needed for electrode geometry
         samplingFrequency: 0 // not needed
     }), [props])

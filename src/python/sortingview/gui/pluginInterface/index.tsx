@@ -2,29 +2,29 @@ import { CalculationPool } from "kachery-react/createCalculationPool";
 import { BasePlugin, ExtensionContext, usePlugins } from "labbox-react";
 import { FunctionComponent, useMemo } from "react";
 import { RecordingViewPlugin } from "./RecordingViewPlugin";
-import { SortingUnitMetricPlugin } from "./SortingUnitMetricPlugin";
 import { SortingComparisonUnitMetricPlugin } from "./SortingComparisonUnitMetricPlugin";
+import { SortingComparisonViewPlugin } from "./SortingComparisonViewPlugin";
+import { SortingUnitMetricPlugin } from "./SortingUnitMetricPlugin";
 import { SortingUnitViewPlugin } from "./SortingUnitViewPlugin";
 import { SortingViewPlugin } from "./SortingViewPlugin";
-import { SortingComparisonViewPlugin } from "./SortingComparisonViewPlugin";
 import { WorkspaceDispatch, WorkspaceState } from "./workspaceReducer";
 import { WorkspaceRoute, WorkspaceRouteDispatch } from './WorkspaceRoute';
 import { WorkspaceViewPlugin } from "./WorkspaceViewPlugin";
 
 export type { Recording, RecordingInfo } from './Recording';
 export { recordingSelectionReducer } from './RecordingSelection';
-export type { RecordingSelection, RecordingSelectionAction, RecordingSelectionDispatch } from './RecordingSelection';
+export type { RecordingSelection, RecordingSelectionAction, RecordingSelectionDispatch, WaveformsMode } from './RecordingSelection';
 export type { RecordingViewPlugin, RecordingViewProps } from './RecordingViewPlugin';
 export type { Sorting, SortingInfo } from './Sorting';
+export type { SortingComparisonUnitMetricPlugin } from './SortingComparisonUnitMetricPlugin';
+export type { SortingComparisonViewPlugin, SortingComparisonViewProps } from './SortingComparisonViewPlugin';
 export { applyMergesToUnit, isMergeGroupRepresentative, mergeGroupForUnitId } from './SortingCuration';
 export type { SortingCuration, SortingCurationDispatch } from './SortingCuration';
 export { sortingSelectionReducer } from './SortingSelection';
 export type { SortingSelection, SortingSelectionAction, SortingSelectionDispatch } from './SortingSelection';
 export type { SortingUnitMetricPlugin } from './SortingUnitMetricPlugin';
-export type { SortingComparisonUnitMetricPlugin } from './SortingComparisonUnitMetricPlugin';
 export type { SortingUnitViewPlugin, SortingUnitViewProps } from './SortingUnitViewPlugin';
 export type { SortingViewPlugin, SortingViewProps } from './SortingViewPlugin';
-export type { SortingComparisonViewPlugin, SortingComparisonViewProps } from './SortingComparisonViewPlugin';
 export type { WorkspaceRoute, WorkspaceRouteDispatch } from './WorkspaceRoute';
 
 
