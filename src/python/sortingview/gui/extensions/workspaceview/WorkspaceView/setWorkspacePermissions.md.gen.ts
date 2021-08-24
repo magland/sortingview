@@ -1,3 +1,0 @@
-const text: string = "## Set workspace permissions\n\nTo set workspace permissions for a user, run the following script on the backend computer\n\n```python\nimport sortingview as sv\n\nworkspace_uri = '<|WORKSPACE_URI|>'\nuser_id = # '<|USER|>'\npermissions = {'edit': True}\n\nW = sv.load_workspace(workspace_uri)\n\nW.set_user_permissions(user_id, permissions)\n\nprint(f'Permissions for {user_id} set to: {W.get_user_permissions(user_id)}')\n```\n"
-
-export default text

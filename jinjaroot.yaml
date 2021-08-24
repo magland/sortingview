@@ -1,9 +1,8 @@
 projectName: sortingview
-pythonProjectVersion: 0.3.1
-webAppProjectVersion: 0.3.0
+pythonProjectVersion: 0.5.0
 projectAuthor: Jeremy Magland and Jeff Soules
 projectAuthorEmail: jmagland@flatironinstitute.org
 projectDescription: Web app for viewing results of ephys spike sorting
 projectUrl: https://github.com/magland/sortingview
 projectBugTrackerUrl: https://github.com/magland/sortingview/issues
-pythonPackageDir: ./src/python
+pythonPackageDir: ./sortingview
