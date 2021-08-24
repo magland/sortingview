@@ -6,7 +6,7 @@ import React, { Fragment, useMemo } from 'react'
 import SortingUnitPlotGrid from '../../commonComponents/SortingUnitPlotGrid/SortingUnitPlotGrid'
 import correlogramSubsamplingInfo from '../../helpPages/CorrelogramSubsamplingInfo.md.gen'
 import { SortingViewProps } from "../../pluginInterface"
-import useCheckForChanges from '../common/useCheckForChanges'
+// import useCheckForChanges from '../common/useCheckForChanges'
 import CorrelogramRv2 from './Correlogram_ReactVis2'
 
 // const autocorrelogramsCalculationPool = createCalculationPool({maxSimultaneous: 6});
@@ -16,7 +16,7 @@ const correlogramHeight = 180
 
 const AutoCorrelograms: React.FunctionComponent<SortingViewProps> = (props) => {
     const { sorting, selection, curation, selectionDispatch, sortingSelector } = props
-    useCheckForChanges('AutoCorrelograms', props)
+    // useCheckForChanges('AutoCorrelograms', props)
 
     const applyMerges = useMemo(() => (selection.applyMerges ?? false), [selection.applyMerges])
 
