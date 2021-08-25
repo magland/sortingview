@@ -1,4 +1,4 @@
-import sortingview.figurl as fig
+import figurl as fig
 import altair as alt
 import pandas as pd
 
@@ -11,5 +11,5 @@ chart = alt.Chart(source).mark_bar().encode(
     y='b'
 )
 
-url = fig.Altair(chart).url()
+url = fig.Altair(chart).url(label='vegalite')
 print(url)

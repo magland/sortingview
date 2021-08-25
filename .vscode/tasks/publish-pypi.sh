@@ -18,7 +18,7 @@ jinjaroot verify
 # run pre-publish-tasks.sh
 .vscode/tasks/pre-publish-tasks.sh
 
-cd ./sortingview
+cd .
 
 # remove the dist folder
 rm -rf dist
@@ -44,6 +44,6 @@ done
 twine upload ./dist/*
 
 # Tag this commit
-git tag v0.6.0
+git tag v0.6.1
 
-echo "Tagged as v0.6.0"
+echo "Tagged as v0.6.1"

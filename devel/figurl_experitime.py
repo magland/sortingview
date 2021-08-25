@@ -1,5 +1,5 @@
 import numpy as np
-import sortingview.figurl as fig
+import figurl as fig
 from sortingview import experitime
 
 channel_names = ['channel1', 'channel2']
@@ -15,4 +15,4 @@ X = experitime.Timeseries.from_numpy(
 )
 
 F = X.figurl()
-print(F.url())
+print(F.url(label='experitime'))

@@ -1,6 +1,6 @@
 from typing import List, Union
 import kachery_client as kc
-import sortingview.figurl as fig
+import figurl as fig
 
 def figurl_average_waveforms(*,
         recording_id: str,
@@ -40,6 +40,6 @@ F2 = figurl_average_waveforms(
 )
 
 F = fig.BoxLayout([F1, F2])
-url = F.url()
+url = F.url(label='sync')
 
 print(url)

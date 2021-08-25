@@ -1,4 +1,4 @@
-import sortingview.figurl as fig
+import figurl as fig
 import altair as alt
 import pandas as pd
 
@@ -22,5 +22,5 @@ F = fig.BoxLayout(
     direction="column"
 )
 
-url = F.url()
+url = F.url(label='box layout')
 print(url)

@@ -1,6 +1,6 @@
 import numpy as np
 from typing import Any, List
-import sortingview.figurl as fig
+import figurl as fig
 
 def figurl_average_waveforms_numpy(*, waveforms: List[Any], electrode_channels: List[Any]):
     """
@@ -56,5 +56,5 @@ electrode_channels = [
 url = figurl_average_waveforms_numpy(
     waveforms=waveforms,
     electrode_channels=electrode_channels
-).url()
+).url(label='avg waveforms numpy')
 print(url)
