@@ -11,6 +11,8 @@ import ImportRecordingsInstructions from './ImportRecordingsInstructions';
 import RecordingsTable from './RecordingsTable';
 import setSnippetLenMd from './setSnippetLen.md.gen';
 import setWorkspacePermissionsMd from './setWorkspacePermissions.md.gen';
+import figurlInstructionsMd from './figurlInstructions.md.gen';
+import { useChannel } from 'kachery-react';
 
 type Props = {
     workspace: WorkspaceState
@@ -25,9 +27,11 @@ const WorkspaceHomeView: FunctionComponent<Props> = ({ width, height, workspace,
     const {recordings, sortings} = workspace
     const importInstructionsVisible = useVisible()
     const setWorkspacePermissionsVisible = useVisible()
+    const figurlInstructionsVisible = useVisible()
     const setSnippetLengthVisible = useVisible()
     const workspaceUri = workspaceRoute.workspaceUri || '<unknown>'
     const loggedInUserEmail = useGoogleSignInClient()?.userId ?? 'user_id@gmail.com'
+    const {channelName} = useChannel()
     return (
         <span>
             <div>
@@ -45,6 +49,11 @@ const WorkspaceHomeView: FunctionComponent<Props> = ({ width, height, workspace,
                 {
                     !importInstructionsVisible.visible && (
                         <div><Button onClick={importInstructionsVisible.show}>Import recordings</Button></div>
+                    )
+                }
+                {
+                    !figurlInstructionsVisible.visible && (
+                        <div><Button onClick={figurlInstructionsVisible.show}>View workspace in figurl</Button></div>
                     )
                 }
                 {
@@ -69,6 +78,15 @@ const WorkspaceHomeView: FunctionComponent<Props> = ({ width, height, workspace,
                 substitute={{
                     'WORKSPACE_URI': workspaceUri,
                     'USER': loggedInUserEmail
+                }}
+            />
+            <MarkdownDialog
+                visible={figurlInstructionsVisible.visible}
+                onClose={figurlInstructionsVisible.hide}
+                source={figurlInstructionsMd}
+                substitute={{
+                    'WORKSPACE_URI': workspaceUri,
+                    'CHANNEL': channelName.toString()
                 }}
             />
             <MarkdownDialog
