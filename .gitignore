@@ -1,4 +1,4 @@
-src/python/dist
+./dist
 tmp
 devel/start-backend
 .vscode/settings.json
