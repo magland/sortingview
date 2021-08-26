@@ -1,7 +1,7 @@
 import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Checkbox, Grid, LinearProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import '../unitstable.css';
 
 export interface Row {
@@ -21,16 +21,52 @@ export interface Column {
     calculating?: boolean
 }
 
-const HeaderRow: FunctionComponent<{
-    columns: Column[],
+type ColumnDirections = 'ascending' | 'descending'
+
+type HeaderRowProps = {
+    columns: Column[]
     onColumnClick: (column: Column) => void
-    primarySortColumnName: string | undefined
-    primarySortColumnDirection: 'ascending' | 'descending' | undefined
-    onDeselectAll?: (() => void),
-    onSelectAll?: (() => void),
+    primarySortColumnName?: string
+    primarySortColumnDirection?: ColumnDirections
+    onDeselectAll?: (() => void)
+    onSelectAll?: (() => void)
     selectionDisabled?: boolean
-}> = (props) => {
+}
+
+const SortCaret = (primarySortColumnDirection: string | undefined) => (
+    primarySortColumnDirection === 'ascending'
+        ? <FontAwesomeIcon icon={faCaretUp} />
+        : <FontAwesomeIcon icon={faCaretDown} />
+)
+
+const HeaderRow: FunctionComponent<HeaderRowProps> = (props) => {
     const { columns, onColumnClick, primarySortColumnDirection, primarySortColumnName, onDeselectAll, onSelectAll, selectionDisabled } = props
+    const _columns = useMemo(() => columns, [columns])
+    const _renderedColumns = useMemo(() => (
+        _columns.map(column => {
+            const tooltip = (column.tooltip || column.label || '') + ' (click to sort)'
+            return (
+                <TableCell key={column.columnName} onClick={() => onColumnClick(column)} title={tooltip} style={{cursor: 'pointer'}}>
+                    <Grid container justify="flex-start" style={{flexFlow: 'row'}}>
+                        <Grid item key="icon">
+                            <span style={{fontSize: 16, color: 'gray', paddingLeft: 3, paddingRight: 5, paddingTop: 2}}>
+                                {
+                                    (primarySortColumnName === column.columnName) && (SortCaret(primarySortColumnDirection))
+                                }
+                            </span>
+                        </Grid>
+                        <Grid item key="text">
+                            <span>
+                                <span key="label">{column.label}</span>
+                                <span key="progress">{column.calculating && <LinearProgress />}</span>
+                            </span>
+                        </Grid>
+                    </Grid>
+                </TableCell>
+            )
+        })
+    ), [_columns, onColumnClick, primarySortColumnDirection, primarySortColumnName])
+
     return (
         <TableHead>
             <TableRow>
@@ -48,7 +84,7 @@ const HeaderRow: FunctionComponent<{
                     ) : onSelectAll ? (
                         <TableCell key="_checkbox">
                             <RowCheckbox
-                                rowId={''}
+                                rowId={'all'}
                                 selected={false}
                                 onClick={onSelectAll}
                                 isDeselectAll={false}
@@ -59,43 +95,21 @@ const HeaderRow: FunctionComponent<{
                         <TableCell key="_checkbox" />
                     )
                 }
-                {
-                    columns.map(column => {
-                        const tooltip = (column.tooltip || column.label || '') + ' (click to sort)'
-                        return (
-                            <TableCell key={column.columnName} onClick={() => onColumnClick(column)} title={tooltip} style={{cursor: 'pointer'}}>
-                                <Grid container justify="flex-start" style={{flexFlow: 'row'}}>
-                                    <Grid item key="icon">
-                                        <span style={{fontSize: 16, color: 'gray', paddingLeft: 3, paddingRight: 5, paddingTop: 2}}>
-                                            {
-                                                (primarySortColumnName === column.columnName) && (
-                                                    primarySortColumnDirection === 'ascending' ? (
-                                                        // <TriangleUp fontSize="inherit" />
-                                                        <FontAwesomeIcon icon={faCaretUp} />
-                                                    ) : (
-                                                        <FontAwesomeIcon icon={faCaretDown} />
-                                                    )
-                                                )
-                                            }
-                                        </span>
-                                    </Grid>
-                                    <Grid item key="text">
-                                        <span>
-                                            <span key="label">{column.label}</span>
-                                            <span key="progress">{column.calculating && <LinearProgress />}</span>
-                                        </span>
-                                    </Grid>
-                                </Grid>
-                            </TableCell>
-                        )
-                    })
-                }
+                {_renderedColumns}
             </TableRow>
         </TableHead>
     )
 }
 
-const RowCheckbox = React.memo((props: {rowId: string, selected: boolean, onClick: (rowId: string) => void, isDeselectAll?: boolean, isDisabled?: boolean}) => {
+type CheckboxProps = {
+    rowId: string,
+    selected: boolean,
+    onClick: (rowId: string) => void,
+    isDeselectAll?: boolean,
+    isDisabled?: boolean
+}
+
+const RowCheckbox = (props: CheckboxProps) => {
     const { rowId, selected, onClick, isDeselectAll, isDisabled } = props
     return (
         <Checkbox
@@ -108,10 +122,10 @@ const RowCheckbox = React.memo((props: {rowId: string, selected: boolean, onClic
             title={isDeselectAll ? "Deselect all" : `Select ${rowId}`}
             disabled={isDisabled}
         />
-    );
-});
+    )
+}
 
-interface Props {
+interface TableProps {
     selectedRowIds: string[]
     onSelectedRowIdsChanged: (x: string[]) => void
     rows: Row[]
@@ -132,17 +146,15 @@ const interpretSortFields = (fields: string[]): sortFieldEntry[] => {
     return result
 }
 
-const TableWidget: FunctionComponent<Props> = (props) => {
-
+const TableWidget: FunctionComponent<TableProps> = (props) => {
     const { selectedRowIds, onSelectedRowIdsChanged, rows, columns, defaultSortColumnName, height, selectionDisabled } = props
-
     const [sortFieldOrder, setSortFieldOrder] = useState<string[]>([])
 
     useEffect(() => {
         if ((sortFieldOrder.length === 0) && (defaultSortColumnName)) {
             setSortFieldOrder([defaultSortColumnName])
         }
-    }, [setSortFieldOrder, sortFieldOrder, defaultSortColumnName])
+    }, [sortFieldOrder, setSortFieldOrder, defaultSortColumnName])
 
     const toggleSelectedRowId = useCallback(
         (rowId: string) => {
@@ -152,94 +164,130 @@ const TableWidget: FunctionComponent<Props> = (props) => {
         [selectedRowIds, onSelectedRowIdsChanged]
     )
 
-    const sortedRows = [...rows]
-
-    const columnForName = (columnName: string): Column => (columns.filter(c => (c.columnName === columnName))[0])
-
+    // I'm not sure memoizing rows or columns achieves much, given that they're probably compared based
+    // on reference equality. There may be a win here in the future if we can break them down more.
+    const _columns = useMemo(() => columns, [columns])
+    const columnForName = useCallback((columnName: string): Column => (_columns.filter(c => (c.columnName === columnName))[0]), [_columns])
     const sortingRules = interpretSortFields(sortFieldOrder)
-    for (const r of sortingRules) {
-        const columnName = r.columnName
-        const column = columnForName(columnName)
-        sortedRows.sort((a, b) => {
-            const dA = (a.data[columnName] || {})
-            const dB = (b.data[columnName] || {})
-            const valueA = dA.sortValue
-            const valueB = dB.sortValue
 
-            return r.sortAscending ? column.sort(valueA, valueB) : column.sort(valueB, valueA)
-        })
-    }
-    const selectedRowIdsLookup: {[key: string]: boolean} = (selectedRowIds || []).reduce((m, id) => {m[id] = true; return m}, {} as {[key: string]: boolean})
-
-    const primaryRule = (sortingRules.length > 0) ? sortingRules[sortingRules.length - 1] : undefined
-    const primarySortColumnName = primaryRule ? primaryRule.columnName : undefined
-    const primarySortColumnDirection = primaryRule ? (primaryRule.sortAscending ? 'ascending' : 'descending') : undefined
+    const sortedRows = useMemo(() => {
+        let _draft = [...rows]
+        for (const r of sortingRules) {
+            const columnName = r.columnName
+            const column = columnForName(columnName)
+            _draft.sort((a, b) => {
+                const dA = (a.data[columnName] || {})
+                const dB = (b.data[columnName] || {})
+                const valueA = dA.sortValue
+                const valueB = dB.sortValue
     
+                return r.sortAscending ? column.sort(valueA, valueB) : column.sort(valueB, valueA)
+            })
+        }
+        return _draft
+    }, [rows, sortingRules, columnForName])
+
+    const selectedRowsSet: Set<string> = useMemo(() => new Set(selectedRowIds || []), [selectedRowIds])
+    const allRowIds = useMemo(() => rows.map(r => r.rowId), [rows])
+    const allRowsSelected = useMemo(() => selectedRowIds.length === allRowIds.length, [selectedRowIds, allRowIds])
+
     const handleSelectAll = useCallback(() => {
-        onSelectedRowIdsChanged(rows.map(row => (row.rowId)))
-    }, [onSelectedRowIdsChanged, rows])
+        onSelectedRowIdsChanged(allRowIds)
+    }, [onSelectedRowIdsChanged, allRowIds])
 
     const handleDeselectAll = useCallback(() => {
         onSelectedRowIdsChanged([])
     }, [onSelectedRowIdsChanged])
 
+    const handleColumnClick = useCallback((column) => {
+        const columnName = column.columnName
+        const len = sortFieldOrder.length
+        const priorSortField = len === 0 ? '' : sortFieldOrder[sortFieldOrder.length - 1]
+        const lastTwoSortingColumnsMatch = len > 1 && sortFieldOrder[len - 1] === sortFieldOrder[len - 2]
+        const newSortfieldOrder =
+            priorSortField === columnName
+                ? lastTwoSortingColumnsMatch
+                    // Requesting the same sort 3x in a row has the same effect as just once, so just remove the column's second appearance.
+                    ? sortFieldOrder.slice(0, sortFieldOrder.length - 1)
+                    // This click was the 2nd one in a row the column was clicked: add it again & keep the previous one (to mark descending)
+                    : [...sortFieldOrder, columnName]
+                // The user just requested sorting by a new column. Any prior appearances won't affect the sorting order,
+                // so clear them out and add it once at the end.
+                : [...sortFieldOrder.filter(m => (m !== columnName)), columnName]
+        setSortFieldOrder(newSortfieldOrder)
+    }, [sortFieldOrder, setSortFieldOrder])
+
+    const primaryRule = (sortingRules.length > 0) ? sortingRules[sortingRules.length - 1] : undefined
+    const primarySortColumnName = primaryRule ? primaryRule.columnName : undefined
+    const primarySortColumnDirection = primaryRule ? (primaryRule.sortAscending ? 'ascending' : 'descending') : undefined
+
+    const header = useMemo(() =>
+        (<HeaderRow
+            columns={_columns}
+            primarySortColumnName={primarySortColumnName}
+            primarySortColumnDirection={primarySortColumnDirection}
+            onColumnClick={handleColumnClick}
+            onDeselectAll={allRowsSelected ? handleDeselectAll : undefined}
+            onSelectAll={allRowsSelected ? undefined : handleSelectAll }
+            selectionDisabled={selectionDisabled}
+        />), [_columns, primarySortColumnName, primarySortColumnDirection, handleColumnClick, allRowsSelected, handleDeselectAll, handleSelectAll, selectionDisabled])
+
+    // This was an attempt to memoize row contents and avoid some repetitive calculations,
+    // but it didn't yield much benefit. Leaving it here commented in case we want to try
+    // further similar optimizations down the line.
+    // const _metricsByRow = useMemo(() => {
+    //     const contents = Object.assign(
+    //         {},
+    //         ...sortedRows.map((row) => {
+    //             const columnValues = _columns.map(column => (
+    //                 <TableCell key={column.columnName}>
+    //                     <div title={column.tooltip}>
+    //                         {column.dataElement(row.data[column.columnName].value)}
+    //                     </div>
+    //                 </TableCell>
+    //             ))
+    //             return {[row.rowId]: columnValues}
+    //         })
+    //     )
+    //     return contents as any as {[key: string]: JSX.Element[]}
+    // }, [sortedRows, _columns])
+
+    // This memoization is probably not effective, since it's still rebuilding the *entire* list
+    // every time the selections change, instead of just touching the rows whose selection
+    // status changed...
+    const _rows = useMemo(() => {
+        return sortedRows.map((row) => {
+            const selected = selectedRowsSet.has(row.rowId)
+            return (
+                <TableRow key={row.rowId} className={selected ? "selectedRow" : ""}>
+                    <TableCell key="_checkbox">
+                        <RowCheckbox
+                            rowId={row.rowId}
+                            selected={selected}
+                            onClick={() => toggleSelectedRowId(row.rowId)}
+                            isDisabled={selectionDisabled}
+                        />
+                    </TableCell>
+                    {
+                        _columns.map(column => (
+                            <TableCell key={column.columnName}>
+                                <div title={column.tooltip}>
+                                    {column.dataElement(row.data[column.columnName].value)}
+                                </div>
+                            </TableCell>
+                        ))
+                    }
+                </TableRow>
+            )
+        })
+    }, [selectedRowsSet, sortedRows, _columns, selectionDisabled, toggleSelectedRowId])
+
     return (
         <TableContainer style={height !== undefined ? {maxHeight: height} : {}}>
             <Table stickyHeader className="TableWidget">
-                <HeaderRow
-                    columns={columns}
-                    primarySortColumnName={primarySortColumnName}
-                    primarySortColumnDirection={primarySortColumnDirection}
-                    onColumnClick={(column) => {
-                        const columnName = column.columnName
-                        let newSortFieldOrder = [...sortFieldOrder]
-                        if (sortFieldOrder[sortFieldOrder.length - 1] === columnName) {
-                            if (sortFieldOrder[sortFieldOrder.length - 2] === columnName) {
-                                // the last two match this column, let's just remove the last one
-                                newSortFieldOrder = newSortFieldOrder.slice(0, newSortFieldOrder.length - 1)
-                            }
-                            else {
-                                // the last one matches this column, let's add another one
-                                newSortFieldOrder = [...newSortFieldOrder, columnName]
-                            }
-                        }
-                        else {
-                            // the last one does not match this column, let's clear out all previous instances and add one
-                            newSortFieldOrder = [...newSortFieldOrder.filter(m => (m !== columnName)), columnName]
-                        }
-                        setSortFieldOrder(newSortFieldOrder)
-                    }}
-                    onDeselectAll={selectedRowIds.length === sortedRows.length ? handleDeselectAll : undefined}
-                    onSelectAll={selectedRowIds.length < sortedRows.length ? handleSelectAll : undefined}
-                    selectionDisabled={selectionDisabled}
-                />
+                {header}
                 <TableBody>
-                    {
-                        sortedRows.map((row) => {
-                            const selected = selectedRowIdsLookup[row.rowId] || false
-                            return (
-                                <TableRow key={row.rowId}>
-                                    <TableCell key="_checkbox" className={selected ? "selectedRow" : ""}>
-                                        <RowCheckbox
-                                            rowId={row.rowId}
-                                            selected={selected}
-                                            onClick = {() => toggleSelectedRowId(row.rowId)}
-                                            isDisabled={selectionDisabled}
-                                        />
-                                    </TableCell>
-                                    {
-                                        columns.map(column => (
-                                            <TableCell key={column.columnName} className={selected ? "selectedRow" : ""}>
-                                                <div title={column.tooltip}>
-                                                    {column.dataElement(row.data[column.columnName].value)}
-                                                </div>
-                                            </TableCell>
-                                        ))
-                                    }
-                                </TableRow>       
-                            )
-                        })
-                    }
+                    {_rows}
                 </TableBody>
             </Table>
         </TableContainer>

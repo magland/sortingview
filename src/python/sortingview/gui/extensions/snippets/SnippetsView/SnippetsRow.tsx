@@ -6,7 +6,7 @@ import useChannel from 'kachery-react/useChannel';
 import useKacheryNode from 'kachery-react/useKacheryNode';
 import React, { FunctionComponent, useMemo } from 'react';
 import { applyMergesToUnit, Recording, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from "../../../pluginInterface";
-import { getElectrodesAspectRatio } from '../../averagewaveforms/AverageWaveformsView/setupElectrodes';
+import { getElectrodesAspectRatio } from '../../common/sharedCanvasLayers/setupElectrodes';
 import SnippetBox from './SnippetBox';
 
 
@@ -194,12 +194,16 @@ const SnippetsRow: FunctionComponent<Props> = ({ recording, sorting, selection, 
                         snippets.map((snippet) => (
                             <GridListTile key={snippet.timepoint} style={tileStyle}>
                                 <SnippetBox
-                                    snippet={snippet}
+                                    timepoint={snippet.timepoint}
+                                    waveform={snippet.waveform}
+                                    currentTimepoint={selection.currentTimepoint}
+                                    waveformsMode={selection.waveformsMode}
+                                    ampScaleFactor={selection.ampScaleFactor}
+                                    selectedElectrodeIds={selection.selectedElectrodeIds}
                                     noiseLevel={noiseLevel}
                                     samplingFrequency={info.sampling_frequency}
                                     electrodeIds={info.channel_ids}
                                     electrodeLocations={electrodeLocations}
-                                    selection={selection}
                                     selectionDispatch={selectionDispatch}
                                     width={boxWidth}
                                     height={height}

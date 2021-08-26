@@ -1,5 +1,5 @@
 import { Button, Grid } from '@material-ui/core';
-import React, { FunctionComponent, useCallback, useState } from 'react';
+import React, { FunctionComponent, useCallback, useMemo, useState } from 'react';
 import { isMergeGroupRepresentative, Sorting, SortingCuration, SortingInfo, SortingSelection, SortingSelectionDispatch } from "../../pluginInterface";
 import { useSortingInfo } from '../../pluginInterface/useSortingInfo';
 
@@ -17,17 +17,16 @@ const SortingUnitPlotGrid: FunctionComponent<Props> = ({ sorting, selection, cur
     const [maxUnitsVisible, setMaxUnitsVisible] = useState(30);
     const sortingInfo: SortingInfo | undefined = useSortingInfo(sorting.sortingPath)
 
-    const visibleUnitIds = selection.visibleUnitIds
-    let unit_ids: number[] = (sortingInfo ? sortingInfo.unit_ids : [])
-        .filter(uid => ((!visibleUnitIds) || (visibleUnitIds.includes(uid))))
-        .filter(uid => ((!selection.applyMerges) || (isMergeGroupRepresentative(uid, curation))))
-    let showExpandButton = false;
-    if (unit_ids.length > maxUnitsVisible) {
-        unit_ids = unit_ids.slice(0, maxUnitsVisible);
-        showExpandButton = true;
-    }
-
-    // useCheckForChanges('SortingUnitPlotGrid', {sorting, selection, selectionDispatch, unitComponent})
+    const visibleUnitIds = useMemo(() => selection.visibleUnitIds, [selection.visibleUnitIds])
+    const selectedUnitIds = useMemo(() => selection.selectedUnitIds, [selection.selectedUnitIds])
+    const applyMerges = useMemo(() => selection.applyMerges, [selection.applyMerges])
+    const baseUnitIds: number[] = useMemo(() => {
+        return (sortingInfo ? sortingInfo.unit_ids : [])
+                .filter(uid => ((!visibleUnitIds) || (visibleUnitIds.includes(uid))))
+                .filter(uid => ((!applyMerges) || (isMergeGroupRepresentative(uid, curation))))
+    }, [curation, applyMerges, sortingInfo, visibleUnitIds])
+    const showExpandButton = useMemo(() => baseUnitIds.length > maxUnitsVisible, [baseUnitIds, maxUnitsVisible])
+    const unit_ids = useMemo(() => showExpandButton ? baseUnitIds.slice(0, maxUnitsVisible) : baseUnitIds, [showExpandButton, baseUnitIds, maxUnitsVisible])
 
     const handleUnitClick = useCallback((event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         const unitId = Number(event.currentTarget.dataset.unitId)
@@ -43,7 +42,7 @@ const SortingUnitPlotGrid: FunctionComponent<Props> = ({ sorting, selection, cur
                         >
                             <div
                                 data-unit-id={unitId}
-                                className={selection.selectedUnitIds?.includes(unitId) ? 'plotSelectedStyle' : 'plotUnselectedStyle'}
+                                className={selectedUnitIds?.includes(unitId) ? 'plotSelectedStyle' : 'plotUnselectedStyle'}
                                 onClick={handleUnitClick}
                             >
                                 <div className='plotUnitLabel'>

@@ -5,7 +5,8 @@ import useChannel from 'kachery-react/useChannel';
 import usePureCalculationTask from 'kachery-react/usePureCalculationTask';
 import React, { FunctionComponent, useMemo } from 'react';
 import { applyMergesToUnit, Recording, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from '../../../pluginInterface';
-import WaveformWidget, { ElectrodeOpts } from '../../averagewaveforms/AverageWaveformsView/WaveformWidget';
+import WaveformWidget, { defaultWaveformOpts } from '../../averagewaveforms/AverageWaveformsView/WaveformWidget';
+import { ElectrodeOpts } from '../../common/sharedCanvasLayers/electrodesLayer';
 import { ActionItem, DividerItem } from '../../common/Toolbars';
 
 type PlotData = {
@@ -126,10 +127,12 @@ const PairWaveformView: FunctionComponent<Props> = ({ sorting, curation, recordi
                             samplingFrequency={plotData1b.sampling_frequency}
                             width={boxWidth}
                             height={height}
-                            selection={selection}
+                            ampScaleFactor={selection.ampScaleFactor || 1}
+                            selectedElectrodeIds={selection.selectedElectrodeIds || []}
                             customActions={customActions}
                             selectionDispatch={selectionDispatch}
                             electrodeOpts={electrodeOpts}
+                            waveformOpts={defaultWaveformOpts}
                         />
                     </TableCell>
                     <TableCell>
@@ -142,10 +145,12 @@ const PairWaveformView: FunctionComponent<Props> = ({ sorting, curation, recordi
                             samplingFrequency={plotData2b.sampling_frequency}
                             width={boxWidth}
                             height={height}
-                            selection={selection}
+                            ampScaleFactor={selection.ampScaleFactor || 1}
+                            selectedElectrodeIds={selection.selectedElectrodeIds || []}
                             customActions={customActions}
                             selectionDispatch={selectionDispatch}
                             electrodeOpts={electrodeOpts}
+                            waveformOpts={defaultWaveformOpts}
                         />
                     </TableCell>
                 </TableRow>

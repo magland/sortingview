@@ -3,6 +3,8 @@ import { Reducer, useEffect, useRef } from "react"
 const TIME_ZOOM_FACTOR = 1.4
 const AMP_SCALE_FACTOR = 1.4
 
+export type WaveformsMode = 'geom' | 'vertical'
+
 export interface RecordingSelection {
     selectedElectrodeIds?: number[]
     visibleElectrodeIds?: number[]
@@ -13,7 +15,7 @@ export interface RecordingSelection {
     animation?: {
         currentTimepointVelocity: number // timepoints per second
     }
-    waveformsMode?: 'geom' | 'vertical'
+    waveformsMode?: WaveformsMode
 }
 
 export const useRecordingAnimation = (selection: RecordingSelection, selectionDispatch: RecordingSelectionDispatch) => {

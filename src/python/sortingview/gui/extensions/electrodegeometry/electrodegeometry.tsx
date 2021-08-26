@@ -20,13 +20,6 @@ const ElectrodeGeometryRecordingView: FunctionComponent<RecordingViewProps> = ({
     const visibleElectrodeIds = selection.visibleElectrodeIds
     const electrodes = useMemo(() => (ri ? zipElectrodes(ri.geom, ri.channel_ids) : []).filter(a => ((!visibleElectrodeIds) || (visibleElectrodeIds.includes(a.id)))), [ri, visibleElectrodeIds])
 
-    // const handleSelectedElectrodeIdsChanged = useCallback((x: number[]) => {
-    //     selectionDispatch({type: 'SetSelectedElectrodeIds', selectedElectrodeIds: x})
-    // }, [selectionDispatch])
-
-    // const selectedElectrodeIds = useMemo(() => (selection.selectedElectrodeIds || []), [selection.selectedElectrodeIds])
-
-    // const [selectedElectrodeIds, setSelectedElectrodeIds] = useState<number[]>([]);
     if (!ri) {
         return (
             <div>No recording info found for recording.</div>
@@ -35,7 +28,7 @@ const ElectrodeGeometryRecordingView: FunctionComponent<RecordingViewProps> = ({
     return (
         <ElectrodeGeometryWidget
             electrodes={electrodes}
-            selection={selection}
+            selectedElectrodeIds={selection.selectedElectrodeIds || []}
             selectionDispatch={selectionDispatch}
             width={width || 350}
             height={height || 150}

@@ -7,6 +7,6 @@
     border: solid 1px #f0f0f0;
 }
 
-.TableWidget .MuiTableCell-root.selectedRow {
+.TableWidget .MuiTableRow-root.selectedRow {
     background-color: #b5d1ff;
 }

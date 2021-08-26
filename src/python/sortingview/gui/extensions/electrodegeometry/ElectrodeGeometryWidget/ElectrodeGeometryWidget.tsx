@@ -1,10 +1,8 @@
-import React, { useMemo } from "react"
 import CanvasWidget from "labbox-react/components/CanvasWidget"
 import { useLayer, useLayers } from "labbox-react/components/CanvasWidget/CanvasWidgetLayer"
-import { RecordingSelection, RecordingSelectionDispatch } from "../../../pluginInterface"
-import { createElectrodesLayer } from "../../averagewaveforms/AverageWaveformsView/electrodesLayer"
-import { ElectrodeLayerProps } from "../../averagewaveforms/AverageWaveformsView/WaveformWidget"
-import { Electrode } from "./electrodeGeometryLayer"
+import React, { useMemo } from "react"
+import { RecordingSelectionDispatch } from "../../../pluginInterface"
+import { createElectrodesLayer, Electrode, ElectrodeLayerProps } from "../../common/sharedCanvasLayers/electrodesLayer"
 
 // Okay, so after some hoop-jumping, we've learned the RecordingInfo has:
 // - sampling frequency (number), - channel_ids (list of number),
@@ -13,10 +11,15 @@ import { Electrode } from "./electrodeGeometryLayer"
 
 interface WidgetProps {
     electrodes: Electrode[] // Note: these shouldn't be interacted with directly. Use the bounding boxes in the state, instead.
-    selection: RecordingSelection
+    selectedElectrodeIds: number[]
     selectionDispatch: RecordingSelectionDispatch
     width: number
     height: number
+}
+
+const defaultElectrodeLayerElectrodeOpts = {
+    showLabels: true,
+    maxElectrodePixelRadius: 25
 }
 
 const ElectrodeGeometryWidget = (props: WidgetProps) => {
@@ -26,13 +29,10 @@ const ElectrodeGeometryWidget = (props: WidgetProps) => {
         electrodeLocations: props.electrodes.map(e => [e.x, e.y]),
         width: props.width,
         height: props.height,
-        selection: props.selection,
+        selectedElectrodeIds: props.selectedElectrodeIds ?? [],
         selectionDispatch: props.selectionDispatch,
-        electrodeOpts: {
-            showLabels: true,
-            maxElectrodePixelRadius: 25
-        },
-        noiseLevel: 0, // not needed
+        electrodeOpts: defaultElectrodeLayerElectrodeOpts,
+        noiseLevel: 0, // not needed for electrode geometry
         samplingFrequency: 0 // not needed
     }), [props])
     const layer = useLayer(createElectrodesLayer, electrodeLayerProps)
