@@ -1,7 +1,7 @@
-import React, { FunctionComponent } from 'react';
-import UnitsTable from '../../extensions/unitstable/Units/UnitsTable';
-import { isMergeGroupRepresentative, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from "../../pluginInterface";
-import { useSortingInfo } from '../../pluginInterface/useSortingInfo';
+import React, { FunctionComponent, useMemo } from 'react'
+import UnitsTable from '../../extensions/unitstable/Units/UnitsTable'
+import { isMergeGroupRepresentative, Sorting, SortingCuration, SortingSelection, SortingSelectionDispatch } from "../../pluginInterface"
+import { useSortingInfo } from '../../pluginInterface/useSortingInfo'
 
 type Props = {
     sorting: Sorting
@@ -14,15 +14,15 @@ type Props = {
 
 const SelectUnitsWidget: FunctionComponent<Props> = ({ sorting, selection, selectionDispatch, curation, selectionDisabled, sortingSelector }) => {
     const sortingInfo = useSortingInfo(sorting.sortingPath)
-    if (!sortingInfo) return <div>No sorting info</div>
-    let unitIds = (selection.visibleUnitIds || (sortingInfo?.unit_ids || []))
-        .filter(uid => ((!selection.applyMerges) || (isMergeGroupRepresentative(uid, curation))))
-    return (
-        <UnitsTable
-            units={unitIds}
-            {...{selection, selectionDispatch, sorting, curation, selectionDisabled, sortingSelector}}
-        />
-    )
+    const unitIds = useMemo(() => (selection.visibleUnitIds || (sortingInfo?.unit_ids || []))
+                            .filter(uid => ((!selection.applyMerges) || (isMergeGroupRepresentative(uid, curation)))),
+                            [selection.visibleUnitIds, sortingInfo?.unit_ids, curation, selection.applyMerges])
+    const selectedUnitIds = useMemo(() => selection.selectedUnitIds, [selection.selectedUnitIds])
+    return sortingInfo ? <UnitsTable
+                            units={unitIds}
+                            {...{selectedUnitIds, selectionDispatch, curation, selectionDisabled, sortingSelector}}
+                         />
+                       : <div>No sorting info</div>
 }
 
 export default SelectUnitsWidget
