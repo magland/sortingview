@@ -87,7 +87,8 @@ const getLabelsForUnitId = (unitId: number, curation: SortingCuration) => {
 
 const UnitsTable: FunctionComponent<Props> = (props) => {
     const { unitMetricsUri, sortingUnitMetrics, sortingComparisonUnitMetrics, units, metrics, selectedUnitIds, selectionDispatch, curation, height, selectionDisabled, sortingSelector } = props
-    const selectedRowIds = (selectedUnitIds || []).map(unitId => (unitId + ''))
+    const selectedRowIds = useMemo(() => (selectedUnitIds || []).map(unitId => (unitId + '')), [selectedUnitIds])
+    const _metrics = useMemo(() => metrics || {}, [metrics])
 
     // Prepare lists of metrics.
     // These memoizations work b/c the parameters should be memoized in the caller.
@@ -109,8 +110,6 @@ const UnitsTable: FunctionComponent<Props> = (props) => {
             selectedUnitIds: selectedRowIds.map(id => Number(id))
         })
     }, [ selectionDispatch ])
-
-    const _metrics = useMemo(() => metrics || {}, [metrics])
 
     const _unitIdElement = useCallback((x) => unitIdElement(x, sortingSelector || ''), [sortingSelector])
 
