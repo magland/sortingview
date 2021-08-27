@@ -1,7 +1,7 @@
 import Splitter from 'labbox-react/components/Splitter/Splitter'
+import SelectUnitsWidget from 'python/sortingview/gui/commonComponents/SelectUnitsWidget/SelectUnitsWidget'
 import { SortingViewProps } from 'python/sortingview/gui/pluginInterface'
 import React, { FunctionComponent } from 'react'
-import SelectUnitsWidget from './SelectUnitsWidget'
 import SpikeAmplitudesTimeWidget from './SpikeAmplitudesTimeWidget'
 import useSpikeAmplitudesData from './useSpikeAmplitudesData'
 

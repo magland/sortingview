@@ -1,8 +1,10 @@
-import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Checkbox, Grid, LinearProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
-import '../unitstable.css';
+import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Checkbox, Grid, LinearProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core'
+import { useMemoCompare } from 'kachery-react/useMemoCompare'
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
+import '../unitstable.css'
+
 
 export interface Row {
     rowId: string
@@ -21,81 +23,72 @@ export interface Column {
     calculating?: boolean
 }
 
-type ColumnDirections = 'ascending' | 'descending'
-
 type HeaderRowProps = {
-    columns: Column[]
-    onColumnClick: (column: Column) => void
-    primarySortColumnName?: string
-    primarySortColumnDirection?: ColumnDirections
+    headers: ColumnHeaderInfo[]
+    onColumnClick: (columnName: string) => void
     onDeselectAll?: (() => void)
     onSelectAll?: (() => void)
+    allRowsSelected: boolean
     selectionDisabled?: boolean
 }
 
-const SortCaret = (primarySortColumnDirection: string | undefined) => (
-    primarySortColumnDirection === 'ascending'
+type ColumnHeaderInfo = {
+    name: string
+    tooltip?: string
+    label?: string
+    isCalculating: boolean
+    isPrimarySort: boolean
+    isAscendingSort: boolean
+}
+
+const SortCaret = (ascending?: boolean) => (
+    ascending
         ? <FontAwesomeIcon icon={faCaretUp} />
         : <FontAwesomeIcon icon={faCaretDown} />
 )
 
 const HeaderRow: FunctionComponent<HeaderRowProps> = (props) => {
-    const { columns, onColumnClick, primarySortColumnDirection, primarySortColumnName, onDeselectAll, onSelectAll, selectionDisabled } = props
-    const _columns = useMemo(() => columns, [columns])
-    const _renderedColumns = useMemo(() => (
-        _columns.map(column => {
+    const { headers, onColumnClick, onDeselectAll, onSelectAll, allRowsSelected, selectionDisabled } = props
+    const _renderedHeaders = useMemo(() => {
+        return headers.map(column => {
             const tooltip = (column.tooltip || column.label || '') + ' (click to sort)'
             return (
-                <TableCell key={column.columnName} onClick={() => onColumnClick(column)} title={tooltip} style={{cursor: 'pointer'}}>
+                <TableCell key={column.name} onClick={() => onColumnClick(column.name)} title={tooltip} style={{cursor: 'pointer'}}>
                     <Grid container justify="flex-start" style={{flexFlow: 'row'}}>
                         <Grid item key="icon">
                             <span style={{fontSize: 16, color: 'gray', paddingLeft: 3, paddingRight: 5, paddingTop: 2}}>
                                 {
-                                    (primarySortColumnName === column.columnName) && (SortCaret(primarySortColumnDirection))
+                                    (column.isPrimarySort) && (SortCaret(column.isAscendingSort))
                                 }
                             </span>
                         </Grid>
                         <Grid item key="text">
                             <span>
                                 <span key="label">{column.label}</span>
-                                <span key="progress">{column.calculating && <LinearProgress />}</span>
+                                <span key="progress">{column.isCalculating && <LinearProgress />}</span>
                             </span>
                         </Grid>
                     </Grid>
                 </TableCell>
             )
         })
-    ), [_columns, onColumnClick, primarySortColumnDirection, primarySortColumnName])
+    }, [headers, onColumnClick]) // referential equality should be fine here b/c we can control the construction of the list.
 
     return (
         <TableHead>
             <TableRow>
                 {
-                    onDeselectAll ? (
-                        <TableCell key="_checkbox">
-                            <RowCheckbox
-                                rowId={''}
-                                selected={false}
-                                onClick={onDeselectAll}
-                                isDeselectAll={true}
-                                isDisabled={selectionDisabled}
-                            />
-                        </TableCell>
-                    ) : onSelectAll ? (
-                        <TableCell key="_checkbox">
-                            <RowCheckbox
-                                rowId={'all'}
-                                selected={false}
-                                onClick={onSelectAll}
-                                isDeselectAll={false}
-                                isDisabled={selectionDisabled}
-                            />
-                        </TableCell>
-                    ) : (
-                        <TableCell key="_checkbox" />
-                    )
+                    <TableCell key="_checkbox">
+                        <RowCheckbox 
+                            rowId={'all'}
+                            selected={false}
+                            onClick={(allRowsSelected ? onDeselectAll : onSelectAll) || (() => {return})}
+                            isDeselectAll={allRowsSelected}
+                            isDisabled={selectionDisabled}
+                        />
+                    </TableCell>
                 }
-                {_renderedColumns}
+                {_renderedHeaders}
             </TableRow>
         </TableHead>
     )
@@ -109,7 +102,7 @@ type CheckboxProps = {
     isDisabled?: boolean
 }
 
-const RowCheckbox = (props: CheckboxProps) => {
+const RowCheckbox: FunctionComponent<CheckboxProps> = (props: CheckboxProps) => {
     const { rowId, selected, onClick, isDeselectAll, isDisabled } = props
     return (
         <Checkbox
@@ -123,6 +116,28 @@ const RowCheckbox = (props: CheckboxProps) => {
             disabled={isDisabled}
         />
     )
+}
+
+type RowProps = {
+    rowId: string,
+    selected: boolean,
+    onClick: (rowId: string) => void,
+    isDisabled: boolean,
+    contentRepository: {[key: string]: JSX.Element[]}
+}
+const ContentRow: FunctionComponent<RowProps> = (props: RowProps) => {
+    const {rowId, selected, onClick, isDisabled, contentRepository} = props
+    return <TableRow key={rowId} className={selected ? "selectedRow": ""}>
+        <TableCell key="_checkbox">
+            <RowCheckbox
+                rowId={rowId}
+                selected={selected}
+                onClick={() => onClick(rowId)}
+                isDisabled={isDisabled}
+            />
+        </TableCell>
+        {contentRepository[rowId]}
+    </TableRow>
 }
 
 interface TableProps {
@@ -147,8 +162,15 @@ const interpretSortFields = (fields: string[]): sortFieldEntry[] => {
 }
 
 const TableWidget: FunctionComponent<TableProps> = (props) => {
+    // useCheckForChanges('TableWidget', props)
     const { selectedRowIds, onSelectedRowIdsChanged, rows, columns, defaultSortColumnName, height, selectionDisabled } = props
     const [sortFieldOrder, setSortFieldOrder] = useState<string[]>([])
+    const _selections = useMemoCompare<string[]>('_selections', selectedRowIds, [])
+    const selectedRowsSet: Set<string> = useMemo(() => {
+        return new Set(_selections || [])
+    }, [_selections])
+    const allRowIds = useMemo(() => rows.map(r => r.rowId), [rows])
+    const allRowsSelected = useMemo(() => _selections.length === allRowIds.length, [_selections, allRowIds])
 
     useEffect(() => {
         if ((sortFieldOrder.length === 0) && (defaultSortColumnName)) {
@@ -158,17 +180,14 @@ const TableWidget: FunctionComponent<TableProps> = (props) => {
 
     const toggleSelectedRowId = useCallback(
         (rowId: string) => {
-            const newSelectedRowIds = selectedRowIds.includes(rowId) ? selectedRowIds.filter(x => (x !== rowId)) : [...selectedRowIds, rowId]
+            const newSelectedRowIds = selectedRowsSet.has(rowId) ? _selections.filter(x => (x !== rowId)) : [..._selections, rowId]
             onSelectedRowIdsChanged(newSelectedRowIds)
         },
-        [selectedRowIds, onSelectedRowIdsChanged]
+        [_selections, selectedRowsSet, onSelectedRowIdsChanged]
     )
 
-    // I'm not sure memoizing rows or columns achieves much, given that they're probably compared based
-    // on reference equality. There may be a win here in the future if we can break them down more.
-    const _columns = useMemo(() => columns, [columns])
-    const columnForName = useCallback((columnName: string): Column => (_columns.filter(c => (c.columnName === columnName))[0]), [_columns])
-    const sortingRules = interpretSortFields(sortFieldOrder)
+    const columnForName = useCallback((columnName: string): Column => (columns.filter(c => (c.columnName === columnName))[0]), [columns])
+    const sortingRules = useMemoCompare<sortFieldEntry[]>('sortingRules', interpretSortFields(sortFieldOrder), [])
 
     const sortedRows = useMemo(() => {
         let _draft = [...rows]
@@ -187,10 +206,6 @@ const TableWidget: FunctionComponent<TableProps> = (props) => {
         return _draft
     }, [rows, sortingRules, columnForName])
 
-    const selectedRowsSet: Set<string> = useMemo(() => new Set(selectedRowIds || []), [selectedRowIds])
-    const allRowIds = useMemo(() => rows.map(r => r.rowId), [rows])
-    const allRowsSelected = useMemo(() => selectedRowIds.length === allRowIds.length, [selectedRowIds, allRowIds])
-
     const handleSelectAll = useCallback(() => {
         onSelectedRowIdsChanged(allRowIds)
     }, [onSelectedRowIdsChanged, allRowIds])
@@ -199,95 +214,127 @@ const TableWidget: FunctionComponent<TableProps> = (props) => {
         onSelectedRowIdsChanged([])
     }, [onSelectedRowIdsChanged])
 
-    const handleColumnClick = useCallback((column) => {
-        const columnName = column.columnName
+    const handleColumnClick = useCallback((columnName) => {
         const len = sortFieldOrder.length
         const priorSortField = len === 0 ? '' : sortFieldOrder[sortFieldOrder.length - 1]
         const lastTwoSortingColumnsMatch = len > 1 && sortFieldOrder[len - 1] === sortFieldOrder[len - 2]
+        // Three cases:
+        //   Case 1: The new click is the same sort as the last one and the one before. Choosing the same click 3x has
+        // the same effect as choosing it once, so to keep the list short we'll trim the last one so it only appears once.
+        //   Case 2: The new click is the same as the last one, but the last two don't match. That means the user is
+        // toggling from ascending to descending sort, & we need both in the list. Just add the clicked column name.
+        //   Case 3: The new click is not the same as the last one. We want to add an ascending sort by the clicked column,
+        // but to keep the list trimmed, we remove any preceding sorts by this column (which can't impact the order any more).
         const newSortfieldOrder =
             priorSortField === columnName
                 ? lastTwoSortingColumnsMatch
-                    // Requesting the same sort 3x in a row has the same effect as just once, so just remove the column's second appearance.
                     ? sortFieldOrder.slice(0, sortFieldOrder.length - 1)
-                    // This click was the 2nd one in a row the column was clicked: add it again & keep the previous one (to mark descending)
                     : [...sortFieldOrder, columnName]
-                // The user just requested sorting by a new column. Any prior appearances won't affect the sorting order,
-                // so clear them out and add it once at the end.
                 : [...sortFieldOrder.filter(m => (m !== columnName)), columnName]
         setSortFieldOrder(newSortfieldOrder)
     }, [sortFieldOrder, setSortFieldOrder])
 
-    const primaryRule = (sortingRules.length > 0) ? sortingRules[sortingRules.length - 1] : undefined
-    const primarySortColumnName = primaryRule ? primaryRule.columnName : undefined
-    const primarySortColumnDirection = primaryRule ? (primaryRule.sortAscending ? 'ascending' : 'descending') : undefined
+    const primaryRule = sortingRules[sortingRules.length - 1]
 
-    const header = useMemo(() =>
-        (<HeaderRow
-            columns={_columns}
-            primarySortColumnName={primarySortColumnName}
-            primarySortColumnDirection={primarySortColumnDirection}
+    const headers = useMemo(() => {
+        return columns.map((c) => ({
+            name: c.columnName,
+            tooltip: c.tooltip,
+            label: c.label,
+            isCalculating: c.calculating || false,
+            isPrimarySort: c.columnName === primaryRule?.columnName,
+            isAscendingSort: primaryRule?.sortAscending || false
+        }))
+    }, [columns, primaryRule])
+
+    const header = useMemo(() => {
+        return (<HeaderRow
+            headers={headers}
             onColumnClick={handleColumnClick}
             onDeselectAll={allRowsSelected ? handleDeselectAll : undefined}
             onSelectAll={allRowsSelected ? undefined : handleSelectAll }
+            allRowsSelected={allRowsSelected}
             selectionDisabled={selectionDisabled}
-        />), [_columns, primarySortColumnName, primarySortColumnDirection, handleColumnClick, allRowsSelected, handleDeselectAll, handleSelectAll, selectionDisabled])
+        />)
+    }, [headers, handleColumnClick, allRowsSelected, handleDeselectAll, handleSelectAll, selectionDisabled])
 
-    // This was an attempt to memoize row contents and avoid some repetitive calculations,
-    // but it didn't yield much benefit. Leaving it here commented in case we want to try
-    // further similar optimizations down the line.
-    // const _metricsByRow = useMemo(() => {
+    const _metricsByRow = useMemo(() => {
+        const contents = Object.assign(
+            {},
+            ...rows.map((row) => {
+                const columnValues = columns.map(column => (
+                    <TableCell key={column.columnName}>
+                        <div title={column.tooltip}>
+                            {column.dataElement(row.data[column.columnName].value)}
+                        </div>
+                    </TableCell>
+                ))
+                return {[row.rowId]: columnValues}
+            })
+        )
+        return contents as any as {[key: string]: JSX.Element[]}
+    }, [rows, columns])
+
+    // Trying to pre-build the rendered rows and then update the subset with changes.
+    // ...which doesn't actually work, because a) it's still redoing all of them each time bu
+    // b) the effect hook keeps react from recognizing the change, so the DOM doesn't update.
+    // This achieves the opposite of both our goals, but I'll keep the code for now.
+    // const _rowsByRowId = useMemo(() => {
+    //     console.log(`Rebuilding row set. ${Date.now()}`)
     //     const contents = Object.assign(
     //         {},
-    //         ...sortedRows.map((row) => {
-    //             const columnValues = _columns.map(column => (
-    //                 <TableCell key={column.columnName}>
-    //                     <div title={column.tooltip}>
-    //                         {column.dataElement(row.data[column.columnName].value)}
-    //                     </div>
-    //                 </TableCell>
-    //             ))
-    //             return {[row.rowId]: columnValues}
+    //         ..._rows.map((row) => {
+    //             const rendered = (
+    //                 <ContentRow 
+    //                     rowId={row.rowId}
+    //                     selected={false}
+    //                     onClick={toggleSelectedRowId}
+    //                     isDisabled={selectionDisabled || false}
+    //                     contentRepository={_metricsByRow}
+    //                 />
+    //             )
+    //             return {[row.rowId]: rendered}
     //         })
     //     )
-    //     return contents as any as {[key: string]: JSX.Element[]}
-    // }, [sortedRows, _columns])
+    //     return contents as any as {[key: string]: JSX.Element}
+    // }, [_rows, _metricsByRow, toggleSelectedRowId, selectionDisabled])
 
-    // This memoization is probably not effective, since it's still rebuilding the *entire* list
+    // useEffect(() => {
+    //     selectionDelta.forEach((rowId) => {
+    //         // console.log(`Toggling selection of row ${rowId}`)
+    //         _rowsByRowId[rowId] = <ContentRow
+    //                                 rowId={rowId}
+    //                                 selected={selectedRowsSet.has(rowId)}
+    //                                 onClick={toggleSelectedRowId}
+    //                                 isDisabled={selectionDisabled || false}
+    //                                 contentRepository={_metricsByRow}
+    //         />
+    //     })
+    // }, [_rowsByRowId, selectionDelta, selectedRowsSet, toggleSelectedRowId, selectionDisabled, _metricsByRow])
+
+    // This memoization is not effective, since it's still rebuilding the *entire* list
     // every time the selections change, instead of just touching the rows whose selection
     // status changed...
-    const _rows = useMemo(() => {
+    const _unitrows = useMemo(() => {
         return sortedRows.map((row) => {
-            const selected = selectedRowsSet.has(row.rowId)
             return (
-                <TableRow key={row.rowId} className={selected ? "selectedRow" : ""}>
-                    <TableCell key="_checkbox">
-                        <RowCheckbox
-                            rowId={row.rowId}
-                            selected={selected}
-                            onClick={() => toggleSelectedRowId(row.rowId)}
-                            isDisabled={selectionDisabled}
-                        />
-                    </TableCell>
-                    {
-                        _columns.map(column => (
-                            <TableCell key={column.columnName}>
-                                <div title={column.tooltip}>
-                                    {column.dataElement(row.data[column.columnName].value)}
-                                </div>
-                            </TableCell>
-                        ))
-                    }
-                </TableRow>
+                <ContentRow
+                    rowId={row.rowId}
+                    selected={selectedRowsSet.has(row.rowId)}
+                    onClick={toggleSelectedRowId}
+                    isDisabled={selectionDisabled || false}
+                    contentRepository={_metricsByRow}
+                />
             )
         })
-    }, [selectedRowsSet, sortedRows, _columns, selectionDisabled, toggleSelectedRowId])
+    }, [selectedRowsSet, sortedRows, _metricsByRow, selectionDisabled, toggleSelectedRowId])
 
     return (
         <TableContainer style={height !== undefined ? {maxHeight: height} : {}}>
             <Table stickyHeader className="TableWidget">
                 {header}
                 <TableBody>
-                    {_rows}
+                    {_unitrows}
                 </TableBody>
             </Table>
         </TableContainer>
