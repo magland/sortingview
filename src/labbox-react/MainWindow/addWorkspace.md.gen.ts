@@ -1,3 +1,0 @@
-const text: string = "To add a workspace, run the following Python script on the computer where the backend service is running:\n\n```python\nimport sortingview\n\n# replace \"new-workspace\" with the label of the new workspace\nnew_workspace_label = # 'new-workspace'\n\nnew_workspace = sortingview.create_workspace(label=new_workspace_label)\nsortingview.add_workspace_to_list(list_name='default', workspace=new_workspace)\n\n# Then refresh the page on the web app\n```\n"
-
-export default text

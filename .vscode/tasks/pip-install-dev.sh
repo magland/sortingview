@@ -2,5 +2,5 @@
 
 set -ex
 
-cd src/python
+cd .
 pip install -e .

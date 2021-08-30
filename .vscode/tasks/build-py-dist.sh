@@ -1,5 +1,5 @@
 set -ex
 
-cd src/python
+cd .
 rm -rf dist
 python setup.py sdist

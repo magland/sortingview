@@ -1,0 +1,14 @@
+[
+    "recording_info.3", "sorting_info.3",
+    "preload_extract_snippets.2", "get_isi_violation_rates.1", "get_peak_channels.1",
+    "get_unit_snrs.1", "get_firing_data.1", "fetch_correlogram_plot_data.6",
+    "get_timeseries_segment.1", "fetch_average_waveform.2", "test_delay.1", "individual_cluster_features.1", "pair_cluster_features.4",
+    "sortingview_workspace_action.1", "sortingview_workspace_sorting_curation_action.1",
+    "fetch_unit_metrics.1", "fetch_spike_amplitudes.1",
+    "sortingview.get_python_package_version.1",
+    "get_best_matching_units.2",
+    "experitime.get_timeseries_samples.2",
+    "experitime.get_timeseries_info.2",
+    "figurl.get_figure_object.1",
+    "figurl.get_python_package_version.1"
+]

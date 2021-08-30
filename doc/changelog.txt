@@ -1,8 +1,14 @@
+8/11/2021
+export H5RecordingExtractorV1
+Release python version 0.3.1
+
 8/9/2021
 Allow import H5SortingExtractorV1 - #98
 Fix problem with units table #89
 Deselect all units after merge/unmerge operation #42 #82
 Release 0.2.38
+Implement figurl approach
+Release 0.3.0
 
 7/30/2021
 Implement authorized access to workspace list #84 #85
