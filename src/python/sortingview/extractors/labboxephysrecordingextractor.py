@@ -346,7 +346,7 @@ class LabboxEphysRecordingExtractor(se.RecordingExtractor):
         return LabboxEphysRecordingExtractor(x)
     
     @staticmethod
-    def create_efficient_recording(recording: se.RecordingExtractor, format='h5_v1'):
+    def store_recording_h5(recording: se.RecordingExtractor, format='h5_v1'):
         if isinstance(recording, LabboxEphysRecordingExtractor):
             if recording.object()['recording_format'] == format:
                 # already in this format
@@ -369,6 +369,21 @@ class LabboxEphysRecordingExtractor(se.RecordingExtractor):
                 return LabboxEphysRecordingExtractor(object)
         else:
             raise Exception(f'Unsupported format for create_efficient_recording: {format}')
+    
+    @staticmethod
+    def store_recording_link_h5(recording: se.RecordingExtractor, save_path:str, format='h5_v1'):
+        #print('Creating h5 recording')
+        H5RecordingExtractorV1.write_recording(recording=recording, h5_path=save_path)
+        print('Creating efficient recording: storing link in kachery...')
+        h5_uri = kc.link_file(save_path)
+        object = {
+            'recording_format': 'h5_v1',
+            'data': {
+                'h5_uri': h5_uri
+            }
+        }
+        print('Done creating efficient recording.')
+        return LabboxEphysRecordingExtractor(object)
 
     # @staticmethod
     # def get_recording_object(recording):
