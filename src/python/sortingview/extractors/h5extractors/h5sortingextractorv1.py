@@ -64,7 +64,7 @@ class H5SortingExtractorV1Writer:
             f.create_dataset('sampling_frequency', data=np.array([samplerate]).astype(np.float64))
     def add_unit(self, *, unit_id: int, times: np.array):
         with h5py.File(self._save_path, 'a') as f:
-            f.create_dataset(f'unit_spike_trains/{unit_id}', data=np.array(times).astype(np.float64))
+            f.create_dataset(f'unit_spike_trains/{unit_id}', data=np.array(times).astype(np.int64))
         self._unit_ids.append(unit_id)
     def finalize(self):
         with h5py.File(self._save_path, 'a') as f:
