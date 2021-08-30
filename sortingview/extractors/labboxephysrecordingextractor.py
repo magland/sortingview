@@ -371,7 +371,7 @@ class LabboxEphysRecordingExtractor(se.RecordingExtractor):
             raise Exception(f'Unsupported format for create_efficient_recording: {format}')
     
     @staticmethod
-    def store_recording_link_h5(recording: se.RecordingExtractor, save_path:str, format='h5_v1'):
+    def store_recording_link_h5(recording: se.RecordingExtractor, save_path:str):
         #print('Creating h5 recording')
         H5RecordingExtractorV1.write_recording(recording=recording, h5_path=save_path)
         print('Creating efficient recording: storing link in kachery...')
