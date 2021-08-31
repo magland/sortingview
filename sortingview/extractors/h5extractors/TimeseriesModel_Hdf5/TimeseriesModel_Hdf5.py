@@ -1,5 +1,5 @@
 import math
-from typing import List, cast
+from typing import List, Union, cast
 import numpy as np
 import h5py
 import spikeextractors as se
@@ -15,6 +15,7 @@ class TimeseriesModel_Hdf5:
             self._num_timepoints = np.array(f.get('num_timepoints'))[0]
             self._sampling_frequency = np.array(f.get('sampling_frequency'))[0]
             self._channel_ids = np.array(f.get('channel_ids')).astype(int).tolist()
+            self._geom = np.array(f.get('channel_geom', None))
 
     def channelIds(self) -> List[int]:
         return self._channel_ids
@@ -27,6 +28,9 @@ class TimeseriesModel_Hdf5:
 
     def samplingFrequency(self):
         return float(self._sampling_frequency)
+    
+    def geom(self) -> Union[np.ndarray, None]:
+        return self._geom
 
     def getChunk(self, *, t1: int, t2: int, channel_inds: List[int]):
         if (t1 < 0) or (t2 > self.numTimepoints()):
@@ -84,6 +88,21 @@ class TimeseriesModel_Recording:
         else:
             return self._recording.get_traces(start_frame=t1, end_frame=t2, channel_ids=channels2)
 
+def set_geom_on_recording(recording: se.RecordingExtractor, geom: np.ndarray):
+    channel_ids = recording.get_channel_ids()
+    for ii in range(len(channel_ids)):
+        recording.set_channel_property(channel_ids[ii], 'location', geom[ii, :].tolist())
+
+def geom_from_recording(recording):
+    channel_ids = recording.get_channel_ids()
+    location0 = recording.get_channel_property(channel_ids[0], 'location')
+    nd = len(location0)
+    M = len(channel_ids)
+    geom = np.zeros((M, nd))
+    for ii in range(len(channel_ids)):
+        location_ii = recording.get_channel_property(channel_ids[ii], 'location')
+        geom[ii, :] = list(location_ii)
+    return geom
 
 def prepare_timeseries_hdf5_from_recording(recording: se.RecordingExtractor, timeseries_hdf5_fname: str, *, chunk_size: int, padding: int):
     chunk_size_with_padding = chunk_size+2*padding
@@ -99,6 +118,7 @@ def prepare_timeseries_hdf5_from_recording(recording: se.RecordingExtractor, tim
         f.create_dataset('num_timepoints', data=[N])
         f.create_dataset('sampling_frequency', data=[recording.get_sampling_frequency()])
         f.create_dataset('channel_ids', data=channel_ids)
+        f.create_dataset('channel_geom', data=geom_from_recording(recording))
 
         for j in range(num_chunks):
             padded_chunk = np.zeros(
