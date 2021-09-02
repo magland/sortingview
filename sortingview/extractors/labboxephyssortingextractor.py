@@ -203,22 +203,25 @@ class LabboxEphysSortingExtractor(se.SortingExtractor):
             _add_read_permissions(save_path)
 
             uri =kc.store_file(save_path)
-            return {
+            object = {
                 'sorting_format': 'h5_v1',
                 'data': {
                     'h5_path': uri
                 }
             }
+            return LabboxEphysSortingExtractor(object)
+
     @staticmethod
     def store_sorting_link_h5(sorting: SortingExtractor, save_path: str):
         H5SortingExtractorV1.write_sorting(sorting=sorting, save_path=save_path)
         h5_uri = kc.link_file(save_path)
-        return {
+        object = {
             'sorting_format': 'h5_v1',
             'data': {
                 'h5_path': h5_uri
             }
         }
+        return LabboxEphysSortingExtractor(object)
 
 def _add_read_permissions(fname: str):
     st = os.stat(fname)
