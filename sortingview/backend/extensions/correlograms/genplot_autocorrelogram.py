@@ -70,8 +70,9 @@ def subsample_sorting(sorting_object: dict, segment_size_sec: float, num_segment
     })
     return sorting_subsampled.object()
 
+# this should get removed once we've moved on to 7
 @kc.taskfunction('fetch_correlogram_plot_data.6', type='pure-calculation')
-def task_fetch_correlogram_plot_data(*, sorting_object, unit_x, unit_y=None, subsample: bool):
+def task_fetch_correlogram_plot_data_6(*, sorting_object, unit_x, unit_y=None, subsample: bool):
     with hi.Config(
         job_cache=job_cache,
         job_handler=job_handler.correlograms
@@ -84,6 +85,29 @@ def task_fetch_correlogram_plot_data(*, sorting_object, unit_x, unit_y=None, sub
                     sorting_object=sorting_object,
                     segment_size_sec=10,
                     num_segments=100
+                )
+            else:
+                sorting_object_subsampled = sorting_object
+        return fetch_correlogram_plot_data.run(
+            sorting_object=sorting_object_subsampled,
+            unit_x=unit_x,
+            unit_y=unit_y
+        )
+
+@kc.taskfunction('fetch_correlogram_plot_data.7', type='pure-calculation')
+def task_fetch_correlogram_plot_data(*, sorting_object, unit_x, unit_y=None, subsample: bool):
+    with hi.Config(
+        job_cache=job_cache,
+        job_handler=job_handler.correlograms
+    ):
+        with hi.Config(
+            job_handler=job_handler.misc
+        ):
+            if subsample:
+                sorting_object_subsampled = subsample_sorting.run(
+                    sorting_object=sorting_object,
+                    segment_size_sec=10,
+                    num_segments=500
                 )
             else:
                 sorting_object_subsampled = sorting_object
