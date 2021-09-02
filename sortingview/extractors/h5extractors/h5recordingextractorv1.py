@@ -6,7 +6,7 @@ import kachery_client as kc
 import numpy as np
 import spikeextractors as se
 
-from .TimeseriesModel_Hdf5.TimeseriesModel_Hdf5 import TimeseriesModel_Hdf5, prepare_timeseries_hdf5_from_recording
+from .TimeseriesModel_Hdf5.TimeseriesModel_Hdf5 import TimeseriesModel_Hdf5, prepare_timeseries_hdf5_from_recording, set_geom_on_recording
 
 
 class H5RecordingExtractorV1(se.RecordingExtractor):
@@ -17,6 +17,9 @@ class H5RecordingExtractorV1(se.RecordingExtractor):
         
         self._h5_path: str = h5_path
         self._timeseries_model = TimeseriesModel_Hdf5(self._h5_path)
+        geom = self._timeseries_model.geom()
+        if geom is not None:
+            set_geom_on_recording(self, geom)
 
     def get_channel_ids(self) -> List[int]:
         return self._timeseries_model.channelIds()
