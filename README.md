@@ -4,8 +4,6 @@ Interactively view, curate, and share results of electrophysiological spike sort
 
 **This project is at an early stage of development.**
 
-[List of recent changes](./doc/changelog.txt)
-
 ### Hosting a backend server
 
 A backend server implements the compute tasks needed to power the web GUI on a particular channel.
@@ -24,9 +22,19 @@ and run the backend service:
 
 ```bash
 sortingview-start-backend --channel <name-of-kachery-channel>
-
-# optionally supply a backend ID: --backend-id <backend-id-string>
 ```
+
+### Using a backend ID
+
+When starting the backend service, you can optionally supply a backend ID, a secret string that can restrict access to the service:
+
+```bash
+sortingview-start-backend --channel <name-of-kachery-channel> --backend-id <secret-string>
+```
+
+Then, on the front-end, you can connect to your particular backend by setting the backend ID inside the figurl web app (use the channel button in the upper-right corner of the page).
+
+If you are in a multi-user environment, you may want to have each user run their own backend, with different backend IDs. This could particularly work well if each user runs a backend on their own workstation, and all workstations connect to the same kachery daemon, with a shared kachery storage directory mounted on all workstations.
 
 ## Authors
 
