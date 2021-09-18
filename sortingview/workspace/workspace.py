@@ -339,8 +339,8 @@ def _get_sorting_curation(subfeed: kc.Subfeed, sorting_id: str):
         if a is None: break
         message_type = a.get('type', None)
         assert message_type is not None, "Feed contained message with no type."
-        if is_closed and message_type != 'REOPEN_CURATION':
-            raise Exception('ERROR: Subfeed attempts curation on a closed curation object.')
+        # if is_closed and message_type != 'REOPEN_CURATION':
+        #    raise Exception('ERROR: Subfeed attempts curation on a closed curation object.')
         if message_type == 'ADD_UNIT_LABEL':
             unit_ids = a.get('unitId', []) # allow this to be a list or an int
             if not isinstance(unit_ids, list):

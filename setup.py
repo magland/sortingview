@@ -9,7 +9,7 @@ setup(
     install_requires=[
         'click',
         'kachery-client>=1.0.16',
-        'figurl>=0.1.2',
+        'figurl>=0.1.3',
         'pynwb',
         'pyyaml',
         'spikeextractors>=0.9.6'
