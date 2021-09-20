@@ -10,6 +10,7 @@ setup(
         'click',
         'kachery-client>=1.0.16',
         'figurl>=0.1.3',
+        'hither>=0.8.1',
         'pynwb',
         'pyyaml',
         'spikeextractors>=0.9.6'
