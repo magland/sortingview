@@ -24,6 +24,11 @@ and run the backend service:
 sortingview-start-backend --channel <name-of-kachery-channel>
 ```
 
+### Creating and viewing a sortingview workspace
+
+A sortingview workspace consists of a collection of recordings and optionally one or more sortings of those recordings. Workspaces are created on the computer running the backend using Python scripts. This [example script](https://github.com/magland/sortingview/blob/main/devel/create_workspace.py) shows how to create a basic workspace using [SpikeInterface](https://github.com/SpikeInterface).
+
+
 ### Using a backend ID
 
 When starting the backend service, you can optionally supply a backend ID, a secret string that can restrict access to the service:
