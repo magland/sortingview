@@ -8,7 +8,7 @@ Interactively view, curate, and share results of electrophysiological spike sort
 
 A backend server implements the compute tasks needed to power the web GUI on a particular channel.
 
-You must first host a kachery node by [running a kachery daemon](https://kacheryhub.org) on the computer where the backend will be running.
+You must first host a kachery node by [running a kachery daemon](https://github.com/kacheryhub/kachery-doc/blob/main/doc/kacheryhub-markdown/hostKacheryNode.md) on the computer where the backend will be running.
 
 Next, create a new kachery channel and give your node permission to provide tasks on that channel.
 
