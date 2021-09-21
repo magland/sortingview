@@ -8,7 +8,7 @@ setup(
     include_package_data = True,
     install_requires=[
         'click',
-        'kachery-client>=1.0.16',
+        'kachery-client>=1.0.17',
         'figurl>=0.1.3',
         'hither>=0.8.1',
         'pynwb',
