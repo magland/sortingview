@@ -26,7 +26,7 @@ sortingview-start-backend --channel <name-of-kachery-channel>
 
 ### Creating and viewing a sortingview workspace
 
-A sortingview workspace consists of a collection of recordings and optionally one or more sortings of those recordings. Workspaces are created on the computer running the backend using Python scripts. This [example script](https://github.com/magland/sortingview/blob/main/devel/create_workspace.py) shows how to create a basic workspace using [SpikeInterface](https://github.com/SpikeInterface).
+A sortingview workspace consists of a collection of recordings and optionally one or more sortings of those recordings. Workspaces are created on the computer running the backend using Python scripts and can be visualized from anywhere using a web browser. This [example script](https://github.com/magland/sortingview/blob/main/devel/create_workspace.py) shows how to create a basic workspace using [SpikeInterface](https://github.com/SpikeInterface).
 
 
 ### Using a backend ID
