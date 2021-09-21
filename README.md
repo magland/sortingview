@@ -36,6 +36,48 @@ Then, on the front-end, you can connect to your particular backend by setting th
 
 If you are in a multi-user environment, you may want to have each user run their own backend, with different backend IDs. This could particularly work well if each user runs a backend on their own workstation, and all workstations connect to the same kachery daemon, with a shared kachery storage directory mounted on all workstations.
 
+### Task concurrency
+
+By default, sortingview will run 4 tasks at a time of various types. That is, it will calculate 4 correlograms at a time in parallel, 4 average waveforms in parallel, etc. To override the defaults, create a .yaml file somewhere on your computer and set the SORTINGVIEW_JOB_HANDLER_CONFIG environment variable to the full path of that file prior to running the backend.
+
+```bash
+export SORTINGVIEW_JOB_HANDLER_CONFIG=<path-to-yaml-file>
+```
+
+Example contents of this configuration file (which could be named `sortingview.yaml`):
+
+```yaml
+job_handlers:
+  clusters:
+    params:
+      num_workers: 4
+    type: parallel
+  correlograms:
+    params:
+      num_workers: 4
+    type: parallel
+  extract_snippets:
+    params:
+      num_workers: 4
+    type: parallel
+  metrics:
+    params:
+      num_workers: 4
+    type: parallel
+  misc:
+    params:
+      num_workers: 4
+    type: parallel
+  timeseries:
+    params:
+      num_workers: 4
+    type: parallel
+  waveforms:
+    params:
+      num_workers: 4
+    type: parallel
+```
+
 ## Authors
 
 Jeremy Magland and Jeff Soules, Center for Computational Mathematics, Flatiron Institute
