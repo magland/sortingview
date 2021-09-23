@@ -6,28 +6,43 @@ Interactively view, curate, and share results of electrophysiological spike sort
 
 ### Hosting a backend server
 
-A backend server implements the compute tasks needed to power the web GUI on a particular channel.
+A backend service implements the compute tasks needed to power the web GUI on a particular channel.
 
-You must first host a kachery node by [running a kachery daemon](https://github.com/kacheryhub/kachery-doc/blob/main/doc/hostKacheryNode.md) on the computer where the backend will be running.
+* Step 1: [Set up and run a kachery node on your computer](https://github.com/kacheryhub/kachery-doc/blob/main/doc/kacheryhub-markdown/hostKacheryNode.md)
+* Step 2: [Create a new kachery channel](https://github.com/kacheryhub/kachery-doc/blob/main/doc/kacheryhub-markdown/createKacheryChannel.md) - be sure to authorize your own node as well as the [figurl](https://github.com/magland/figurl) node on this channel
+  - Step 2b: Restart the kachery daemon after adding the channel for the changes to take effect
+* Step 3: Install and set up sortingview (see below)
+* Step 4: Run the sortingview backend (see below)
+* Step 5: Create a sortingview workspace and view it using figurl (see below)
 
-Next, create a new kachery channel and give your node permission to provide tasks on that channel.
+## SortingView installation and setup
 
-On the computer running the kachery daemon, install the python project:
+On the computer running the kachery daemon, install the python package:
 
 ```bash
 pip install --upgrade sortingview
 ```
 
-and run the backend service:
+Set the FIGURL_CHANNEL environment variable to the name of the channel you set up on kachery
+
+```bash
+# You can put this in your ~/.bashrc
+export FIGURL_CHANNEL=<name-of-your-kachery-channel>
+```
+
+## Running the SortingView backend
+
+To run the backend service:
 
 ```bash
 sortingview-start-backend --channel <name-of-kachery-channel>
 ```
 
-### Creating and viewing a sortingview workspace
+You can optionally specify a backend ID. See below for more details.
+
+### Creating and viewing a SortingView workspace
 
 A sortingview workspace consists of a collection of recordings and optionally one or more sortings of those recordings. Workspaces are created on the computer running the backend using Python scripts and can be visualized from anywhere using a web browser. This [example script](https://github.com/magland/sortingview/blob/main/devel/create_workspace.py) shows how to create a basic workspace using [SpikeInterface](https://github.com/SpikeInterface).
-
 
 ### Using a backend ID
 
@@ -43,45 +58,7 @@ If you are in a multi-user environment, you may want to have each user run their
 
 ### Task concurrency
 
-By default, sortingview will run 4 tasks at a time of various types. That is, it will calculate 4 correlograms at a time in parallel, 4 average waveforms in parallel, etc. To override the defaults, create a .yaml file somewhere on your computer and set the SORTINGVIEW_JOB_HANDLER_CONFIG environment variable to the full path of that file prior to running the backend.
-
-```bash
-export SORTINGVIEW_JOB_HANDLER_CONFIG=<path-to-yaml-file>
-```
-
-Example contents of this configuration file (which could be named `sortingview.yaml`):
-
-```yaml
-job_handlers:
-  clusters:
-    params:
-      num_workers: 4
-    type: parallel
-  correlograms:
-    params:
-      num_workers: 4
-    type: parallel
-  extract_snippets:
-    params:
-      num_workers: 4
-    type: parallel
-  metrics:
-    params:
-      num_workers: 4
-    type: parallel
-  misc:
-    params:
-      num_workers: 4
-    type: parallel
-  timeseries:
-    params:
-      num_workers: 4
-    type: parallel
-  waveforms:
-    params:
-      num_workers: 4
-    type: parallel
-```
+See [task concurrency](https://github.com/magland/sortingview/wiki/Task-concurrency)
 
 ## Authors
 
