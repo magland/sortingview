@@ -8,7 +8,7 @@ Interactively view, curate, and share results of electrophysiological spike sort
 
 A backend server implements the compute tasks needed to power the web GUI on a particular channel.
 
-You must first host a kachery node by [running a kachery daemon](https://kacheryhub.org) on the computer where the backend will be running.
+You must first host a kachery node by [running a kachery daemon](https://github.com/kacheryhub/kachery-doc/blob/main/doc/kacheryhub-markdown/hostKacheryNode.md) on the computer where the backend will be running.
 
 Next, create a new kachery channel and give your node permission to provide tasks on that channel.
 
@@ -23,6 +23,11 @@ and run the backend service:
 ```bash
 sortingview-start-backend --channel <name-of-kachery-channel>
 ```
+
+### Creating and viewing a sortingview workspace
+
+A sortingview workspace consists of a collection of recordings and optionally one or more sortings of those recordings. Workspaces are created on the computer running the backend using Python scripts and can be visualized from anywhere using a web browser. This [example script](https://github.com/magland/sortingview/blob/main/devel/create_workspace.py) shows how to create a basic workspace using [SpikeInterface](https://github.com/SpikeInterface).
+
 
 ### Using a backend ID
 
