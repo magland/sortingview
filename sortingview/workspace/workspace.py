@@ -23,11 +23,12 @@ class Workspace:
         self._query_string = query_string
         self._feed = kc.load_feed(f'feed://{feed_id}')
         main_subfeed = self._feed.load_subfeed('main')
-        self._recordings = _get_recordings_from_subfeed(main_subfeed)
-        self._sortings = _get_sortings_from_subfeed(main_subfeed)
-        self._unit_metrics_for_sortings = _get_unit_metrics_for_sortings_from_subfeed(main_subfeed)
-        self._user_permissions = _get_user_permissions_from_subfeed(main_subfeed)
-        self._snippet_len: Tuple[int, int] = _get_snippet_len_from_subfeed(main_subfeed)
+        messages = _get_messages_from_subfeed(main_subfeed)
+        self._recordings = _get_recordings_from_subfeed_messages(messages)
+        self._sortings = _get_sortings_from_subfeed_messages(messages)
+        self._unit_metrics_for_sortings = _get_unit_metrics_for_sortings_from_subfeed_messages(messages)
+        self._user_permissions = _get_user_permissions_from_subfeed_messages(messages)
+        self._snippet_len: Tuple[int, int] = _get_snippet_len_from_subfeed_messages(messages)
         self._label = label
     @property
     def uri(self):
@@ -195,12 +196,20 @@ def load_workspace(workspace_uri: Union[str, Any]):
 def _random_id():
     return str(uuid.uuid4())[-12:]
 
-def _get_recordings_from_subfeed(subfeed: kc.Subfeed):
+def _get_messages_from_subfeed(subfeed: kc.Subfeed):
     subfeed.set_position(0)
-    le_recordings = {}
+    messages: List[Any] = []
     while True:
-        msg = subfeed.get_next_message(wait_msec=0)
-        if msg is None: break
+        msgs = subfeed.get_next_messages(wait_msec=0)
+        if msgs is None: break
+        if len(msgs) == 0: break
+        for msg in msgs:
+            messages.append(msg)
+    return messages
+
+def _get_recordings_from_subfeed_messages(messages: List[Any]):
+    le_recordings = {}
+    for msg in messages:
         if 'action' in msg:
             a = msg['action']
             msg_type = a.get('type', '')
@@ -214,12 +223,9 @@ def _get_recordings_from_subfeed(subfeed: kc.Subfeed):
                         del le_recordings[rid]
     return le_recordings
 
-def _get_user_permissions_from_subfeed(subfeed: kc.Subfeed):
-    subfeed.set_position(0)
+def _get_user_permissions_from_subfeed_messages(messages: List[Any]):
     user_permissions = {}
-    while True:
-        msg = subfeed.get_next_message(wait_msec=0)
-        if msg is None: break
+    for msg in messages:
         if 'action' in msg:
             a = msg['action']
             if a.get('type', '') == 'SET_USER_PERMISSIONS':
@@ -238,12 +244,9 @@ def _set_user_permissions_for_workspace(subfeed: kc.Subfeed, user_id: str, permi
         }
     })
 
-def _get_snippet_len_from_subfeed(subfeed: kc.Subfeed):
-    subfeed.set_position(0)
+def _get_snippet_len_from_subfeed_messages(messages: List[Any]):
     snippet_len = (50, 80)
-    while True:
-        msg = subfeed.get_next_message(wait_msec=0)
-        if msg is None: break
+    for msg in messages:
         if 'action' in msg:
             a = msg['action']
             if a.get('type', '') == 'SET_SNIPPET_LEN':
@@ -260,12 +263,9 @@ def _set_snippet_len_for_workspace(subfeed: kc.Subfeed, snippet_len: Tuple[int, 
         }
     })
 
-def _get_sortings_from_subfeed(subfeed: kc.Subfeed):
-    subfeed.set_position(0)
+def _get_sortings_from_subfeed_messages(messages: List[Any]):
     le_sortings = {}
-    while True:
-        msg = subfeed.get_next_message(wait_msec=0)
-        if msg is None: break
+    for msg in messages:
         if 'action' in msg:
             a = msg['action']
             msg_type = a.get('type', '')
@@ -291,13 +291,10 @@ def _get_sortings_from_subfeed(subfeed: kc.Subfeed):
                             del le_sortings[sid]
     return le_sortings
 
-def _get_unit_metrics_for_sortings_from_subfeed(subfeed: kc.Subfeed):
-    subfeed.set_position(0)
-    sortings = _get_sortings_from_subfeed(subfeed)
+def _get_unit_metrics_for_sortings_from_subfeed_messages(messages: List[Any]):
+    sortings = _get_sortings_from_subfeed_messages(messages)
     le_unit_metrics_for_sortings = {}
-    while True:
-        msg = subfeed.get_next_message(wait_msec=0)
-        if msg is None: break
+    for msg in messages:
         if 'action' in msg:
             a = msg['action']
             if a.get('type', '') == 'SET_UNIT_METRICS_FOR_SORTING':
@@ -335,40 +332,42 @@ def _get_sorting_curation(subfeed: kc.Subfeed, sorting_id: str):
     merge_groups = []
     is_closed = False
     while True:
-        a = subfeed.get_next_message(wait_msec=0)
-        if a is None: break
-        message_type = a.get('type', None)
-        assert message_type is not None, "Feed contained message with no type."
-        # if is_closed and message_type != 'REOPEN_CURATION':
-        #    raise Exception('ERROR: Subfeed attempts curation on a closed curation object.')
-        if message_type == 'ADD_UNIT_LABEL':
-            unit_ids = a.get('unitId', []) # allow this to be a list or an int
-            if not isinstance(unit_ids, list):
-                unit_ids = [unit_ids]
-            label = a.get('label', []) # allow this to be a list or an int
-            for unit_id in unit_ids:
-                if unit_id not in labels_by_unit:
-                    labels_by_unit[unit_id] = []
-                labels_by_unit[unit_id].append(label)
-                labels_by_unit[unit_id] = sorted(list(set(labels_by_unit[unit_id])))
-        elif message_type == 'REMOVE_UNIT_LABEL':
-            unit_ids = a.get('unitId', '')
-            if not isinstance(unit_ids, list):
-                unit_ids = [unit_ids]
-            label = a.get('label', '')
-            for unit_id in unit_ids:
-                if unit_id in labels_by_unit:
-                    labels_by_unit[unit_id] = [x for x in labels_by_unit[unit_id] if x != label]
-        elif message_type == 'MERGE_UNITS':
-            unit_ids = a.get('unitIds', [])
-            merge_groups = _simplify_merge_groups(merge_groups + [unit_ids])
-        elif message_type == 'UNMERGE_UNITS':
-            unit_ids = a.get('unitIds', [])
-            merge_groups = _simplify_merge_groups([[u for u in mg if (u not in unit_ids)] for mg in merge_groups])
-        elif message_type == 'CLOSE_CURATION':
-            is_closed = True
-        elif message_type == 'REOPEN_CURATION':
-            is_closed = False
+        msgs = subfeed.get_next_messages(wait_msec=0)
+        if msgs is None: break
+        if len(msgs) == 0: break
+        for a in msgs:
+            message_type = a.get('type', None)
+            assert message_type is not None, "Feed contained message with no type."
+            # if is_closed and message_type != 'REOPEN_CURATION':
+            #    raise Exception('ERROR: Subfeed attempts curation on a closed curation object.')
+            if message_type == 'ADD_UNIT_LABEL':
+                unit_ids = a.get('unitId', []) # allow this to be a list or an int
+                if not isinstance(unit_ids, list):
+                    unit_ids = [unit_ids]
+                label = a.get('label', []) # allow this to be a list or an int
+                for unit_id in unit_ids:
+                    if unit_id not in labels_by_unit:
+                        labels_by_unit[unit_id] = []
+                    labels_by_unit[unit_id].append(label)
+                    labels_by_unit[unit_id] = sorted(list(set(labels_by_unit[unit_id])))
+            elif message_type == 'REMOVE_UNIT_LABEL':
+                unit_ids = a.get('unitId', '')
+                if not isinstance(unit_ids, list):
+                    unit_ids = [unit_ids]
+                label = a.get('label', '')
+                for unit_id in unit_ids:
+                    if unit_id in labels_by_unit:
+                        labels_by_unit[unit_id] = [x for x in labels_by_unit[unit_id] if x != label]
+            elif message_type == 'MERGE_UNITS':
+                unit_ids = a.get('unitIds', [])
+                merge_groups = _simplify_merge_groups(merge_groups + [unit_ids])
+            elif message_type == 'UNMERGE_UNITS':
+                unit_ids = a.get('unitIds', [])
+                merge_groups = _simplify_merge_groups([[u for u in mg if (u not in unit_ids)] for mg in merge_groups])
+            elif message_type == 'CLOSE_CURATION':
+                is_closed = True
+            elif message_type == 'REOPEN_CURATION':
+                is_closed = False
     return {
         'labelsByUnit': labels_by_unit,
         'mergeGroups': merge_groups,
@@ -376,7 +375,8 @@ def _get_sorting_curation(subfeed: kc.Subfeed, sorting_id: str):
     }
     
 def _import_le_recording(subfeed: kc.Subfeed, le_recording):
-    le_recordings = _get_recordings_from_subfeed(subfeed)
+    messages = _get_messages_from_subfeed(subfeed)
+    le_recordings = _get_recordings_from_subfeed_messages(messages)
     id = le_recording['recordingId']
     if id in le_recordings:
         print(f'Recording with ID {id} already exists. Not adding.')
@@ -390,7 +390,8 @@ def _import_le_recording(subfeed: kc.Subfeed, le_recording):
     })
 
 def _import_le_sorting(subfeed: kc.Subfeed, le_sorting):
-    le_sortings = _get_sortings_from_subfeed(subfeed)
+    messages = _get_messages_from_subfeed(subfeed)
+    le_sortings = _get_sortings_from_subfeed_messages(messages)
     id = le_sorting["sortingId"]
     if id in le_sortings:
         print(f'Sorting with ID {id} already exists. Not adding.')
@@ -415,7 +416,8 @@ def _set_unit_metrics_for_sorting(subfeed: kc.Subfeed, le_unit_metrics_for_sorti
 
 def _delete_recording(*, feed: kc.Feed, recording_id: str):
     subfeed = feed.load_subfeed('main')
-    le_recordings = _get_recordings_from_subfeed(subfeed)
+    messages = _get_messages_from_subfeed(subfeed)
+    le_recordings = _get_recordings_from_subfeed_messages(messages)
     if recording_id not in le_recordings:
         print(f'Cannot remove recording. Recording not found: {recording_id}')
     subfeed.append_message({
@@ -424,7 +426,7 @@ def _delete_recording(*, feed: kc.Feed, recording_id: str):
             'recordingIds': [recording_id]
         }
     })
-    le_sortings = _get_sortings_from_subfeed(subfeed)
+    le_sortings = _get_sortings_from_subfeed_messages(messages)
     sorting_ids_to_delete = []
     for k, v in le_sortings.items():
         if v.get('recordingId') == recording_id:
@@ -456,7 +458,8 @@ def _dict_to_query_string(x: Dict[str, str]):
 
 def _delete_sorting(*, feed: kc.Feed, sorting_id: str):
     subfeed = feed.load_subfeed('main')
-    le_sortings = _get_recordings_from_subfeed(subfeed)
+    messages = _get_messages_from_subfeed(subfeed)
+    le_sortings = _get_recordings_from_subfeed_messages(messages)
     if sorting_id not in le_sortings:
         print(f'Cannot remove sorting. Sorting not found: {sorting_id}')
     subfeed.append_message({
