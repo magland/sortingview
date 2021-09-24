@@ -83,6 +83,10 @@ job_handlers:
     type: parallel
 ```
 
+## Using a recording from the new SpikeInterface
+
+[Wrapping a new SpikeInterface recording into an old-version recording extractor](https://github.com/magland/sortingview/wiki/new-spike-interface-recording)
+
 ## Authors
 
 Jeremy Magland and Jeff Soules, Center for Computational Mathematics, Flatiron Institute
