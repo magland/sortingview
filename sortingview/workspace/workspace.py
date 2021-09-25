@@ -101,6 +101,9 @@ class Workspace:
         _import_le_sorting(main_subfeed, x)
         self._sortings[sorting_id] = x
         return sorting_id
+    def precalculate(self):
+        from ._precalculate import _precalculate
+        _precalculate(self)
     def _append_action(self, action: dict):
         main_subfeed = self._feed.load_subfeed('main')
         main_subfeed.append_message({
