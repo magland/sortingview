@@ -64,6 +64,10 @@ See [task concurrency](https://github.com/magland/sortingview/wiki/Task-concurre
 
 [Wrapping a new SpikeInterface recording into an old-version recording extractor](https://github.com/magland/sortingview/wiki/new-spike-interface-recording)
 
+## Precalculating the extract snippets step from Python
+
+[Workspace precalculation](https://github.com/magland/sortingview/wiki/workspace-precalculation)
+
 ## Authors
 
 Jeremy Magland and Jeff Soules, Center for Computational Mathematics, Flatiron Institute
