@@ -11,6 +11,7 @@ recording_id = W.add_recording(label='recording1', recording=R)
 W.add_sorting(recording_id=recording_id, label='true', sorting=S)
 
 W.precalculate()
+# W._precalculate_debug()
 
 F = W.figurl()
 url = F.url(label='Test workspace')

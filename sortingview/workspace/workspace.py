@@ -104,6 +104,9 @@ class Workspace:
     def precalculate(self):
         from ._precalculate import _precalculate
         _precalculate(self)
+    def _precalculate_debug(self):
+        from ._precalculate import _precalculate_debug
+        _precalculate_debug(self)
     def _append_action(self, action: dict):
         main_subfeed = self._feed.load_subfeed('main')
         main_subfeed.append_message({
