@@ -2,7 +2,7 @@
 
 Interactively view, curate, and share results of electrophysiological spike sorting.
 
-**This project is at an early stage of development.**
+[Some example views](https://github.com/magland/sortingview/wiki/Example-views)
 
 ### Hosting a backend server
 
