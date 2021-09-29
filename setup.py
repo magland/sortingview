@@ -13,6 +13,7 @@ setup(
         'hither>=0.8.1',
         'pynwb',
         'pyyaml',
-        'spikeextractors>=0.9.6'
+        'spikeextractors>=0.9.6',
+        'spikecomparison'
     ]
 )

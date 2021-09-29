@@ -22,7 +22,7 @@ def _compute_peak_channel_index_from_average_waveform(average_waveform):
     modules=['sortingview']
 )
 @serialize_wrapper
-def fetch_spike_amplitudes(snippets_h5: str, unit_id: Union[int, List[int]]):    
+def fetch_spike_amplitudes(snippets_h5: str, unit_id: Union[int, List[int]]):
     import h5py
     h5_path = kc.load_file(snippets_h5)
     assert h5_path is not None
