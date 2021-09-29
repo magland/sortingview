@@ -45,8 +45,8 @@ class H5RecordingExtractorV1(se.RecordingExtractor):
 
         return self._timeseries_model.getChunk(t1=start_frame, t2=end_frame, channel_inds=channel_inds)
     @staticmethod
-    def write_recording(recording: se.RecordingExtractor, h5_path: str):
+    def write_recording(recording: se.RecordingExtractor, h5_path: str, dtype=float):
         hdf5_chunk_size = 10 * 1000 * 1000
         hdf5_padding = 10000
-        prepare_timeseries_hdf5_from_recording(recording, h5_path, chunk_size=hdf5_chunk_size, padding=hdf5_padding)
+        prepare_timeseries_hdf5_from_recording(recording, h5_path, chunk_size=hdf5_chunk_size, padding=hdf5_padding, dtype=dtype)
 

@@ -104,7 +104,7 @@ def geom_from_recording(recording):
         geom[ii, :] = list(location_ii)
     return geom
 
-def prepare_timeseries_hdf5_from_recording(recording: se.RecordingExtractor, timeseries_hdf5_fname: str, *, chunk_size: int, padding: int):
+def prepare_timeseries_hdf5_from_recording(recording: se.RecordingExtractor, timeseries_hdf5_fname: str, *, chunk_size: int, padding: int, dtype=float):
     chunk_size_with_padding = chunk_size+2*padding
     with h5py.File(timeseries_hdf5_fname, "w") as f:
         channel_ids = cast(List[int], recording.get_channel_ids())
@@ -122,7 +122,7 @@ def prepare_timeseries_hdf5_from_recording(recording: se.RecordingExtractor, tim
 
         for j in range(num_chunks):
             padded_chunk = np.zeros(
-                (M, chunk_size_with_padding), dtype=float)  # fix dtype here
+                (M, chunk_size_with_padding), dtype=dtype)  # fix dtype here
             t1 = int(j*chunk_size)  # first timepoint of the chunk
             # last timepoint of chunk (+1)
             t2 = min(N, (t1+chunk_size))

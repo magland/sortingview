@@ -2,7 +2,6 @@ import numpy as np
 import kachery_client as kc
 import sortingview as sv
 import hither2 as hi
-from sortingview.config import job_cache
 import seriesview as sev
 from sortingview.serialize_wrapper import _deserialize
 
@@ -25,24 +24,26 @@ def main():
     S = sv.LabboxEphysSortingExtractor(x['sorting_object'])
     from sortingview.helpers import prepare_snippets_h5
     from sortingview.backend.extensions.spikeamplitudes import task_fetch_spike_amplitudes
-    # 13, 18, 19, 24
-    job = task_fetch_spike_amplitudes(
-        recording_object=R.object(),
-        sorting_object=S.object(),
-        snippet_len=(20, 20),
-        unit_id=13
-    )
-    x = _deserialize(job.wait().return_value)
-    timepoints = x['timepoints']
-    amplitudes = x['amplitudes']
-    ts: sev.Timeseries = sev.Timeseries.from_numpy(
-        channel_names=['A'],
-        timestamps=timepoints / R.get_sampling_frequency(),
-        values=np.reshape(amplitudes, (len(amplitudes), 1)),
-        type='discrete'
-    )
-    F = ts.figurl()
-    url = F.url(label='test', channel='flatiron1')
+    MPV = sev.MultiPanelView()
+    for unit_id in [13, 18, 19, 24]:
+        job = task_fetch_spike_amplitudes(
+            recording_object=R.object(),
+            sorting_object=S.object(),
+            snippet_len=(20, 20),
+            unit_id=unit_id
+        )
+        x = _deserialize(job.wait().return_value)
+        timepoints = x['timepoints']
+        amplitudes = x['amplitudes']
+        ts: sev.Timeseries = sev.Timeseries.from_numpy(
+            channel_names=['A'],
+            timestamps=timepoints / R.get_sampling_frequency(),
+            values=np.reshape(amplitudes, (len(amplitudes), 1)),
+            type='discrete'
+        )
+        MPV.add_event_amplitudes_panel(ts)
+    F = MPV.figurl()
+    url = F.url(label='test seriesview', channel='flatiron1')
     print(url)
 
 if __name__ == '__main__':
