@@ -14,6 +14,7 @@ setup(
         'pynwb',
         'pyyaml',
         'spikeextractors>=0.9.6',
-        'spikecomparison'
+        'spikecomparison',
+        'seriesview>=0.1.0'
     ]
 )

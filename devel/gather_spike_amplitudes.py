@@ -25,7 +25,8 @@ def main():
     from sortingview.helpers import prepare_snippets_h5
     from sortingview.backend.extensions.spikeamplitudes import task_fetch_spike_amplitudes
     MPV = sev.MultiPanelView()
-    for unit_id in [13, 18, 19, 24]:
+    for unit_id in [18, 19]:
+    # for unit_id in [13]:
         job = task_fetch_spike_amplitudes(
             recording_object=R.object(),
             sorting_object=S.object(),
@@ -35,13 +36,16 @@ def main():
         x = _deserialize(job.wait().return_value)
         timepoints = x['timepoints']
         amplitudes = x['amplitudes']
-        ts: sev.Timeseries = sev.Timeseries.from_numpy(
-            channel_names=['A'],
+        ts = sev.SVSeries.from_numpy(
+            type='discrete',
+            sampling_frequency=None,
+            start_time=0,
+            end_time=R.get_num_frames() / R.get_sampling_frequency(),
+            segment_duration=10 * 60,
             timestamps=timepoints / R.get_sampling_frequency(),
-            values=np.reshape(amplitudes, (len(amplitudes), 1)),
-            type='discrete'
+            values=amplitudes
         )
-        MPV.add_event_amplitudes_panel(ts)
+        MPV.add_event_amplitudes_panel(ts, label=f'Unit {unit_id}')
     F = MPV.figurl()
     url = F.url(label='test seriesview', channel='flatiron1')
     print(url)

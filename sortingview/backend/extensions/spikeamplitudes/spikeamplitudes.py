@@ -5,8 +5,11 @@ import hither2 as hi
 import kachery_client as kc
 import numpy as np
 from sortingview.config import job_cache, job_handler
+from sortingview.extractors.labboxephysrecordingextractor import LabboxEphysRecordingExtractor
+from sortingview.extractors.labboxephyssortingextractor import LabboxEphysSortingExtractor
 from sortingview.serialize_wrapper import serialize_wrapper
 from sortingview.helpers import get_unit_waveforms_from_snippets_h5
+from sortingview.serialize_wrapper import _deserialize
 
 
 def _compute_peak_channel_index_from_average_waveform(average_waveform):
@@ -61,3 +64,12 @@ def task_fetch_spike_amplitudes(recording_object, sorting_object, unit_id: int, 
             snippets_h5=snippets_h5,
             unit_id=unit_id
         )
+
+def runtask_fetch_spike_amplitudes(*, recording: LabboxEphysRecordingExtractor, sorting: LabboxEphysSortingExtractor, unit_id: int, snippet_len=(50, 80)):
+    job = task_fetch_spike_amplitudes(
+        recording_object=recording.object(),
+        sorting_object=sorting.object(),
+        snippet_len=snippet_len,
+        unit_id=unit_id
+    )
+    return _deserialize(job.wait().return_value)
