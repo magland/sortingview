@@ -50,7 +50,7 @@ def _deserialize(x):
                 ret[key] = _deserialize(val)
             return ret
     elif (type(x) == list) or (type(x) == tuple):
-        return [_serialize(val) for val in x]
+        return [_deserialize(val) for val in x]
     else:
         return x
 
