@@ -9,6 +9,8 @@ import spikeextractors as se
 from spikeextractors.extractors.numpyextractors.numpyextractors import NumpySortingExtractor
 from spikeextractors.sortingextractor import SortingExtractor
 
+from sortingview.extractors.labboxephysrecordingextractor import LabboxEphysRecordingExtractor
+
 from ._in_memory import (_random_string, get_in_memory_object,
                          register_in_memory_object)
 from .h5extractors.h5sortingextractorv1 import H5SortingExtractorV1
@@ -127,6 +129,12 @@ class LabboxEphysSortingExtractor(se.SortingExtractor):
             merge_groups = data.get('merge_groups', [])
             S = CuratedSortingExtractor(parent_sorting=parent_sorting, merge_groups=merge_groups)
             self._sorting = S
+        elif sorting_format == 'subsorting':
+            parent_sorting = LabboxEphysSortingExtractor(data['sorting'])
+            start_frame = data.get('start_frame', None)
+            end_frame = data.get('end_frame', None)
+            unit_ids = data.get('unit_ids', None)
+            self._sorting = se.SubSortingExtractor(parent_sorting=parent_sorting, unit_ids=unit_ids, start_frame=start_frame, end_frame=end_frame)
         else:
             raise Exception(f'Unexpected sorting format: {sorting_format}')
 

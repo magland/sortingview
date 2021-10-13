@@ -48,16 +48,16 @@ def _get_unit_waveforms_for_chunk(
             channel_indices = None
             len_channel_indices = traces.shape[0]
         # num_channels x len_of_one_snippet
-        snippets = [
-            _extract_snippet_from_traces(
-                traces,
-                start_frame=frame_offset + int(t) - snippet_len[0],
-                end_frame=frame_offset + int(t) + snippet_len[1],
-                channel_indices=channel_indices
-            )
-            for t in times0
-        ]
-        if len(snippets) > 0:
+        if len(times0) > 0:
+            snippets = [
+                _extract_snippet_from_traces(
+                    traces,
+                    start_frame=frame_offset + int(t) - snippet_len[0],
+                    end_frame=frame_offset + int(t) + snippet_len[1],
+                    channel_indices=channel_indices
+                )
+                for t in times0
+            ]
             unit_waveforms.append(
                 # len(times0) x num_channels_in_nbhd[unit_id] x len_of_one_snippet
                 np.stack(snippets)

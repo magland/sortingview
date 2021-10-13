@@ -10,5 +10,8 @@ from .extractors import LabboxEphysRecordingExtractor, LabboxEphysSortingExtract
 from .workspace_list import get_workspace_list, set_workspace_list, add_workspace_to_list
 from .extractors import H5SortingExtractorV1
 from .extractors.h5extractors.h5recordingextractorv1 import H5RecordingExtractorV1
+from .extractors.subrecording import subrecording
+from .extractors.subsorting import subsorting
+from .extractors.wrapperrecordingextractor import create_recording_from_old_extractor
 # from .SpikeAmplitudes import SpikeAmplitudes
 # from .SpikeExplorer import SpikeExplorer
