@@ -143,6 +143,12 @@ class Workspace:
         self._snippet_len = snippet_len
     def figurl(self):
         data = {
+            'type': 'workspace',
+            'workspaceUri': self.uri
+        }
+        return Figure(view_url='gs://figurl/sortingview-gui-1', data=data)
+    def figurl_old(self):
+        data = {
             'workspaceUri': self.uri
         }
         return Figure(type='sortingview.workspace.1', data=data)

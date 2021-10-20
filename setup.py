@@ -8,13 +8,14 @@ setup(
     include_package_data = True,
     install_requires=[
         'click',
-        'kachery-client>=1.0.18',
-        'figurl>=0.1.3',
+        'kachery-client>=1.0.19',
+        'figurl>=0.1.4',
         'hither>=0.8.1',
         'pynwb',
         'pyyaml',
         'spikeextractors>=0.9.6',
         'spikecomparison',
-        'seriesview>=0.1.0'
+        'seriesview>=0.1.0',
+        'spikeinterface>=0.90.1'
     ]
 )
