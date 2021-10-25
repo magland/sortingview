@@ -11,7 +11,7 @@ from ._in_memory import (_random_string, get_in_memory_object,
                          register_in_memory_object)
 from ._spikeinterface_recording_dict_to_labbox_dict import spikeinterface_recording_dict_to_labbox_dict
 from .bandpass_filter import bandpass_filter
-from .binextractors import Bin1RecordingExtractor
+from .binextractors import Bin1RecordingExtractor, Bin2RecordingExtractor
 from .mdaextractors import MdaRecordingExtractor
 from .snippetsextractors import Snippets1RecordingExtractor
 
@@ -229,6 +229,8 @@ class LabboxEphysRecordingExtractor(se.RecordingExtractor):
             self._recording: se.RecordingExtractor = NwbRecordingExtractor(path0, electrical_series_name=data.get('electrical_series_name', None))
         elif recording_format == 'bin1':
             self._recording: se.RecordingExtractor = Bin1RecordingExtractor(**data, p2p=True)
+        elif recording_format == 'bin2':
+            self._recording: se.RecordingExtractor = Bin2RecordingExtractor(**data)
         elif recording_format == 'snippets1':
             self._recording: se.RecordingExtractor = Snippets1RecordingExtractor(snippets_h5_uri=data['snippets_h5_uri'], p2p=True)
         elif recording_format == 'h5_v1':
@@ -312,17 +314,19 @@ class LabboxEphysRecordingExtractor(se.RecordingExtractor):
                 raise Exception('You must specify the serialize_dtype when serializing recording extractor in from_memory()')
             with kc.TemporaryDirectory() as tmpdir:
                 fname = tmpdir + '/' + _random_string(10) + '_recording.dat'
-                se.BinDatRecordingExtractor.write_recording(recording=recording, save_path=fname, time_axis=0, dtype=serialize_dtype)
+                # se.BinDatRecordingExtractor.write_recording(recording=recording, save_path=fname, time_axis=0, dtype=serialize_dtype)
                 # with ka.config(use_hard_links=True):
-                uri = kc.store_file(fname, basename='raw.mda')
+                recording.get_traces().T.astype(serialize_dtype).tofile(fname)
+                uri = kc.store_file(fname, basename='raw.dat')
                 num_channels = recording.get_num_channels()
                 channel_ids = [int(a) for a in recording.get_channel_ids()]
                 xcoords = [recording.get_channel_property(a, 'location')[0] for a in channel_ids]
                 ycoords = [recording.get_channel_property(a, 'location')[1] for a in channel_ids]
                 recording = LabboxEphysRecordingExtractor({
-                    'recording_format': 'bin1',
+                    'recording_format': 'bin2',
                     'data': {
                         'raw': uri,
+                        'dtype': serialize_dtype,
                         'raw_num_channels': num_channels,
                         'num_frames': int(recording.get_num_frames()),
                         'samplerate': float(recording.get_sampling_frequency()),
