@@ -8,10 +8,10 @@ def subsorting(*, sorting: LabboxEphysSortingExtractor, unit_ids: Union[List[int
     if unit_ids is not None:
         data['unit_ids'] = unit_ids
     if start_frame is not None:
-        data[start_frame] = start_frame
+        data['start_frame'] = start_frame
         assert end_frame is not None
     if end_frame is not None:
-        data[end_frame] = end_frame
+        data['end_frame'] = end_frame
         assert start_frame is not None
     return LabboxEphysSortingExtractor({
         'sorting_format': 'subsorting',
