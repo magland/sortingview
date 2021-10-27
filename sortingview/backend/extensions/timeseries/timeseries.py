@@ -5,7 +5,7 @@
 import hither2 as hi
 import kachery_client as kc
 # import time
-from sortingview.helpers.prepare_snippets_h5 import prepare_snippets_h5
+from sortingview.helpers import prepare_snippets_h5
 import numpy as np
 from sortingview.config import job_cache, job_handler
 from sortingview.extractors import LabboxEphysRecordingExtractor

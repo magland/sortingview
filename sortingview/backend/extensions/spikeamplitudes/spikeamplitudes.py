@@ -33,24 +33,34 @@ def fetch_spike_amplitudes(snippets_h5: str, unit_id: Union[int, List[int]]):
     #     unit_spike_train = np.array(f.get(f'unit_spike_trains/{unit_id}'))
     #     unit_waveforms = np.array(f.get(f'unit_waveforms/{unit_id}/waveforms'))    
         
-    unit_waveforms, unit_waveforms_channel_ids, channel_locations0, sampling_frequency, unit_spike_train = get_unit_waveforms_from_snippets_h5(h5_path, unit_id)
-    average_waveform = np.mean(unit_waveforms, axis=0)
-    peak_channel_index = _compute_peak_channel_index_from_average_waveform(average_waveform)
-    maxs = [np.max(unit_waveforms[i][peak_channel_index, :]) for i in range(unit_waveforms.shape[0])]
-    mins = [np.min(unit_waveforms[i][peak_channel_index, :]) for i in range(unit_waveforms.shape[0])]
-    peak_amplitudes = np.array([maxs[i] - mins[i] for i in range(len(mins))])
+    # unit_waveforms, unit_waveforms_channel_ids, channel_locations0, sampling_frequency, unit_spike_train = get_unit_waveforms_from_snippets_h5(h5_path, unit_id)
+    # average_waveform = np.mean(unit_waveforms, axis=0)
+    # peak_channel_index = _compute_peak_channel_index_from_average_waveform(average_waveform)
+    # maxs = [np.max(unit_waveforms[i][peak_channel_index, :]) for i in range(unit_waveforms.shape[0])]
+    # mins = [np.min(unit_waveforms[i][peak_channel_index, :]) for i in range(unit_waveforms.shape[0])]
+    # peak_amplitudes = np.array([maxs[i] - mins[i] for i in range(len(mins))])
 
-    timepoints = unit_spike_train.astype(np.float32)
-    amplitudes = peak_amplitudes.astype(np.float32)
+    # timepoints = unit_spike_train.astype(np.float32)
+    # amplitudes = peak_amplitudes.astype(np.float32)
 
-    sort_inds = np.argsort(timepoints)
-    timepoints = timepoints[sort_inds]
-    amplitudes = amplitudes[sort_inds]
+    # sort_inds = np.argsort(timepoints)
+    # timepoints = timepoints[sort_inds]
+    # amplitudes = amplitudes[sort_inds]
     
-    return dict(
-        timepoints=timepoints,
-        amplitudes=amplitudes
-    )
+    # return dict(
+    #     timepoints=timepoints,
+    #     amplitudes=amplitudes
+    # )
+
+    with h5py.File(h5_path, 'r') as f:
+        unit_spike_train = np.array(f.get(f'unit_spike_trains/{unit_id}'))
+        unit_spike_amplitudes = np.array(f.get(f'unit_spike_amplitudes/{unit_id}'))
+        timepoints = unit_spike_train.astype(np.float32)
+        amplitudes = unit_spike_amplitudes.astype(np.float32)
+        return dict(
+            timepoints=timepoints,
+            amplitudes=amplitudes
+        )
 
 @kc.taskfunction('fetch_spike_amplitudes.1', type='pure-calculation')
 def task_fetch_spike_amplitudes(recording_object, sorting_object, unit_id: int, snippet_len=(50, 80)):
