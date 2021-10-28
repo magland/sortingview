@@ -1,4 +1,5 @@
 from typing import Tuple, Union
+import json
 import math
 import numpy as np
 import h5py
@@ -7,6 +8,8 @@ from sortingview.extractors import LabboxEphysRecordingExtractor, LabboxEphysSor
 def prepare_spikesortingview_data(*,
     recording: LabboxEphysRecordingExtractor,
     sorting: LabboxEphysSortingExtractor,
+    recording_description: str,
+    sorting_description: str,
     output_file_name: str,
     segment_duration_sec: float,
     snippet_len: Tuple[int],
@@ -31,6 +34,10 @@ def prepare_spikesortingview_data(*,
         f.create_dataset('snippet_len', data=np.array([snippet_len[0], snippet_len[1]]).astype(np.int32))
         f.create_dataset('max_num_snippets_per_segment', data=np.array([max_num_snippets_per_segment]).astype(np.int32))
         f.create_dataset('channel_neighborhood_size', data=np.array([channel_neighborhood_size]).astype(np.int32))
+        f.attrs['recording_description'] = recording_description
+        f.attrs['sorting_description'] = sorting_description
+        f.attrs['recording_object'] = json.dumps(recording.object())
+        f.attrs['sorting_object'] = json.dumps(sorting.object())
         
         # first get peak channels and channel neighborhoods
         unit_peak_channel_ids = {}
@@ -74,6 +81,8 @@ def prepare_spikesortingview_data(*,
             start_frame_with_padding = max(start_frame - snippet_len[0], 0)
             end_frame_with_padding = min(end_frame + snippet_len[1], num_frames)
             traces_with_padding = recording.get_traces(start_frame=start_frame_with_padding, end_frame=end_frame_with_padding).T
+            traces_sample = traces_with_padding[start_frame - start_frame_with_padding:start_frame - start_frame_with_padding + int(sampling_frequency * 1), :]
+            f.create_dataset(f'segment/{iseg}/traces_sample', data=traces_sample)
             all_subsampled_spike_trains = []
             for unit_id in unit_ids:
                 if str(unit_id) not in unit_peak_channel_ids:
