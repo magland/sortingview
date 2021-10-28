@@ -36,6 +36,8 @@ def prepare_snippets_h5(
         prepare_spikesortingview_data(
             recording=recording,
             sorting=sorting,
+            recording_description='',
+            sorting_description='',
             output_file_name=tmp_fname,
             segment_duration_sec=60 * 30,
             snippet_len=snippet_len,

@@ -13,3 +13,9 @@ class Figure:
             data=self._data
         )
         return F.url(label=self._label, channel=channel)
+    @property
+    def data(self):
+        return self._data
+    @property
+    def label(self):
+        return self._label

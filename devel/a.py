@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import kachery_client as kc
+import figurl as fig
 import sortingview as sv
 from sortingview.experimental.SpikeSortingView.prepare_spikesortingview_data import prepare_spikesortingview_data
 from sortingview.experimental.SpikeSortingView.SpikeSortingView import SpikeSortingView
@@ -31,6 +32,34 @@ def main():
     print(c.url())
     print(d.url())
     print(e.url())
+
+    composite_data = {
+        'type': 'Composite',
+        'layout': 'default',
+        'views': [
+            {
+                'type': view0.data['type'],
+                'label': view0.label,
+                'figureDataSha1': _upload_data_and_return_sha1(view0.data),
+                'defaultHeight': 300
+            }
+            for view0 in [a, b, c, d, e]
+        ]
+    }
+
+    F = fig.Figure(view_url='gs://figurl/spikesortingview-1', data=composite_data)
+    url = F.url(label='Test composite')
+    print(url)
+
+def _upload_data_and_return_sha1(data):
+    data_uri = _store_json(data)
+    data_hash = data_uri.split('/')[2]
+    kc.upload_file(data_uri, channel=os.environ['FIGURL_CHANNEL'])
+    return data_hash
+
+def _store_json(x: dict):
+    from figurl.core.serialize_wrapper import _serialize
+    return kc.store_json(_serialize(x))
 
 def _load_recording_sorting():
     x = {

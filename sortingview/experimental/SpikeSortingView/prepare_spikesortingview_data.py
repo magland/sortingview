@@ -87,13 +87,16 @@ def prepare_spikesortingview_data(*,
             for unit_id in unit_ids:
                 if str(unit_id) not in unit_peak_channel_ids:
                     raise Exception(f'Peak channel not found for unit {unit_id}. This is probably because not enough spikes were found in any segment.')
-                spike_train = sorting.get_unit_spike_train(unit_id=unit_id, start_frame=start_frame, end_frame=end_frame)    
+                spike_train = sorting.get_unit_spike_train(unit_id=unit_id, start_frame=start_frame, end_frame=end_frame).astype(np.int32)
                 f.create_dataset(f'segment/{iseg}/unit/{unit_id}/spike_train', data=spike_train)
                 peak_channel_id = unit_peak_channel_ids[str(unit_id)]
                 channel_neighborhood = unit_channel_neighborhoods[str(unit_id)]
                 peak_channel_ind = channel_ids.tolist().index(peak_channel_id)
-                spike_amplitudes = traces_with_padding[spike_train - start_frame_with_padding, peak_channel_ind]
-                f.create_dataset(f'segment/{iseg}/unit/{unit_id}/spike_amplitudes', data=spike_amplitudes)
+                if len(spike_train) > 0:
+                    spike_amplitudes = traces_with_padding[spike_train - start_frame_with_padding, peak_channel_ind]
+                    f.create_dataset(f'segment/{iseg}/unit/{unit_id}/spike_amplitudes', data=spike_amplitudes)
+                else:
+                    spike_amplitudes = np.array([], dtype=np.int32)
                 channel_neighborhood_indices = [channel_ids.tolist().index(ch_id) for ch_id in channel_neighborhood]
                 if len(spike_train) > max_num_snippets_per_segment:
                     subsampled_spike_train = subsample(spike_train, max_num_snippets_per_segment)
@@ -101,7 +104,7 @@ def prepare_spikesortingview_data(*,
                     subsampled_spike_train = spike_train
                 f.create_dataset(f'segment/{iseg}/unit/{unit_id}/subsampled_spike_train', data=subsampled_spike_train)
                 all_subsampled_spike_trains.append(subsampled_spike_train)
-            subsampled_spike_trains_concat = np.concatenate(all_subsampled_spike_trains)
+            subsampled_spike_trains_concat = np.concatenate(all_subsampled_spike_trains, dtype=np.int32)
             # print('Extracting spike snippets')
             spike_snippets_concat = extract_spike_snippets(traces=traces_with_padding[:, channel_neighborhood_indices], times=subsampled_spike_trains_concat - start_frame_with_padding, snippet_len=snippet_len)
             # print('Collecting spike snippets')
@@ -150,6 +153,7 @@ def extract_spike_snippets(*,
     M = traces.shape[1]
     L = len(times)
     ret = np.zeros((L, T, M), dtype=traces.dtype)
-    for t in range(T):
-        ret[:, t, :] = traces[times - a + t, :]
+    if L > 0:
+        for t in range(T):
+            ret[:, t, :] = traces[times - a + t, :]
     return ret
