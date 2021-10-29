@@ -1,3 +1,4 @@
+*.spikesortingview.h5
 dist
 tmp
 devel/start-backend
