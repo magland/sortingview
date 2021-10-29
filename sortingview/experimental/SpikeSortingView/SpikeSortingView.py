@@ -109,4 +109,5 @@ class SpikeSortingView:
     from ._create_units_table import create_units_table
     from ._create_summary import create_summary
     from ._create_mountain_layout import create_mountain_layout
+    from ._create_spike_amplitudes import create_spike_amplitudes
     

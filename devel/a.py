@@ -10,24 +10,26 @@ def main():
     R, S, recording_description, sorting_description = _load_recording_sorting()
 
     fname = 'a.spikesortingview.h5'
-    # prepare_spikesortingview_data(
-    #     recording=R,
-    #     sorting=S,
-    #     recording_description=recording_description,
-    #     sorting_description=sorting_description,
-    #     output_file_name=fname,
-    #     segment_duration_sec=60 * 20,
-    #     snippet_len=(20, 20),
-    #     max_num_snippets_per_segment=100,
-    #     channel_neighborhood_size=7
-    # )
+    if not os.path.exists(fname):
+        prepare_spikesortingview_data(
+            recording=R,
+            sorting=S,
+            recording_description=recording_description,
+            sorting_description=sorting_description,
+            output_file_name=fname,
+            segment_duration_sec=60 * 20,
+            snippet_len=(20, 20),
+            max_num_snippets_per_segment=100,
+            channel_neighborhood_size=7
+        )
     X = SpikeSortingView(fname)
-    a = X.create_summary()
-    b = X.create_units_table(unit_ids=X.unit_ids)
-    c = X.create_autocorrelograms(unit_ids=X.unit_ids)
-    d = X.create_raster_plot(unit_ids=X.unit_ids)
-    e = X.create_average_waveforms(unit_ids=X.unit_ids)
-    mountain_layout = X.create_mountain_layout(figures=[a, b, c, d, e], label='Test MV layout')
+    f1 = X.create_summary()
+    f2 = X.create_units_table(unit_ids=X.unit_ids)
+    f3 = X.create_autocorrelograms(unit_ids=X.unit_ids)
+    f4 = X.create_raster_plot(unit_ids=X.unit_ids)
+    f5 = X.create_average_waveforms(unit_ids=X.unit_ids)
+    f6 = X.create_spike_amplitudes(unit_ids=X.unit_ids)
+    mountain_layout = X.create_mountain_layout(figures=[f1, f2, f3, f4, f5, f6], label='Test MV layout')
 
     url = mountain_layout.url()
     print(url)
