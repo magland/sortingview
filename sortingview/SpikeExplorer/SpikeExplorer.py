@@ -1,7 +1,6 @@
 from typing import List
 import numpy as np
 import kachery_client as kc
-from figurl import Figure
 
 class SpikeExplorer:
     def __init__(
@@ -16,6 +15,7 @@ class SpikeExplorer:
         self._features = features
         self._feature_names = feature_names
     def figurl(self):
+        from figurl import Figure
         data = {
             'numSpikes': len(self._timestamps),
             'numChannels': int(self._snippets.shape[2]),

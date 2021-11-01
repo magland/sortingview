@@ -6,7 +6,6 @@ import numpy as np
 import kachery_client as kc
 from numpy.core.numeric import Infinity
 from .TimeseriesModelNpyV1 import TimeseriesModelNpyV1
-from figurl import Figure
 
 class Timeseries:
     def __init__(self, arg: Union[dict, str]):
@@ -55,6 +54,7 @@ class Timeseries:
     def sampling_frequency(self):
         return self._model.sampling_frequency
     def figurl(self):
+        from figurl import Figure
         data = {
             'timeseriesUri': kc.store_json(self.object)
         }

@@ -59,5 +59,5 @@ def create_units_table(self, *, unit_ids: List[int], label: Union[str, None]=Non
     return Figure(data=data, label=label)
 
 def estimate_noise_level(traces: np.ndarray):
-    est_noise_level = np.median(np.abs(traces.ravel())) / 0.6745  # median absolute deviation (MAD) estimate of stdev
+    est_noise_level = np.median(np.abs(traces - np.mean(traces, axis=0))) / 0.6745  # median absolute deviation (MAD) estimate of stdev
     return est_noise_level

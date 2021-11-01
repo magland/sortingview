@@ -2,8 +2,6 @@ import json
 from typing import Any, Dict, List, Tuple, Union
 import uuid
 import kachery_client as kc
-from figurl import Figure
-import spikeextractors as se
 from ..extractors import LabboxEphysRecordingExtractor, LabboxEphysSortingExtractor
 
 def parse_workspace_uri(workspace_uri: str):
@@ -142,16 +140,12 @@ class Workspace:
         _set_snippet_len_for_workspace(main_subfeed, snippet_len)
         self._snippet_len = snippet_len
     def figurl(self):
+        from figurl import Figure
         data = {
             'type': 'workspace',
             'workspaceUri': self.uri
         }
         return Figure(view_url='gs://figurl/sortingview-gui-1', data=data)
-    def figurl_old(self):
-        data = {
-            'workspaceUri': self.uri
-        }
-        return Figure(type='sortingview.workspace.1', data=data)
     @property
     def snippet_len(self):
         return self._snippet_len

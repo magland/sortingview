@@ -41,6 +41,7 @@ def prepare_spikesortingview_data(*,
         
         # first get peak channels and channel neighborhoods
         unit_peak_channel_ids = {}
+        fallback_unit_peak_channel_ids = {}
         unit_channel_neighborhoods = {}
         for iseg in range(num_segments):
             something_missing = False
@@ -58,7 +59,7 @@ def prepare_spikesortingview_data(*,
             for unit_id in unit_ids:
                 if str(unit_id) not in unit_peak_channel_ids:
                     spike_train = sorting.get_unit_spike_train(unit_id=unit_id, start_frame=start_frame, end_frame=end_frame)
-                    if len(spike_train) >= 10:
+                    if len(spike_train) > 0:
                         values = traces_with_padding[spike_train - start_frame_with_padding, :]
                         avg_value = np.mean(values, axis=0)
                         peak_channel_ind = np.argmax(np.abs(avg_value))
@@ -69,7 +70,10 @@ def prepare_spikesortingview_data(*,
                             peak_channel_id=peak_channel_id,
                             channel_neighborhood_size=channel_neighborhood_size
                         )
-                        unit_peak_channel_ids[str(unit_id)] = peak_channel_id
+                        if len(spike_train) >= 10:
+                            unit_peak_channel_ids[str(unit_id)] = peak_channel_id
+                        else:
+                            fallback_unit_peak_channel_ids[str(unit_id)] = peak_channel_id
                         unit_channel_neighborhoods[str(unit_id)] = channel_neighborhood
                         f.create_dataset(f'unit/{unit_id}/peak_channel_id', data=np.array([peak_channel_id]).astype(np.int32))
                         f.create_dataset(f'unit/{unit_id}/channel_neighborhood', data=np.array(channel_neighborhood).astype(np.int32))
@@ -85,11 +89,13 @@ def prepare_spikesortingview_data(*,
             f.create_dataset(f'segment/{iseg}/traces_sample', data=traces_sample)
             all_subsampled_spike_trains = []
             for unit_id in unit_ids:
-                if str(unit_id) not in unit_peak_channel_ids:
-                    raise Exception(f'Peak channel not found for unit {unit_id}. This is probably because not enough spikes were found in any segment.')
+                peak_channel_id = unit_peak_channel_ids.get(str(unit_id), None)
+                if peak_channel_id is None:
+                    peak_channel_id = fallback_unit_peak_channel_ids.get(str(unit_id), None)
+                if peak_channel_id is None:
+                    raise Exception(f'Peak channel not found for unit {unit_id}. This is probably because no spikes were found in any segment for this unit.')
                 spike_train = sorting.get_unit_spike_train(unit_id=unit_id, start_frame=start_frame, end_frame=end_frame).astype(np.int32)
                 f.create_dataset(f'segment/{iseg}/unit/{unit_id}/spike_train', data=spike_train)
-                peak_channel_id = unit_peak_channel_ids[str(unit_id)]
                 channel_neighborhood = unit_channel_neighborhoods[str(unit_id)]
                 peak_channel_ind = channel_ids.tolist().index(peak_channel_id)
                 if len(spike_train) > 0:

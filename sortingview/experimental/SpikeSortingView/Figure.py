@@ -1,6 +1,5 @@
 import os
 from typing import Any, Union
-import figurl as fig
 
 
 class Figure:
@@ -8,6 +7,7 @@ class Figure:
         self._data = data
         self._label = label
     def url(self, channel: Union[str, None]=None):
+        import figurl as fig
         F = fig.Figure(
             view_url=os.getenv('SPIKESORTINGVIEW_URL', 'gs://figurl/spikesortingview-1'),
             data=self._data

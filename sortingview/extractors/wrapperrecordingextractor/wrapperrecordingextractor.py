@@ -1,10 +1,10 @@
 import spikeextractors as se
-import spikeinterface as si
+# import spikeinterface as si
 
 class WrapperRecordingExtractor(se.RecordingExtractor):
     extractor_name = 'SpikeInterfaceRecordingExtractor'
     is_writable = False
-    def __init__(self, new_recording: si.BaseRecording):
+    def __init__(self, new_recording):
         se.RecordingExtractor.__init__(self)
         
         self._new_recording = new_recording
