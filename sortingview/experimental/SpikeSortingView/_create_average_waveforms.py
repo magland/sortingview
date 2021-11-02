@@ -24,11 +24,15 @@ def create_average_waveforms(self, *, unit_ids: List[int], label: Union[str, Non
             'waveform': waveform.T
         })
     
+    channel_locations = {}
+    for ii, channel_id in enumerate(self.channel_ids):
+        channel_locations[str(channel_id)] = self.channel_locations[ii, :].astype(np.float32)
     data = {
         'type': 'AverageWaveforms',
         'averageWaveforms': plots,
         'samplingFrequency': self.sampling_frequency,
-        'noiseLevel': float(noise_level)
+        'noiseLevel': float(noise_level),
+        'channelLocations': channel_locations
     }
     return Figure(data=data, label=label)
 

@@ -23,13 +23,24 @@ def main():
             channel_neighborhood_size=7
         )
     X = SpikeSortingView(fname)
+    test_metric_data = {}
+    for u in X.unit_ids:
+        test_metric_data[str(u)] = u
+    unit_metrics = [
+        {
+            'name': 'test',
+            'label': 'Test metric',
+            'data': test_metric_data
+        }
+    ]
     f1 = X.create_summary()
-    f2 = X.create_units_table(unit_ids=X.unit_ids)
+    f2 = X.create_units_table(unit_ids=X.unit_ids, unit_metrics=unit_metrics)
     f3 = X.create_autocorrelograms(unit_ids=X.unit_ids)
     f4 = X.create_raster_plot(unit_ids=X.unit_ids)
     f5 = X.create_average_waveforms(unit_ids=X.unit_ids)
     f6 = X.create_spike_amplitudes(unit_ids=X.unit_ids)
-    mountain_layout = X.create_mountain_layout(figures=[f1, f2, f3, f4, f5, f6], label='Test MV layout')
+    f7 = X.create_electrode_geometry()
+    mountain_layout = X.create_mountain_layout(figures=[f1, f2, f3, f4, f5, f6, f7], label='Test MV layout')
 
     url = mountain_layout.url()
     print(url)

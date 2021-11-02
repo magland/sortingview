@@ -110,4 +110,5 @@ class SpikeSortingView:
     from ._create_summary import create_summary
     from ._create_mountain_layout import create_mountain_layout
     from ._create_spike_amplitudes import create_spike_amplitudes
+    from ._create_electrode_geometry import create_electrode_geometry
     
