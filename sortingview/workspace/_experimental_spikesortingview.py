@@ -22,8 +22,8 @@ def experimental_spikesortingview(self, *, recording_id: str, sorting_id: str, l
             prepare_spikesortingview_data(
                 recording=R,
                 sorting=S,
-                recording_description=recording_id,
-                sorting_description=sorting_id,
+                recording_description='',
+                sorting_description='',
                 output_file_name=fname,
                 segment_duration_sec=60 * 20,
                 snippet_len=(20, 20),
@@ -31,6 +31,7 @@ def experimental_spikesortingview(self, *, recording_id: str, sorting_id: str, l
                 channel_neighborhood_size=7
             )
             sortingview_data_uri = kc.store_file(fname)
+            kc.set(cache_key, sortingview_data_uri)
     
     fname = kc.load_file(sortingview_data_uri)
     X = SpikeSortingView(fname)

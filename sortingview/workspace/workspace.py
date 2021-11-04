@@ -137,6 +137,20 @@ class Workspace:
         main_subfeed = self._feed.load_subfeed('main')
         _set_user_permissions_for_workspace(main_subfeed, user_id, permissions)
         self._user_permissions[user_id] = permissions
+    def set_sorting_curation_authorized_users(self, *, sorting_id: str, user_ids):
+        sorting_curation_uri = self.get_curation_subfeed(sorting_id).uri
+        key = {
+            'type': 'spikesortingview_sorting_curation_authorized_users',
+            'sorting_curation_uri': sorting_curation_uri
+        }
+        kc.set(key, user_ids)
+    def get_sorting_curation_authorized_users(self, *, sorting_id: str):
+        sorting_curation_uri = self.get_curation_subfeed(sorting_id).uri
+        key = {
+            'type': 'spikesortingview_sorting_curation_authorized_users',
+            'sorting_curation_uri': sorting_curation_uri
+        }
+        return kc.get(key)
     def set_snippet_len(self, snippet_len: Tuple[int, int]):
         main_subfeed = self._feed.load_subfeed('main')
         _set_snippet_len_for_workspace(main_subfeed, snippet_len)

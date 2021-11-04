@@ -17,5 +17,6 @@ F = W.figurl()
 url = F.url(label='Test workspace')
 print(url)
 
+W.set_sorting_curation_authorized_users(sorting_id=sorting_id, user_ids=['jmagland@flatironinstitute.org'])
 url2 = W.experimental_spikesortingview(recording_id=recording_id, sorting_id=sorting_id, label='Test workspace', include_curation=True)
 print(url2)

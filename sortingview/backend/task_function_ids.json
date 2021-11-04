@@ -12,5 +12,6 @@
     "sortingview.get_snippets_for_uri.1",
     "sortingview.get_timestamps_for_uri.1",
     "sortingview.get_features_for_uri.1",
-    "spikesortingview.sorting_curation_action.1"
+    "spikesortingview.sorting_curation_action.1",
+    "spikesortingview.check_sorting_curation_authorized.1"
 ]

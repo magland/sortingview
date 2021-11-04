@@ -1,4 +1,5 @@
 from typing import List, Union
+import kachery_client as kc
 import json
 import h5py
 import numpy as np
@@ -107,6 +108,20 @@ class SpikeSortingView:
             return np.array(f.get(f'segment/{segment}/traces_sample'))
     def set_sorting_curation_uri(self, uri: str):
         self._sorting_curation_uri = uri
+    def set_sorting_curation_authorized_users(self, user_ids: List[str]):
+        sorting_curation_uri = self._sorting_curation_uri
+        key = {
+            'type': 'spikesortingview_sorting_curation_authorized_users',
+            'sorting_curation_uri': sorting_curation_uri
+        }
+        kc.set(key, user_ids)
+    def get_sorting_curation_authorized_users(self):
+        sorting_curation_uri = self._sorting_curation_uri
+        key = {
+            'type': 'spikesortingview_sorting_curation_authorized_users',
+            'sorting_curation_uri': sorting_curation_uri
+        }
+        return kc.get(key)
     
     # The following member functions are implemented in separate files
     from ._create_autocorrelograms import create_autocorrelograms
