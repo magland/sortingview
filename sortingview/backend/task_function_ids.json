@@ -9,9 +9,8 @@
     "get_best_matching_units.2",
     "experitime.get_timeseries_samples.2",
     "experitime.get_timeseries_info.2",
-    "figurl.get_figure_object.1",
-    "figurl.get_python_package_version.1",
     "sortingview.get_snippets_for_uri.1",
     "sortingview.get_timestamps_for_uri.1",
-    "sortingview.get_features_for_uri.1"
+    "sortingview.get_features_for_uri.1",
+    "spikesortingview.sorting_curation_action.1"
 ]

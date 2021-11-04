@@ -1,6 +1,5 @@
 from typing import List, Union
 import numpy as np
-from .helpers.compute_correlogram_data import compute_correlogram_data
 from .Figure import Figure
 
 

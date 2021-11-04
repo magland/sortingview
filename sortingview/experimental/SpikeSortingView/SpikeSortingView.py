@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 import json
 import h5py
 import numpy as np
@@ -22,6 +22,7 @@ class SpikeSortingView:
             self._snippet_len = (a[0].item(), a[1].item())
             self._max_num_snippets_per_segment = np.array(f.get('max_num_snippets_per_segment'))[0].item()
             self._channel_neighborhood_size = np.array(f.get('channel_neighborhood_size'))[0].item()
+        self._sorting_curation_uri: Union[str, None] = None
     @property
     def recording_description(self):
         return self._recording_description
@@ -64,6 +65,9 @@ class SpikeSortingView:
     @property
     def channel_neighborhood_size(self):
         return self._channel_neighborhood_size
+    @property
+    def sorting_curation_uri(self):
+        return self._sorting_curation_uri
     def get_unit_spike_train(self, *, unit_id: int):
         with h5py.File(self._data_file_name, 'r') as f:
             all = []
@@ -101,6 +105,8 @@ class SpikeSortingView:
     def get_traces_sample(self, *, segment: int) -> np.ndarray:
         with h5py.File(self._data_file_name, 'r') as f:
             return np.array(f.get(f'segment/{segment}/traces_sample'))
+    def set_sorting_curation_uri(self, uri: str):
+        self._sorting_curation_uri = uri
     
     # The following member functions are implemented in separate files
     from ._create_autocorrelograms import create_autocorrelograms

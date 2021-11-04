@@ -119,6 +119,8 @@ class Workspace:
         main_subfeed = self._feed.load_subfeed('main')
         _set_unit_metrics_for_sorting(main_subfeed, x)
         self._unit_metrics_for_sortings[sorting_id] = metrics
+    def get_unit_metrics_for_sorting(self, sorting_id: str):
+        return self._unit_metrics_for_sortings.get(sorting_id, [])
     def delete_recording(self, recording_id: str):
         if recording_id not in self._recordings:
             raise Exception(f'Recording not found: {recording_id}')
@@ -171,8 +173,10 @@ class Workspace:
     def get_sorting_extractor(self, sorting_id):
         s = self.get_sorting(sorting_id)
         return LabboxEphysSortingExtractor(s['sortingObject'])
+    def get_curation_subfeed(self, sorting_id: str) -> kc.Subfeed:
+        return self._feed.load_subfeed(dict(name='sortingCuration', sortingId=sorting_id))
     def get_sorting_curation(self, sorting_id: str):
-        curation_subfeed = self._feed.load_subfeed(dict(name='sortingCuration', sortingId=sorting_id))
+        curation_subfeed = self.get_curation_subfeed(sorting_id)
         return _get_sorting_curation(curation_subfeed, sorting_id=sorting_id)
     def get_curated_sorting_extractor(self, sorting_id):
         s = self.get_sorting(sorting_id)
@@ -184,6 +188,7 @@ class Workspace:
                 'merge_groups': sc.get('mergeGroups', [])
             }
         })
+    from ._experimental_spikesortingview import experimental_spikesortingview
 
 def create_workspace(*, label: Union[str, None]=None):
     feed = kc.create_feed()

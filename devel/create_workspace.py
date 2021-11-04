@@ -8,7 +8,7 @@ S = sv.LabboxEphysSortingExtractor.from_memory(sorting, serialize=True)
 
 W = sv.create_workspace()
 recording_id = W.add_recording(label='recording1', recording=R)
-W.add_sorting(recording_id=recording_id, label='true', sorting=S)
+sorting_id = W.add_sorting(recording_id=recording_id, label='true', sorting=S)
 
 W.precalculate()
 # W._precalculate_debug()
@@ -16,3 +16,6 @@ W.precalculate()
 F = W.figurl()
 url = F.url(label='Test workspace')
 print(url)
+
+url2 = W.experimental_spikesortingview(recording_id=recording_id, sorting_id=sorting_id, label='Test workspace', include_curation=True)
+print(url2)
