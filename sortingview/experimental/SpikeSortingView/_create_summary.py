@@ -16,8 +16,8 @@ def create_summary(self, *, label: Union[str, None]=None):
 
     data = {
         'type': 'Summary',
-        'recordingDescription': self.recording_description,
-        'sortingDescription': self.sorting_description,
+        'recordingDescription': '',
+        'sortingDescription': '',
         'recordingObject': self.recording_object,
         'sortingObject': self.sorting_object,
         'unitIds': self.unit_ids,

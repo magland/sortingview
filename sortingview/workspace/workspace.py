@@ -2,6 +2,8 @@ import json
 from typing import Any, Dict, List, Tuple, Union
 import uuid
 import kachery_client as kc
+
+from sortingview.experimental.SpikeSortingView.SpikeSortingView import SpikeSortingView
 from ..extractors import LabboxEphysRecordingExtractor, LabboxEphysSortingExtractor
 
 def parse_workspace_uri(workspace_uri: str):
@@ -139,18 +141,10 @@ class Workspace:
         self._user_permissions[user_id] = permissions
     def set_sorting_curation_authorized_users(self, *, sorting_id: str, user_ids):
         sorting_curation_uri = self.get_curation_subfeed(sorting_id).uri
-        key = {
-            'type': 'spikesortingview_sorting_curation_authorized_users',
-            'sorting_curation_uri': sorting_curation_uri
-        }
-        kc.set(key, user_ids)
+        SpikeSortingView.set_sorting_curation_authorized_users(sorting_curation_uri, user_ids)
     def get_sorting_curation_authorized_users(self, *, sorting_id: str):
         sorting_curation_uri = self.get_curation_subfeed(sorting_id).uri
-        key = {
-            'type': 'spikesortingview_sorting_curation_authorized_users',
-            'sorting_curation_uri': sorting_curation_uri
-        }
-        return kc.get(key)
+        return SpikeSortingView.get_sorting_curation_authorized_users(sorting_curation_uri)
     def set_snippet_len(self, snippet_len: Tuple[int, int]):
         main_subfeed = self._feed.load_subfeed('main')
         _set_snippet_len_for_workspace(main_subfeed, snippet_len)
@@ -192,6 +186,9 @@ class Workspace:
     def get_sorting_curation(self, sorting_id: str):
         curation_subfeed = self.get_curation_subfeed(sorting_id)
         return _get_sorting_curation(curation_subfeed, sorting_id=sorting_id)
+    def get_sorting_curation_uri(self, sorting_id: str):
+        curation_subfeed = self.get_curation_subfeed(sorting_id)
+        return curation_subfeed.uri
     def get_curated_sorting_extractor(self, sorting_id):
         s = self.get_sorting(sorting_id)
         sc = self.get_sorting_curation(sorting_id)

@@ -8,25 +8,20 @@ from sortingview.experimental.SpikeSortingView import SpikeSortingView
 from sortingview.experimental.SpikeSortingView import create_position_plot
 
 def main():
-    R, S, recording_description, sorting_description = _load_recording_sorting()
+    R, S = _load_recording_sorting()
 
-    fname = 'a.spikesortingview.h5'
-    if not os.path.exists(fname):
-        prepare_spikesortingview_data(
-            recording=R,
-            sorting=S,
-            recording_description=recording_description,
-            sorting_description=sorting_description,
-            output_file_name=fname,
-            segment_duration_sec=60 * 20,
-            snippet_len=(20, 20),
-            max_num_snippets_per_segment=100,
-            channel_neighborhood_size=7
-        )
+    data_uri = prepare_spikesortingview_data(
+        recording=R,
+        sorting=S,
+        segment_duration_sec=60 * 20,
+        snippet_len=(20, 20),
+        max_num_snippets_per_segment=100,
+        channel_neighborhood_size=7
+    )
     f = kc.load_feed('test-spikesortingview-curation', create=True)
     curation_subfeed = f.load_subfeed('main')
-    X = SpikeSortingView(fname)
-    X.set_sorting_curation_uri(curation_subfeed.uri)
+    X = SpikeSortingView(data_uri)
+    SpikeSortingView.set_sorting_curation_authorized_users(curation_subfeed.uri, ['jmagland@flatironinstitute.org'])
     test_metric_data = {}
     for u in X.unit_ids:
         test_metric_data[str(u)] = u
@@ -50,7 +45,7 @@ def main():
     timestamps, positions, dimension_labels = _load_linearized_positions()
     f9 = create_position_plot(timestamps=timestamps, positions=positions, dimension_labels=dimension_labels, sampling_frequency=20, label='Linearized position')
 
-    mountain_layout = X.create_mountain_layout(figures=[f1, f2, f3, f4, f5, f6, f7, f8, f9], label='Test MV layout')
+    mountain_layout = X.create_mountain_layout(figures=[f1, f2, f3, f4, f5, f6, f7, f8, f9], label='Test MV layout', sorting_curation_uri=curation_subfeed.uri)
 
     url = mountain_layout.url()
     print(url)
@@ -72,9 +67,7 @@ def _load_recording_sorting():
     }
     R = sv.LabboxEphysRecordingExtractor(x['recording_object'])
     S = sv.LabboxEphysSortingExtractor(x['sorting_object'])
-    recording_description = 'despereaux20191125_.nwb_02_r1_13_franklab_default_hippocampus_recording'
-    sorting_description = 'sorting'
-    return R, S, recording_description, sorting_description
+    return R, S
 
 def _load_positions():
     import pynwb

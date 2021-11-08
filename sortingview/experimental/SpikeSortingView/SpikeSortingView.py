@@ -1,15 +1,18 @@
-from typing import List, Union
+from typing import List, Tuple, Union
 import kachery_client as kc
 import json
 import h5py
 import numpy as np
+from sortingview.experimental.SpikeSortingView.prepare_spikesortingview_data import prepare_spikesortingview_data
+from sortingview.extractors import LabboxEphysRecordingExtractor, LabboxEphysSortingExtractor
 
 class SpikeSortingView:
-    def __init__(self, data_file_name: str) -> None:
-        self._data_file_name = data_file_name
-        with h5py.File(data_file_name, 'r') as f:
-            self._recording_description = f.attrs['recording_description']
-            self._sorting_description = f.attrs['sorting_description']
+    def __init__(self, data_uri: str) -> None:
+        self._data_uri = data_uri
+        self._data_file_name = kc.load_file(data_uri)
+        if self._data_file_name is None:
+            raise Exception(f'Unable to load spikesortingview data file: {data_uri}')
+        with h5py.File(self._data_file_name, 'r') as f:
             self._recording_object = json.loads(f.attrs['recording_object'])
             self._sorting_object = json.loads(f.attrs['sorting_object'])
             self._unit_ids = np.array(f.get('unit_ids'))
@@ -23,13 +26,26 @@ class SpikeSortingView:
             self._snippet_len = (a[0].item(), a[1].item())
             self._max_num_snippets_per_segment = np.array(f.get('max_num_snippets_per_segment'))[0].item()
             self._channel_neighborhood_size = np.array(f.get('channel_neighborhood_size'))[0].item()
-        self._sorting_curation_uri: Union[str, None] = None
+    @staticmethod
+    def create(*,
+        recording: LabboxEphysRecordingExtractor,
+        sorting: LabboxEphysSortingExtractor,
+        segment_duration_sec: float,
+        snippet_len: Tuple[int],
+        max_num_snippets_per_segment: Union[int, None],
+        channel_neighborhood_size: int
+    ):
+        data_uri = prepare_spikesortingview_data(
+            recording=recording, sorting=sorting,
+            segment_duration_sec=segment_duration_sec,
+            snippet_len=snippet_len,
+            max_num_snippets_per_segment=max_num_snippets_per_segment,
+            channel_neighborhood_size=channel_neighborhood_size
+        )
+        return SpikeSortingView(data_uri)
     @property
-    def recording_description(self):
-        return self._recording_description
-    @property
-    def sorting_description(self):
-        return self._sorting_description
+    def data_uri(self):
+        return self._data_uri
     @property
     def recording_object(self):
         return self._recording_object
@@ -66,9 +82,6 @@ class SpikeSortingView:
     @property
     def channel_neighborhood_size(self):
         return self._channel_neighborhood_size
-    @property
-    def sorting_curation_uri(self):
-        return self._sorting_curation_uri
     def get_unit_spike_train(self, *, unit_id: int):
         with h5py.File(self._data_file_name, 'r') as f:
             all = []
@@ -106,17 +119,15 @@ class SpikeSortingView:
     def get_traces_sample(self, *, segment: int) -> np.ndarray:
         with h5py.File(self._data_file_name, 'r') as f:
             return np.array(f.get(f'segment/{segment}/traces_sample'))
-    def set_sorting_curation_uri(self, uri: str):
-        self._sorting_curation_uri = uri
-    def set_sorting_curation_authorized_users(self, user_ids: List[str]):
-        sorting_curation_uri = self._sorting_curation_uri
+    @staticmethod
+    def set_sorting_curation_authorized_users(sorting_curation_uri: str, user_ids: List[str]):
         key = {
             'type': 'spikesortingview_sorting_curation_authorized_users',
             'sorting_curation_uri': sorting_curation_uri
         }
         kc.set(key, user_ids)
-    def get_sorting_curation_authorized_users(self):
-        sorting_curation_uri = self._sorting_curation_uri
+    @staticmethod
+    def get_sorting_curation_authorized_users(sorting_curation_uri: str):
         key = {
             'type': 'spikesortingview_sorting_curation_authorized_users',
             'sorting_curation_uri': sorting_curation_uri
@@ -132,4 +143,4 @@ class SpikeSortingView:
     from ._create_mountain_layout import create_mountain_layout
     from ._create_spike_amplitudes import create_spike_amplitudes
     from ._create_electrode_geometry import create_electrode_geometry
-    
+    from ._create_live_cross_correlograms import create_live_cross_correlograms

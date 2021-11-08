@@ -39,9 +39,9 @@ def compute_correlogram_data(*, times1: np.array, times2: np.array, sampling_fre
             deltas22_msec = deltas_msec[(all_labels[offset:] == 2) & (all_labels[:-offset] == 2)]
 
             deltas12_msec = deltas12_msec[deltas12_msec <= bin_edges_msec[-1]]
-            deltas21_msec = deltas21_msec[deltas12_msec <= bin_edges_msec[-1]]
-            deltas11_msec = deltas11_msec[deltas12_msec <= bin_edges_msec[-1]]
-            deltas22_msec = deltas22_msec[deltas12_msec <= bin_edges_msec[-1]]
+            deltas21_msec = deltas21_msec[deltas21_msec <= bin_edges_msec[-1]]
+            deltas11_msec = deltas11_msec[deltas11_msec <= bin_edges_msec[-1]]
+            deltas22_msec = deltas22_msec[deltas22_msec <= bin_edges_msec[-1]]
 
             if (len(deltas12_msec) + len(deltas21_msec) + len(deltas11_msec) + len(deltas22_msec)) == 0: break
             

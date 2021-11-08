@@ -4,7 +4,7 @@ import kachery_client as kc
 from .Figure import Figure
 
 
-def create_mountain_layout(self, *, figures: List[Figure], label: Union[str, None]=None):
+def create_mountain_layout(self, *, figures: List[Figure], label: Union[str, None]=None, sorting_curation_uri: Union[str, None]=None):
     from .SpikeSortingView import SpikeSortingView
     assert isinstance(self, SpikeSortingView)
 
@@ -22,8 +22,8 @@ def create_mountain_layout(self, *, figures: List[Figure], label: Union[str, Non
             for fig0 in figures
         ]
     }
-    if self.sorting_curation_uri is not None:
-        data['sortingCurationUri'] = self.sorting_curation_uri
+    if sorting_curation_uri is not None:
+        data['sortingCurationUri'] = sorting_curation_uri
     return Figure(data=data, label=label)
 
 def _upload_data_and_return_sha1(data):

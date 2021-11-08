@@ -8,26 +8,25 @@ from sortingview.experimental.SpikeSortingView.SpikeSortingView import SpikeSort
 def main():
     R, S = _load_recording_sorting()
 
-    with kc.TemporaryDirectory() as tmpdir:
-        fname = tmpdir + '/test.h5'
-        prepare_spikesortingview_data(
-            recording=R,
-            sorting=S,
-            output_file_name=fname,
-            segment_duration_sec=60 * 20,
-            snippet_len=(20, 20),
-            max_num_snippets_per_segment=100,
-            channel_neighborhood_size=7
-        )
-        X = SpikeSortingView(fname)
-        assert len(X.unit_ids) == len(S.get_unit_ids())
-        assert len(X.channel_ids) == len(R.get_channel_ids())
-        for unit_id in X.unit_ids:
-            print(unit_id)
-            ts = X.get_unit_spike_train(unit_id=unit_id)
-            assert(len(ts) == len(S.get_unit_spike_train(unit_id)))
-            sn = X.get_unit_subsampled_spike_snippets(unit_id=unit_id)
-            print(sn.shape)
+    data_uri = prepare_spikesortingview_data(
+        recording=R,
+        sorting=S,
+        segment_duration_sec=60 * 20,
+        snippet_len=(20, 20),
+        max_num_snippets_per_segment=100,
+        channel_neighborhood_size=7
+    )
+    X = SpikeSortingView(data_uri)
+    assert len(X.unit_ids) == len(S.get_unit_ids())
+    assert len(X.channel_ids) == len(R.get_channel_ids())
+    for unit_id in X.unit_ids:
+        print(unit_id)
+        ts = X.get_unit_spike_train(unit_id=unit_id)
+        assert(len(ts) == len(S.get_unit_spike_train(unit_id)))
+        sn = X.get_unit_subsampled_spike_snippets(unit_id=unit_id)
+        print(sn.shape)
+        
+        
 
 def _load_recording_sorting():
     x = {

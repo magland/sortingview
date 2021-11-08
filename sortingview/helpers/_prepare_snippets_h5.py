@@ -31,20 +31,16 @@ def prepare_snippets_h5(
         recording = subrecording(recording=recording, start_frame=start_frame, end_frame=end_frame)
         sorting = subsorting(sorting=sorting, start_frame=start_frame, end_frame=end_frame)
 
+    data_uri = prepare_spikesortingview_data(
+        recording=recording,
+        sorting=sorting,
+        segment_duration_sec=60 * 30,
+        snippet_len=snippet_len,
+        max_num_snippets_per_segment=100,
+        channel_neighborhood_size=7
+    )
+    X = SpikeSortingView(data_uri)
     with kc.TemporaryDirectory() as tmpdir:
-        tmp_fname = tmpdir + '/spikesortingview.h5'
-        prepare_spikesortingview_data(
-            recording=recording,
-            sorting=sorting,
-            recording_description='',
-            sorting_description='',
-            output_file_name=tmp_fname,
-            segment_duration_sec=60 * 30,
-            snippet_len=snippet_len,
-            max_num_snippets_per_segment=100,
-            channel_neighborhood_size=7
-        )
-        X = SpikeSortingView(tmp_fname)
         save_path = tmpdir + '/snippets.h5'
         
         unit_ids = X.unit_ids
