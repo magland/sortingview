@@ -17,11 +17,13 @@ def create_average_waveforms(self, *, unit_ids: List[int], label: Union[str, Non
     for unit_id in unit_ids:
         snippets = self.get_unit_subsampled_spike_snippets(unit_id=unit_id)
         waveform = np.mean(snippets, axis=0).astype(np.float32)
+        waveform_std_dev = np.sqrt(np.var(snippets, axis=0)).astype(np.float32)
         channel_ids = self.get_unit_channel_neighborhood(unit_id=unit_id)
         plots.append({
             'unitId': unit_id,
             'channelIds': channel_ids,
-            'waveform': waveform.T
+            'waveform': waveform.T,
+            'waveformStdDev': waveform_std_dev.T
         })
     
     channel_locations = {}
