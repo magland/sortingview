@@ -4,7 +4,7 @@ from .helpers.compute_correlogram_data import compute_correlogram_data
 from .Figure import Figure
 
 
-def create_units_table(self, *, unit_ids: List[int], unit_metrics: Union[List[dict], None], label: Union[str, None]=None):
+def create_units_table(self, *, unit_ids: List[int], unit_metrics: Union[List[dict], None]=None, label: Union[str, None]=None):
     from .SpikeSortingView import SpikeSortingView
     assert isinstance(self, SpikeSortingView)
 

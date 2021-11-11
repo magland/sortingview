@@ -85,8 +85,15 @@ def prepare_spikesortingview_data(*,
                             else:
                                 fallback_unit_peak_channel_ids[str(unit_id)] = peak_channel_id
                             unit_channel_neighborhoods[str(unit_id)] = channel_neighborhood
-                            f.create_dataset(f'unit/{unit_id}/peak_channel_id', data=np.array([peak_channel_id]).astype(np.int32))
-                            f.create_dataset(f'unit/{unit_id}/channel_neighborhood', data=np.array(channel_neighborhood).astype(np.int32))
+            for unit_id in unit_ids:
+                peak_channel_id = unit_peak_channel_ids.get(str(unit_id), None)
+                if peak_channel_id is None:
+                    peak_channel_id = fallback_unit_peak_channel_ids.get(str(unit_id), None)
+                if peak_channel_id is None:
+                    raise Exception(f'Peak channel not found for unit {unit_id}. This is probably because no spikes were found in any segment for this unit.')
+                channel_neighborhood = unit_channel_neighborhoods[str(unit_id)]
+                f.create_dataset(f'unit/{unit_id}/peak_channel_id', data=np.array([peak_channel_id]).astype(np.int32))
+                f.create_dataset(f'unit/{unit_id}/channel_neighborhood', data=np.array(channel_neighborhood).astype(np.int32))
 
             for iseg in range(num_segments):
                 print(f'Segment {iseg} of {num_segments}')
