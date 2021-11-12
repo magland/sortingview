@@ -1,7 +1,7 @@
 import sortingview as sv
 import spikeextractors as se
 
-recording, sorting = se.example_datasets.toy_example(K=11, duration=60, seed=4)
+recording, sorting = se.example_datasets.toy_example(K=11, duration=60, seed=6)
 
 R = sv.LabboxEphysRecordingExtractor.from_memory(recording, serialize=True, serialize_dtype='float32')
 S = sv.LabboxEphysSortingExtractor.from_memory(sorting, serialize=True)

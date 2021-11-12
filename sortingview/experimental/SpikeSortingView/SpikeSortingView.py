@@ -87,21 +87,24 @@ class SpikeSortingView:
             all = []
             for iseg in range(self.num_segments):
                 st = np.array(f.get(f'segment/{iseg}/unit/{unit_id}/spike_train'))
-                all.append(st)
+                if st.ndim == 1:
+                    all.append(st)
             return np.concatenate(all)
     def get_unit_subsampled_spike_train(self, *, unit_id: int):
         with h5py.File(self._data_file_name, 'r') as f:
             all = []
             for iseg in range(self.num_segments):
                 st = np.array(f.get(f'segment/{iseg}/unit/{unit_id}/subsampled_spike_train'))
-                all.append(st)
+                if st.ndim == 1:
+                    all.append(st)
             return np.concatenate(all)
     def get_unit_spike_amplitudes(self, *, unit_id: int):
         with h5py.File(self._data_file_name, 'r') as f:
             all = []
             for iseg in range(self.num_segments):
                 amps = np.array(f.get(f'segment/{iseg}/unit/{unit_id}/spike_amplitudes'))
-                all.append(amps)
+                if amps.ndim == 1:
+                    all.append(amps)
             return np.concatenate(all)
     def get_unit_subsampled_spike_snippets(self, *, unit_id: int) -> np.ndarray:
         with h5py.File(self._data_file_name, 'r') as f:
