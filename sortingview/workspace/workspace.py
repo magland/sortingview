@@ -199,6 +199,39 @@ class Workspace:
                 'merge_groups': sc.get('mergeGroups', [])
             }
         })
+    def add_sorting_curation_action(self, sorting_id: str, action: dict):
+        action_type = action['type']
+        valid_unit_based_actions = ['ADD_UNIT_LABEL',
+                                    'REMOVE_UNIT_LABEL',
+                                    'MERGE_UNITS',
+                                    'UNMERGE_UNITS']
+        valid_unitless_actions = ['CLOSE_CURATION', 'REOPEN_CURATION']
+        # Flag for action's dependence on unitId existence
+        unitId_req = None
+        if action_type in valid_unit_based_actions:
+            unitId_req = True
+        elif action_type in valid_unitless_actions:
+            unitId_req = False
+        else:
+            raise Exception('Invalid curation action type')
+        # Check if unitId is list, int or other
+        if unitId_req == True:
+            unit_ids = action['unitId']
+            if not isinstance(unit_ids, list):
+                if not isinstance(unit_ids, int):
+                    raise Exception('Invalid unitId')
+                else:
+                    unit_ids = [unit_ids]
+            action['unitId'] = unit_ids
+        else:
+            # Check if unitId was passed 
+            if 'unitId' in action:
+                if action['unitId'] is not None:
+                    raise Exception('unitId is invalid argument for this action type')
+        # Load the feed for the curation
+        sf = self.get_curation_subfeed(sorting_id)
+        # Append the action to the feed
+        sf.append_message(action)
     from ._experimental_spikesortingview import experimental_spikesortingview
 
 def create_workspace(*, label: Union[str, None]=None):
