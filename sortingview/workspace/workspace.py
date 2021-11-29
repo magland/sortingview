@@ -200,6 +200,8 @@ class Workspace:
             }
         })
     def add_sorting_curation_action(self, sorting_id: str, action: dict):
+        sorting = self.get_sorting_extractor(sorting_id)
+        valid_unit_ids = sorting.get_unit_ids()
         action_type = action['type']
         valid_labeling_actions = ['ADD_UNIT_LABEL',
                                     'REMOVE_UNIT_LABEL']
@@ -216,38 +218,44 @@ class Workspace:
                     if label in valid_labels:
                         pass
                     else:
-                        raise Exception(f'Invalid label: {label}')
+                        raise ValueError(f'Invalid label: {label}')
             else:
-                raise Exception(f'No label provided; Action type: {action_type} requires a label')
+                raise RuntimeError(f'No label provided; Action type: {action_type} requires a label')
 
         elif action_type in valid_unit_based_actions:
             unitId_req = True
             if 'label' in action: 
-                raise Exception(f'label is invalid argument for action type: {action_type}')
+                raise ValueError(f'label is invalid argument for action type: {action_type}')
         elif action_type in valid_unitless_actions:
             unitId_req = False
             if 'label' in action: 
-                raise Exception(f'label is invalid argument for action type: {action_type}')
+                raise ValueError(f'label is invalid argument for action type: {action_type}')
         else:
-            raise Exception('Invalid curation action type')
+            raise RuntimeError(f'Invalid curation action type: {action_type}')
         # Check if unitId is list, int or other
         if unitId_req == True:
             unit_ids = action['unitId']
             if not isinstance(unit_ids, list):
                 if not isinstance(unit_ids, int):
-                    raise Exception('Invalid unitId')
+                    raise ValueError(f'Invalid unitId: {unit_ids}, type: {type(unit_ids)}')
                 else:
                     unit_ids = [unit_ids]
-            action['unitId'] = unit_ids
+            valid_unit_list = [unit for unit in unit_ids if unit in valid_unit_ids]
+            if unit_ids == valid_unit_list:
+                action['unitId'] = unit_ids
+            else:
+                invalid_units = list(set(unit_ids).difference(valid_unit_list))
+                raise ValueError(f'unitId(s): {invalid_units} are not valid unitIds for this sorting')
         else:
             # Check if unitId was passed 
             if 'unitId' in action:
                 if action['unitId'] is not None:
-                    raise Exception('unitId is invalid argument for this action type')
+                    raise ValueError(f'unitId is invalid argument for action type: {action_type}')
+        
         # Load the feed for the curation
-        sf = self.get_curation_subfeed(sorting_id)
+        # sf = self.get_curation_subfeed(sorting_id)
         # Append the action to the feed
-        sf.append_message(action)
+        # sf.append_message(action)
     from ._experimental_spikesortingview import experimental_spikesortingview
 
 def create_workspace(*, label: Union[str, None]=None):
