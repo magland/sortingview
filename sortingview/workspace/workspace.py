@@ -201,17 +201,33 @@ class Workspace:
         })
     def add_sorting_curation_action(self, sorting_id: str, action: dict):
         action_type = action['type']
-        valid_unit_based_actions = ['ADD_UNIT_LABEL',
-                                    'REMOVE_UNIT_LABEL',
-                                    'MERGE_UNITS',
-                                    'UNMERGE_UNITS']
+        valid_labeling_actions = ['ADD_UNIT_LABEL',
+                                    'REMOVE_UNIT_LABEL']
+        valid_unit_based_actions = ['MERGE_UNITS', 'UNMERGE_UNITS']
         valid_unitless_actions = ['CLOSE_CURATION', 'REOPEN_CURATION']
+        valid_labels = ['accept', 'reject', 'noise', 'artifact', 'mua']
         # Flag for action's dependence on unitId existence
         unitId_req = None
-        if action_type in valid_unit_based_actions:
+        if action_type in valid_labeling_actions:
             unitId_req = True
+            if 'label' in action:
+                if action['label'] is not None:
+                    label = action['label']
+                    if label in valid_labels:
+                        pass
+                    else:
+                        raise Exception(f'Invalid label: {label}')
+            else:
+                raise Exception(f'No label provided; Action type: {action_type} requires a label')
+
+        elif action_type in valid_unit_based_actions:
+            unitId_req = True
+            if 'label' in action: 
+                raise Exception(f'label is invalid argument for action type: {action_type}')
         elif action_type in valid_unitless_actions:
             unitId_req = False
+            if 'label' in action: 
+                raise Exception(f'label is invalid argument for action type: {action_type}')
         else:
             raise Exception('Invalid curation action type')
         # Check if unitId is list, int or other
