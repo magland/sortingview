@@ -243,18 +243,30 @@ class Workspace:
             # Check if unitId is valid for the sorting
             invalid_unit_list = [unit for unit in unit_ids if unit not in valid_unit_ids]
             if invalid_unit_list:
-                raise ValueError(f'unitId(s): {invalid_unit_list} are not valid unitIds for this sorting')          
+                raise ValueError(f'unitId(s): {invalid_unit_list} are not valid unitIds for this sorting')
+            # Check if label has already been added to all units
+            if action_type in valid_labeling_actions:
+                sc = self.get_sorting_curation(sorting_id)
+                missing_label = False
+                for unit in unit_ids:
+                    if (unit in sc['labelsByUnit']) and (action['label'] not in sc['labelsByUnit'][unit]):
+                        missing_label = True
+                        break
+                    elif unit not in sc['labelsByUnit']:
+                        missing_label = True
+                        break          
         else:
             # Check if unitId was passed improperly
             if 'unitId' in action:
                 if action['unitId'] is not None:
                     raise ValueError(f'unitId is invalid argument for action type: {action_type}')
-        sc = self.get_sorting_curation(sorting_id)
-        pdb.set_trace()
-        # Load the feed for the curation
-        sf = self.get_curation_subfeed(sorting_id)
-        # Append the action to the feed
-        sf.append_message(action)
+        if missing_label == True:
+            # Load the feed for the curation
+            sf = self.get_curation_subfeed(sorting_id)
+            # Append the action to the feed
+            sf.append_message(action)
+        else:
+            print(f"Label: '{action['label']}' already appended with action type: {action_type} to all unitIds in action")
     from ._experimental_spikesortingview import experimental_spikesortingview
 
 def create_workspace(*, label: Union[str, None]=None):
