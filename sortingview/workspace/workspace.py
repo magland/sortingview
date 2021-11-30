@@ -200,7 +200,6 @@ class Workspace:
             }
         })
     def add_sorting_curation_action(self, sorting_id: str, action: dict):
-        import pdb
         sorting = self.get_sorting_extractor(sorting_id)
         valid_unit_ids = sorting.get_unit_ids()
         action_type = action['type']
@@ -213,6 +212,7 @@ class Workspace:
         unitId_req = None
         if action_type in valid_labeling_actions:
             unitId_req = True
+            # Check for valid label in action message
             if 'label' in action:
                 if action['label'] is not None:
                     label = action['label']
@@ -246,6 +246,7 @@ class Workspace:
                 raise ValueError(f'unitId(s): {invalid_unit_list} are not valid unitIds for this sorting')
             # Check if label has already been added to all units
             if action_type in valid_labeling_actions:
+                # Get previously added unit labels
                 sc = self.get_sorting_curation(sorting_id)
                 missing_label = False
                 for unit in unit_ids:
