@@ -200,6 +200,7 @@ class Workspace:
             }
         })
     def add_sorting_curation_action(self, sorting_id: str, action: dict):
+        import pdb
         sorting = self.get_sorting_extractor(sorting_id)
         valid_unit_ids = sorting.get_unit_ids()
         action_type = action['type']
@@ -237,6 +238,8 @@ class Workspace:
             if not isinstance(unit_ids, list):
                 if not isinstance(unit_ids, int):
                     raise ValueError(f'Invalid unitId: {unit_ids}, type: {type(unit_ids)}')
+                else:
+                    unit_ids = [unit_ids]
             # Check if unitId is valid for the sorting
             invalid_unit_list = [unit for unit in unit_ids if unit not in valid_unit_ids]
             if invalid_unit_list:
@@ -246,6 +249,8 @@ class Workspace:
             if 'unitId' in action:
                 if action['unitId'] is not None:
                     raise ValueError(f'unitId is invalid argument for action type: {action_type}')
+        sc = self.get_sorting_curation(sorting_id)
+        pdb.set_trace()
         # Load the feed for the curation
         sf = self.get_curation_subfeed(sorting_id)
         # Append the action to the feed
