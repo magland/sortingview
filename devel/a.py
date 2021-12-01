@@ -39,13 +39,14 @@ def main():
     f5 = X.create_average_waveforms(unit_ids=X.unit_ids)
     f6 = X.create_spike_amplitudes(unit_ids=X.unit_ids)
     f7 = X.create_electrode_geometry()
+    f8 = X.create_live_cross_correlograms()
 
     timestamps, positions, dimension_labels = _load_positions()
-    f8 = create_position_plot(timestamps=timestamps, positions=positions, dimension_labels=dimension_labels, sampling_frequency=20, label='Position')
+    f9 = create_position_plot(timestamps=timestamps, positions=positions, dimension_labels=dimension_labels, sampling_frequency=20, label='Position')
     timestamps, positions, dimension_labels = _load_linearized_positions()
-    f9 = create_position_plot(timestamps=timestamps, positions=positions, dimension_labels=dimension_labels, sampling_frequency=20, label='Linearized position')
+    f10 = create_position_plot(timestamps=timestamps, positions=positions, dimension_labels=dimension_labels, sampling_frequency=20, label='Linearized position')
 
-    mountain_layout = X.create_mountain_layout(figures=[f1, f2, f3, f4, f5, f6, f7, f8, f9], label='Test MV layout', sorting_curation_uri=curation_subfeed.uri)
+    mountain_layout = X.create_mountain_layout(figures=[f1, f2, f3, f4, f5, f6, f7, f8, f9, f10], label='Test MV layout', sorting_curation_uri=curation_subfeed.uri)
 
     url = mountain_layout.url()
     print(url)
