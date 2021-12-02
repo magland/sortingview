@@ -199,6 +199,32 @@ class Workspace:
                 'merge_groups': sc.get('mergeGroups', [])
             }
         })
+    def sorting_curation_add_label(self, *, sorting_id, label: str, unit_ids: Union[int, List[int]]):
+        action = {
+            'type': 'ADD_UNIT_LABEL',
+            'label': label,
+            'unitId': unit_ids
+        }
+        self.add_sorting_curation_action(sorting_id, action)
+    def sorting_curation_remove_label(self, *, sorting_id, label: str, unit_ids: Union[int, List[int]]):
+        action = {
+            'type': 'REMOVE_UNIT_LABEL',
+            'label': label,
+            'unitId': unit_ids
+        }
+        self.add_sorting_curation_action(sorting_id, action)
+    def sorting_curation_merge_units(self, *, sorting_id, unit_ids: Union[int, List[int]]):
+        action = {
+            'type': 'MERGE_UNITS',
+            'unitIds': unit_ids
+        }
+        self.add_sorting_curation_action(sorting_id, action)
+    def sorting_curation_unmerge_units(self, *, sorting_id, unit_ids: Union[int, List[int]]):
+        action = {
+            'type': 'UNMERGE_UNITS',
+            'unitIds': unit_ids
+        }
+        self.add_sorting_curation_action(sorting_id, action)
     def add_sorting_curation_action(self, sorting_id: str, action: dict):
         sorting = self.get_sorting_extractor(sorting_id)
         valid_unit_ids = sorting.get_unit_ids()
@@ -212,6 +238,7 @@ class Workspace:
         unitId_req = None
         if action_type in valid_labeling_actions:
             unitId_req = True
+            unitIds_req = False
             # Check for valid label in action message
             if 'label' in action:
                 if action['label'] is not None:
@@ -223,11 +250,13 @@ class Workspace:
             else:
                 raise RuntimeError(f'No label provided; Action type: {action_type} requires a label')
         elif action_type in valid_unit_based_actions:
-            unitId_req = True
+            unitId_req = False
+            unitIds_req = True
             if 'label' in action: 
                 raise ValueError(f'label is invalid argument for action type: {action_type}')
         elif action_type in valid_unitless_actions:
             unitId_req = False
+            unitIds_req = False
             if 'label' in action: 
                 raise ValueError(f'label is invalid argument for action type: {action_type}')
         else:
@@ -261,6 +290,14 @@ class Workspace:
             if 'unitId' in action:
                 if action['unitId'] is not None:
                     raise ValueError(f'unitId is invalid argument for action type: {action_type}')
+        if unitIds_req == True:
+            unit_ids = action['unitId']
+            if not isinstance(unit_ids, list):
+                raise ValueError(f'Invalid unitIds: {unit_ids}, type: {type(unit_ids)}')
+            # Check if unitId is valid for the sorting
+            invalid_unit_list = [unit for unit in unit_ids if unit not in valid_unit_ids]
+            if invalid_unit_list:
+                raise ValueError(f'unitIds: {invalid_unit_list} are not valid unitIds for this sorting')
         if missing_label == True:
             # Load the feed for the curation
             sf = self.get_curation_subfeed(sorting_id)
