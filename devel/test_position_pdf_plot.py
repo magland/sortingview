@@ -8,15 +8,16 @@ def main():
     n = 20000
     a = X.acausal_posterior.isel(time=slice(0, n)).sum('state')
     time_coord = a.time.values
-    position_coord = a.position.values
+    # position_coord = a.position.values
     pdf = a.values
+
+    time_coord = time_coord[::4]
+    pdf = pdf[::4]
+
     F = create_position_pdf_plot(
-        time_coord=time_coord,
-        position_coord=position_coord,
         pdf=pdf,
         start_time_sec=min(time_coord),
-        end_time_sec=max(time_coord),
-        sampling_frequency=None,
+        sampling_frequency=1/(time_coord[1] - time_coord[0]),
         label='test position pdf'
     )
     url = F.url()
