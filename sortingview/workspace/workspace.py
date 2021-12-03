@@ -234,6 +234,7 @@ class Workspace:
         valid_unit_based_actions = ['MERGE_UNITS', 'UNMERGE_UNITS']
         valid_unitless_actions = ['CLOSE_CURATION', 'REOPEN_CURATION']
         valid_labels = ['accept', 'reject', 'noise', 'artifact', 'mua']
+        missing_label = False
         # Flag for action's dependence on unitId existence
         unitId_req = None
         if action_type in valid_labeling_actions:
@@ -274,10 +275,9 @@ class Workspace:
             if invalid_unit_list:
                 raise ValueError(f'unitId(s): {invalid_unit_list} are not valid unitIds for this sorting')
             # Check if label has already been added to all units
-            if action_type in valid_labeling_actions:
+            if action_type == 'ADD_UNIT_LABEL':
                 # Get previously added unit labels
                 sc = self.get_sorting_curation(sorting_id)
-                missing_label = False
                 for unit in unit_ids:
                     if (unit in sc['labelsByUnit']) and (action['label'] not in sc['labelsByUnit'][unit]):
                         missing_label = True
@@ -291,14 +291,19 @@ class Workspace:
                 if action['unitId'] is not None:
                     raise ValueError(f'unitId is invalid argument for action type: {action_type}')
         if unitIds_req == True:
-            unit_ids = action['unitId']
+            unit_ids = action['unitIds']
             if not isinstance(unit_ids, list):
-                raise ValueError(f'Invalid unitIds: {unit_ids}, type: {type(unit_ids)}')
+                raise ValueError(f'Invalid unitIds: {unit_ids}, type: {type(unit_ids)}, action type: {action_type} expects list')
             # Check if unitId is valid for the sorting
             invalid_unit_list = [unit for unit in unit_ids if unit not in valid_unit_ids]
             if invalid_unit_list:
                 raise ValueError(f'unitIds: {invalid_unit_list} are not valid unitIds for this sorting')
-        if missing_label == True:
+        else:
+            # Check if unitId was passed improperly
+            if 'unitIds' in action:
+                if action['unitIds'] is not None:
+                    raise ValueError(f'unitIds is invalid argument for action type: {action_type}')
+        if (missing_label == True) or (action_type != 'ADD_UNIT_LABEL'):
             # Load the feed for the curation
             sf = self.get_curation_subfeed(sorting_id)
             # Append the action to the feed
