@@ -3,14 +3,32 @@ import numpy as np
 from .Figure import Figure
 
 def create_position_pdf_plot(*, start_time_sec: np.float32, sampling_frequency: np.float32, pdf: np.ndarray, label: str):
-    Nt = pdf.shape[0]
-    Np = pdf.shape[1]
+    # Nt = pdf.shape[0]
+    # Np = pdf.shape[1]
+
+    A = pdf
+    B = A / np.reshape(np.repeat(np.max(A, axis=1), A.shape[1]), A.shape)
+    B = (B * 100).astype(np.uint8)
 
     data = {
         'type': 'PositionPdfPlot',
-        'pdf': pdf.astype(np.float32),
+        'pdf': B,
         'samplingFrequency': sampling_frequency,
         'startTimeSec': start_time_sec
+    }
+    return Figure(
+        data=data,
+        label=label
+    )
+
+def create_live_position_pdf_plot(*, start_time_sec: np.float32, end_time_sec: np.float32, sampling_frequency: np.float32, num_positions: int, pdf_object: dict, label: str):
+    data = {
+        'type': 'LivePositionPdfPlot',
+        'pdfObject': pdf_object,
+        'startTimeSec': start_time_sec,
+        'endTimeSec': end_time_sec,
+        'numPositions': num_positions,
+        'samplingFrequency': sampling_frequency
     }
     return Figure(
         data=data,
