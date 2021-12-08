@@ -6,7 +6,11 @@ workspace = sv.create_workspace(label='paired_kampff_example')
 rid = workspace.add_recording(label='2014_11_25_Pair_3_0', recording=recording)
 sid = workspace.add_sorting(recording_id=rid, label='true', sorting=sorting_true)
 
-F = workspace.figurl()
+url = workspace.experimental_spikesortingview(
+    recording_id=rid,
+    sorting_id=sid,
+    label='paired_kampff/2014_11_25_Pair_3_0',
+    include_curation=False
+)
 
-url = F.url(label='paired kampff example')
 print(url)
