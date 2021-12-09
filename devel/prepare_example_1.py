@@ -1,3 +1,7 @@
+# Tested with sortingview 0.6.34 on 12/9/21
+# Generated:
+# https://figurl.org/f?v=gs://figurl/spikesortingview-1&d=d900218c88f5921e5dc46b5ad972e802e036c7bf&channel=flatiron1&label=despereaux20191125_.nwb_02_r1_13_franklab_default_hippocampus
+
 import os
 import numpy as np
 import kachery_client as kc
