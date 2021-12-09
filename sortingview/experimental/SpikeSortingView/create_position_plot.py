@@ -2,13 +2,13 @@ from typing import List, Union
 import numpy as np
 from .Figure import Figure
 
-def create_position_plot(*, timestamps: np.array, positions: np.ndarray, dimension_labels: List[str], sampling_frequency: Union[float, None], label: str):
+def create_position_plot(*, timestamps: np.ndarray, positions: np.ndarray, dimension_labels: List[str], label: str, subsampling_frequency: Union[float, None]=None):
     if positions.ndim == 1:
         positions = np.reshape(positions, (len(positions), 1))
     assert positions.shape[0] == len(timestamps)
     assert len(dimension_labels) == positions.shape[1]
-    if sampling_frequency is not None:
-        inds = _get_subsample_inds(timestamps, sampling_frequency)
+    if subsampling_frequency is not None:
+        inds = _get_subsample_inds(timestamps, subsampling_frequency)
         timestamps = timestamps[inds]
         positions = positions[inds, :]
     data = {
