@@ -16,6 +16,7 @@ def prepare_spikesortingview_data(*,
 ) -> str:
     cache_key = {
         'type': 'spikesortingview_data',
+        'version': 2,
         'recording_object': recording.object(),
         'sorting_object': sorting.object(),
         'segment_duration_sec': segment_duration_sec,
@@ -120,7 +121,6 @@ def prepare_spikesortingview_data(*,
                         f.create_dataset(f'segment/{iseg}/unit/{unit_id}/spike_amplitudes', data=spike_amplitudes)
                     else:
                         spike_amplitudes = np.array([], dtype=np.int32)
-                    channel_neighborhood_indices = [channel_ids.tolist().index(ch_id) for ch_id in channel_neighborhood]
                     if len(spike_train) > max_num_snippets_per_segment:
                         subsampled_spike_train = subsample(spike_train, max_num_snippets_per_segment)
                     else:
@@ -129,12 +129,14 @@ def prepare_spikesortingview_data(*,
                     all_subsampled_spike_trains.append(subsampled_spike_train)
                 subsampled_spike_trains_concat = np.concatenate(all_subsampled_spike_trains, dtype=np.int32)
                 # print('Extracting spike snippets')
-                spike_snippets_concat = extract_spike_snippets(traces=traces_with_padding[:, channel_neighborhood_indices], times=subsampled_spike_trains_concat - start_frame_with_padding, snippet_len=snippet_len)
+                spike_snippets_concat = extract_spike_snippets(traces=traces_with_padding, times=subsampled_spike_trains_concat - start_frame_with_padding, snippet_len=snippet_len)
                 # print('Collecting spike snippets')
                 index = 0
                 for ii, unit_id in enumerate(unit_ids):
+                    channel_neighborhood = unit_channel_neighborhoods[str(unit_id)]
+                    channel_neighborhood_indices = [channel_ids.tolist().index(ch_id) for ch_id in channel_neighborhood]
                     num = len(all_subsampled_spike_trains[ii])
-                    spike_snippets = spike_snippets_concat[index:index + num, :, :]
+                    spike_snippets = spike_snippets_concat[index:index + num, :, channel_neighborhood_indices]
                     index = index + num
                     f.create_dataset(f'segment/{iseg}/unit/{unit_id}/subsampled_spike_snippets', data=spike_snippets)
         uri = kc.store_file(output_file_name)
