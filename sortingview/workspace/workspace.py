@@ -270,6 +270,9 @@ class Workspace:
                     raise ValueError(f'Invalid unitId: {unit_ids}, type: {type(unit_ids)}')
                 else:
                     unit_ids = [unit_ids]
+            if isinstance(unit_ids, list):
+                if any(not isinstance(unit_id, int) for unit_id in unit_ids):
+                    raise ValueError(f'Invalid unitIds: {unit_ids}, type not int')
             # Check if unitId is valid for the sorting
             invalid_unit_list = [unit for unit in unit_ids if unit not in valid_unit_ids]
             if invalid_unit_list:
@@ -298,6 +301,8 @@ class Workspace:
             invalid_unit_list = [unit for unit in unit_ids if unit not in valid_unit_ids]
             if invalid_unit_list:
                 raise ValueError(f'unitIds: {invalid_unit_list} are not valid unitIds for this sorting')
+            if any(not isinstance(unit_id, int) for unit_id in unit_ids):
+                raise ValueError(f'Invalid unitIds: {unit_ids}, type not int')
         else:
             # Check if unitId was passed improperly
             if 'unitIds' in action:
