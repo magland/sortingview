@@ -6,8 +6,8 @@ import os
 import numpy as np
 import kachery_client as kc
 import sortingview as sv
-from sortingview.experimental.SpikeSortingView.prepare_spikesortingview_data import prepare_spikesortingview_data
-from sortingview.experimental.SpikeSortingView.SpikeSortingView import SpikeSortingView
+from sortingview.SpikeSortingView.prepare_spikesortingview_data import prepare_spikesortingview_data
+from sortingview.SpikeSortingView.SpikeSortingView import SpikeSortingView
 
 def main():
     R, S = _load_recording_sorting()
@@ -17,7 +17,7 @@ def main():
     workspace = sv.create_workspace()
     rid = workspace.add_recording(recording=R, label=label)
     sid = workspace.add_sorting(recording_id=rid, sorting=S, label='sorting')
-    url = workspace.experimental_spikesortingview(recording_id=rid, sorting_id=sid, label=label, include_curation=False)
+    url = workspace._spikesortingview(recording_id=rid, sorting_id=sid, label=label, include_curation=False)
     print(url)
         
         

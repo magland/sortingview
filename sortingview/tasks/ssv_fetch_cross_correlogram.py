@@ -1,8 +1,8 @@
 import kachery_client as kc
 import hither2 as hi
 from sortingview.config import job_cache, job_handler
-from ..experimental.SpikeSortingView import SpikeSortingView
-from ..experimental.SpikeSortingView.helpers.compute_correlogram_data import compute_correlogram_data
+from ..SpikeSortingView import SpikeSortingView
+from ..SpikeSortingView.helpers.compute_correlogram_data import compute_correlogram_data
 from sortingview.serialize_wrapper import serialize_wrapper
 
 
