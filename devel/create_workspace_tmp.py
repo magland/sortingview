@@ -10,13 +10,6 @@ W = sv.create_workspace()
 recording_id = W.add_recording(label='recording1', recording=R)
 sorting_id = W.add_sorting(recording_id=recording_id, label='true', sorting=S)
 
-W.precalculate()
-# W._precalculate_debug()
-
-F = W.figurl()
-url = F.url(label='Test workspace')
-print(url)
-
 metrics = [{'name': 'isolation',
   'label': 'isolation',
   'tooltip': 'isolation',
@@ -50,5 +43,5 @@ metrics = [{'name': 'isolation',
 W.set_unit_metrics_for_sorting(sorting_id=sorting_id, metrics=metrics)
 
 W.set_sorting_curation_authorized_users(sorting_id=sorting_id, user_ids=['jmagland@flatironinstitute.org'])
-url2 = W.experimental_spikesortingview(recording_id=recording_id, sorting_id=sorting_id, label='Test workspace', include_curation=True)
+url2 = W.spikesortingview(recording_id=recording_id, sorting_id=sorting_id, label='Test workspace', include_curation=True)
 print(url2)

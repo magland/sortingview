@@ -102,6 +102,7 @@ class Workspace:
         self._sortings[sorting_id] = x
         return sorting_id
     def precalculate(self):
+        print('DEPRECATED: workspace.precalculate() is deprecated.')
         from ._precalculate import _precalculate
         _precalculate(self)
     def _precalculate_debug(self):
@@ -150,6 +151,7 @@ class Workspace:
         _set_snippet_len_for_workspace(main_subfeed, snippet_len)
         self._snippet_len = snippet_len
     def figurl(self):
+        print('DEPRECATED: This method of generating a figURL is deprecated.')
         from figurl import Figure
         data = {
             'type': 'workspace',
