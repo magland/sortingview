@@ -17,7 +17,7 @@ def main():
     workspace = sv.create_workspace()
     rid = workspace.add_recording(recording=R, label=label)
     sid = workspace.add_sorting(recording_id=rid, sorting=S, label='sorting')
-    url = workspace._spikesortingview(recording_id=rid, sorting_id=sid, label=label, include_curation=False)
+    url = workspace.spikesortingview(recording_id=rid, sorting_id=sid, label=label, include_curation=False)
     print(url)
         
         
