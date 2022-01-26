@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Tuple, Union
 import uuid
 import kachery_client as kc
 
-from sortingview.experimental.SpikeSortingView.SpikeSortingView import SpikeSortingView
+from sortingview.SpikeSortingView.SpikeSortingView import SpikeSortingView
 from ..extractors import LabboxEphysRecordingExtractor, LabboxEphysSortingExtractor
 
 def parse_workspace_uri(workspace_uri: str):
@@ -315,7 +315,7 @@ class Workspace:
             sf.append_message(action)
         else:
             print(f"Label: '{action['label']}' already appended with action type: {action_type} to all unitIds in action")
-    from ._experimental_spikesortingview import experimental_spikesortingview
+    from ._spikesortingview import spikesortingview
 
 def create_workspace(*, label: Union[str, None]=None):
     feed = kc.create_feed()

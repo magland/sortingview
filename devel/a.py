@@ -3,9 +3,9 @@ import numpy as np
 import kachery_client as kc
 import figurl as fig
 import sortingview as sv
-from sortingview.experimental.SpikeSortingView import prepare_spikesortingview_data
-from sortingview.experimental.SpikeSortingView import SpikeSortingView
-from sortingview.experimental.SpikeSortingView import create_position_plot
+from sortingview.SpikeSortingView import prepare_spikesortingview_data
+from sortingview.SpikeSortingView import SpikeSortingView
+from sortingview.SpikeSortingView import create_position_plot
 
 def main():
     R, S = _load_recording_sorting()
