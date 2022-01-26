@@ -5,8 +5,8 @@ import hither2 as hi
 import kachery_client as kc
 import numpy as np
 from sortingview.extractors import LabboxEphysSortingExtractor, LabboxEphysRecordingExtractor
-from sortingview.experimental.SpikeSortingView.prepare_spikesortingview_data import prepare_spikesortingview_data
-from sortingview.experimental.SpikeSortingView.SpikeSortingView import SpikeSortingView
+from sortingview.SpikeSortingView.prepare_spikesortingview_data import prepare_spikesortingview_data
+from sortingview.SpikeSortingView.SpikeSortingView import SpikeSortingView
 from sortingview.extractors.subrecording import subrecording
 from sortingview.extractors.subsorting import subsorting
 

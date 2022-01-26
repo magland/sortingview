@@ -3,7 +3,7 @@ import kachery_client as kc
 import json
 import h5py
 import numpy as np
-from sortingview.experimental.SpikeSortingView.prepare_spikesortingview_data import prepare_spikesortingview_data
+from sortingview.SpikeSortingView.prepare_spikesortingview_data import prepare_spikesortingview_data
 from sortingview.extractors import LabboxEphysRecordingExtractor, LabboxEphysSortingExtractor
 
 class SpikeSortingView:

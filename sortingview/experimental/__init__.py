@@ -1,2 +1,1 @@
-from .load_recording import load_recording
-from .load_sorting import load_sorting
+raise Exception('Experimental directory has been removed. Import directly from sortingview rather than sortingview.experimental.')

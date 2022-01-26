@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Tuple, Union
 import uuid
 import kachery_client as kc
 
-from sortingview.experimental.SpikeSortingView.SpikeSortingView import SpikeSortingView
+from sortingview.SpikeSortingView.SpikeSortingView import SpikeSortingView
 from ..extractors import LabboxEphysRecordingExtractor, LabboxEphysSortingExtractor
 
 def parse_workspace_uri(workspace_uri: str):
@@ -102,6 +102,7 @@ class Workspace:
         self._sortings[sorting_id] = x
         return sorting_id
     def precalculate(self):
+        print('DEPRECATED: workspace.precalculate() is deprecated.')
         from ._precalculate import _precalculate
         _precalculate(self)
     def _precalculate_debug(self):
@@ -150,6 +151,7 @@ class Workspace:
         _set_snippet_len_for_workspace(main_subfeed, snippet_len)
         self._snippet_len = snippet_len
     def figurl(self):
+        print('DEPRECATED: This method of generating a figURL is deprecated.')
         from figurl import Figure
         data = {
             'type': 'workspace',
@@ -315,7 +317,7 @@ class Workspace:
             sf.append_message(action)
         else:
             print(f"Label: '{action['label']}' already appended with action type: {action_type} to all unitIds in action")
-    from ._experimental_spikesortingview import experimental_spikesortingview
+    from ._spikesortingview import spikesortingview
 
 def create_workspace(*, label: Union[str, None]=None):
     feed = kc.create_feed()

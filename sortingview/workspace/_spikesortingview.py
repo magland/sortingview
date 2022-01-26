@@ -1,7 +1,7 @@
 import kachery_client as kc
-from ..experimental.SpikeSortingView import SpikeSortingView
+from ..SpikeSortingView import SpikeSortingView
 
-def experimental_spikesortingview(self, *, recording_id: str, sorting_id: str, label: str, include_curation: bool):
+def spikesortingview(self, *, recording_id: str, sorting_id: str, label: str, include_curation: bool):
     R = self.get_recording_extractor(recording_id)
     S = self.get_sorting_extractor(sorting_id)
 
