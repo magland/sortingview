@@ -224,9 +224,16 @@ class LabboxEphysRecordingExtractor(se.RecordingExtractor):
         elif recording_format == 'nrs':
             self._recording: se.RecordingExtractor = NrsRecordingExtractor(**data)
         elif recording_format == 'nwb':
-            from .nwbextractors import NwbRecordingExtractor
+            # from .nwbextractors import NwbRecordingExtractor
+            # path0 = kc.load_file(data['path'])
+            # self._recording: se.RecordingExtractor = NwbRecordingExtractor(path0, electrical_series_name=data.get('electrical_series_name', None))
+
+            from spikeinterface import extractors as se2
+            from .wrapperrecordingextractor import WrapperRecordingExtractor
             path0 = kc.load_file(data['path'])
-            self._recording: se.RecordingExtractor = NwbRecordingExtractor(path0, electrical_series_name=data.get('electrical_series_name', None))
+            assert path0 is not None, f'Unable to load nwb file: {data["path"]}'
+            self._recording: se.RecordingExtractor = WrapperRecordingExtractor(se2.NwbRecordingExtractor(path0))
+
         elif recording_format == 'bin1':
             self._recording: se.RecordingExtractor = Bin1RecordingExtractor(**data, p2p=True)
         elif recording_format == 'bin2':
