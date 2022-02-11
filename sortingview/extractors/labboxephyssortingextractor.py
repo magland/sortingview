@@ -38,7 +38,7 @@ def _try_mda_create_object(arg: Union[str, dict], samplerate=None) -> Union[None
                 sorting_format='mda',
                 data=dict(
                     firings=arg['firings'],
-                    samplerate=arg.get('samplerate', 30000)
+                    samplerate=arg.get('samplerate', samplerate if samplerate is not None else None)
                 )
             )
     
@@ -84,7 +84,7 @@ class LabboxEphysSortingExtractor(se.SortingExtractor):
 
         if 'firings' in self._object:
             sorting_format = 'mda'
-            data: Dict[str, Any]={'firings': self._object['firings'], 'samplerate': self._object.get('samplerate', 30000)}
+            data: Dict[str, Any]={'firings': self._object['firings'], 'samplerate': self._object.get('samplerate', samplerate if samplerate is not None else None)}
         else:
             sorting_format = self._object['sorting_format']
             data: Dict[str, Any] = self._object['data']
