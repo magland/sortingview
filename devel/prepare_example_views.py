@@ -5,7 +5,7 @@
 # https://figurl.org/f?v=gs://figurl/sortingview-gui-1&d=458ad0027d4f936a21c9a78045b43265916190e2&channel=franklab2&label=Tetrode%20example%202
 # https://figurl.org/f?v=gs://figurl/sortingview-gui-1&d=767c0bee71f1cfd66e895fe260237496313be78e&channel=franklab2&label=32-channel%20probe%20example
 
-import figurl as fig
+import figurl2 as fig
 
 X = [
     {
@@ -36,5 +36,5 @@ for x in X:
         'workspaceUri': x['workspace_uri']
     }
     F = fig.Figure(view_url='gs://figurl/sortingview-gui-1', data=data)
-    url = F.url(channel=x['channel'], label=x['label'])
+    url = F.url(label=x['label'])
     print(url)

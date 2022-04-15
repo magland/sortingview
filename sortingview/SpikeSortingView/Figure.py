@@ -1,6 +1,7 @@
 import os
-from typing import Any, Union
-import figurl as fig
+import kachery_cloud as kcl
+from typing import Any
+import figurl2 as fig
 
 
 class Figure:
@@ -12,8 +13,8 @@ class Figure:
             view_url=os.getenv('SPIKESORTINGVIEW_URL', 'gs://figurl/spikesortingview-1'),
             data=self._data
         )
-    def url(self, channel: Union[str, None]=None):
-        return self._figure.url(label=self._label, channel=channel)
+    def url(self):
+        return self._figure.url(label=self._label, project_id=kcl.get_project_id())
     def get_serialized_figure_data(self):
         return self._figure._serialized_data
     @property

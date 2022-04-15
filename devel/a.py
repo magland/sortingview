@@ -1,7 +1,7 @@
 import os
 import numpy as np
-import kachery_client as kc
-import figurl as fig
+import kachery_cloud as kcl
+import figurl2 as fig
 import sortingview as sv
 from sortingview.SpikeSortingView import prepare_spikesortingview_data
 from sortingview.SpikeSortingView import SpikeSortingView
@@ -18,10 +18,9 @@ def main():
         max_num_snippets_per_segment=100,
         channel_neighborhood_size=7
     )
-    f = kc.load_feed('test-spikesortingview-curation', create=True)
-    curation_subfeed = f.load_subfeed('main')
+    curation_feed = kcl.create_feed()
     X = SpikeSortingView(data_uri)
-    SpikeSortingView.set_sorting_curation_authorized_users(curation_subfeed.uri, ['jmagland@flatironinstitute.org'])
+    SpikeSortingView.set_sorting_curation_authorized_users(curation_feed.feed_id, ['jmagland@flatironinstitute.org'])
     test_metric_data = {}
     for u in X.unit_ids:
         test_metric_data[str(u)] = u
@@ -73,7 +72,7 @@ def _load_recording_sorting():
 def _load_positions():
     import pynwb
 
-    fname = kc.load_file('sha1://16f595ff4302ed112cbf8d8e13bd58393ce76dde/chimi20200216_new_6YC9LPAR7S.nwb?manifest=62a5f0709f576f65119fe17650740395dc1cfaeb')
+    fname = kcl.load_file('ipfs://bafybeig6cbafx5l7cmgn2i3c37rtzxhyl24thabu4l4xs2ab6ntblkrfqq?label=chimi20200216_new_6YC9LPAR7S.nwb')
     a = {
         'position_info_param_name': 'default_decoding',
         'nwb_file_name': 'chimi20200216_new_.nwb',
@@ -96,7 +95,7 @@ def _load_positions():
 def _load_linearized_positions():
     import pynwb
 
-    fname = kc.load_file('sha1://36fa7763b63aa16dedc31175b25706122260bc1c/chimi20200216_new_P3X6058LEE.nwb')
+    fname = kcl.load_file('ipfs://bafybeigi5s52obmlag2hqimsog2afn7glvpsp4j4yewqqjfadxcn3oxszy?label=chimi20200216_new_P3X6058LEE.nwb')
     a = {'position_info_param_name': 'default',
     'nwb_file_name': 'chimi20200216_new_.nwb',
     'interval_list_name': 'pos 1 valid times',

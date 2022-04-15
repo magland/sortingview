@@ -1,4 +1,4 @@
-import kachery_client as kc
+import kachery_cloud as kcl
 from ..SpikeSortingView import SpikeSortingView
 
 def spikesortingview(self, *, recording_id: str, sorting_id: str, label: str, include_curation: bool):
@@ -16,7 +16,8 @@ def spikesortingview(self, *, recording_id: str, sorting_id: str, label: str, in
     )
 
     if include_curation:
-        sorting_curation_uri = self.get_curation_subfeed(sorting_id).uri
+        feed = kcl.create_feed()
+        sorting_curation_uri = feed.uri
     else:
         sorting_curation_uri = None
     

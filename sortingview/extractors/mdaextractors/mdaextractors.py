@@ -1,8 +1,10 @@
+from tabnanny import verbose
 from typing import Union
 from spikeextractors import RecordingExtractor
 from spikeextractors import SortingExtractor
 
 import kachery_client as kc
+import kachery_cloud as kcl
 import json
 import numpy as np
 from .mdaio import DiskReadMda, readmda, readmda_header, writemda32, writemda64, writemda, appendmda
@@ -31,7 +33,10 @@ class MdaRecordingExtractor(RecordingExtractor):
         
         if download:
             assert self._timeseries_path is not None
-            path0 = kc.load_file(self._timeseries_path)
+            if self._timeseries_path.startswith('ipfs://'):
+                path0 = kcl.load_file(self._timeseries_path, verbose=True)
+            else:
+                path0 = kc.load_file(self._timeseries_path)
             if not path0:
                 raise Exception('Unable to download file: ' + self._timeseries_path)
         else:

@@ -152,7 +152,7 @@ class Workspace:
         self._snippet_len = snippet_len
     def figurl(self):
         print('DEPRECATED: This method of generating a figURL is deprecated.')
-        from figurl import Figure
+        from figurl2 import Figure
         data = {
             'type': 'workspace',
             'workspaceUri': self.uri

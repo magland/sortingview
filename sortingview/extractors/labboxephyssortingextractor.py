@@ -5,6 +5,7 @@ from copy import deepcopy
 from typing import Any, Dict, List, Union, cast
 
 import kachery_client as kc
+import kachery_cloud as kcl
 import spikeextractors as se
 from spikeextractors.extractors.numpyextractors.numpyextractors import NumpySortingExtractor
 from spikeextractors.sortingextractor import SortingExtractor
@@ -89,7 +90,11 @@ class LabboxEphysSortingExtractor(se.SortingExtractor):
             sorting_format = self._object['sorting_format']
             data: Dict[str, Any] = self._object['data']
         if sorting_format == 'mda':
-            firings_path = kc.load_file(data['firings'])
+            firings_uri = data['firings']
+            if firings_uri.startswith('ipfs://'):
+                firings_path = kcl.load_file(firings_uri, verbose=True)
+            else:
+                firings_path = kc.load_file(firings_uri)
             assert firings_path is not None, f'Unable to load firings file: {data["firings"]}'
             self._sorting: se.SortingExtractor = MdaSortingExtractor(firings_file=firings_path, samplerate=data['samplerate'])
         elif sorting_format == 'h5_v1':
