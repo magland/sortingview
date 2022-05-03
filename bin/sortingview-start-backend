@@ -1,0 +1,6 @@
+#!/usr/bin/env python3
+
+import sortingview
+
+if __name__ == '__main__':
+    sortingview.start_backend_cli()
