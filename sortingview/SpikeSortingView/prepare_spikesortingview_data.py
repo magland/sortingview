@@ -19,7 +19,7 @@ def prepare_spikesortingview_data(*,
 ) -> str:
     recording_object = _recording_object_for_recording(recording)
     sorting_object = _sorting_object_for_sorting(sorting)
-    cache_key = _sha1_of_object({
+    cache_key_obj = {
         'type': 'spikesortingview_data',
         'version': 2,
         'recording_object': recording_object,
@@ -28,7 +28,8 @@ def prepare_spikesortingview_data(*,
         'snippet_len': list(snippet_len),
         'max_num_snippets_per_segment': max_num_snippets_per_segment,
         'channel_neighborhood_size': channel_neighborhood_size
-    })
+    }
+    cache_key = _sha1_of_object(cache_key_obj)
     uri = kcl.get_mutable_local(f'spikesortingview_data/{cache_key}')
     if uri is not None and kcl.load_file(uri) is not None:
         return uri

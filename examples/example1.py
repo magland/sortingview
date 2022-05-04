@@ -3,7 +3,7 @@ import spikeinterface.extractors as se
 
 # Define SpikeInterface extractors for a recording/sorting pair
 # See: https://spikeinterface.readthedocs.io/en/latest/
-recording, sorting = se.toy_example(num_units=6, duration=120)
+recording, sorting = se.toy_example(num_units=6, duration=120, seed=0)
 
 # Note that only some recording/sorting extractors are supported by sortingview
 # Here is how we create copies of the extractors that are compatible with sortingview
