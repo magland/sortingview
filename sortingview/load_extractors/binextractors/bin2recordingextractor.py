@@ -1,4 +1,4 @@
-import kachery_client as kc
+import kachery_cloud as kcl
 import numpy as np
 import spikeextractors as se
 
@@ -57,7 +57,7 @@ class Bin2RecordingExtractor(se.RecordingExtractor):
         i1 = start_frame * num_bytes_per_entry * self._raw_num_channels
         i2 = end_frame * num_bytes_per_entry * self._raw_num_channels
         
-        buf = kc.load_bytes(self._raw, start=i1, end=i2)
+        buf = kcl.load_bytes(self._raw, start=i1, end=i2)
         X = np.frombuffer(buf, dtype=self._dtype).reshape((end_frame - start_frame, self._raw_num_channels))
         
         # old method

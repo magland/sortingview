@@ -1,7 +1,6 @@
 from typing import Union
 import spikeinterface as si
 import spikeinterface.extractors as se2
-import kachery_client as kc
 import kachery_cloud as kcl
 from .MdaRecordingExtractorV2.MdaRecordingExtractorV2 import MdaRecordingExtractorV2
 from .binextractors.bin2recordingextractor import Bin2RecordingExtractor
@@ -21,10 +20,7 @@ def load_recording_extractor(recording_object: dict):
     data = recording_object['data']
     if recording_format == 'mda':
         raw_uri = data['raw']
-        if raw_uri.startswith('ipfs://'):
-            raw_path = kcl.load_file(raw_uri, verbose=True)
-        else:
-            raw_path = kc.load_file(raw_uri)
+        raw_path = kcl.load_file(raw_uri, verbose=True)
         geom = data.get('geom', None)
         params = data.get('params', None)
         assert raw_path is not None, f'Unable to load raw file: {raw_uri}'
@@ -35,7 +31,7 @@ def load_recording_extractor(recording_object: dict):
     elif recording_format == 'nwb2':
         nwb_file_uri: str = data['nwb_file_uri']
         electrical_series_name: Union[str, None] = data.get('electrical_series_name', None)
-        nwb_file_path = kc.load_file(nwb_file_uri)
+        nwb_file_path = kcl.load_file(nwb_file_uri)
         if nwb_file_path is None:
             raise Exception(f'Unable to load nwb file: {nwb_file_uri}')
         recording = se2.NwbRecordingExtractor(file_path=nwb_file_path, electrical_series_name=electrical_series_name)

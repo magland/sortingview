@@ -1,17 +1,17 @@
 import numpy as np
 import spikeinterface as si
-import kachery_client as kc
+import kachery_cloud as kcl
 from .copy_recording_extractor import _random_string
 from .mdaio import writemda64
 from .load_sorting_extractor import load_sorting_extractor
 
 
 def copy_sorting_extractor(sorting: si.BaseSorting):
-    with kc.TemporaryDirectory() as tmpdir:
+    with kcl.TemporaryDirectory() as tmpdir:
         fname = tmpdir + '/' + _random_string(10) + '_firings.mda'
         write_firings_from_sorting(sorting=sorting, save_path=fname)
         # with ka.config(use_hard_links=True):
-        uri = kc.store_file(fname, basename='firings.mda')
+        uri = kcl.store_file_local(fname, label='firings.mda')
         sorting = load_sorting_extractor({
             'sorting_format': 'mda',
             'data': {

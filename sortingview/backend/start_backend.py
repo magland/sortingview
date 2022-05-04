@@ -39,7 +39,7 @@ def _check_sorting_curation_authorization(sorting_curation_uri: str, user_id: st
     b: List[str] = json.loads(a)
     return user_id in b
 
-def start_backend(*, project_id: str, backend_id: Union[str, None]=None):
+def start_backend(*, project_id: Union[str, None], backend_id: Union[str, None]=None):
     X = TaskBackend(project_id=project_id)
     X.register_task_handler(
         task_type='calculation',

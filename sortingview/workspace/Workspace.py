@@ -89,6 +89,7 @@ class Workspace:
 
             'description': f'Imported from Python: {label}'
         }
+        print(f'Adding sorting: {sorting_id}')
         self._feed.append_message({
             'action': {
                 'type': 'ADD_SORTING',

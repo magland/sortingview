@@ -1,6 +1,7 @@
+import os
 import spikeinterface as si
 import spikeinterface.extractors as se
-import kachery_client as kc
+import kachery_cloud as kcl
 
 
 def _sorting_object_for_sorting(sorting: si.BaseSorting):
@@ -10,7 +11,7 @@ def _sorting_object_for_sorting(sorting: si.BaseSorting):
         file_path = sorting._file_path
         electrical_series_name = sorting._electrical_series_name
         sampling_frequency = sorting._sampling_frequency
-        nwb_file_uri = kc.link_file(file_path)
+        nwb_file_uri = kcl.store_file_local(file_path, label=os.path.basename(file_path))
         sorting_object = {
             'sorting_format': 'nwb2',
             'data': {

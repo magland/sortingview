@@ -1,18 +1,18 @@
 import random
 import spikeinterface as si
-import kachery_client as kc
+import kachery_cloud as kcl
 from .load_recording_extractor import load_recording_extractor
 
 
 def copy_recording_extractor(recording: si.BaseRecording, *, serialize_dtype=None):
     if serialize_dtype is None:
         raise Exception('You must specify the serialize_dtype when serializing recording extractor')
-    with kc.TemporaryDirectory() as tmpdir:
+    with kcl.TemporaryDirectory() as tmpdir:
         fname = tmpdir + '/' + _random_string(10) + '_recording.dat'
         # se.BinDatRecordingExtractor.write_recording(recording=recording, save_path=fname, time_axis=0, dtype=serialize_dtype)
         # with ka.config(use_hard_links=True):
         recording.get_traces(segment_index=0).astype(serialize_dtype).tofile(fname)
-        uri = kc.store_file(fname, basename='raw.dat')
+        uri = kcl.store_file_local(fname, label='raw.dat')
         num_channels = recording.get_num_channels()
         channel_ids = [int(a) for a in recording.get_channel_ids()]
         xcoords = [recording.get_channel_property(a, 'location')[0] for a in channel_ids]

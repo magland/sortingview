@@ -1,6 +1,6 @@
 from typing import List, Tuple, Union
 import spikeinterface as si
-import kachery_client as kc
+import kachery_cloud as kcl
 import json
 import h5py
 import numpy as np
@@ -9,7 +9,7 @@ from sortingview.SpikeSortingView.prepare_spikesortingview_data import prepare_s
 class SpikeSortingView:
     def __init__(self, data_uri: str) -> None:
         self._data_uri = data_uri
-        self._data_file_name = kc.load_file(data_uri)
+        self._data_file_name = kcl.load_file(data_uri)
         if self._data_file_name is None:
             raise Exception(f'Unable to load spikesortingview data file: {data_uri}')
         with h5py.File(self._data_file_name, 'r') as f:
@@ -123,20 +123,6 @@ class SpikeSortingView:
     def get_traces_sample(self, *, segment: int) -> np.ndarray:
         with h5py.File(self._data_file_name, 'r') as f:
             return np.array(f.get(f'segment/{segment}/traces_sample'))
-    @staticmethod
-    def set_sorting_curation_authorized_users(sorting_curation_uri: str, user_ids: List[str]):
-        key = {
-            'type': 'spikesortingview_sorting_curation_authorized_users',
-            'sorting_curation_uri': sorting_curation_uri
-        }
-        kc.set(key, user_ids)
-    @staticmethod
-    def get_sorting_curation_authorized_users(sorting_curation_uri: str):
-        key = {
-            'type': 'spikesortingview_sorting_curation_authorized_users',
-            'sorting_curation_uri': sorting_curation_uri
-        }
-        return kc.get(key)
     
     # The following member functions are implemented in separate files
     from ._create_autocorrelograms import create_autocorrelograms

@@ -3,8 +3,9 @@ import json
 import math
 import numpy as np
 import h5py
+import hashlib
 import spikeinterface as si
-import kachery_client as kc
+import kachery_cloud as kcl
 from ..load_extractors._recording_object_for_recording import _recording_object_for_recording
 from ..load_extractors._sorting_object_for_sorting import _sorting_object_for_sorting
 
@@ -18,7 +19,7 @@ def prepare_spikesortingview_data(*,
 ) -> str:
     recording_object = _recording_object_for_recording(recording)
     sorting_object = _sorting_object_for_sorting(sorting)
-    cache_key = {
+    cache_key = _sha1_of_object({
         'type': 'spikesortingview_data',
         'version': 2,
         'recording_object': recording_object,
@@ -27,9 +28,9 @@ def prepare_spikesortingview_data(*,
         'snippet_len': list(snippet_len),
         'max_num_snippets_per_segment': max_num_snippets_per_segment,
         'channel_neighborhood_size': channel_neighborhood_size
-    }
-    uri = kc.get(cache_key)
-    if uri is not None and kc.load_file(uri) is not None:
+    })
+    uri = kcl.get_mutable_local(f'spikesortingview_data/{cache_key}')
+    if uri is not None and kcl.load_file(uri) is not None:
         return uri
     unit_ids = np.array(sorting.get_unit_ids()).astype(np.int32)
     channel_ids = np.array(recording.get_channel_ids()).astype(np.int32)
@@ -37,7 +38,7 @@ def prepare_spikesortingview_data(*,
     num_frames = recording.get_num_frames()
     num_frames_per_segment = math.ceil(segment_duration_sec * sampling_frequency)
     num_segments = math.ceil(num_frames / num_frames_per_segment)
-    with kc.TemporaryDirectory() as tmpdir:
+    with kcl.TemporaryDirectory() as tmpdir:
         output_file_name = tmpdir + '/spikesortingview.h5'
         with h5py.File(output_file_name, 'w') as f:
             f.create_dataset('unit_ids', data=unit_ids)
@@ -143,8 +144,8 @@ def prepare_spikesortingview_data(*,
                     spike_snippets = spike_snippets_concat[index:index + num, :, channel_neighborhood_indices]
                     index = index + num
                     f.create_dataset(f'segment/{iseg}/unit/{unit_id}/subsampled_spike_snippets', data=spike_snippets)
-        uri = kc.store_file(output_file_name)
-        kc.set(cache_key, uri)
+        uri = kcl.store_file_local(output_file_name)
+        kcl.set_mutable_local(f'spikesortingview_data/{cache_key}', uri)
         return uri
 
 def get_channel_neighborhood(*,
@@ -189,3 +190,12 @@ def extract_spike_snippets(*,
         for t in range(T):
             ret[:, t, :] = traces[times - a + t, :]
     return ret
+
+def _sha1_of_string(txt: str) -> str:
+    hh = hashlib.sha1(txt.encode('utf-8'))
+    ret = hh.hexdigest()
+    return ret
+
+def _sha1_of_object(obj: object) -> str:
+    txt = json.dumps(obj, sort_keys=True, separators=(',', ':'))
+    return _sha1_of_string(txt)

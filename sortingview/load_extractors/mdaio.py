@@ -2,7 +2,7 @@ import numpy as np
 import struct
 import os
 import traceback
-import kachery_client as kc
+import kachery_cloud as kcl
 import io
 
 
@@ -127,7 +127,7 @@ class DiskReadMda:
         start_byte = self._header.header_size + self._header.num_bytes_per_entry * i
         end_byte = start_byte + self._header.num_bytes_per_entry * N
         try:
-            bytes0 = kc.load_bytes(self._path, start=int(start_byte), end=int(end_byte))
+            bytes0 = kcl.load_bytes(self._path, start=int(start_byte), end=int(end_byte))
         except:
             print(f'Problem reading bytes {start_byte}-{end_byte} from file {self._path}')
             raise
@@ -153,7 +153,7 @@ def is_url(path):
 
 def _read_header(path, verbose=True):
     try:
-        bytes0 = kc.load_bytes(path, start=0, end=200)
+        bytes0 = kcl.load_bytes(path, start=0, end=200)
     except:
         raise Exception(f'Unable to load header of file: {path}')
     if bytes0 is None:
@@ -283,7 +283,7 @@ def _write_header(path, H, rewrite=False):
 def readmda(path):
     if (file_extension(path) == '.npy'):
         return readnpy(path)
-    path = kc.load_file(path)
+    path = kcl.load_file(path)
     H = _read_header(path)
     if (H is None):
         print("Problem reading header of: {}".format(path))
