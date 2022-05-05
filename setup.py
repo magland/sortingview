@@ -12,6 +12,7 @@ setup(
         'figurl2>=0.1.6',
         'pynwb',
         'pyyaml',
+        'h5py',
         'spikeextractors>=0.9.9',
         'spikecomparison',
         'spikeinterface>=0.94.0'

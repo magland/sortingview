@@ -62,9 +62,9 @@ print(url2)
 # Click the link to view the visualization in a browser
 ```
 
-Here is an [example output view](https://figurl.org/f?v=gs://figurl/spikesortingview-2&d=ipfs://bafkreif3rb4yqpmece62wpfgqgdqc4izjitgs6x3htuqoeonwu6r5pd5ly&project=siojtbyvbw&label=Test%20workspace).
+See [examples/example1.py](examples/example1.py)
 
-See also [these examples](./examples/).
+[View figURL](https://figurl.org/f?v=gs://figurl/spikesortingview-2&d=ipfs://bafkreif3rb4yqpmece62wpfgqgdqc4izjitgs6x3htuqoeonwu6r5pd5ly&project=siojtbyvbw&label=Test%20workspace)
 
 ## Reloading a workspace
 
@@ -92,6 +92,12 @@ sorting = ...
 R = sv.copy_recording_extractor(recording=recording, serialize_dtype='float32')
 S = sv.copy_sorting_extractor(sorting=sorting)
 ```
+
+## Multi-panel timeseries visualization
+
+See [examples/timeseries_panels.py](examples/timeseries_panels.py)
+
+[View figURL](https://www.figurl.org/f?v=gs://figurl/spikesortingview-2&d=ipfs://bafkreictlxjsm5c35hz5gs4x4z6e3k5wumcqujytabfygjceecfowdx7li&project=siojtbyvbw&label=Jaq_03_12_visualization_data)
 
 ## Environment
 

@@ -1,5 +1,7 @@
 import json
 from typing import List, Union
+import numpy as np
+import h5py
 from kachery_cloud.TaskBackend import TaskBackend
 import kachery_cloud as kcl
 from ..SpikeSortingView import SpikeSortingView
@@ -39,12 +41,27 @@ def _check_sorting_curation_authorization(sorting_curation_uri: str, user_id: st
     b: List[str] = json.loads(a)
     return user_id in b
 
+def fetch_position_pdf_segment(*, pdf_object: dict, segment_number: int, downsample_factor: int):
+    format0 = pdf_object['format']
+    if format0 == 'position_pdf_h5_v1':
+        uri = pdf_object['uri']
+        fname = kcl.load_file(uri)
+        with h5py.File(fname, 'r') as f:
+            return np.array(f.get(f'segment/{downsample_factor}/{segment_number}'))
+    else:
+        raise Exception(f'Unexpected format: {format0}')
+
 def start_backend(*, project_id: Union[str, None], backend_id: Union[str, None]=None):
     X = TaskBackend(project_id=project_id)
     X.register_task_handler(
         task_type='calculation',
         task_name='spikesortingview.fetch_cross_correlogram.2',
         task_function=fetch_cross_correlogram
+    )
+    X.register_task_handler(
+        task_type='calculation',
+        task_name='spikesortingview.fetch_position_pdf_segment.1',
+        task_function=fetch_position_pdf_segment
     )
     X.register_task_handler(
         task_type='action',
