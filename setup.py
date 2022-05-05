@@ -10,7 +10,7 @@ setup(
         'spikeinterface>=0.94.0'
         'spikeextractors>=0.9.9',
         'kachery-cloud>=0.1.11'
-        'figurl2>=0.1.6',
+        'figurl>=0.2.0',
         'click',
         'pynwb',
         'pyyaml',

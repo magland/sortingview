@@ -1,7 +1,7 @@
 import os
 import kachery_cloud as kcl
 from typing import Any
-import figurl2 as fig
+import figurl as fig
 
 
 class Figure:
