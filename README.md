@@ -29,16 +29,14 @@ sortingview-start-backend
 
 For advanced usage, see [doc/backend.md](doc/backend.md).
 
-## Basic usage
-
-See also [these examples](./examples/).
+## Visualizing a recording/sorting pair
 
 ```python
 import sortingview as sv
 
 # Define SpikeInterface extractors for a recording/sorting pair
 # See: https://spikeinterface.readthedocs.io/en/latest/
-# Note that only some recording/sorting extractors are supported by sortingview
+# Note that only some recording/sorting extractor types are supported by sortingview
 # See below for how to create a copy of a recording/sorting extractor to be
 # compatible with sortingview.
 recording = ...
@@ -66,6 +64,8 @@ print(url2)
 
 Here is an [example output view](https://figurl.org/f?v=gs://figurl/spikesortingview-2&d=ipfs://bafkreif3rb4yqpmece62wpfgqgdqc4izjitgs6x3htuqoeonwu6r5pd5ly&project=siojtbyvbw&label=Test%20workspace).
 
+See also [these examples](./examples/).
+
 ## Reloading a workspace
 
 A workspace can be reloaded from an existing URI. For example:
@@ -79,7 +79,7 @@ W = sv.load_workspace(uri)
 
 ## Creating a copy of a recording/sorting extractor
 
-Only some recording/sorting extractors are supported by sortingview.
+Only some recording/sorting extractor types are supported by sortingview.
 If you have extractors that are not supported, you can create copies
 that are compatible:
 
@@ -91,4 +91,22 @@ sorting = ...
 
 R = sv.copy_recording_extractor(recording=recording, serialize_dtype='float32')
 S = sv.copy_sorting_extractor(sorting=sorting)
+```
+
+## Environment
+
+You can use environment variables to control the storage/configuration directory used by kachery-cloud and the project ID used for storing data in the cloud.
+
+```bash
+# Set the storage/configuration directory used by kachery-cloud
+# If unset, $HOME/.kachery-cloud will be used
+# The client ID will be determined by this directory
+# You can share the same kachery-cloud directory between multiple users,
+# but they must all have read/write privileges
+export KACHERY_CLOUD_DIR="..."
+
+# Set the project ID for storing data in the cloud
+# If unset, the default project associated with the client will be used
+# The default project can be configured at https://cloud.kacheryhub.org
+export KACHERY_CLOUD_PROJECT_ID="..."
 ```
