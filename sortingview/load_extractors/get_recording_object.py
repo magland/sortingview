@@ -4,13 +4,13 @@ import spikeinterface.extractors as se
 import kachery_cloud as kcl
 
 
-def _recording_object_for_recording(recording: si.BaseRecording):
+def get_recording_object(recording: si.BaseRecording):
     if hasattr(recording, 'sortingview_object'):
         return recording.sortingview_object
     elif isinstance(recording, se.NwbRecordingExtractor):
         file_path = recording._file_path
         electrical_series_name = recording._electrical_series_name
-        nwb_file_uri = kcl.store_file_local(file_path, label=os.path.basename(file_path))
+        nwb_file_uri = kcl.store_file_local(file_path, label=os.path.basename(file_path), reference=True) # important to set reference=True
         recording_object = {
             'recording_format': 'nwb2',
             'data': {

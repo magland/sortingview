@@ -8,8 +8,8 @@ import spikeinterface as si
 from ._get_sorting_curation import _get_sorting_curation
 from ..load_extractors.load_recording_extractor import load_recording_extractor
 from ..load_extractors.load_sorting_extractor import load_sorting_extractor
-from ..load_extractors._recording_object_for_recording import _recording_object_for_recording
-from ..load_extractors._sorting_object_for_sorting import _sorting_object_for_sorting
+from ..load_extractors.get_recording_object import get_recording_object
+from ..load_extractors.get_sorting_object import get_sorting_object
 
 
 class Workspace:
@@ -49,7 +49,7 @@ class Workspace:
                 del p['label']
         self._query_string = _dict_to_query_string(p)
     def add_recording(self, *, label: str, recording: si.BaseRecording):
-        recording_object = _recording_object_for_recording(recording)
+        recording_object = get_recording_object(recording)
         recording_id = 'R-' + _random_id()
         if recording_id in self._recording_records:
             raise Exception(f'Duplicate recording ID: {recording_id}')
@@ -70,7 +70,7 @@ class Workspace:
         self._recording_records[recording_id] = x
         return recording_id
     def add_sorting(self, *, recording_id: str, label: str, sorting: si.BaseSorting):
-        sorting_object = _sorting_object_for_sorting(sorting)
+        sorting_object = get_sorting_object(sorting)
         sorting_id = 'S-' + _random_id()
         if recording_id not in self._recording_records:
             raise Exception(f'Recording not found: {recording_id}')

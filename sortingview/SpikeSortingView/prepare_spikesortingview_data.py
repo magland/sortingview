@@ -6,8 +6,8 @@ import h5py
 import hashlib
 import spikeinterface as si
 import kachery_cloud as kcl
-from ..load_extractors._recording_object_for_recording import _recording_object_for_recording
-from ..load_extractors._sorting_object_for_sorting import _sorting_object_for_sorting
+from ..load_extractors.get_recording_object import get_recording_object
+from ..load_extractors.get_sorting_object import get_sorting_object
 
 def prepare_spikesortingview_data(*,
     recording: si.BaseRecording,
@@ -17,8 +17,8 @@ def prepare_spikesortingview_data(*,
     max_num_snippets_per_segment: Union[int, None],
     channel_neighborhood_size: int
 ) -> str:
-    recording_object = _recording_object_for_recording(recording)
-    sorting_object = _sorting_object_for_sorting(sorting)
+    recording_object = get_recording_object(recording)
+    sorting_object = get_sorting_object(sorting)
     cache_key_obj = {
         'type': 'spikesortingview_data',
         'version': 2,

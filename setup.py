@@ -7,14 +7,13 @@ setup(
     ],
     include_package_data = True,
     install_requires=[
-        'click',
-        'kachery-client>=1.2.0',
+        'spikeinterface>=0.94.0'
+        'spikeextractors>=0.9.9',
+        'kachery-cloud>=0.1.11'
         'figurl2>=0.1.6',
+        'click',
         'pynwb',
         'pyyaml',
-        'h5py',
-        'spikeextractors>=0.9.9',
-        'spikecomparison',
-        'spikeinterface>=0.94.0'
+        'h5py'
     ]
 )
