@@ -9,7 +9,7 @@ setup(
     install_requires=[
         'click',
         'kachery-client>=1.1.0',
-        'figurl>=0.1.7',
+        'figurl==0.1.8',
         'hither>=0.8.1',
         'pynwb',
         'pyyaml',
