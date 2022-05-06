@@ -1,4 +1,3 @@
-from tabnanny import verbose
 from typing import Union
 from spikeextractors import RecordingExtractor
 from spikeextractors import SortingExtractor
