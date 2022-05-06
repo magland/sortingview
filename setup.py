@@ -14,6 +14,7 @@ setup(
         'click',
         'pynwb',
         'pyyaml',
-        'h5py'
+        'h5py',
+        'google-auth'
     ]
 )
