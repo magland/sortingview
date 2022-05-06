@@ -15,6 +15,7 @@ setup(
         'pynwb',
         'pyyaml',
         'h5py',
-        'google-auth'
+        'google-auth',
+        'cachecontrol'
     ]
 )
