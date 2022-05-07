@@ -35,6 +35,15 @@ def load_recording_extractor(recording_object: dict):
         if nwb_file_path is None:
             raise Exception(f'Unable to load nwb file: {nwb_file_uri}')
         recording = se2.NwbRecordingExtractor(file_path=nwb_file_path, electrical_series_name=electrical_series_name)
+    elif recording_format == 'BinaryRecordingExtractor':
+        file_paths = data['file_paths']
+        file_paths_new = []
+        for file_path in file_paths:
+            a = kcl.load_file(file_path)
+            if a is None:
+                raise Exception(f'Unable to load file: {file_path}')
+        data['file_paths'] = file_paths_new
+        recording = se2.BinaryRecordingExtractor(**data)
     else:
         raise Exception(f'Unexpected recording format: {recording_format}')
     setattr(recording, 'sortingview_object', recording_object)

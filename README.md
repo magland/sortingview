@@ -7,7 +7,12 @@ View, curate, and share results of electrophysiological spike sorting in the bro
 It is recommended that you use a conda environment with Python >= 3.8 and numpy.
 
 ```bash
-git clone <this-repo>
+# clone this repo
+git clone https://github.com/magland/sortingview
+
+# checkout this branch
+git checkout v2
+
 cd sortingview
 pip install -e .
 ```
@@ -79,7 +84,7 @@ W = sv.load_workspace(uri)
 
 ## Creating a copy of a recording/sorting extractor
 
-Only some recording/sorting extractor types are supported by sortingview.
+Only some recording/sorting extractor types are supported by sortingview (see below for the list).
 If you have extractors that are not supported, you can create copies
 that are compatible:
 
@@ -98,6 +103,18 @@ S = sv.copy_sorting_extractor(sorting=sorting)
 See [examples/timeseries_panels.py](examples/timeseries_panels.py)
 
 [View figURL](https://www.figurl.org/f?v=gs://figurl/spikesortingview-2&d=ipfs://bafkreictlxjsm5c35hz5gs4x4z6e3k5wumcqujytabfygjceecfowdx7li&project=siojtbyvbw&label=Jaq_03_12_visualization_data)
+
+## Supported SpikeInterface extractors
+
+The following sorting/recording extractor types are currently supported by sortingview:
+
+* NpzSortingExtractor
+* MdaSortingExtractor
+* NwbSortingExtractor
+* NwbRecordingExtractor
+* BinaryRecordingExtractor
+
+If your extractor is not one of these types you can use `copy_*_extractor()` as above to create a copy that is supported, or request support for your extractor.
 
 ## Environment
 

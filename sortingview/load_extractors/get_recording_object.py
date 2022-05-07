@@ -18,6 +18,21 @@ def get_recording_object(recording: si.BaseRecording):
                 'electrical_series_name': electrical_series_name
             }
         }
+    elif isinstance(recording, se.BinaryRecordingExtractor):
+        data = recording._kwargs
+        file_paths = data['file_paths']
+        data['file_paths'] = [
+            kcl.store_file_local(
+                file_path,
+                label=os.path.basename(file_path),
+                reference=True # important
+            )
+            for file_path in file_paths
+        ]
+        recording_object = {
+            'recording_format': 'BinaryRecordingExtractor',
+            'data': data
+        }
     else:
         raise Exception('Unable to create sortingview object from recording')
     setattr(recording, 'sortingview_object', recording_object)

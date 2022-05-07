@@ -30,6 +30,12 @@ def load_sorting_extractor(sorting_object: dict):
         if nwb_file_path is None:
             raise Exception(f'Unable to load nwb file: {nwb_file_uri}')
         sorting = se2.NwbSortingExtractor(file_path=nwb_file_path, electrical_series_name=electrical_series_name, sampling_frequency=sampling_frequency)
+    elif sorting_format == 'npz':
+        npz_file_uri: str = data['npz_file_uri']
+        npz_file_path = kcl.load_bytes(npz_file_uri)
+        if npz_file_path is None:
+            raise Exception(f'Unable to load npz file: {npz_file_uri}')
+        sorting = se2.NpzSortingExtractor(npz_file_path)
     else:
         raise Exception(f'Unexpected sorting format: {sorting_format}')
     setattr(sorting, 'sortingview_object', sorting_object)
