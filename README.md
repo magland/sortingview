@@ -125,7 +125,7 @@ You can use environment variables to control the storage/configuration directory
 # If unset, $HOME/.kachery-cloud will be used
 # The client ID will be determined by this directory
 # You can share the same kachery-cloud directory between multiple users,
-# but they must all have read/write privileges
+# but you will need to set mult-user mode for the client
 export KACHERY_CLOUD_DIR="..."
 
 # Set the project ID for storing data in the cloud
@@ -133,3 +133,21 @@ export KACHERY_CLOUD_DIR="..."
 # The default project can be configured at https://cloud.kacheryhub.org
 export KACHERY_CLOUD_PROJECT_ID="..."
 ```
+
+It is recommend that you set these variables in your `~/.bashrc` file.
+
+## Sharing the kachery cloud directory between multiple users
+
+On a shared system, you may want to share your kachery cloud directory between multiple users so that
+they can utilize the same projects, mutables, local files, and task backends. Follow these steps:
+
+* Create a new kachery cloud directory in a location where the users may access it
+with read and write permissions. For example, this could be on a shared drive.
+* Have each user set the KACHERY_CLOUD_DIR environment variable to point to this
+directory on their system (see above)
+* Have the main user (the one who will own the client) initiatialize the client as usual via
+`kachery-cloud-init`
+* Set `multiuser` to `true` in `$KACHERY_CLOUD_DIR/config.yaml`
+
+The last step is necessary so that all files are created with read/write access for
+all users.
