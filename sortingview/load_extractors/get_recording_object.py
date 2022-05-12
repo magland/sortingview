@@ -2,6 +2,7 @@ import os
 import spikeinterface as si
 import spikeinterface.extractors as se
 import kachery_cloud as kcl
+from kachery_cloud._serialize import _serialize
 
 
 def get_recording_object(recording: si.BaseRecording):
@@ -29,11 +30,21 @@ def get_recording_object(recording: si.BaseRecording):
             )
             for file_path in file_paths
         ]
+        data['channel_locations'] = recording.get_channel_locations()
         recording_object = {
             'recording_format': 'BinaryRecordingExtractor',
             'data': data
         }
+    elif isinstance(recording, si.ConcatenateSegmentRecording):
+        data = {
+            'recording_list': [get_recording_object(r) for r in recording.recording_list]
+        }
+        recording_object = {
+            'recording_format': 'ConcatenateSegmentRecording',
+            'data': data
+        }
     else:
         raise Exception('Unable to create sortingview object from recording')
+    recording_object = _serialize(recording_object)
     setattr(recording, 'sortingview_object', recording_object)
     return recording_object

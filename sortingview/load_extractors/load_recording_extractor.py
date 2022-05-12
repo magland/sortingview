@@ -2,6 +2,8 @@ from typing import Union
 import spikeinterface as si
 import spikeinterface.extractors as se2
 import kachery_cloud as kcl
+from kachery_cloud._serialize import _deserialize
+
 from .MdaRecordingExtractorV2.MdaRecordingExtractorV2 import MdaRecordingExtractorV2
 from .binextractors.bin2recordingextractor import Bin2RecordingExtractor
 
@@ -18,6 +20,7 @@ def load_recording_extractor(recording_object: dict):
         ))
     recording_format = recording_object['recording_format']
     data = recording_object['data']
+    data = _deserialize(data)
     if recording_format == 'mda':
         raw_uri = data['raw']
         raw_path = kcl.load_file(raw_uri, verbose=True)
@@ -43,7 +46,15 @@ def load_recording_extractor(recording_object: dict):
             if a is None:
                 raise Exception(f'Unable to load file: {file_path}')
         data['file_paths'] = file_paths_new
+        channel_locations = data.get('channel_locations', None)
+        if channel_locations is not None:
+            del data['channel_locations']
         recording = se2.BinaryRecordingExtractor(**data)
+        if channel_locations is not None:
+            recording.set_channel_locations(channel_locations)
+    elif recording_format == 'ConcatenateSegmentRecording':
+        recording_list = [ load_recording_extractor(r) for r in data['recording_list'] ]
+        recording = si.ConcatenateSegmentRecording(recording_list=recording_list)
     else:
         raise Exception(f'Unexpected recording format: {recording_format}')
     setattr(recording, 'sortingview_object', recording_object)
