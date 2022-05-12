@@ -9,7 +9,7 @@ setup(
     install_requires=[
         'spikeinterface>=0.94.0',
         'spikeextractors>=0.9.9',
-        'kachery-cloud>=0.1.12',
+        'kachery-cloud>=0.1.13',
         'figurl>=0.2.0',
         'click',
         'pynwb',
