@@ -45,6 +45,7 @@ def load_recording_extractor(recording_object: dict):
             a = kcl.load_file(file_path)
             if a is None:
                 raise Exception(f'Unable to load file: {file_path}')
+            file_paths_new.append(a)
         data['file_paths'] = file_paths_new
         channel_locations = data.get('channel_locations', None)
         if channel_locations is not None:
