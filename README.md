@@ -113,6 +113,7 @@ The following sorting/recording extractor types are currently supported by sorti
 * NwbSortingExtractor
 * NwbRecordingExtractor
 * BinaryRecordingExtractor
+* ConcatenateSegmentRecording
 
 If your extractor is not one of these types you can use `copy_*_extractor()` as above to create a copy that is supported, or request support for your extractor.
 
