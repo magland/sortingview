@@ -167,9 +167,12 @@ These two versions are similar in many ways, but there are differences in the AP
 * Uses kachery-cloud which is the more robust version of kachery we will use going forward
 * Operates directly on SpikeInterface recording/sorting extractors rather than using intermediate LabboxEphys*Extractors
 
-Can old workspaces be loaded with this new version? Old workspaces use feeds that are managed by kachery-daemon whereas new workspaces use feeds in kachery-cloud. But there is some limited backward compatibility to allow reading of sorting curations from old workspaces. You can load a workspace from the old system (uri starting with workspace://) using this v2 package and read sorting IDs, recording IDs, sorting records, recording records, and sorting curations.
+*Can old workspaces be loaded with this new version?*
+Old workspaces use feeds that are managed by kachery-daemon whereas new workspaces use feeds in kachery-cloud.
+But there is some limited backward compatibility to allow reading of sorting curations from old workspaces.
+You can load an old workspace (uri starting with workspace://) using this v2 package and read sorting IDs, recording IDs, sorting extractors, recording extractors, and sorting curations.
 You cannot apply any write operations to an old workspace.
-Right now you cannot load recording/sorting extractors from an old workspace, but the plan is to work toward supporting that, as needed.
+Some recording/sorting extractors may still not be loadable from an old workspace, but the plan is to work toward supporting those, as needed.
 
 Note: It is not necessary to run a kachery-daemon for this version of sortingview *unless* you are loading old workspaces in readonly mode as described above.
 

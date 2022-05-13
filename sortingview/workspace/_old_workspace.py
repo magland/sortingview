@@ -1,4 +1,5 @@
-from typing import List
+import kachery_cloud as kcl
+from typing import Any
 from ._get_sorting_curation import _simplify_merge_groups
 
 
@@ -79,3 +80,28 @@ def _get_sorting_curation_for_old_workspace_helper(subfeed):
         'mergeGroups': merge_groups,
         'isClosed': is_closed
     }
+
+def _migrate_files_from_old_kachery_recursive(x: Any):
+    if isinstance(x, dict):
+        y = {}
+        for k in x.keys():
+            y[k] = _migrate_files_from_old_kachery_recursive(x[k])
+        return y
+    elif isinstance(x, list):
+        return [_migrate_files_from_old_kachery_recursive(a) for a in x]
+    elif isinstance(x, str) and x.startswith('sha1://'):
+        return _migrate_file_from_old_kachery(x)
+    else:
+        return x
+
+def _migrate_file_from_old_kachery(uri: str):
+    import kachery_client as kc
+    if not uri.startswith('sha1://'):
+        return uri
+    path = kcl.load_file(uri)
+    if path is not None:
+        return uri
+    path2 = kc.load_file(uri)
+    if path2 is None:
+        raise Exception(f'Unable to migrate file from old kachery: {uri}')
+    return kcl.store_file_local(path2, reference=True, label=None)

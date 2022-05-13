@@ -58,6 +58,8 @@ class Bin2RecordingExtractor(se.RecordingExtractor):
         i2 = end_frame * num_bytes_per_entry * self._raw_num_channels
         
         buf = kcl.load_bytes(self._raw, start=i1, end=i2)
+        if buf is None:
+            raise Exception(f'Unable to find file: {self._raw}')
         X = np.frombuffer(buf, dtype=self._dtype).reshape((end_frame - start_frame, self._raw_num_channels))
         
         # old method

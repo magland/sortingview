@@ -231,10 +231,18 @@ class Workspace:
     def get_recording_extractor(self, recording_id):
         r = self.get_recording_record(recording_id)
         recording_object = r['recordingObject']
+        if self._feed is None:
+            from ._old_workspace import _migrate_files_from_old_kachery_recursive
+            # old workspace, maybe we need to bring sha1 files over to new system
+            recording_object = _migrate_files_from_old_kachery_recursive(recording_object)
         return load_recording_extractor(recording_object)
     def get_sorting_extractor(self, sorting_id):
         s = self.get_sorting_record(sorting_id)
         sorting_object = s['sortingObject']
+        if self._feed is None:
+            from ._old_workspace import _migrate_files_from_old_kachery_recursive
+            # old workspace, maybe we need to bring sha1 files over to new system
+            sorting_object = _migrate_files_from_old_kachery_recursive(sorting_object)
         return load_sorting_extractor(sorting_object)
     def get_sorting_curation(self, sorting_id: str):
         if self._feed is None:

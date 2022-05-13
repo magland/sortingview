@@ -9,11 +9,10 @@ print(Rr)
 Sr = W.get_sorting_record(W.sorting_ids[0])
 print(Sr)
 
-# does not work because the embedded files are in old kachery
-# R = W.get_recording_extractor(W.recording_ids[0])
-# S = W.get_sorting_extractor(W.sorting_ids[0])
-# print(R.get_channel_ids())
-# print(S.get_unit_ids())
+R = W.get_recording_extractor(W.recording_ids[0])
+S = W.get_sorting_extractor(W.sorting_ids[0])
+print(R.get_channel_ids())
+print(S.get_unit_ids())
 
 curation = W.get_sorting_curation(W.sorting_ids[0])
 print(curation)
