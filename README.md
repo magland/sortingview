@@ -152,3 +152,14 @@ directory on their system (see above)
 
 The last step is necessary so that all files are created with read/write access for
 all users.
+
+## Backward compatibility
+
+This version of sortingview (`>= 0.8.*`) uses kachery-cloud whereas the previous version (`0.7.*`) used kachery-daemon and kachery-client.
+The previous version is on the v1 branch. This version is on the main branch.
+
+This version of sortingview has some limited backward compatibility with the previous version. The purpose is to allow reading of sorting curations from old workspaces. You can load a workspace from the old system (uri starting with workspace://) and read sorting IDs, recording IDs, sorting records, recording records, and sorting curations.
+You cannot apply any write operations to an old workspace.
+Right now you cannot load recording/sorting extractors from an old workspace, but the plan is to work toward supporting that.
+
+It is not necessary to run a kachery-daemon for this version of sorting *unless* you are loading old workspaces in readonly mode as described above.

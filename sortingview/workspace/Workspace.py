@@ -15,9 +15,18 @@ from ..load_extractors.get_sorting_object import get_sorting_object
 class Workspace:
     def __init__(self, uri: str) -> None:
         self._uri = uri
-        self._feed_id, self._query_string, self._query = parse_workspace_uri(uri)
-        self._feed = kcl.load_feed(self._feed_id)
-        messages = _get_messages_from_feed(self._feed)
+        if uri.startswith('workspace://'):
+            from ._old_workspace import parse_old_workspace_uri, get_messages_from_old_workspace
+            old_feed_id, old_query_string = parse_old_workspace_uri(uri)
+            messages = get_messages_from_old_workspace(old_feed_id)
+            self._feed_id = None
+            self._feed = None
+            self._query_string = old_query_string
+            self._query = _query_string_to_dict(old_query_string)
+        else:
+            self._feed_id, self._query_string, self._query = parse_workspace_uri(uri)
+            self._feed = kcl.load_feed(self._feed_id)
+            messages = _get_messages_from_feed(self._feed)
         self._recording_records = _get_recording_records_from_feed_messages(messages)
         self._sorting_records = _get_sorting_records_from_feed_messages(messages)
         self._unit_metrics_for_sortings = _get_unit_metrics_for_sortings_from_feed_messages(messages)
@@ -26,13 +35,20 @@ class Workspace:
         self._label = self._query.get('label', None)
     @property
     def uri(self):
+        if self._feed is None:
+            # old workspace
+            return self._uri
         q = f'?{self._query_string}' if self._query_string else ''
         return f'sortingview-workspace:{self._feed.feed_id}{q}'
     @property
     def feed_uri(self):
+        if self._feed is None:
+            raise Exception('Cannot get feed_uri for old workspace')
         return f'feed://{self._feed.feed_id}'
     @property
     def feed_id(self):
+        if self._feed is None:
+            raise Exception('Cannot get feed_id for old workspace')
         return self._feed.feed_id
     @property
     def feed(self):
@@ -41,6 +57,8 @@ class Workspace:
     def label(self):
         return self._label
     def set_label(self, label: str):
+        if self._feed is None:
+            raise Exception('Cannot set label for old workspace')
         p = _query_string_to_dict(self._query_string)
         if label:
             p['label'] = label
@@ -49,6 +67,8 @@ class Workspace:
                 del p['label']
         self._query_string = _dict_to_query_string(p)
     def add_recording(self, *, label: str, recording: si.BaseRecording):
+        if self._feed is None:
+            raise Exception('Cannot add recording for old workspace')
         recording_object = get_recording_object(recording)
         recording_id = 'R-' + _random_id()
         if recording_id in self._recording_records:
@@ -70,6 +90,8 @@ class Workspace:
         self._recording_records[recording_id] = x
         return recording_id
     def add_sorting(self, *, recording_id: str, label: str, sorting: si.BaseSorting):
+        if self._feed is None:
+            raise Exception('Cannot add sorting for old workspace')
         sorting_object = get_sorting_object(sorting)
         sorting_id = 'S-' + _random_id()
         if recording_id not in self._recording_records:
@@ -99,6 +121,8 @@ class Workspace:
         self._sorting_records[sorting_id] = x
         return sorting_id
     def set_unit_metrics_for_sorting(self, *, sorting_id: str, metrics: List[dict]):
+        if self._feed is None:
+            raise Exception('Cannot set unit metrics for old workspace')
         metrics_uri = kcl.store_json(metrics, label='unit_metrics.json')
         x = {
             'sortingId': sorting_id,
@@ -112,6 +136,8 @@ class Workspace:
         })
         self._unit_metrics_for_sortings[sorting_id] = metrics
     def create_curation_feed_for_sorting(self, *, sorting_id: str):
+        if self._feed is None:
+            raise Exception('Cannot create curation feed for old workspace')
         feed = kcl.create_feed()
         uri = feed.uri
         self._feed.append_message({
@@ -128,6 +154,8 @@ class Workspace:
     def get_curation_feed_for_sorting(self, sorting_id: str) -> Union[kcl.Feed, None]:
         return self._curation_feeds_for_sortings.get(sorting_id, None)
     def delete_recording(self, recording_id: str):
+        if self._feed is None:
+            raise Exception('Cannot delete recording for old workspace')
         if recording_id not in self._recordings:
             raise Exception(f'Recording not found: {recording_id}')
         self._feed.append_message({
@@ -148,6 +176,8 @@ class Workspace:
                 del self._sorting_records[sorting_id]
         del self._recording_records[recording_id]
     def delete_sorting(self, sorting_id: str):
+        if self._feed is None:
+            raise Exception('Cannot delete sorting for old workspace')
         if sorting_id not in self._sorting_records:
             raise Exception(f'Sorting not found: {sorting_id}')
         self._feed.append_message({
@@ -158,11 +188,15 @@ class Workspace:
         })
         del self._sorting_records[sorting_id]
     def set_sorting_curation_authorized_users(self, *, sorting_id: str, user_ids: List[str]):
+        if self._feed is None:
+            raise Exception('Cannot set sorting curation authorized users for old workspace')
         feed = self.get_curation_feed_for_sorting(sorting_id)
         if feed is None:
             raise Exception('No sorting curation feed')
         kcl.set_mutable(f'sortingview/sortingCurationAuthorizedUsers/{feed.uri}', json.dumps(user_ids))
     def get_sorting_curation_authorized_users(self, *, sorting_id: str):
+        if self._feed is None:
+            raise Exception('Cannot get sorting curation authorized users for old workspace')
         feed = self.get_curation_feed_for_sorting(sorting_id)
         if feed is None:
             raise Exception('No sorting curation feed')
@@ -170,6 +204,8 @@ class Workspace:
         if a is None: return []
         return json.loads(a)
     def set_snippet_len(self, snippet_len: Tuple[int, int]):
+        if self._feed is None:
+            raise Exception('Cannot set_snippet_len for old workspace')
         self._feed.append_message({
             'action': {
                 'type': 'SET_SNIPPET_LEN',
@@ -201,6 +237,8 @@ class Workspace:
         sorting_object = s['sortingObject']
         return load_sorting_extractor(sorting_object)
     def get_sorting_curation(self, sorting_id: str):
+        if self._feed is None:
+            return self._get_sorting_curation_for_old_workspace(sorting_id)
         curation_feed = self.get_curation_feed_for_sorting(sorting_id)
         return _get_sorting_curation(curation_feed)
     def get_curated_sorting_extractor(self, sorting_id):
@@ -214,6 +252,8 @@ class Workspace:
             }
         })
     def sorting_curation_add_label(self, *, sorting_id, label: str, unit_ids: Union[int, List[int]]):
+        if self._feed is None:
+            raise Exception('Cannot add label for old workspace')
         action = {
             'type': 'ADD_UNIT_LABEL',
             'label': label,
@@ -221,6 +261,8 @@ class Workspace:
         }
         self.add_sorting_curation_action(sorting_id, action)
     def sorting_curation_remove_label(self, *, sorting_id, label: str, unit_ids: Union[int, List[int]]):
+        if self._feed is None:
+            raise Exception('Cannot remove label for old workspace')
         action = {
             'type': 'REMOVE_UNIT_LABEL',
             'label': label,
@@ -228,18 +270,24 @@ class Workspace:
         }
         self.add_sorting_curation_action(sorting_id, action)
     def sorting_curation_merge_units(self, *, sorting_id, unit_ids: Union[int, List[int]]):
+        if self._feed is None:
+            raise Exception('Cannot merge units for old workspace')
         action = {
             'type': 'MERGE_UNITS',
             'unitIds': unit_ids
         }
         self.add_sorting_curation_action(sorting_id, action)
     def sorting_curation_unmerge_units(self, *, sorting_id, unit_ids: Union[int, List[int]]):
+        if self._feed is None:
+            raise Exception('Cannot unmerge units for old workspace')
         action = {
             'type': 'UNMERGE_UNITS',
             'unitIds': unit_ids
         }
         self.add_sorting_curation_action(sorting_id, action)
     def add_sorting_curation_action(self, sorting_id: str, action: dict):
+        if self._feed is None:
+            raise Exception('Cannot add sorting curation action for old workspace')
         sorting = self.get_sorting_extractor(sorting_id)
         valid_unit_ids = sorting.get_unit_ids()
         action_type = action['type']
@@ -329,6 +377,10 @@ class Workspace:
             feed.append_message(action)
         else:
             print(f"Label: '{action['label']}' already appended with action type: {action_type} to all unitIds in action")
+    def _get_sorting_curation_for_old_workspace(self, sorting_id: str):
+        from ._old_workspace import parse_old_workspace_uri, get_sorting_curation_for_old_workspace
+        old_feed_id, old_query = parse_old_workspace_uri(self._uri)
+        return get_sorting_curation_for_old_workspace(old_feed_id, sorting_id)
     from ._spikesortingview import spikesortingview
 
 
