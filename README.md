@@ -7,6 +7,11 @@ View, curate, and share results of electrophysiological spike sorting in the bro
 It is recommended that you use a conda environment with Python >= 3.8 and numpy.
 
 ```bash
+# For now, install by cloning the source
+# because only the previous version is
+# currently on PyPI. See the section
+# below on backward compatibility.
+
 # clone this repo
 git clone https://github.com/magland/sortingview
 
