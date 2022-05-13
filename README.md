@@ -172,3 +172,5 @@ Right now you cannot load recording/sorting extractors from an old workspace, bu
 Note: It is not necessary to run a kachery-daemon for this version of sortingview *unless* you are loading old workspaces in readonly mode as described above.
 
 The sortingview backend programs (sortingview-start-backend) are different between the two versions, but they can run at the same time (from different conda environments) without interfering with one another. Of course, the old backend requires a running kachery-daemon whereas the new daemon does not.
+
+This new version is not yet available on PyPI, but will be soon. You can always install the previous version (`0.7.*`) from PyPI.
