@@ -15,9 +15,6 @@ It is recommended that you use a conda environment with Python >= 3.8 and numpy.
 # clone this repo
 git clone https://github.com/magland/sortingview
 
-# checkout this branch
-git checkout v2
-
 cd sortingview
 pip install -e .
 ```
