@@ -1,6 +1,8 @@
 from typing import Union
 import kachery_cloud as kcl
 import spikeinterface.extractors as se2
+import spikeinterface as si
+from .h5extractors.h5sortingextractorv1 import H5SortingExtractorV1
 
 
 def load_sorting_extractor(sorting_object: dict):
@@ -36,6 +38,10 @@ def load_sorting_extractor(sorting_object: dict):
         if npz_file_path is None:
             raise Exception(f'Unable to load npz file: {npz_file_uri}')
         sorting = se2.NpzSortingExtractor(npz_file_path)
+    elif sorting_format == 'h5_v1':
+        h5_path = kcl.load_file(data['h5_path'])
+        sorting_old = H5SortingExtractorV1(h5_path=h5_path)
+        sorting = si.old_api_utils.OldToNewSorting(sorting_old)
     else:
         raise Exception(f'Unexpected sorting format: {sorting_format}')
     setattr(sorting, 'sortingview_object', sorting_object)
