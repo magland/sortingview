@@ -3,7 +3,13 @@ import kachery_cloud as kcl
 import spikeinterface.extractors as se2
 
 
-def load_sorting_extractor(sorting_object: dict):
+def load_sorting_extractor(sorting_object: Union[dict, str]):
+    if isinstance(sorting_object, str):
+        if sorting_object.startswith('sha1://') or sorting_object.startswith('ipfs://'):
+            oo = kcl.load_json(sorting_object)
+            return load_sorting_extractor(oo)
+        else:
+            raise Exception(f'Unexpected URI: {sorting_object}')
     if 'firings' in sorting_object:
         return load_sorting_extractor(dict(
             sorting_format='mda',

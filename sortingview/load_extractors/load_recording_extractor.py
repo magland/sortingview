@@ -8,7 +8,13 @@ from .MdaRecordingExtractorV2.MdaRecordingExtractorV2 import MdaRecordingExtract
 from .binextractors.bin2recordingextractor import Bin2RecordingExtractor
 
 
-def load_recording_extractor(recording_object: dict):
+def load_recording_extractor(recording_object: Union[dict, str]):
+    if isinstance(recording_object, str):
+        if recording_object.startswith('sha1://') or recording_object.startswith('ipfs://'):
+            oo = kcl.load_json(recording_object)
+            return load_recording_extractor(oo)
+        else:
+            raise Exception(f'Unexpected URI: {recording_object}')
     if 'raw' in recording_object:
         return load_recording_extractor(dict(
             recording_format='mda',
