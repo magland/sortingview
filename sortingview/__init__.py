@@ -8,3 +8,4 @@ from .load_extractors.get_recording_object import get_recording_object
 from .load_extractors.get_sorting_object import get_sorting_object
 from .load_extractors.copy_recording_extractor import copy_recording_extractor
 from .load_extractors.copy_sorting_extractor import copy_sorting_extractor
+from .load_extractors.save_recording import save_recording

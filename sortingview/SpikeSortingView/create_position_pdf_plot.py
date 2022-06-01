@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import Any, List, Tuple, Union
 import numpy as np
 from .Figure import Figure
 
@@ -21,7 +21,7 @@ def create_position_pdf_plot(*, start_time_sec: np.float32, sampling_frequency: 
         label=label
     )
 
-def create_live_position_pdf_plot(*, start_time_sec: np.float32, end_time_sec: np.float32, sampling_frequency: np.float32, num_positions: int, pdf_object: dict, segment_size: int, multiscale_factor: int, label: str):
+def create_live_position_pdf_plot(*, start_time_sec: np.float32, end_time_sec: np.float32, sampling_frequency: np.float32, num_positions: int, pdf_object: dict, segment_size: int, multiscale_factor: int, label: str, linear_positions: Union[np.array, None]=None):
     data = {
         'type': 'LivePositionPdfPlot',
         'pdfObject': pdf_object,
@@ -32,6 +32,8 @@ def create_live_position_pdf_plot(*, start_time_sec: np.float32, end_time_sec: n
         'segmentSize': segment_size,
         'multiscaleFactor': multiscale_factor
     }
+    if linear_positions is not None:
+        data['linearPositions'] = linear_positions
     return Figure(
         data=data,
         label=label
