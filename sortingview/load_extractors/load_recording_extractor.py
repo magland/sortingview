@@ -6,7 +6,6 @@ from kachery_cloud._serialize import _deserialize
 
 from .MdaRecordingExtractorV2.MdaRecordingExtractorV2 import MdaRecordingExtractorV2
 from .binextractors.bin2recordingextractor import Bin2RecordingExtractor
-from .h5extractors.h5recordingextractorv1 import H5RecordingExtractorV1
 
 
 def load_recording_extractor(recording_object: dict):
@@ -57,13 +56,6 @@ def load_recording_extractor(recording_object: dict):
     elif recording_format == 'ConcatenateSegmentRecording':
         recording_list = [ load_recording_extractor(r) for r in data['recording_list'] ]
         recording = si.ConcatenateSegmentRecording(recording_list=recording_list)
-    elif recording_format == 'h5_v1':
-        h5_uri = data['h5_uri']
-        h5_path = kcl.load_file(h5_uri)
-        if h5_path is None:
-            raise Exception(f'Unable to load h5 recording file: {h5_uri}')
-        recording_old = H5RecordingExtractorV1(h5_path=h5_path)
-        recording = si.old_api_utils.OldToNewRecording(recording_old)
     else:
         raise Exception(f'Unexpected recording format: {recording_format}')
     setattr(recording, 'sortingview_object', recording_object)
