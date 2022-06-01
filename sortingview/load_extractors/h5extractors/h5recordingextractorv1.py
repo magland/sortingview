@@ -1,5 +1,6 @@
 from typing import List
 
+import spikeinterface as si
 import spikeextractors as se
 
 from .TimeseriesModel_Hdf5.TimeseriesModel_Hdf5 import TimeseriesModel_Hdf5, prepare_timeseries_hdf5_from_recording, set_geom_on_recording
@@ -41,7 +42,7 @@ class H5RecordingExtractorV1(se.RecordingExtractor):
 
         return self._timeseries_model.getChunk(t1=start_frame, t2=end_frame, channel_inds=channel_inds)
     @staticmethod
-    def write_recording(recording: se.RecordingExtractor, h5_path: str, dtype=float):
+    def write_recording(recording: si.BaseRecording, h5_path: str, dtype=float):
         hdf5_chunk_size = 10 * 1000 * 1000
         hdf5_padding = 10000
         prepare_timeseries_hdf5_from_recording(recording, h5_path, chunk_size=hdf5_chunk_size, padding=hdf5_padding, dtype=dtype)

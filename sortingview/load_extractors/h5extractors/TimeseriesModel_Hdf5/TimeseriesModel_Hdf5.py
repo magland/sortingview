@@ -2,7 +2,7 @@ import math
 from typing import List, Union, cast
 import numpy as np
 import h5py
-import spikeextractors as se
+import spikeinterface as si
 
 class TimeseriesModel_Hdf5:
     def __init__(self, path):
@@ -93,7 +93,7 @@ def set_geom_on_recording(recording: se.RecordingExtractor, geom: np.ndarray):
     for ii in range(len(channel_ids)):
         recording.set_channel_property(channel_ids[ii], 'location', geom[ii, :].tolist())
 
-def geom_from_recording(recording):
+def geom_from_recording(recording: si.BaseRecording):
     channel_ids = recording.get_channel_ids()
     location0 = recording.get_channel_property(channel_ids[0], 'location')
     nd = len(location0)
@@ -104,7 +104,7 @@ def geom_from_recording(recording):
         geom[ii, :] = list(location_ii)
     return geom
 
-def prepare_timeseries_hdf5_from_recording(recording: se.RecordingExtractor, timeseries_hdf5_fname: str, *, chunk_size: int, padding: int, dtype=float):
+def prepare_timeseries_hdf5_from_recording(recording: si.BaseRecording, timeseries_hdf5_fname: str, *, chunk_size: int, padding: int, dtype=float):
     chunk_size_with_padding = chunk_size+2*padding
     with h5py.File(timeseries_hdf5_fname, "w") as f:
         channel_ids = cast(List[int], recording.get_channel_ids())
@@ -136,7 +136,7 @@ def prepare_timeseries_hdf5_from_recording(recording: se.RecordingExtractor, tim
             aa = padding-(t1-s1)
             # Read the padded chunk
             padded_chunk[:, aa:aa+s2 -
-                         s1] = recording.get_traces(start_frame=s1, end_frame=s2)
+                         s1] = recording.get_traces(start_frame=s1, end_frame=s2).T
 
             for m in range(M):
                 f.create_dataset('part-{}-{}'.format(m, j),
