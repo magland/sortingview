@@ -2,7 +2,7 @@ import math
 from typing import List, Union, cast
 import numpy as np
 import h5py
-import spikeinterface as se
+import spikeextractors as se
 import spikeinterface as si
 
 class TimeseriesModel_Hdf5:
