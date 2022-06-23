@@ -23,6 +23,7 @@ def load_sorting_extractor(sorting_object: Union[dict, str]):
     if sorting_format == 'mda':
         firings_uri = data['firings']
         firings_path = kcl.load_file(firings_uri, verbose=True)
+        assert firings_path is not None
         samplerate = data.get('samplerate', None)
         if samplerate is None:
             raise Exception('samplerate is None')

@@ -21,12 +21,10 @@ def main():
 
 def load_file(uri: str, *, project_id: str):
     task_client = TaskClient(project_id=project_id)
-    try:
-        fname = kcl.load_file(uri)
+    fname = kcl.load_file(uri)
+    if fname is not None:
         print(f'File loaded without requesting upload task: {fname}')
         return fname
-    except:
-        pass
     print('Requesting upload task')
     task_client.request_task(
         task_type='action',

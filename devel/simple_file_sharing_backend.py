@@ -21,6 +21,8 @@ def kachery_store_shared_file(*, uri: str, passcode: str):
     # impose restrictions on uri here
 
     fname = kcl.load_file(uri, local_only=True) # requires kachery-cloud >= 0.1.18
+    if fname is None:
+        raise Exception(f'Unable to load file: {uri}')
 
     # impose restrictions on file here
 

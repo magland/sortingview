@@ -30,6 +30,7 @@ def load_recording_extractor(recording_object: Union[dict, str]):
     if recording_format == 'mda':
         raw_uri = data['raw']
         raw_path = kcl.load_file(raw_uri, verbose=True)
+        assert raw_path is not None
         geom = data.get('geom', None)
         params = data.get('params', None)
         assert raw_path is not None, f'Unable to load raw file: {raw_uri}'
@@ -41,6 +42,7 @@ def load_recording_extractor(recording_object: Union[dict, str]):
         nwb_file_uri: str = data['nwb_file_uri']
         electrical_series_name: Union[str, None] = data.get('electrical_series_name', None)
         nwb_file_path = kcl.load_file(nwb_file_uri)
+        assert nwb_file_path is not None
         if nwb_file_path is None:
             raise Exception(f'Unable to load nwb file: {nwb_file_uri}')
         recording = se2.NwbRecordingExtractor(file_path=nwb_file_path, electrical_series_name=electrical_series_name)

@@ -284,6 +284,7 @@ def readmda(path):
     if (file_extension(path) == '.npy'):
         return readnpy(path)
     path = kcl.load_file(path)
+    assert path is not None
     H = _read_header(path)
     if (H is None):
         print("Problem reading header of: {}".format(path))

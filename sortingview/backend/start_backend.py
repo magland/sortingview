@@ -46,6 +46,7 @@ def fetch_position_pdf_segment(*, pdf_object: dict, segment_number: int, downsam
     if format0 == 'position_pdf_h5_v1':
         uri = pdf_object['uri']
         fname = kcl.load_file(uri)
+        assert fname is not None
         with h5py.File(fname, 'r') as f:
             return np.array(f.get(f'segment/{downsample_factor}/{segment_number}'))
     else:

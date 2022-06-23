@@ -13,6 +13,7 @@ def main():
     uri = 'ipfs://bafybeibixnwjoxoc5fhhfesvfixsuxc2fsdstd4dknqkmkbu6wdewmofre?label=Jaq_03_12_visualization_data.npy'
     print(f'Loading {uri}')
     fname = kcl.load_file(uri)
+    assert fname is not None
     X = np.load(fname, allow_pickle=True)
 
     print('Creating views...')
