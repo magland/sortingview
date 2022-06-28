@@ -259,15 +259,24 @@ class Workspace:
                 'merge_groups': sc.get('mergeGroups', [])
             }
         })
-    def sorting_curation_add_label(self, *, sorting_id, label: str, unit_ids: Union[int, List[int]]):
+    def sorting_curation_add_label(self, *, sorting_id, label: Union[str, List[str]], unit_ids: Union[int, List[int]]):
         if self._feed is None:
             raise Exception('Cannot add label for old workspace')
-        action = {
-            'type': 'ADD_UNIT_LABEL',
-            'label': label,
-            'unitId': unit_ids
-        }
-        self.add_sorting_curation_action(sorting_id, action)
+        if isinstance(label, list):
+            for l in label:
+                action = {
+                    'type': 'ADD_UNIT_LABEL',
+                    'label': l,
+                    'unitId': unit_ids
+                }
+                self.add_sorting_curation_action(sorting_id, action)
+        else:
+            action = {
+                    'type': 'ADD_UNIT_LABEL',
+                    'label': label,
+                    'unitId': unit_ids
+                }
+            self.add_sorting_curation_action(sorting_id, action)
     def sorting_curation_remove_label(self, *, sorting_id, label: str, unit_ids: Union[int, List[int]]):
         if self._feed is None:
             raise Exception('Cannot remove label for old workspace')
