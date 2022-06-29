@@ -2,20 +2,20 @@ from typing import List
 import kachery_cloud as kcl
 
 
-def _get_sorting_curation(subfeed: kcl.Feed):
-    subfeed.set_position(0)
+def _get_sorting_curation(feed: kcl.Feed):
+    feed.set_position(0)
     labels_by_unit = {}
     merge_groups = []
     is_closed = False
     while True:
-        msgs = subfeed.get_next_messages(wait_msec=0.1)
+        msgs = feed.get_next_messages(timeout_sec=0.1)
         if msgs is None: break
         if len(msgs) == 0: break
         for a in msgs:
             message_type = a.get('type', None)
             assert message_type is not None, "Feed contained message with no type."
             # if is_closed and message_type != 'REOPEN_CURATION':
-            #    raise Exception('ERROR: Subfeed attempts curation on a closed curation object.')
+            #    raise Exception('ERROR: feed attempts curation on a closed curation object.')
             if message_type == 'ADD_UNIT_LABEL':
                 unit_ids = a.get('unitId', []) # allow this to be a list or an int
                 if not isinstance(unit_ids, list):
