@@ -1,3 +1,4 @@
+.pylintrc
 dask-worker-space
 *.spikesortingview.h5
 dist
