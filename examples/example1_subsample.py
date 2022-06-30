@@ -24,10 +24,16 @@ W.create_curation_feed_for_sorting(sorting_id=sorting_id)
 W.set_sorting_curation_authorized_users(sorting_id=sorting_id, user_ids=['jmagland@flatironinstitute.org'])
 
 # Prepare a visualization and print the figURL
-url2 = W.spikesortingview(recording_id=recording_id, sorting_id=sorting_id, label='Test workspace')
+url2 = W.spikesortingview(
+    recording_id=recording_id,
+    sorting_id=sorting_id,
+    label='Test workspace',
+    _raster_plot_subsample_max_firing_rate=1,
+    _spike_amplitudes_subsample_max_firing_rate=1
+)
 print(url2)
 
 # Click the link to view the visualization in a browser
 
 # 6/30/22
-# https://www.figurl.org/f?v=gs://figurl/spikesortingview-5&d=sha1://04fd31a8f881eb86e0830cda81fb012960663a62&project=lqhzprbdrq&label=Test%20workspace
+# https://figurl.org/f?v=gs://figurl/spikesortingview-5&d=sha1://418efe7790d1c8b6354966d3c601f749eefa4305&project=lqhzprbdrq&label=Test%20workspace
