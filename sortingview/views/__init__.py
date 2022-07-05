@@ -10,3 +10,6 @@ from .Splitter import Splitter
 from .View import View
 from .MountainLayout import MountainLayout, MountainLayoutItem
 from .SortingCuration import SortingCuration
+from .SortingSummary import SortingSummary
+from .ElectrodeGeometry import ElectrodeGeometry
+from .SpikeAmplitudes import SpikeAmplitudes, SpikeAmplitudesItem

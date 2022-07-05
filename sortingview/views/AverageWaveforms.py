@@ -1,5 +1,5 @@
 import numpy as np
-from typing import List, Union
+from typing import Any, Dict, List, Union
 from .View import View
 
 
@@ -32,15 +32,19 @@ class AverageWaveforms(View):
     Average waveforms view
     """
     def __init__(self,
-        average_waveforms: List[AverageWaveformItem]
+        average_waveforms: List[AverageWaveformItem], *,
+        channel_locations: Union[None, Dict[str, Any]] = None
     ) -> None:
         super().__init__('AverageWaveforms')
         self._average_waveforms = average_waveforms
+        self._channel_locations = channel_locations
     def to_dict(self) -> dict:
         ret = {
             'type': self.type,
             'averageWaveforms': [a.to_dict() for a in self._average_waveforms]
         }
+        if self._channel_locations is not None:
+            ret['channelLocations'] = self._channel_locations
         return ret
     def child_views(self) -> List[View]:
         return []

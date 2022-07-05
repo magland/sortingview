@@ -133,7 +133,7 @@ def prepare_spikesortingview_data(*,
                         subsampled_spike_train = spike_train
                     f.create_dataset(f'segment/{iseg}/unit/{unit_id}/subsampled_spike_train', data=subsampled_spike_train)
                     all_subsampled_spike_trains.append(subsampled_spike_train)
-                subsampled_spike_trains_concat = np.concatenate(all_subsampled_spike_trains, dtype=np.int32)
+                subsampled_spike_trains_concat = np.concatenate(all_subsampled_spike_trains)
                 # print('Extracting spike snippets')
                 spike_snippets_concat = extract_spike_snippets(traces=traces_with_padding, times=subsampled_spike_trains_concat - start_frame_with_padding, snippet_len=snippet_len)
                 # print('Collecting spike snippets')

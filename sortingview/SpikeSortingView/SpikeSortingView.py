@@ -125,6 +125,8 @@ class SpikeSortingView:
             return np.array(f.get(f'segment/{segment}/traces_sample'))
     
     # The following member functions are implemented in separate files
+
+    # older method
     from ._create_autocorrelograms import create_autocorrelograms
     from ._create_raster_plot import create_raster_plot
     from ._create_average_waveforms import create_average_waveforms
@@ -134,3 +136,13 @@ class SpikeSortingView:
     from ._create_spike_amplitudes import create_spike_amplitudes
     from ._create_electrode_geometry import create_electrode_geometry
     from ._create_live_cross_correlograms import create_live_cross_correlograms
+
+    # newest method
+    from ._sorting_summary_view import sorting_summary_view
+    from ._units_table_view import units_table_view
+    from ._raster_plot_view import raster_plot_view
+    from ._autocorrelograms_view import autocorrelograms_view
+    from ._cross_correlograms_view import cross_correlograms_view
+    from ._average_waveforms_view import average_waveforms_view
+    from ._electrode_geometry_view import electrode_geometry_view
+    from ._spike_amplitudes_view import spike_amplitudes_view
