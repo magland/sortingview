@@ -4,6 +4,9 @@ from .View import View
 
 
 class RasterPlotItem:
+    """
+    Spike train for a single unit in a raster plot
+    """
     def __init__(self,
         unit_id: Union[int, str],
         spike_times_sec: np.array
@@ -18,6 +21,9 @@ class RasterPlotItem:
         return ret
 
 class RasterPlot(View):
+    """
+    Raster plot view
+    """
     def __init__(self, *,
         start_time_sec: float,
         end_time_sec: float,

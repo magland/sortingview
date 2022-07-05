@@ -4,6 +4,9 @@ from .View import View
 
 
 class Box(View):
+    """
+    Horizontal box layout
+    """
     def __init__(self,
         items: List[LayoutItem], *,
         direction: Literal['horizontal', 'vertical'],

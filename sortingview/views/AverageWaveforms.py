@@ -4,6 +4,9 @@ from .View import View
 
 
 class AverageWaveformItem:
+    """
+    Single average waveform item (single box)
+    """
     def __init__(self,
         unit_id: Union[int, str],
         channel_ids: List[Union[int, str]],
@@ -25,6 +28,9 @@ class AverageWaveformItem:
         return ret
 
 class AverageWaveforms(View):
+    """
+    Average waveforms view
+    """
     def __init__(self,
         average_waveforms: List[AverageWaveformItem]
     ) -> None:

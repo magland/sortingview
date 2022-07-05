@@ -1,9 +1,11 @@
-import numpy as np
 from typing import List, Literal, Union
 from .View import View
 
 
 class UnitsTableColumn:
+    """
+    Single column in a units table
+    """
     def __init__(self,
         key: str,
         label: str,
@@ -20,6 +22,9 @@ class UnitsTableColumn:
         }
 
 class UnitsTableRow:
+    """
+    Single row in a units table
+    """
     def __init__(self,
         unit_id: Union[int, str],
         values: dict
@@ -33,6 +38,9 @@ class UnitsTableRow:
         }
 
 class UnitsTable(View):
+    """
+    Units table view
+    """
     def __init__(self, *,
         columns: List[UnitsTableColumn],
         rows: List[UnitsTableRow]

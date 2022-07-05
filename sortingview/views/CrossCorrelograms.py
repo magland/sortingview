@@ -4,6 +4,9 @@ from .View import View
 
 
 class CrossCorrelogramItem:
+    """
+    Single cross correlogram
+    """
     def __init__(self,
         unit_id1: Union[int, str],
         unit_id2: Union[int, str],
@@ -23,6 +26,9 @@ class CrossCorrelogramItem:
         }
 
 class CrossCorrelograms(View):
+    """
+    Cross correlograms view
+    """
     def __init__(self,
         cross_correlograms: List[CrossCorrelogramItem]
     ) -> None:

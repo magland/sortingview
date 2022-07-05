@@ -156,7 +156,7 @@ class Workspace:
     def delete_recording(self, recording_id: str):
         if self._feed is None:
             raise Exception('Cannot delete recording for old workspace')
-        if recording_id not in self._recordings:
+        if recording_id not in self._recording_records:
             raise Exception(f'Recording not found: {recording_id}')
         self._feed.append_message({
             'action': {
@@ -201,7 +201,8 @@ class Workspace:
         if feed is None:
             raise Exception('No sorting curation feed')
         a = kcl.get_mutable(f'sortingview/sortingCurationAuthorizedUsers/{feed.uri}')
-        if a is None: return []
+        if a is None:
+            return []
         return json.loads(a)
     def set_snippet_len(self, snippet_len: Tuple[int, int]):
         if self._feed is None:
@@ -249,6 +250,11 @@ class Workspace:
             return self._get_sorting_curation_for_old_workspace(sorting_id)
         curation_feed = self.get_curation_feed_for_sorting(sorting_id)
         return _get_sorting_curation(curation_feed)
+    def get_sorting_curation_uri(self, sorting_id: str):
+        curation_feed = self.get_curation_feed_for_sorting(sorting_id)
+        if curation_feed is None:
+            return None
+        return curation_feed.uri
     def get_curated_sorting_extractor(self, sorting_id):
         s = self.get_sorting_record(sorting_id)
         sc = self.get_sorting_curation(sorting_id)
@@ -332,17 +338,17 @@ class Workspace:
         elif action_type in valid_unit_based_actions:
             unitId_req = False
             unitIds_req = True
-            if 'label' in action: 
+            if 'label' in action:
                 raise ValueError(f'label is invalid argument for action type: {action_type}')
         elif action_type in valid_unitless_actions:
             unitId_req = False
             unitIds_req = False
-            if 'label' in action: 
+            if 'label' in action:
                 raise ValueError(f'label is invalid argument for action type: {action_type}')
         else:
             raise RuntimeError(f'Invalid curation action type: {action_type}')
         # Check if unitId is list or int
-        if unitId_req == True:
+        if unitId_req is True:
             unit_ids = action['unitId']
             if not isinstance(unit_ids, list):
                 if not isinstance(unit_ids, int):
@@ -366,13 +372,13 @@ class Workspace:
                         break
                     elif unit not in sc['labelsByUnit']:
                         missing_label = True
-                        break          
+                        break
         else:
             # Check if unitId was passed improperly
             if 'unitId' in action:
                 if action['unitId'] is not None:
                     raise ValueError(f'unitId is invalid argument for action type: {action_type}')
-        if unitIds_req == True:
+        if unitIds_req is True:
             unit_ids = action['unitIds']
             if not isinstance(unit_ids, list):
                 raise ValueError(f'Invalid unitIds: {unit_ids}, type: {type(unit_ids)}, action type: {action_type} expects list')
@@ -387,7 +393,7 @@ class Workspace:
             if 'unitIds' in action:
                 if action['unitIds'] is not None:
                     raise ValueError(f'unitIds is invalid argument for action type: {action_type}')
-        if (missing_label == True) or (action_type != 'ADD_UNIT_LABEL'):
+        if (missing_label is True) or (action_type != 'ADD_UNIT_LABEL'):
             # Load the feed for the curation
             feed = self.get_curation_feed_for_sorting(sorting_id)
             # Append the action to the feed
@@ -396,7 +402,7 @@ class Workspace:
             print(f"Label: '{action['label']}' already appended with action type: {action_type} to all unitIds in action")
     def _get_sorting_curation_for_old_workspace(self, sorting_id: str):
         from ._old_workspace import parse_old_workspace_uri, get_sorting_curation_for_old_workspace
-        old_feed_id, old_query = parse_old_workspace_uri(self._uri)
+        old_feed_id, _ = parse_old_workspace_uri(self._uri)
         return get_sorting_curation_for_old_workspace(old_feed_id, sorting_id)
     from ._spikesortingview import spikesortingview
 
@@ -406,7 +412,7 @@ def parse_workspace_uri(workspace_uri: str):
         raise Exception(f'Invalid workspace uri: {workspace_uri}')
     if '?' not in workspace_uri:
         workspace_uri = workspace_uri + '?'
-    params = {}
+    # params = {}
     ind = workspace_uri.index('?')
     feed_id = workspace_uri[:ind].split(':')[1]
     query_string = workspace_uri[ind+1:]
@@ -433,7 +439,8 @@ def _get_messages_from_feed(feed: kcl.Feed) -> List[dict]:
     messages: List[dict] = []
     while True:
         msgs = feed.get_next_messages()
-        if len(msgs) == 0: break
+        if len(msgs) == 0:
+            break
         messages = [*messages, *msgs]
     return messages
 

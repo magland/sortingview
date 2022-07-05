@@ -3,6 +3,9 @@ from .View import View
 
 
 class LayoutItem:
+    """
+    A layout item - wraps a view inside a layout
+    """
     def __init__(self,
         view: View, *,
         min_size: Union[None, float]=None,

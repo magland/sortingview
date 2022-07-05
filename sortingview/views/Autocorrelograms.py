@@ -4,6 +4,9 @@ from .View import View
 
 
 class AutocorrelogramItem:
+    """
+    Single autocorrelogram item (single box)
+    """
     def __init__(self,
         unit_id: Union[int, str],
         bin_edges_sec: Union[np.array, List[float]],
@@ -20,6 +23,9 @@ class AutocorrelogramItem:
         }
 
 class Autocorrelograms(View):
+    """
+    Autocorrelograms view
+    """
     def __init__(self,
         autocorrelograms: List[AutocorrelogramItem]
     ) -> None:

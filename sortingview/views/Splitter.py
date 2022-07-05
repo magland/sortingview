@@ -4,6 +4,9 @@ from .View import View
 
 
 class Splitter(View):
+    """
+    Splitter layout - resizeable along the direction of the layout
+    """
     def __init__(self,
         item1: LayoutItem,
         item2: LayoutItem,
@@ -26,4 +29,3 @@ class Splitter(View):
         return ret
     def child_views(self) -> List[View]:
         return [item.view for item in self._items]
-

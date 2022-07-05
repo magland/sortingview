@@ -1,11 +1,14 @@
 from abc import abstractmethod
-from typing import List
+from typing import List, Union
 import kachery_cloud as kcl
 import figurl as fig
 import uuid
 
 
 class View:
+    """
+    Base class for all views
+    """
     def __init__(self, view_type: str, *, is_layout: bool=False) -> None:
         self.type = view_type
         self.id = _random_id()
@@ -23,7 +26,7 @@ class View:
             for v in a:
                 ret.append(v)
         return ret
-    def url(self, *, label: str):
+    def url(self, *, label: str, sorting_curation_uri: Union[None, str]=None):
         from .Box import Box
         from .LayoutItem import LayoutItem
         if self.is_layout:
@@ -40,8 +43,13 @@ class View:
                     for view in all_views if not view.is_layout
                 ]
             }
+            if sorting_curation_uri is not None:
+                data['sortingCurationUri'] = sorting_curation_uri
+                project_id = kcl.get_project_id()
+            else:
+                project_id = None
             F = fig.Figure(view_url='gs://figurl/spikesortingview-6', data=data)
-            url = F.url(label=label)
+            url = F.url(label=label, project_id=project_id)
             return url
 
         # Need to wrap it in a layout
@@ -52,7 +60,7 @@ class View:
             ]
         )
         assert V.is_layout # avoid infinite recursion
-        return V.url(label=label)
+        return V.url(label=label, sorting_curation_uri=sorting_curation_uri)
 
 def _upload_data_and_return_uri(data):
     return kcl.store_json(fig.serialize_data(data))

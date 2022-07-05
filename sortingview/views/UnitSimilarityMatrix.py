@@ -1,9 +1,11 @@
-import numpy as np
 from typing import List, Union
 from .View import View
 
 
 class UnitSimilarityScore:
+    """
+    A single similarity score
+    """
     def __init__(self,
         unit_id1: Union[int, str],
         unit_id2: Union[int, str],
@@ -20,6 +22,9 @@ class UnitSimilarityScore:
         }
 
 class UnitSimilarityMatrix(View):
+    """
+    Unit similarity matrix view
+    """
     def __init__(self,
         unit_ids: List[Union[int, str]],
         similarity_scores: List[UnitSimilarityScore]

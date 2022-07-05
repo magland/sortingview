@@ -30,7 +30,7 @@ def test_raster_plot(*, recording: si.BaseRecording, sorting: si.BaseSorting):
                 spike_times_sec=spike_times_sec.astype(np.float32)
             )
         )
-    
+
     view = vv.RasterPlot(
         start_time_sec=0,
         end_time_sec=recording.get_num_frames() / recording.get_sampling_frequency(),
