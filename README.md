@@ -38,40 +38,9 @@ For advanced usage, see [doc/backend.md](doc/backend.md).
 
 ## Visualizing a recording/sorting pair
 
-```python
-import sortingview as sv
+See [examples/example2.py](examples/example2.py)
 
-# Define SpikeInterface extractors for a recording/sorting pair
-# See: https://spikeinterface.readthedocs.io/en/latest/
-# Note that only some recording/sorting extractor types are supported by sortingview
-# See below for how to create a copy of a recording/sorting extractor to be
-# compatible with sortingview.
-recording = ...
-sorting = ...
-
-# Create a sortingview workspace and add the recording/sorting
-W: sv.Workspace = sv.create_workspace(label='example')
-recording_id = W.add_recording(label='recording1', recording=recording)
-sorting_id = W.add_sorting(recording_id=recording_id, label='true', sorting=sorting)
-
-# Print the workspace URI for loading at a later time
-# You may want to store this in a database
-print(f'Workspace URI: {W.uri}')
-
-# Optionally create a curation feed and set the access permissions
-W.create_curation_feed_for_sorting(sorting_id=sorting_id)
-W.set_sorting_curation_authorized_users(sorting_id=sorting_id, user_ids=['jmagland@flatironinstitute.org'])
-
-# Prepare a visualization and print the figURL
-url2 = W.spikesortingview(recording_id=recording_id, sorting_id=sorting_id, label='Test workspace')
-print(url2)
-
-# Click the link to view the visualization in a browser
-```
-
-See [examples/example1.py](examples/example1.py)
-
-[View figURL](https://figurl.org/f?v=gs://figurl/spikesortingview-2&d=ipfs://bafkreif3rb4yqpmece62wpfgqgdqc4izjitgs6x3htuqoeonwu6r5pd5ly&project=siojtbyvbw&label=Test%20workspace)
+[View figURL](https://figurl.org/f?v=gs://figurl/spikesortingview-6&d=sha1://b8c937f982a0308d6a5d8c440b7a01e7cf578447&label=test%20mountain%20layout)
 
 ## Reloading a workspace
 
@@ -102,9 +71,11 @@ S = sv.copy_sorting_extractor(sorting=sorting)
 
 ## Multi-panel timeseries visualization
 
-See [examples/timeseries_panels.py](examples/timeseries_panels.py)
+See [examples/old_timeseries_panels.py](examples/old_timeseries_panels.py)
 
 [View figURL](https://www.figurl.org/f?v=gs://figurl/spikesortingview-2&d=ipfs://bafkreictlxjsm5c35hz5gs4x4z6e3k5wumcqujytabfygjceecfowdx7li&project=siojtbyvbw&label=Jaq_03_12_visualization_data)
+
+Note: you should instead use the layout method for this. Needs example and documentation.
 
 ## Supported SpikeInterface extractors
 
