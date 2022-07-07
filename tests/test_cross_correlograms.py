@@ -19,7 +19,7 @@ def main():
     url = view.url(label='test_cross_correlograms')
     print(url)
 
-def test_cross_correlograms(*, recording: si.BaseRecording, sorting: si.BaseSorting):
+def test_cross_correlograms(*, recording: si.BaseRecording, sorting: si.BaseSorting, hide_unit_selector: bool=False):
     cross_correlogram_items: List[vv.CrossCorrelogramItem] = []
     for unit_id1 in sorting.get_unit_ids():
         for unit_id2 in sorting.get_unit_ids():
@@ -37,7 +37,8 @@ def test_cross_correlograms(*, recording: si.BaseRecording, sorting: si.BaseSort
                 )
     
     view = vv.CrossCorrelograms(
-        cross_correlograms=cross_correlogram_items
+        cross_correlograms=cross_correlogram_items,
+        hide_unit_selector=hide_unit_selector
     )
     return view
 

@@ -30,18 +30,21 @@ class SpikeAmplitudes(View):
     def __init__(self, *,
         start_time_sec: float,
         end_time_sec: float,
-        plots: List[SpikeAmplitudesItem]
+        plots: List[SpikeAmplitudesItem],
+        hide_unit_selector: bool=False
     ) -> None:
         super().__init__('SpikeAmplitudes')
         self._start_time_sec = start_time_sec
         self._end_time_sec = end_time_sec
         self._plots = plots
+        self._hide_unit_selector = hide_unit_selector
     def to_dict(self) -> dict:
         ret = {
             'type': self.type,
             'startTimeSec': self._start_time_sec,
             'endTimeSec': self._end_time_sec,
-            'units': [a.to_dict() for a in self._plots]
+            'units': [a.to_dict() for a in self._plots],
+            'hideUnitSelector': self._hide_unit_selector
         }
         return ret
     def child_views(self) -> List[View]:

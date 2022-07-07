@@ -1,5 +1,5 @@
 # 7/5/22
-# https://figurl.org/f?v=gs://figurl/spikesortingview-6&d=sha1://b8c937f982a0308d6a5d8c440b7a01e7cf578447&label=test%20mountain%20layout
+# https://figurl.org/f?v=gs://figurl/spikesortingview-6&d=sha1://fb7c3cb3931e1e019a03f6b8b5e3c9552f3cb59e&project=lqhzprbdrq&label=example2
 
 from typing import List
 import sortingview as sv
