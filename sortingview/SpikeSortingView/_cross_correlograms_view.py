@@ -3,7 +3,7 @@ from .helpers.compute_correlogram_data import compute_correlogram_data
 import sortingview.views as vv
 
 
-def cross_correlograms_view(self, *, unit_ids: List[int]):
+def cross_correlograms_view(self, *, unit_ids: List[int], hide_unit_selector: bool=False):
     from .SpikeSortingView import SpikeSortingView
     assert isinstance(self, SpikeSortingView)
 
@@ -26,5 +26,6 @@ def cross_correlograms_view(self, *, unit_ids: List[int]):
             ))
     
     return vv.CrossCorrelograms(
-        cross_correlograms=cross_correlograms
+        cross_correlograms=cross_correlograms,
+        hide_unit_selector=hide_unit_selector
     )

@@ -21,6 +21,15 @@
                 "clear": true
             },
             "detail": "Publish package to PyPI"
+        },
+        {
+            "label": "Generate notebooks",
+            "type": "shell",
+            "command": "bash -ic .vscode/tasks/generate-notebooks.sh",
+            "presentation": {
+                "clear": true
+            },
+            "detail": "Generate .ipynb notebooks from .py files using jupytext (pip install jupytext)"
         }
     ]
 }

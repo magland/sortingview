@@ -3,7 +3,7 @@ import numpy as np
 import sortingview.views as vv
 
 
-def spike_amplitudes_view(self, *, unit_ids: List[int], _subsample_max_firing_rate: Union[float, None]=None):
+def spike_amplitudes_view(self, *, unit_ids: List[int], hide_unit_selector: bool=False, _subsample_max_firing_rate: Union[float, None]=None):
     from .SpikeSortingView import SpikeSortingView
     assert isinstance(self, SpikeSortingView)
 
@@ -26,7 +26,8 @@ def spike_amplitudes_view(self, *, unit_ids: List[int], _subsample_max_firing_ra
     return vv.SpikeAmplitudes(
         start_time_sec=0,
         end_time_sec=self.num_frames / self.sampling_frequency,
-        plots=plots
+        plots=plots,
+        hide_unit_selector=hide_unit_selector
     )
 
 def _subsample2(x: np.array, y: np.array, num: int):

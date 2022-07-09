@@ -84,7 +84,7 @@ class Workspace:
         self._feed.append_message({
             'action': {
                 'type': 'ADD_RECORDING',
-                'recording': recording_object
+                'recording': x
             }
         })
         self._recording_records[recording_id] = x
