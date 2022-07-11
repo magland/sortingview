@@ -5,7 +5,6 @@ import kachery_cloud as kcl
 from kachery_cloud._serialize import _deserialize
 
 from .MdaRecordingExtractorV2.MdaRecordingExtractorV2 import MdaRecordingExtractorV2
-from .binextractors.bin2recordingextractor import Bin2RecordingExtractor
 
 
 def load_recording_extractor(recording_object: Union[dict, str]):
@@ -36,6 +35,7 @@ def load_recording_extractor(recording_object: Union[dict, str]):
         assert raw_path is not None, f'Unable to load raw file: {raw_uri}'
         recording = MdaRecordingExtractorV2(raw_path=raw_path, params=params, geom=geom)
     elif recording_format == 'bin2':
+        from .binextractors.bin2recordingextractor import Bin2RecordingExtractor
         recording_old = Bin2RecordingExtractor(**data)
         recording = si.old_api_utils.OldToNewRecording(recording_old)
     elif recording_format == 'nwb2':
