@@ -98,6 +98,7 @@ view = vv.MountainLayout(
 )
 # %%
 # Generate the figurl (and upload data to kachery cloud)
+sorting_curation_uri = W.get_sorting_curation_uri(sorting_id)
 url = view.url(
     label='sortingview workspace example',
     sorting_curation_uri=sorting_curation_uri
@@ -158,6 +159,7 @@ view = vv.Box(
     ]
 )
 # Generate the figurl (and upload data to kachery cloud)
+sorting_curation_uri = W.get_sorting_curation_uri(sorting_id)
 url = view.url(
     label='sortingview workspace example (alt layout)',
     sorting_curation_uri=sorting_curation_uri
