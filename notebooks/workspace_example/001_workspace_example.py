@@ -18,7 +18,13 @@ S = sv.copy_sorting_extractor(sorting=sorting)
 W: sv.Workspace = sv.create_workspace(label='example')
 recording_id = W.add_recording(label='recording1', recording=R)
 sorting_id = W.add_sorting(recording_id=recording_id, label='true', sorting=S)
-
+# %%
+# Create a curation feed and set the access permissions
+curation_users = [] # list of curation user IDs
+W.create_curation_feed_for_sorting(sorting_id=sorting_id)
+W.set_sorting_curation_authorized_users(sorting_id=sorting_id, user_ids=curation_users)
+sorting_curation_uri = W.get_sorting_curation_uri(sorting_id=sorting_id)
+# %%
 # Print the workspace URI
 # This can be used to load the workspace at a later time
 print(f'Workspace URI: {W.uri}')

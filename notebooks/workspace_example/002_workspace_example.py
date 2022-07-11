@@ -14,12 +14,6 @@ W = sv.load_workspace(workspace_uri)
 recording_id = W.recording_ids[0]
 sorting_id = W.get_sorting_ids_for_recording(recording_id)[0]
 # %%
-# Create a curation feed and set the access permissions
-curation_users = [] # list of curation user IDs
-W.create_curation_feed_for_sorting(sorting_id=sorting_id)
-W.set_sorting_curation_authorized_users(sorting_id=sorting_id, user_ids=curation_users)
-sorting_curation_uri = W.get_sorting_curation_uri(sorting_id=sorting_id)
-# %%
 print('Preparing spikesortingview data')
 X = SpikeSortingView.create(
     recording=W.get_recording_extractor(recording_id),
