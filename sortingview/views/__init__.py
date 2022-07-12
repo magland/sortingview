@@ -13,3 +13,4 @@ from .SortingCuration import SortingCuration
 from .SortingSummary import SortingSummary
 from .ElectrodeGeometry import ElectrodeGeometry
 from .SpikeAmplitudes import SpikeAmplitudes, SpikeAmplitudesItem
+from .UnitLocations import UnitLocations, UnitLocationsItem

@@ -34,8 +34,12 @@ def test_average_waveforms(*, recording: si.BaseRecording, sorting: si.BaseSorti
                 channel_ids=channel_ids
             )
         )
+    channel_locations = {}
+    for ii, channel_id in enumerate(recording.channel_ids):
+        channel_locations[str(channel_id)] = recording.get_channel_locations()[ii, :].astype(np.float32)
     view = vv.AverageWaveforms(
-        average_waveforms=average_waveform_items
+        average_waveforms=average_waveform_items,
+        channel_locations=channel_locations
     )
     return view
 

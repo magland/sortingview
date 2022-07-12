@@ -8,7 +8,7 @@ class Bin1RecordingExtractor(se.RecordingExtractor):
     is_writable = False
     def __init__(self, *, raw, raw_num_channels, num_frames, samplerate, channel_ids, channel_map, channel_positions, p2p):
         se.RecordingExtractor.__init__(self)
-        
+
         self._raw = raw
         self._num_frames = num_frames
         self._samplerate = samplerate
@@ -17,7 +17,7 @@ class Bin1RecordingExtractor(se.RecordingExtractor):
         self._channel_map = channel_map
         self._channel_positions = channel_positions
         self._p2p = p2p
-        
+
         for id in self._channel_ids:
             pos = self._channel_positions[str(id)]
             self.set_channel_property(id, 'location', pos)
@@ -40,13 +40,13 @@ class Bin1RecordingExtractor(se.RecordingExtractor):
             channel_ids = self._channel_ids
         # M = len(channel_ids)
         # N = end_frame - start_frame
-        
+
         i1 = start_frame * 2 * self._raw_num_channels
         i2 = end_frame * 2 * self._raw_num_channels
-        
+
         buf = kcl.load_bytes(self._raw, start=i1, end=i2)
         X = np.frombuffer(buf, dtype=np.int16).reshape((end_frame - start_frame, self._raw_num_channels))
-        
+
         # old method
         # ret = np.zeros((M, N))
         # for ii, ch_id in enumerate(channel_ids):
@@ -55,5 +55,5 @@ class Bin1RecordingExtractor(se.RecordingExtractor):
         # new (equivalent method)
         X = X.T.copy() # this is the part we want to try to speed up
         ret = X[[int(self._channel_map[str(ch_id)]) for ch_id in channel_ids]]
-        
+
         return ret
