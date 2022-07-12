@@ -1,5 +1,5 @@
 # 7/12/22
-# https://figurl.org/f?v=gs://figurl/spikesortingview-6&d=sha1://a27ff22c9fbab422afafcee1c60da5ba7b2ef936&label=test_unit_locations
+# https://www.figurl.org/f?v=gs://figurl/spikesortingview-6&d=sha1://d4941d198ff7d880d42c41ae08c03b16975aeb6d&label=test_unit_locations
 
 from typing import List, Tuple
 import numpy as np
@@ -17,7 +17,15 @@ def main():
 
     view = test_unit_locations(recording=R, sorting=S)
 
-    url = view.url(label='test_unit_locations')
+    view2 = vv.Box(
+        direction='horizontal',
+        items=[
+            vv.LayoutItem(_create_units_table(sorting=S), max_size=150),
+            vv.LayoutItem(view)
+        ]
+    )
+
+    url = view2.url(label='test_unit_locations')
     print(url)
 
 def test_unit_locations(*, recording: si.BaseRecording, sorting: si.BaseSorting):
@@ -43,6 +51,24 @@ def test_unit_locations(*, recording: si.BaseRecording, sorting: si.BaseSorting)
     view = vv.UnitLocations(
         units=unit_items,
         channel_locations=channel_locations
+    )
+    return view
+
+def _create_units_table(*, sorting: si.BaseSorting):
+    columns: List[vv.UnitsTableColumn] = []
+    rows: List[vv.UnitsTableRow] = []
+    for unit_id in sorting.get_unit_ids():
+        rows.append(
+            vv.UnitsTableRow(
+                unit_id=unit_id,
+                values={
+                    'unitId': unit_id
+                }
+            )
+        )
+    view = vv.UnitsTable(
+        columns=columns,
+        rows=rows
     )
     return view
 
