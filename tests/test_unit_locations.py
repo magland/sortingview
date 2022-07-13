@@ -1,7 +1,7 @@
 # 7/12/22
 # https://www.figurl.org/f?v=gs://figurl/spikesortingview-6&d=sha1://d4941d198ff7d880d42c41ae08c03b16975aeb6d&label=test_unit_locations
 
-from typing import List, Tuple
+from typing import List
 import numpy as np
 import sortingview as sv
 import sortingview.views as vv
@@ -50,7 +50,8 @@ def test_unit_locations(*, recording: si.BaseRecording, sorting: si.BaseSorting)
         channel_locations[str(channel_id)] = recording.get_channel_locations()[ii, :].astype(np.float32)
     view = vv.UnitLocations(
         units=unit_items,
-        channel_locations=channel_locations
+        channel_locations=channel_locations,
+        disable_auto_rotate=True
     )
     return view
 

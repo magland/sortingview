@@ -29,16 +29,19 @@ class UnitLocations(View):
     """
     def __init__(self,
         units: List[UnitLocationsItem], *,
-        channel_locations: Dict[str, Any]
+        channel_locations: Dict[str, Any],
+        disable_auto_rotate: bool=False
     ) -> None:
         super().__init__('UnitLocations')
         self._units = units
         self._channel_locations = channel_locations
+        self._disable_auto_rotate = disable_auto_rotate
     def to_dict(self) -> dict:
         ret = {
             'type': self.type,
             'units': [a.to_dict() for a in self._units],
-            'channelLocations': self._channel_locations
+            'channelLocations': self._channel_locations,
+            'disableAutoRotate': self._disable_auto_rotate
         }
         return ret
     def child_views(self) -> List[View]:
