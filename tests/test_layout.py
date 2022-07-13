@@ -37,12 +37,10 @@ def main():
                     item2=vv.LayoutItem(
                         vv.Splitter(
                             direction='horizontal',
-                            item1=vv.LayoutItem(vv.Box(
+                            item1=vv.LayoutItem(vv.Splitter(
                                 direction='vertical',
-                                items=[
-                                    vv.LayoutItem(v_raster_plot, stretch=3),
-                                    vv.LayoutItem(v_spike_amplitudes, stretch=3)
-                                ]
+                                item1=vv.LayoutItem(v_raster_plot, stretch=3),
+                                item2=vv.LayoutItem(v_spike_amplitudes, stretch=3)
                             )),
                             item2=vv.LayoutItem(v_unit_similarity_matrix, stretch=1)
                         ),
