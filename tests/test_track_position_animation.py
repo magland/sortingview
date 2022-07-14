@@ -1,0 +1,81 @@
+# 7/14/22
+# https://www.figurl.org/f?v=gs://figurl/spikesortingview-6dev2&d=sha1://4698474fd3d0017484b699f39a55b0543733fdf0&label=test_track_position_animation
+
+import numpy as np
+import sortingview.views.franklab as vvf
+
+
+def main():
+    view = test_track_position_animation()
+
+    url = view.url(label='test_track_position_animation')
+    print(url)
+
+def test_track_position_animation():
+    num_frames = 2500
+    sampling_frequency_hz = 10
+    timestamps = np.arange(num_frames).astype(np.float32) / sampling_frequency_hz
+
+    track_bin_ul_corners = np.array([
+        [0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [5, 4]
+    ]).astype(np.float32).T
+
+    positions = []
+    head_direction = []
+    for i in range(num_frames):
+        positions.append([5 + 3 * np.cos(i / 100 * 2 * np.pi), 5 + 3 * np.sin(i / 100 * 2 * np.pi)])
+        head_direction.append(np.cos(i / 20) * 2 * np.pi)
+    positions = np.array(positions).T.astype(np.float32)
+    head_direction = np.array(head_direction).astype(np.float32)
+
+    x_count = 10
+    y_count = 10
+    x_locations = []
+    y_locations = []
+    values = []
+    frame_bounds = []
+    for i in range(num_frames):
+        n = np.mod(i, 4)
+        for j in range(n):
+            x_locations.append(5 + j)
+            y_locations.append(5)
+            values.append(10 + j * 10)
+        frame_bounds.append(n)
+    x_locations = np.array(x_locations).astype(np.int32)
+    y_locations = np.array(y_locations).astype(np.int32)
+    values = np.array(values).astype(np.float32)
+    frame_bounds = np.array(frame_bounds).astype(np.int32)
+
+    locations = x_locations + x_count * y_locations
+    decoded_position_data = vvf.DecodedPositionData(
+        x_min=0,
+        bin_width=1,
+        x_count=x_count,
+        y_min=0,
+        bin_height=1,
+        y_count=y_count,
+        values=values,
+        locations=locations,
+        frame_bounds=frame_bounds
+    )
+    
+    view = vvf.TrackPositionAnimationV1(
+        track_bin_width=1,
+        track_bin_height=1,
+        track_bin_ul_corners=track_bin_ul_corners, # 2 x n
+        total_recording_frame_length=len(timestamps),
+        timestamp_start=0,
+        timestamps=timestamps,
+        positions=positions,
+        x_min=-1,
+        x_max=11,
+        y_min=-1,
+        y_max=11,
+        head_direction=head_direction,
+        decoded_data=decoded_position_data,
+        sampling_frequency_hz=sampling_frequency_hz
+    )
+    return view
+
+if __name__ == '__main__':
+    main()
