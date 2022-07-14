@@ -1,5 +1,5 @@
 # 7/14/22
-# https://www.figurl.org/f?v=gs://figurl/spikesortingview-6dev2&d=sha1://4698474fd3d0017484b699f39a55b0543733fdf0&label=test_track_position_animation
+# https://figurl.org/f?v=gs://figurl/spikesortingview-6dev2&d=sha1://45ebd42e99469a165264dd31fc25ee5eb42a0d1d&label=test_track_position_animation
 
 import numpy as np
 import sortingview.views.franklab as vvf
@@ -24,7 +24,7 @@ def test_track_position_animation():
     head_direction = []
     for i in range(num_frames):
         positions.append([5 + 3 * np.cos(i / 100 * 2 * np.pi), 5 + 3 * np.sin(i / 100 * 2 * np.pi)])
-        head_direction.append(np.cos(i / 20) * 2 * np.pi)
+        head_direction.append(i / 20 * 2 * np.pi)
     positions = np.array(positions).T.astype(np.float32)
     head_direction = np.array(head_direction).astype(np.float32)
 
