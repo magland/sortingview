@@ -1,5 +1,5 @@
-# 7/1/22
-# https://figurl.org/f?v=gs://figurl/spikesortingview-6&d=sha1://5d8585c2e79e5d462beedcc69f3181e9c0311882&label=test_average_waveforms
+# 7/15/22
+# https://figurl.org/f?v=gs://figurl/spikesortingview-6&d=sha1://ec4be8f67fd8ff2a7a63dcd4c13e39993d84a0c8&label=test_average_waveforms
 
 from typing import List, Tuple
 import numpy as np
@@ -40,7 +40,7 @@ def test_average_waveforms(*, recording: si.BaseRecording, sorting: si.BaseSorti
     view = vv.AverageWaveforms(
         average_waveforms=average_waveform_items,
         channel_locations=channel_locations,
-        show_filet_mignon=True
+        show_reference_probe=True
     )
     return view
 
