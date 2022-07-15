@@ -48,7 +48,7 @@ class View:
                 project_id = kcl.get_project_id()
             else:
                 project_id = None
-            F = fig.Figure(view_url='gs://figurl/spikesortingview-6', data=data)
+            F = fig.Figure(view_url='gs://figurl/spikesortingview-7', data=data)
             url = F.url(label=label, project_id=project_id)
             return url
 
