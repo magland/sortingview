@@ -2,6 +2,9 @@ from typing import List
 from .View import View
 
 
+# The sorting_id parameter can be any string.
+# It should uniquely point to a sorting so that the saved curation can be associated with that sorting
+
 class SortingCuration2(View):
     """
     Sorting curation v2 control view
