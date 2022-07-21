@@ -18,3 +18,4 @@ from .Markdown import Markdown
 from .TabLayout import TabLayoutItem, TabLayout
 from .UnitMetricsGraph import UnitMetricsGraphMetric, UnitMetricsGraphUnit, UnitMetricsGraph
 from .TiledImage import TiledImage, TiledImageLayer
+from .SortingCuration2 import SortingCuration2
