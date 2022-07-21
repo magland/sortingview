@@ -17,3 +17,4 @@ from .UnitLocations import UnitLocations, UnitLocationsItem
 from .Markdown import Markdown
 from .TabLayout import TabLayoutItem, TabLayout
 from .UnitMetricsGraph import UnitMetricsGraphMetric, UnitMetricsGraphUnit, UnitMetricsGraph
+from .TiledImage import TiledImage, TiledImageLayer

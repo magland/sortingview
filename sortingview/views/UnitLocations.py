@@ -1,4 +1,3 @@
-import numpy as np
 from typing import Any, Dict, List, Union
 from .View import View
 
