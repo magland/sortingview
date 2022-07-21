@@ -1,5 +1,5 @@
-# 7/22/22
-# https://figurl.org/f?v=gs://figurl/spikesortingview-7&d=sha1://d58c3883ebefe67827c3a12ad23247b290071834&label=test_tiled_image
+# 7/21/22
+# https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://02105c0775b4fb8de76e5d14cfcca7c6b626f2f8&label=test_tiled_image
 
 import numpy as np
 import matplotlib.pyplot as plt
