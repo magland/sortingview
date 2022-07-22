@@ -3,7 +3,7 @@ import spikeinterface as si
 import numpy as np
 
 def compute_correlogram_data(*, sorting: si.BaseSorting, unit_id1: int, unit_id2: Union[int, None]=None, window_size_msec: float, bin_size_msec: float):
-    times1 = sorting.get_unit_spike_train(unit_id=unit_id1)
+    times1 = sorting.get_unit_spike_train(unit_id=unit_id1, segment_index=0)
     num_bins = int(window_size_msec / bin_size_msec)
     if num_bins % 2 == 0: num_bins = num_bins - 1 # odd number of bins
     num_bins_half = int((num_bins + 1) / 2)

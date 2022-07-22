@@ -15,11 +15,11 @@ def main():
     R = sv.copy_recording_extractor(recording, serialize_dtype='float32')
     S = sv.copy_sorting_extractor(sorting)
 
-    view = test_autocorrelograms(recording=R, sorting=S)
+    view = test_autocorrelograms(sorting=S)
     url = view.url(label='test_autocorrelograms')
     print(url)
 
-def test_autocorrelograms(*, recording: si.BaseRecording, sorting: si.BaseSorting):
+def test_autocorrelograms(*, sorting: si.BaseSorting):
     autocorrelogram_items: List[vv.AutocorrelogramItem] = []
     for unit_id in sorting.get_unit_ids():
         a = compute_correlogram_data(sorting=sorting, unit_id1=unit_id, unit_id2=None, window_size_msec=50, bin_size_msec=1)

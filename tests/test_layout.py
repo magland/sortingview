@@ -21,7 +21,7 @@ def main():
 
     v_units_table = test_units_table(recording=R, sorting=S)
     v_raster_plot = test_raster_plot(recording=R, sorting=S)
-    v_autocorrelograms = test_autocorrelograms(recording=R, sorting=S)
+    v_autocorrelograms = test_autocorrelograms(sorting=S)
     v_average_waveforms = test_average_waveforms(recording=R, sorting=S)
     v_cross_correlograms = test_cross_correlograms(recording=R, sorting=S, hide_unit_selector=True)
     v_unit_similarity_matrix = test_unit_unit_similarity_matrix(recording=R, sorting=S)
