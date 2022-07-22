@@ -1,5 +1,5 @@
 # 7/22/22
-# https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://532beed0ac157228f299fd21419645e610e293f2&label=test_sorting_selection
+# https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://fe4abdcac44fda0539ca09fd1005272f124c6ee2&label=test_sorting_selection
 
 from typing import List
 import sortingview as sv
@@ -45,12 +45,19 @@ and control which units are globally visible.
                             direction='vertical',
                             items=[
                                 vv.LayoutItem(view_sorting_curation),
-                                vv.LayoutItem(view),
-                                vv.LayoutItem(view_autocorrelograms)
+                                vv.LayoutItem(view)
                             ]
                         )
                     ),
-                    item2=vv.LayoutItem(view_markdown)
+                    item2=vv.LayoutItem(
+                        vv.Box(
+                            direction='vertical',
+                            items=[
+                                vv.LayoutItem(view_markdown),
+                                vv.LayoutItem(view_autocorrelograms)
+                            ]
+                        )
+                    )
                 )
             )
         ]
