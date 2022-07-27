@@ -1,14 +1,14 @@
 from concurrent.futures import ThreadPoolExecutor
 import os
-from typing import List, Union
+from typing import Any, List, Union
 import numpy as np
-import pyvips
 import kachery_cloud as kcl
 from .View import View
 
 
 class TiledImageLayer:
-    def __init__(self, label: str, data: Union[np.array, pyvips.Image]) -> None:
+    def __init__(self, label: str, data: Union[np.array, Any]) -> None:
+        import pyvips
         self.label = label
         self.data=data
         if isinstance(data, pyvips.Image):
@@ -26,6 +26,7 @@ class TiledImage(View):
         self._layers = layers
 
     def to_dict(self) -> dict:
+        import pyvips
         data = {
             'type': self.type,
             'layers': []
