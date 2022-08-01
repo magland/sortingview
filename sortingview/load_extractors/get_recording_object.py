@@ -3,6 +3,7 @@ import spikeinterface as si
 import spikeinterface.extractors as se
 import kachery_cloud as kcl
 from kachery_cloud._serialize import _serialize
+from pathlib import Path
 
 
 def get_recording_object(recording: si.BaseRecording):
@@ -20,11 +21,17 @@ def get_recording_object(recording: si.BaseRecording):
             }
         }
     elif isinstance(recording, se.BinaryRecordingExtractor):
+        from pathlib import Path
         data = recording._kwargs
+        if isinstance(recording, si.BinaryFolderRecording):
+            folder_path = Path(data['folder_path'])
+            data = recording._bin_kwargs
+        else:
+            folder_path = Path('/')
         file_paths = data['file_paths']
         data['file_paths'] = [
             kcl.store_file_local(
-                file_path,
+                str(folder_path / file_path),
                 label=os.path.basename(file_path),
                 reference=True # important
             )
