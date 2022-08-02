@@ -1,5 +1,5 @@
-# 8/1/2022
-# https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://d987b9cdba64c531d4b61e18f4e1ca82f1221055&label=test_raw_traces
+# 8/2/2022
+# https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://b707c2bffc2a03d448fda418357e70e5a309d04e&label=test_raw_traces
 
 import numpy as np
 import sortingview as sv
