@@ -68,7 +68,7 @@ def main():
         curation_feed = kcl.create_feed()
         sorting_curation_uri = curation_feed.uri
         kcl.set_mutable(
-            f'sortingview/sortingCurationAuthorizedUsers/{sorting_curation_uri}',
+            f'@sortingview/@sortingCurationAuthorizedUsers/{sorting_curation_uri}',
             json.dumps(user_ids)
         )
     else:
