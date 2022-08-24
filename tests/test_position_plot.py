@@ -1,5 +1,5 @@
 # 8/24/22
-# https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://aa4c288f28e41ed2d70eef040bc53c566fad4504&label=test_position_plot
+# https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://e0bae03313f4183674ce61d18281de1082241eba&label=test_position_plot
 
 import numpy as np
 import sortingview.views as vv
