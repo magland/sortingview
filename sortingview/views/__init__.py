@@ -22,3 +22,4 @@ from .SortingCuration2 import SortingCuration2
 from .SortingSelection import SortingSelection
 from .RawTraces import RawTraces
 from .SpikeLocations import SpikeLocations, SpikeLocationsItem
+from .PositionPlot import PositionPlot
