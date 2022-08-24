@@ -67,8 +67,9 @@ def main():
         assert isinstance(user_ids, list)
         curation_feed = kcl.create_feed()
         sorting_curation_uri = curation_feed.uri
+        sorting_curation_feed_id = sorting_curation_uri.split('/')[2]
         kcl.set_mutable(
-            f'@sortingview/@sortingCurationAuthorizedUsers/{sorting_curation_uri}',
+            f'@sortingview/@sortingCurationAuthorizedUsers/{sorting_curation_feed_id}',
             json.dumps(user_ids)
         )
     else:

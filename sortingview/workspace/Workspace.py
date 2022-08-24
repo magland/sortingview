@@ -193,14 +193,14 @@ class Workspace:
         feed = self.get_curation_feed_for_sorting(sorting_id)
         if feed is None:
             raise Exception('No sorting curation feed')
-        kcl.set_mutable(f'@sortingview/@sortingCurationAuthorizedUsers/{feed.uri}', json.dumps(user_ids))
+        kcl.set_mutable(f'@sortingview/@sortingCurationAuthorizedUsers/{feed.feed_id}', json.dumps(user_ids))
     def get_sorting_curation_authorized_users(self, *, sorting_id: str):
         if self._feed is None:
             raise Exception('Cannot get sorting curation authorized users for old workspace')
         feed = self.get_curation_feed_for_sorting(sorting_id)
         if feed is None:
             raise Exception('No sorting curation feed')
-        a = kcl.get_mutable(f'@sortingview/@sortingCurationAuthorizedUsers/{feed.uri}')
+        a = kcl.get_mutable(f'@sortingview/@sortingCurationAuthorizedUsers/{feed.feed_id}')
         if a is None:
             return []
         return json.loads(a)
