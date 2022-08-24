@@ -23,3 +23,4 @@ from .SortingSelection import SortingSelection
 from .RawTraces import RawTraces
 from .SpikeLocations import SpikeLocations, SpikeLocationsItem
 from .PositionPlot import PositionPlot
+from .ConfusionMatrix import ConfusionMatrix, UnitEventCount, MatchingUnitEventCount
