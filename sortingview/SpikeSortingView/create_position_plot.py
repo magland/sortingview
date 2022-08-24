@@ -3,6 +3,7 @@ import numpy as np
 from .Figure import Figure
 
 def create_position_plot(*, timestamps: np.ndarray, positions: np.ndarray, dimension_labels: List[str], label: str, subsampling_frequency: Union[float, None]=None, discontinuous: bool=False):
+    print('WARNING: create_position_plot is deprecated. Instead use vv.PositionPlot(...). See tests/test_position_plot.py')
     if positions.ndim == 1:
         positions = np.reshape(positions, (len(positions), 1))
     assert positions.shape[0] == len(timestamps)
@@ -13,7 +14,8 @@ def create_position_plot(*, timestamps: np.ndarray, positions: np.ndarray, dimen
         positions = positions[inds, :]
     data = {
         'type': 'PositionPlot',
-        'timestamps': timestamps,
+        'timeOffset': timestamps[0],
+        'timestamps': (timestamps - timestamps[0]).astype(np.float32),
         'positions': positions,
         'dimensionLabels': dimension_labels,
         'discontinuous': discontinuous
