@@ -35,7 +35,7 @@ def sorting_curation_action(*, sorting_curation_uri: str, action: dict, user_id:
     curation_feed.append_message(action)
 
 def _check_sorting_curation_authorization(sorting_curation_uri: str, user_id: str):
-    a = kcl.get_mutable(f'sortingview/sortingCurationAuthorizedUsers/{sorting_curation_uri}')
+    a = kcl.get_mutable(f'@sortingview/@sortingCurationAuthorizedUsers/{sorting_curation_uri}')
     if a is None:
         return False
     b: List[str] = json.loads(a)

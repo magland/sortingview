@@ -30,7 +30,7 @@ def prepare_spikesortingview_data(*,
         'channel_neighborhood_size': channel_neighborhood_size
     }
     cache_key = _sha1_of_object(cache_key_obj)
-    uri = kcl.get_mutable_local(f'spikesortingview_data/{cache_key}')
+    uri = kcl.get_mutable_local(f'@spikesortingview_data/{cache_key}')
     if uri is not None and kcl.load_file(uri) is not None:
         return uri
     unit_ids = np.array(sorting.get_unit_ids()).astype(np.int32)
@@ -146,7 +146,7 @@ def prepare_spikesortingview_data(*,
                     index = index + num
                     f.create_dataset(f'segment/{iseg}/unit/{unit_id}/subsampled_spike_snippets', data=spike_snippets)
         uri = kcl.store_file_local(output_file_name)
-        kcl.set_mutable_local(f'spikesortingview_data/{cache_key}', uri)
+        kcl.set_mutable_local(f'@spikesortingview_data/{cache_key}', uri)
         return uri
 
 def get_channel_neighborhood(*,

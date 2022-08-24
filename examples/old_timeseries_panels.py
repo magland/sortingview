@@ -93,7 +93,7 @@ def create_live_position_pdf_plot_h5(*, data: np.array, segment_size: int, multi
         'segment_size': segment_size,
         'multiscale_factor': multiscale_factor
     }
-    key = f'live_position_pdf_plot/{_sha1_of_object(key_obj)}'
+    key = f'@live_position_pdf_plot/{_sha1_of_object(key_obj)}'
     a = kcl.get_mutable_local(key)
     if a and kcl.load_file(a):
         return a
