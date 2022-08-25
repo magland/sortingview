@@ -113,6 +113,13 @@ export KACHERY_CLOUD_PROJECT_ID="..."
 # local=True as an argument to .url() in all of the views.
 # See below for more information.
 export SORTINGVIEW_LOCAL=1
+
+# Electron mode is similar to local mode, except instead of returning
+# a URL, an electron window will open and data will be accessed directly
+# from the file system. I.e., no browser.
+# This requires installation of figurl-electron. Good luck installing that!
+# See below for more information.
+export SORTINGVIEW_ELECTRON=1 # Experimental - requires installation of figurl-electron
 ```
 
 It is recommend that you set these variables in your `~/.bashrc` file.
@@ -147,6 +154,20 @@ starts with [dot], then you will need to show hidden files in the directory sele
 dialog box.
 
 This has only been tested in Chrome and probably does not work in Firefox.
+
+## Electron mode
+
+Electron mode is similar to local mode, except instead of returning
+a URL, an electron window will open and data will be accessed directly
+from the file system.
+
+This requires installation of figurl-electron. At the moment there are no
+instructions for installing this package.
+
+To use electron mode you either set the `SORTINGVIEW_ELECTRON` env variable to `1` as shown above,
+or you can call `.electron(label='...')` instead of `.url(...)` on any of the views.
+
+# This requires installation of figurl-electron. Good luck installing that!
 
 ## Backward compatibility
 
