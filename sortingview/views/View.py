@@ -1,3 +1,4 @@
+import os
 from abc import abstractmethod
 from typing import List, Union
 import kachery_cloud as kcl
@@ -26,9 +27,11 @@ class View:
             for v in a:
                 ret.append(v)
         return ret
-    def url(self, *, label: str, sorting_curation_uri: Union[None, str]=None):
+    def url(self, *, label: str, sorting_curation_uri: Union[None, str]=None, local: Union[bool, None]=None):
         from .Box import Box
         from .LayoutItem import LayoutItem
+        if local is None:
+            local = os.getenv('SORTINGVIEW_LOCAL', '0') == '1'
         if self.is_layout:
             all_views = self.get_descendant_views_including_self()
             data = {
@@ -38,7 +41,7 @@ class View:
                     {
                         'type': view.type,
                         'viewId': view.id,
-                        'dataUri': _upload_data_and_return_uri(view.to_dict())
+                        'dataUri': _upload_data_and_return_uri(view.to_dict(), local=local)
                     }
                     for view in all_views if not view.is_layout
                 ]
@@ -49,7 +52,7 @@ class View:
             else:
                 project_id = None
             F = fig.Figure(view_url='gs://figurl/spikesortingview-8', data=data)
-            url = F.url(label=label, project_id=project_id)
+            url = F.url(label=label, project_id=project_id, local=local)
             return url
 
         # Need to wrap it in a layout
@@ -60,10 +63,10 @@ class View:
             ]
         )
         assert V.is_layout # avoid infinite recursion
-        return V.url(label=label, sorting_curation_uri=sorting_curation_uri)
+        return V.url(label=label, sorting_curation_uri=sorting_curation_uri, local=local)
 
-def _upload_data_and_return_uri(data):
-    return kcl.store_json(fig.serialize_data(data))
+def _upload_data_and_return_uri(data, *, local: bool=False):
+    return kcl.store_json(fig.serialize_data(data), local=local)
 
 def _random_id():
     return str(uuid.uuid4())[-12:]
