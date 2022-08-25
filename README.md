@@ -106,6 +106,13 @@ export KACHERY_CLOUD_DIR="..."
 # If unset, the default project associated with the client will be used
 # The default project can be configured at https://cloud.kacheryhub.org
 export KACHERY_CLOUD_PROJECT_ID="..."
+
+# When using local mode for figURLs, data will not be uploaded/downloaded
+# from the cloud, and the URLs will not be shareable.
+# As an alternative to using the env variable, you can also use
+# local=True as an argument to .url() in all of the views.
+# See below for more information.
+export SORTINGVIEW_LOCAL=1
 ```
 
 It is recommend that you set these variables in your `~/.bashrc` file.
@@ -126,27 +133,20 @@ directory on their system (see above)
 The last step is necessary so that all files are created with read/write access for
 all users.
 
+## Local mode
+
+In local mode, data will not be uploaded/downloaded from the cloud, and the URLs will not be shareable.
+
+To use local mode you either set the `SORTINGVIEW_LOCAL` env variable to `1` as shown above,
+or you can pass `local=True` as an argument to `.url()` in any of the views.
+
+To use local mode, the browser must be on the same computer as the local kachery-cloud
+directory. Upon opening the URL, the user will be prompted to select the kachery-cloud
+directory and give the browser permission to read from it. Note that if the directory
+starts with [dot], then you will need to show hidden files in the directory selection
+dialog box.
+
 ## Backward compatibility
 
 This version of sortingview (`>= 0.8.*`) uses kachery-cloud whereas the previous version (`0.7.*`) used kachery-daemon and kachery-client.
 The previous version is on the v1 branch. This version is on the main branch.
-
-These two versions are similar in many ways, but there are differences in the API. The main advantages of the new system are
-
-* Overall simpler package with a more complete documentation and straightforward usage examples
-* Does not require running a kachery daemon
-* Uses kachery-cloud which is the more robust version of kachery we will use going forward
-* Operates directly on SpikeInterface recording/sorting extractors rather than using intermediate LabboxEphys*Extractors
-
-*Can old workspaces be loaded with this new version?*
-Old workspaces use feeds that are managed by kachery-daemon whereas new workspaces use feeds in kachery-cloud.
-But there is some limited backward compatibility to allow reading of sorting curations from old workspaces.
-You can load an old workspace (uri starting with workspace://) using this v2 package and read sorting IDs, recording IDs, sorting extractors, recording extractors, and sorting curations.
-You cannot apply any write operations to an old workspace.
-Some recording/sorting extractors may still not be loadable from an old workspace, but the plan is to work toward supporting those, as needed.
-
-Note: It is not necessary to run a kachery-daemon for this version of sortingview *unless* you are loading old workspaces in readonly mode as described above.
-
-The sortingview backend programs (sortingview-start-backend) are different between the two versions, but they can run at the same time (from different conda environments) without interfering with one another. Of course, the old backend requires a running kachery-daemon whereas the new daemon does not.
-
-This new version is not yet available on PyPI, but will be soon. You can always install the previous version (`0.7.*`) from PyPI.
