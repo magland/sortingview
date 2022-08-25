@@ -146,6 +146,8 @@ directory and give the browser permission to read from it. Note that if the dire
 starts with [dot], then you will need to show hidden files in the directory selection
 dialog box.
 
+This has only been tested in Chrome and probably does not work in Firefox.
+
 ## Backward compatibility
 
 This version of sortingview (`>= 0.8.*`) uses kachery-cloud whereas the previous version (`0.7.*`) used kachery-daemon and kachery-client.
