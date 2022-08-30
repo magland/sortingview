@@ -25,3 +25,4 @@ from .SpikeLocations import SpikeLocations, SpikeLocationsItem
 from .PositionPlot import PositionPlot
 from .ConfusionMatrix import ConfusionMatrix, UnitEventCount, MatchingUnitEventCount
 from .LiveEvaluateFunction import LiveEvaluateFunction
+from .LiveTraces import LiveTraces

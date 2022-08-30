@@ -1,7 +1,6 @@
 # 7/13/22
 #
 
-import os
 import sortingview.views as vv
 
 # os.environ['SORTINGVIEW_VIEW_URL'] = 'http://localhost:3001'
