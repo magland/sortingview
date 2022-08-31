@@ -1,14 +1,12 @@
-# 8/2/2022
-#
+# This example requires figurl-electron (see README.md)
 
-import os
 import sortingview as sv
 import sortingview.views as vv
 import spikeinterface as si
 import spikeinterface.extractors as se
 import kachery_cloud as kcl
 
-os.environ['SORTINGVIEW_VIEW_URL'] = 'http://localhost:3001'
+# os.environ['SORTINGVIEW_VIEW_URL'] = 'http://localhost:3001'
 
 def main():
     kcl.use_sandbox()

@@ -1,7 +1,7 @@
-# 7/13/22
-#
+# This example requires figurl-electron (see README.md)
 
 import sortingview.views as vv
+import kachery_cloud as kcl
 
 # os.environ['SORTINGVIEW_VIEW_URL'] = 'http://localhost:3001'
 
@@ -12,6 +12,8 @@ def cube(x):
     return x ** 3
 
 def main():
+    kcl.use_sandbox()
+
     view1 = vv.LiveEvaluateFunction(
         function=square,
         function_id='square.001'

@@ -117,9 +117,9 @@ export SORTINGVIEW_LOCAL=1
 # Electron mode is similar to local mode, except instead of returning
 # a URL, an electron window will open and data will be accessed directly
 # from the file system. I.e., no browser.
-# This requires installation of figurl-electron. Good luck installing that!
+# This requires installation of figurl-electron (see below).
 # See below for more information.
-export SORTINGVIEW_ELECTRON=1 # Experimental - requires installation of figurl-electron
+export SORTINGVIEW_ELECTRON=1 # Requires installation of figurl-electron
 ```
 
 It is recommend that you set these variables in your `~/.bashrc` file.
@@ -161,8 +161,12 @@ Electron mode is similar to local mode, except instead of returning
 a URL, an electron window will open and data will be accessed directly
 from the file system.
 
-This requires installation of figurl-electron. At the moment there are no
-instructions for installing this package.
+This requires installation of figurl-electron. On Linux you can use snap.
+
+```bash
+# Install figurl-electron on Linux
+snap install --edge --devmode figurl-electron
+```
 
 To use electron mode you either set the `SORTINGVIEW_ELECTRON` env variable to `1` as shown above,
 or you can call `.electron(label='...')` instead of `.url(...)` on any of the views.
