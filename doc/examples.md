@@ -1,14 +1,20 @@
 ## Autocorrelograms
 
+![image](https://user-images.githubusercontent.com/3679296/187762611-e940ca2f-5b9a-4679-b5fe-a71ca5b209bc.png)
+
 [script](https://github.com/magland/sortingview/blob/main/examples/example_autocorrelograms.py)
 | [view](https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://5cb75552ad2f7316bf1a06af8cd6564c0fd9d497&label=Autocorrelograms%20example)
 
 ## Average waveforms
 
+![image](https://user-images.githubusercontent.com/3679296/187762965-d13a750b-8b82-4ff9-b4bb-1429da9d1677.png)
+
 [script](https://github.com/magland/sortingview/blob/main/examples/example_average_waveforms.py)
 | [view](https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://ad6178659260bf36733a8038acbc82d2020fa4ae&label=Average%20waveforms%20example)
 
 ## Box layout
+
+![image](https://user-images.githubusercontent.com/3679296/187763239-4fb324e6-56b6-4c42-8e61-fd18afe2bf3d.png)
 
 [script](https://github.com/magland/sortingview/blob/main/examples/example_box_layout.py)
 | [view](https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://6342478eddfefcd0fc07e3d08fea466175f7c626&label=Box%20layout%20example)
