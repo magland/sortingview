@@ -142,6 +142,8 @@ all users.
 
 ## Local mode
 
+**Note**: you may want to use electron mode instead. See below.
+
 In local mode, data will not be uploaded/downloaded from the cloud, and the URLs will not be shareable.
 
 To use local mode you either set the `SORTINGVIEW_LOCAL` env variable to `1` as shown above,
@@ -170,8 +172,6 @@ snap install --edge --devmode figurl-electron
 
 To use electron mode you either set the `SORTINGVIEW_ELECTRON` env variable to `1` as shown above,
 or you can call `.electron(label='...')` instead of `.url(...)` on any of the views.
-
-# This requires installation of figurl-electron. Good luck installing that!
 
 ## Backward compatibility
 
