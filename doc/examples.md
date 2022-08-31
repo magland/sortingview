@@ -35,25 +35,35 @@
 
 ## Markdown
 
+![image](https://user-images.githubusercontent.com/3679296/187781325-512eb8f7-6313-48d9-9ec0-a4e9d2efcb26.png)
+
 [script](https://github.com/magland/sortingview/blob/main/examples/example_markdown.py)
 | [view](https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://1c894158e5518d6ff05fa36373ba8a543f1ee28f&label=Markdown%20example)
 
 ## Mountain layout
 
+![image](https://user-images.githubusercontent.com/3679296/187782025-dbe781ec-d950-453a-8ca6-5c13317ff539.png)
+
 [script](https://github.com/magland/sortingview/blob/main/examples/example_mountain_layout.py)
-| [view](https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://428301bc920d206a927143a924165a0a91dc8a63&label=Mountain%20layout%20example)
+| [view](https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://e06e250ac54a3f3cbdfc11daa6391030c6740fab&label=Mountain%20layout%20example)
 
 ## Position plot
+
+![image](https://user-images.githubusercontent.com/3679296/187782157-adf4fd42-47bb-4a20-8307-0b078bfd90c3.png)
 
 [script](https://github.com/magland/sortingview/blob/main/examples/example_position_plot.py)
 | [view](https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://056c59aae3f29f48426be38516a6e84496985edf&label=Position%20plot%20example)
 
 ## Raster plot
 
+![image](https://user-images.githubusercontent.com/3679296/187782227-369cd795-a96b-44ce-9aef-2e68b3c2af08.png)
+
 [script](https://github.com/magland/sortingview/blob/main/examples/example_raster_plot.py)
 | [view](https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://f2d35eb108e7c1a5f6ae0ba196d61bb9b7a889df&label=Raster%20plot%20example)
 
 ## Spike amplitudes
+
+![image](https://user-images.githubusercontent.com/3679296/187782508-c7084c23-4973-4912-b35c-8e577bff2f3b.png)
 
 [script](https://github.com/magland/sortingview/blob/main/examples/example_spike_amplitudes.py)
 | [view](https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://1e667e92ee3be76c8e4a85af4a94784329c710d2&label=test_spike_amplitudes
@@ -66,6 +76,8 @@
 )
 
 ## Splitter layout
+
+![image](https://user-images.githubusercontent.com/3679296/187781629-a03237ea-6674-46d8-9deb-54a0834c7236.png)
 
 [script](https://github.com/magland/sortingview/blob/main/examples/example_splitter_layout.py)
 | [view](https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://428301bc920d206a927143a924165a0a91dc8a63&label=Splitter%20layout%20example)
