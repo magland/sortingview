@@ -1,4 +1,5 @@
 import os
+import socket
 from abc import abstractmethod
 from typing import List, Union
 import kachery_cloud as kcl
@@ -81,6 +82,12 @@ class View:
     def electron(self, *, label: str, listen_port: Union[int, None]=None):
         self.url(label=label, local=True, electron=True, listen_port=listen_port)
     def run(self, *, label: str, port: int):
+        if port == 0:
+            # get an open port
+            sock = socket.socket()
+            sock.bind(('', 0))
+            port = sock.getsockname()[1]
+            sock.close()
         task_backend = TaskBackend(project_id=f'local:{port}')
         views = self.get_descendant_views_including_self()
         for view in views:

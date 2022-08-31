@@ -29,7 +29,7 @@ def main():
         ]
     )
 
-    view.run(label='test_live_evaluate_function', port=4048)
+    view.run(label='test_live_evaluate_function', port=0)
 
 if __name__ == '__main__':
     main()
