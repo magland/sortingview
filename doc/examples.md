@@ -21,10 +21,14 @@
 
 ## Confusion matrix
 
+![image](https://user-images.githubusercontent.com/3679296/187776276-290f0ce8-a1c9-428b-8d61-4a57079b9c94.png)
+
 [script](https://github.com/magland/sortingview/blob/main/examples/example_confusion_matrix.py)
 | [view](https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://70a5430935ca06ee23246a37c247cc759d449bde&label=test_confusion_matrix)
 
 ## Cross correlograms
+
+![image](https://user-images.githubusercontent.com/3679296/187776436-eb3ef57d-325f-4e9d-9f3f-dea3aa5052c2.png)
 
 [script](https://github.com/magland/sortingview/blob/main/examples/example_cross_correlograms.py)
 | [view](https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://a72e243cf44f94ecfd2fd9d828157e9ad05adce1&label=Cross%20correlograms%20example)
