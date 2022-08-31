@@ -84,15 +84,21 @@
 
 ## Tab layout
 
+![image](https://user-images.githubusercontent.com/3679296/187783614-24833827-f12e-41f3-be56-9834b6b7400d.png)
+
 [script](https://github.com/magland/sortingview/blob/main/examples/example_tab_layout.py)
-| [view](https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://69554613b452da58bbe13fdefde33e16c2e5c80b&label=Tab%20layout%20example)
+| [view](https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://3eed6984bee0f75f23a29700a3ce0dc9c2b4c9b3&label=Tab%20layout%20example)
 
 ## Tiled image
+
+![image](https://user-images.githubusercontent.com/3679296/187784146-201e81bd-6e50-4ce7-b065-f3de2bff9b6a.png)
 
 [script](https://github.com/magland/sortingview/blob/main/examples/example_tiled_image.py)
 | [view](https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://2b44a7d440f0bda1e0e802716688c51d445d54aa&label=Tiled%20image%20example)
 
 ## Track position animation
+
+![image](https://user-images.githubusercontent.com/3679296/187784392-73e293df-19e1-4a81-98fc-8650ab8ebc7c.png)
 
 [script](https://github.com/magland/sortingview/blob/main/examples/example_track_position_animation.py)
 | [view](https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://9f52e595588458db2b029779110940cbba05cd20&label=Track%20position%20animation%20example)
