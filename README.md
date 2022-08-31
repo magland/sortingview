@@ -2,21 +2,12 @@
 
 View, curate, and share results of electrophysiological spike sorting in the browser.
 
+[Gallery of examples](./doc/examples.md)
+
 ## Installation and setup
 
-It is recommended that you use a conda environment with Python >= 3.8 and numpy.
-
 ```bash
-# For now, install by cloning the source
-# because only the previous version is
-# currently on PyPI. See the section
-# below on backward compatibility.
-
-# clone this repo
-git clone https://github.com/magland/sortingview
-
-cd sortingview
-pip install -e .
+pip install --upgrade sortingview
 ```
 
 Configure your [kachery-cloud](https://github.com/scratchrealm/kachery-cloud) client
@@ -28,7 +19,7 @@ kachery-cloud-init
 
 ## Running a backend
 
-Some visualizations require a running backend. Run the following in a terminal:
+Some visualizations require a running backend. Most do not. Optionally, run the following in a terminal:
 
 ```bash
 sortingview-start-backend
@@ -38,7 +29,7 @@ For advanced usage, see [doc/backend.md](doc/backend.md).
 
 ## Visualizing a recording/sorting pair
 
-See [examples/example2.py](examples/example2.py)
+See [examples/example2.py](examples/old/example2.py)
 
 [View figURL](https://figurl.org/f?v=gs://figurl/spikesortingview-6&d=sha1://b8c937f982a0308d6a5d8c440b7a01e7cf578447&label=test%20mountain%20layout)
 
