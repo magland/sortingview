@@ -87,7 +87,11 @@ class View:
         a = _parse_figurl_url(url)
         view_uri = a['v']
         data_uri = a['d']
-        return fj.FigurlFigure(view_uri=view_uri, data_uri=data_uri, height=height)
+        task_backend = TaskBackend(project_id='jupyter')
+        views = self.get_descendant_views_including_self()
+        for view in views:
+            view.register_task_handlers(task_backend)
+        return fj.FigurlFigure(view_uri=view_uri, data_uri=data_uri, height=height, task_handlers=task_backend._registered_task_handlers)
     def run(self, *, label: str, port: int):
         if port == 0:
             # get an open port
