@@ -120,5 +120,7 @@
 
 ## Units table
 
+![image](https://user-images.githubusercontent.com/3679296/187812145-e784011d-d50b-4361-a90d-c32d812b1797.png)
+
 [script](https://github.com/magland/sortingview/blob/main/examples/example_units_table.py)
 | [view](https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://3bd6d3c6b77428cca467bc1afb48c5f272d7b4e6&label=Units%20table%20example)
