@@ -3,6 +3,7 @@
 
 import sortingview.views as vv
 import spikeinterface.extractors as se
+import spikeinterface as si
 import kachery_cloud as kcl
 from example_autocorrelograms import example_autocorrelograms
 from example_cross_correlograms import example_cross_correlograms
@@ -15,6 +16,17 @@ from example_unit_similarity_matrix import example_unit_unit_similarity_matrix
 def main():
     kcl.use_sandbox()
     R, S = se.toy_example(num_units=12, duration=300, seed=0, num_segments=1)
+
+    view = example_mountain_layout(recording=R, sorting=S)
+
+    url = view.url(
+        label='Mountain layout example'
+    )
+    print(url)
+
+def example_mountain_layout(recording: si.BaseRecording, sorting: si.BaseSorting):
+    R = recording
+    S = sorting
 
     v_units_table = example_units_table(recording=R, sorting=S)
     v_raster_plot = example_raster_plot(recording=R, sorting=S)
@@ -52,10 +64,7 @@ def main():
         ]
     )
 
-    url = view.url(
-        label='Mountain layout example'
-    )
-    print(url)
+    return view
 
 if __name__ == '__main__':
     main()

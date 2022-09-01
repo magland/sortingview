@@ -81,6 +81,13 @@ class View:
         return V.url(label=label, sorting_curation_uri=sorting_curation_uri, local=local, electron=electron, project_id=project_id, listen_port=listen_port)
     def electron(self, *, label: str, listen_port: Union[int, None]=None):
         self.url(label=label, local=True, electron=True, listen_port=listen_port)
+    def jupyter(self, *, height=600):
+        import figurl_jupyter as fj
+        url = self.url(label='jupyter', local=True, electron=False, listen_port=None)
+        a = _parse_figurl_url(url)
+        view_uri = a['v']
+        data_uri = a['d']
+        return fj.FigurlFigure(view_uri=view_uri, data_uri=data_uri, height=height)
     def run(self, *, label: str, port: int):
         if port == 0:
             # get an open port
@@ -100,3 +107,14 @@ def _upload_data_and_return_uri(data, *, local: bool=False):
 
 def _random_id():
     return str(uuid.uuid4())[-12:]
+
+def _parse_figurl_url(uri: str):
+    ind = uri.index('?')
+    q = uri[ind + 1:]
+    a = q.split('&')
+    ret = {}
+    for b in a:
+        x = b.split('=')
+        if len(x) == 2:
+            ret[x[0]] = x[1]
+    return ret

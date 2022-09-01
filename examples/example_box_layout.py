@@ -4,6 +4,7 @@
 import sortingview.views as vv
 import spikeinterface.extractors as se
 import kachery_cloud as kcl
+import spikeinterface as si
 from example_autocorrelograms import example_autocorrelograms
 from example_cross_correlograms import example_cross_correlograms
 from example_raster_plot import example_raster_plot
@@ -16,6 +17,16 @@ def main():
     kcl.use_sandbox()
     R, S = se.toy_example(num_units=12, duration=300, seed=0, num_segments=1)
 
+    view = example_box_layout(recording=R, sorting=S)
+
+    url = view.url(
+        label='Box layout example'
+    )
+    print(url)
+
+def example_box_layout(recording: si.BaseRecording, sorting: si.BaseSorting):
+    R = recording
+    S = sorting
     v_units_table = example_units_table(recording=R, sorting=S)
     v_raster_plot = example_raster_plot(recording=R, sorting=S)
     v_autocorrelograms = example_autocorrelograms(sorting=S)
@@ -67,10 +78,7 @@ def main():
         ]
     )
 
-    url = view.url(
-        label='Box layout example'
-    )
-    print(url)
+    return view
 
 if __name__ == '__main__':
     main()
