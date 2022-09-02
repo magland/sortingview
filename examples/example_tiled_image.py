@@ -14,7 +14,7 @@ def main():
     url = view.url(label='Tiled image example')
     print(url)
 
-def example_tiled_image():
+def example_tiled_image(*, height=500):
     print('Creating Mandelbrot array')
     width = 2000
     height = 2000
@@ -33,7 +33,7 @@ def example_tiled_image():
     y2 = y
     y2[:, :, 0] = 0
     layer2 = vv.TiledImageLayer(label='layer 2', data=y2)
-    view = vv.TiledImage(tile_size=tile_size, layers=[layer1, layer2])
+    view = vv.TiledImage(tile_size=tile_size, layers=[layer1, layer2], height=height)
     return view
 
 # Thanks: https://figurl.org/f?v=gs://figurl/spikesortingview-7&d=sha1://cf290fc3c9ebcdeff4231f42982c7c6da5a66e3b&label=test_tiled_image

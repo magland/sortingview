@@ -29,9 +29,10 @@ class UnitLocations(View):
     def __init__(self,
         units: List[UnitLocationsItem], *,
         channel_locations: Dict[str, Any],
-        disable_auto_rotate: bool=False
+        disable_auto_rotate: bool=False,
+        **kwargs
     ) -> None:
-        super().__init__('UnitLocations')
+        super().__init__('UnitLocations', **kwargs)
         self._units = units
         self._channel_locations = channel_locations
         self._disable_auto_rotate = disable_auto_rotate

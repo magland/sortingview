@@ -27,9 +27,10 @@ class UnitSimilarityMatrix(View):
     """
     def __init__(self,
         unit_ids: List[Union[int, str]],
-        similarity_scores: List[UnitSimilarityScore]
+        similarity_scores: List[UnitSimilarityScore],
+        **kwargs
     ) -> None:
-        super().__init__('UnitSimilarityMatrix')
+        super().__init__('UnitSimilarityMatrix', **kwargs)
         self._unit_ids = unit_ids
         self._similarity_scores = similarity_scores
     def to_dict(self) -> dict:

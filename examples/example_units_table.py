@@ -17,7 +17,7 @@ def main():
     url = view.url(label='Units table example')
     print(url)
 
-def example_units_table(*, recording: si.BaseRecording, sorting: si.BaseSorting):
+def example_units_table(*, recording: si.BaseRecording, sorting: si.BaseSorting, height=600):
     columns: List[vv.UnitsTableColumn] = [
         vv.UnitsTableColumn(
             key='unitId',
@@ -50,7 +50,8 @@ def example_units_table(*, recording: si.BaseRecording, sorting: si.BaseSorting)
         )
     view = vv.UnitsTable(
         columns=columns,
-        rows=rows
+        rows=rows,
+        height=height
     )
     return view
 

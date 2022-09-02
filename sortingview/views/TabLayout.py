@@ -15,9 +15,10 @@ class TabLayout(View):
     Tab layout
     """
     def __init__(self,
-        items: List[TabLayoutItem]
+        items: List[TabLayoutItem],
+        **kwargs
     ) -> None:
-        super().__init__('TabLayout', is_layout=True)
+        super().__init__('TabLayout', is_layout=True, **kwargs)
         self._items = items
     def to_dict(self) -> dict:
         ret = {

@@ -133,9 +133,10 @@ class TrackPositionAnimationV1(View):
         y_max: float,
         head_direction: Union[None, np.array]=None, # N
         decoded_data: Union[None, DecodedPositionData]=None,
-        sampling_frequency_hz: Union[None, float]=None
+        sampling_frequency_hz: Union[None, float]=None,
+        **kwargs
     ) -> None:
-        super().__init__('TrackAnimation')
+        super().__init__('TrackAnimation', **kwargs)
         self.track_bin_width = track_bin_width
         self.track_bin_height = track_bin_height
         self.track_bin_ul_corners = track_bin_ul_corners

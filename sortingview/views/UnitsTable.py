@@ -43,9 +43,10 @@ class UnitsTable(View):
     """
     def __init__(self, *,
         columns: List[UnitsTableColumn],
-        rows: List[UnitsTableRow]
+        rows: List[UnitsTableRow],
+        **kwargs
     ) -> None:
-        super().__init__('UnitsTable')
+        super().__init__('UnitsTable', **kwargs)
         self._columns = columns
         self._rows = rows
     def to_dict(self) -> dict:

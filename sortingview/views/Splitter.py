@@ -11,9 +11,10 @@ class Splitter(View):
         item1: LayoutItem,
         item2: LayoutItem,
         *,
-        direction: Literal['horizontal', 'vertical']
+        direction: Literal['horizontal', 'vertical'],
+        **kwargs
     ) -> None:
-        super().__init__('Splitter', is_layout=True)
+        super().__init__('Splitter', is_layout=True, **kwargs)
         self._items = [item1, item2]
         self._direction = direction
     def to_dict(self) -> dict:

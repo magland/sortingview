@@ -43,9 +43,10 @@ class UnitMetricsGraph(View):
     """
     def __init__(self, *,
         metrics: List[UnitMetricsGraphMetric],
-        units: List[UnitMetricsGraphUnit]
+        units: List[UnitMetricsGraphUnit],
+        **kwargs
     ) -> None:
-        super().__init__('UnitMetricsGraph')
+        super().__init__('UnitMetricsGraph', **kwargs)
         self._metrics = metrics
         self._units = units
     def to_dict(self) -> dict:

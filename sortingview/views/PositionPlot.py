@@ -12,9 +12,10 @@ class PositionPlot(View):
         positions: np.array,
         dimension_labels: List[str],
         subsampling_frequency: Union[float, None]=None,
-        discontinuous: bool=False
+        discontinuous: bool=False,
+        **kwargs
     ) -> None:
-        super().__init__('PositionPlot')
+        super().__init__('PositionPlot', **kwargs)
         self.timestamps = timestamps
         self.positions = positions
         self.dimension_labels = dimension_labels

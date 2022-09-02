@@ -36,9 +36,10 @@ class SpikeLocations(View):
         y_range: Tuple[float, float],
         hide_unit_selector: bool,
         channel_locations: Dict[str, Any],
-        disable_auto_rotate: bool=False
+        disable_auto_rotate: bool=False,
+        **kwargs
     ) -> None:
-        super().__init__('SpikeLocations')
+        super().__init__('SpikeLocations', **kwargs)
         self._units = units
         self._x_range = x_range
         self._y_range = y_range

@@ -39,9 +39,10 @@ class ConfusionMatrix(View):
         sorting1_unit_ids: List[Union[str, int]],
         sorting2_unit_ids: List[Union[str, int]],
         unit_event_counts: List[UnitEventCount],
-        matching_unit_event_counts: List[MatchingUnitEventCount]
+        matching_unit_event_counts: List[MatchingUnitEventCount],
+        **kwargs
     ) -> None:
-        super().__init__('ConfusionMatrix')
+        super().__init__('ConfusionMatrix', **kwargs)
         self.sorting1_unit_ids = sorting1_unit_ids
         self.sorting2_unit_ids = sorting2_unit_ids
         self.unit_event_counts = unit_event_counts

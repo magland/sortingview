@@ -26,7 +26,7 @@ def main():
     url = view2.url(label='Unit metrics graph example')
     print(url)
 
-def example_unit_metrics_graph(*, recording: si.BaseRecording, sorting: si.BaseSorting):
+def example_unit_metrics_graph(*, recording: si.BaseRecording, sorting: si.BaseSorting, height=800):
     metrics: List[vv.UnitMetricsGraphMetric] = [
         vv.UnitMetricsGraphMetric(
             key='numEvents',
@@ -53,7 +53,8 @@ def example_unit_metrics_graph(*, recording: si.BaseRecording, sorting: si.BaseS
         )
     view = vv.UnitMetricsGraph(
         units=units,
-        metrics=metrics
+        metrics=metrics,
+        height=height
     )
     return view
 

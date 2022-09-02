@@ -12,7 +12,7 @@ def main():
     url = view.url(label='Markdown example')
     print(url)
 
-def example_markdown():
+def example_markdown(*, height: int=500):
     view = vv.Markdown(
 '''
 # Test markdown
@@ -30,7 +30,8 @@ import spikeinterface as si
 
 print(si.__version__)
 ```
-'''
+''',
+        height=height
     )
     return view
 

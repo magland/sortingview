@@ -24,7 +24,7 @@ def main():
     )
     print(url)
 
-def example_mountain_layout(recording: si.BaseRecording, sorting: si.BaseSorting):
+def example_mountain_layout(recording: si.BaseRecording, sorting: si.BaseSorting, height=800):
     R = recording
     S = sorting
 
@@ -36,6 +36,7 @@ def example_mountain_layout(recording: si.BaseRecording, sorting: si.BaseSorting
     v_unit_similarity_matrix = example_unit_unit_similarity_matrix(recording=R, sorting=S)
 
     view = vv.MountainLayout(
+        height=height,
         items=[
             vv.MountainLayoutItem(
                 label='Units',

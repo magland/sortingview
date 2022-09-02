@@ -11,9 +11,10 @@ class LiveTraces(View):
     """
     def __init__(self, *,
         recording: si.BaseRecording,
-        recording_id: str
+        recording_id: str,
+        **kwargs
     ) -> None:
-        super().__init__('LiveTraces')
+        super().__init__('LiveTraces', **kwargs)
         self._recording = recording
         self._recording_id = recording_id
         M = self._recording.get_num_channels()

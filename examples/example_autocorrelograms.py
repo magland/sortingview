@@ -17,7 +17,7 @@ def main():
     url = view.url(label='Autocorrelograms example')
     print(url)
 
-def example_autocorrelograms(*, sorting: si.BaseSorting):
+def example_autocorrelograms(*, sorting: si.BaseSorting, height=400):
     autocorrelogram_items: List[vv.AutocorrelogramItem] = []
     for unit_id in sorting.get_unit_ids():
         a = compute_correlogram_data(sorting=sorting, unit_id1=unit_id, unit_id2=None, window_size_msec=50, bin_size_msec=1)
@@ -31,7 +31,8 @@ def example_autocorrelograms(*, sorting: si.BaseSorting):
             )
         )
     view = vv.Autocorrelograms(
-        autocorrelograms=autocorrelogram_items
+        autocorrelograms=autocorrelogram_items,
+        height=height
     )
     return view
 

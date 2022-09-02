@@ -13,7 +13,7 @@ def main():
     url = view.url(label='Position plot example')
     print(url)
 
-def example_position_plot():
+def example_position_plot(*, height=600):
     timestamps = np.arange(1000, 2000, dtype=np.float64)
     n = len(timestamps)
     positions = np.zeros((n, 2))
@@ -23,7 +23,8 @@ def example_position_plot():
     view = vv.PositionPlot(
         timestamps=timestamps,
         positions=positions.astype(np.float32),
-        dimension_labels=['x', 'y']
+        dimension_labels=['x', 'y'],
+        height=height
     )
     return view
 

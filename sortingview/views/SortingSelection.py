@@ -9,8 +9,8 @@ class SortingSelection(View):
     """
     Sorting selection control view
     """
-    def __init__(self) -> None:
-        super().__init__('SortingSelection')
+    def __init__(self, **kwargs) -> None:
+        super().__init__('SortingSelection', **kwargs)
     def to_dict(self) -> dict:
         ret = {
             'type': self.type

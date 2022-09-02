@@ -10,9 +10,10 @@ class LiveEvaluateFunction(View):
     """
     def __init__(self,
         function: Callable,
-        function_id: str
+        function_id: str,
+        **kwargs
     ) -> None:
-        super().__init__('LiveEvaluateFunction')
+        super().__init__('LiveEvaluateFunction', **kwargs)
         self._function = function
         self._function_id = function_id
     def to_dict(self) -> dict:

@@ -85,7 +85,7 @@ def _create_units_table(*, sorting1: si.BaseSorting, sorting2: si.BaseSorting):
         rows=rows
     )
 
-def example_confusion_matrix(*, sorting1: si.BaseSorting, sorting2: si.BaseSorting):
+def example_confusion_matrix(*, sorting1: si.BaseSorting, sorting2: si.BaseSorting, height=400):
     SC: sc.SymmetricSortingComparison = sc.compare_two_sorters(sorting1=sorting1, sorting2=sorting2)
 
     unit_event_counts: List[vv.UnitEventCount] = []
@@ -105,7 +105,8 @@ def example_confusion_matrix(*, sorting1: si.BaseSorting, sorting2: si.BaseSorti
         sorting1_unit_ids=[f'A{id}' for id in sorting1.unit_ids],
         sorting2_unit_ids=[f'B{id}' for id in sorting2.unit_ids],
         unit_event_counts=unit_event_counts,
-        matching_unit_event_counts=matching_unit_event_counts
+        matching_unit_event_counts=matching_unit_event_counts,
+        height=height
     )
     return view
 

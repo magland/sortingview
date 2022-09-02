@@ -12,10 +12,11 @@ class View:
     """
     Base class for all views
     """
-    def __init__(self, view_type: str, *, is_layout: bool=False) -> None:
+    def __init__(self, view_type: str, *, is_layout: bool=False, height=500) -> None:
         self.type = view_type
         self.id = _random_id()
         self.is_layout = is_layout
+        self._height = height
     @abstractmethod
     def to_dict(self) -> dict:
         return {}
@@ -81,7 +82,9 @@ class View:
         return V.url(label=label, sorting_curation_uri=sorting_curation_uri, local=local, electron=electron, project_id=project_id, listen_port=listen_port)
     def electron(self, *, label: str, listen_port: Union[int, None]=None):
         self.url(label=label, local=True, electron=True, listen_port=listen_port)
-    def jupyter(self, *, height=600):
+    def jupyter(self, *, height: Union[int, None]=None):
+        if height is None:
+            height = self._height
         import figurl_jupyter as fj
         url = self.url(label='jupyter', local=True, electron=False, listen_port=None)
         a = _parse_figurl_url(url)
@@ -92,6 +95,9 @@ class View:
         for view in views:
             view.register_task_handlers(task_backend)
         return fj.FigurlFigure(view_uri=view_uri, data_uri=data_uri, height=height, task_handlers=task_backend._registered_task_handlers)
+    def _ipython_display_(self):
+        from IPython.display import display
+        display(self.jupyter(height=self._height))
     def run(self, *, label: str, port: int):
         if port == 0:
             # get an open port

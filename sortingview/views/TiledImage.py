@@ -20,8 +20,8 @@ class TiledImageLayer:
 
 
 class TiledImage(View):
-    def __init__(self, *, tile_size: int, layers: List[TiledImageLayer]) -> None:
-        super().__init__('TiledImage')
+    def __init__(self, *, tile_size: int, layers: List[TiledImageLayer], **kwargs) -> None:
+        super().__init__('TiledImage', **kwargs)
         self._tile_size = tile_size
         self._layers = layers
 

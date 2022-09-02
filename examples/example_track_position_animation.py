@@ -13,7 +13,7 @@ def main():
     url = view.url(label='Track position animation example')
     print(url)
 
-def example_track_position_animation():
+def example_track_position_animation(*, height=800):
     num_frames = 2500
     sampling_frequency_hz = 10
     timestamps = np.arange(num_frames).astype(np.float32) / sampling_frequency_hz
@@ -75,7 +75,8 @@ def example_track_position_animation():
         y_max=11,
         head_direction=head_direction,
         decoded_data=decoded_position_data,
-        sampling_frequency_hz=sampling_frequency_hz
+        sampling_frequency_hz=sampling_frequency_hz,
+        height=height
     )
     return view
 

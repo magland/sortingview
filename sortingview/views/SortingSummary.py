@@ -18,9 +18,10 @@ class SortingSummary(View):
         num_frames: int,
         num_segments: int,
         channel_locations: Any,
-        noise_level: float
+        noise_level: float,
+        **kwargs
     ) -> None:
-        super().__init__('Summary')
+        super().__init__('Summary', **kwargs)
         self.recording_description = recording_description
         self.sorting_description = sorting_description
         self.recording_object = recording_object

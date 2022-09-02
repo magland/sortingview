@@ -27,9 +27,10 @@ class RasterPlot(View):
     def __init__(self, *,
         start_time_sec: float,
         end_time_sec: float,
-        plots: List[RasterPlotItem]
+        plots: List[RasterPlotItem],
+        **kwargs
     ) -> None:
-        super().__init__('RasterPlot')
+        super().__init__('RasterPlot', **kwargs)
         self._start_time_sec = start_time_sec
         self._end_time_sec = end_time_sec
         self._plots = plots

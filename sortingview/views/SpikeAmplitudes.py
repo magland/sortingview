@@ -31,9 +31,10 @@ class SpikeAmplitudes(View):
         start_time_sec: float,
         end_time_sec: float,
         plots: List[SpikeAmplitudesItem],
-        hide_unit_selector: bool=False
+        hide_unit_selector: bool=False,
+        **kwargs
     ) -> None:
-        super().__init__('SpikeAmplitudes')
+        super().__init__('SpikeAmplitudes', **kwargs)
         self._start_time_sec = start_time_sec
         self._end_time_sec = end_time_sec
         self._plots = plots

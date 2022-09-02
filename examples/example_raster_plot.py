@@ -18,7 +18,7 @@ def main():
     url = view.url(label='Raster plot example')
     print(url)
 
-def example_raster_plot(*, recording: si.BaseRecording, sorting: si.BaseSorting):
+def example_raster_plot(*, recording: si.BaseRecording, sorting: si.BaseSorting, height=500):
     plot_items: List[vv.RasterPlotItem] = []
     for unit_id in sorting.get_unit_ids():
         spike_times_sec = np.array(sorting.get_unit_spike_train(segment_index=0, unit_id=unit_id)) / sorting.get_sampling_frequency()
@@ -32,7 +32,8 @@ def example_raster_plot(*, recording: si.BaseRecording, sorting: si.BaseSorting)
     view = vv.RasterPlot(
         start_time_sec=0,
         end_time_sec=recording.get_num_frames(segment_index=0) / recording.get_sampling_frequency(),
-        plots=plot_items
+        plots=plot_items,
+        height=height
     )
     return view
 

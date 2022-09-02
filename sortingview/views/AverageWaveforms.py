@@ -33,9 +33,10 @@ class AverageWaveforms(View):
     def __init__(self,
         average_waveforms: List[AverageWaveformItem], *,
         channel_locations: Union[None, Dict[str, Any]] = None,
-        show_reference_probe: Union[None, bool]=None
+        show_reference_probe: Union[None, bool]=None,
+        **kwargs
     ) -> None:
-        super().__init__('AverageWaveforms')
+        super().__init__('AverageWaveforms', **kwargs)
         self._average_waveforms = average_waveforms
         self._channel_locations = channel_locations
         self._show_reference_probe = show_reference_probe

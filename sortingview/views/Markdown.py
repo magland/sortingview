@@ -7,9 +7,10 @@ class Markdown(View):
     Markdown
     """
     def __init__(self,
-        source: str
+        source: str,
+        **kwargs
     ) -> None:
-        super().__init__('Markdown')
+        super().__init__('Markdown', **kwargs)
         self._source = source
     def to_dict(self) -> dict:
         ret = {

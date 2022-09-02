@@ -24,7 +24,7 @@ def main():
     )
     print(url)
 
-def example_box_layout(recording: si.BaseRecording, sorting: si.BaseSorting):
+def example_box_layout(recording: si.BaseRecording, sorting: si.BaseSorting, height=800):
     R = recording
     S = sorting
     v_units_table = example_units_table(recording=R, sorting=S)
@@ -35,6 +35,7 @@ def example_box_layout(recording: si.BaseRecording, sorting: si.BaseSorting):
     v_unit_similarity_matrix = example_unit_unit_similarity_matrix(recording=R, sorting=S)
 
     view = vv.Box(
+        height=height,
         direction='vertical',
         items=[
             vv.LayoutItem(

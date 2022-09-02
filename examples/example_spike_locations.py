@@ -18,7 +18,7 @@ def main():
     url = view.url(label='Spike locations example')
     print(url)
 
-def example_spike_locations(*, recording: si.BaseRecording, sorting: si.BaseSorting, hide_unit_selector: bool=False):
+def example_spike_locations(*, recording: si.BaseRecording, sorting: si.BaseSorting, hide_unit_selector: bool=False, height=500):
     channel_locations = recording.get_channel_locations().astype(np.float32)
     xmin = np.min(channel_locations[:, 0])
     xmax = np.max(channel_locations[:, 0])
@@ -61,7 +61,8 @@ def example_spike_locations(*, recording: si.BaseRecording, sorting: si.BaseSort
         x_range=[xmin, xmax],
         y_range=[ymin, ymax],
         channel_locations=channel_locations,
-        disable_auto_rotate=True
+        disable_auto_rotate=True,
+        height=height
     )
     return view
 

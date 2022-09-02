@@ -17,7 +17,7 @@ def main():
     url = view.url(label='Cross correlograms example')
     print(url)
 
-def example_cross_correlograms(*, sorting: si.BaseSorting, hide_unit_selector: bool=False):
+def example_cross_correlograms(*, sorting: si.BaseSorting, hide_unit_selector: bool=False, height=500):
     cross_correlogram_items: List[vv.CrossCorrelogramItem] = []
     for unit_id1 in sorting.get_unit_ids():
         for unit_id2 in sorting.get_unit_ids():
@@ -36,7 +36,8 @@ def example_cross_correlograms(*, sorting: si.BaseSorting, hide_unit_selector: b
 
     view = vv.CrossCorrelograms(
         cross_correlograms=cross_correlogram_items,
-        hide_unit_selector=hide_unit_selector
+        hide_unit_selector=hide_unit_selector,
+        height=height
     )
     return view
 

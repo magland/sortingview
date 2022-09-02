@@ -27,9 +27,10 @@ class Autocorrelograms(View):
     Autocorrelograms view
     """
     def __init__(self,
-        autocorrelograms: List[AutocorrelogramItem]
+        autocorrelograms: List[AutocorrelogramItem],
+        **kwargs
     ) -> None:
-        super().__init__('Autocorrelograms')
+        super().__init__('Autocorrelograms', **kwargs)
         self._autocorrelograms = autocorrelograms
     def to_dict(self) -> dict:
         ret = {

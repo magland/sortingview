@@ -18,7 +18,7 @@ def main():
     url = view.url(label='Average waveforms example')
     print(url)
 
-def example_average_waveforms(*, recording: si.BaseRecording, sorting: si.BaseSorting):
+def example_average_waveforms(*, recording: si.BaseRecording, sorting: si.BaseSorting, height=500):
     # noise_level = estimate_noise_level(recording)
     average_waveform_items: List[vv.AverageWaveformItem] = []
     for unit_id in sorting.get_unit_ids():
@@ -38,7 +38,8 @@ def example_average_waveforms(*, recording: si.BaseRecording, sorting: si.BaseSo
     view = vv.AverageWaveforms(
         average_waveforms=average_waveform_items,
         channel_locations=channel_locations,
-        show_reference_probe=True
+        show_reference_probe=True,
+        height=height
     )
     return view
 

@@ -10,9 +10,10 @@ class Box(View):
     def __init__(self,
         items: List[LayoutItem], *,
         direction: Literal['horizontal', 'vertical'],
-        scrollbar: Union[None, bool] = None
+        scrollbar: Union[None, bool] = None,
+        **kwargs
     ) -> None:
-        super().__init__('Box', is_layout=True)
+        super().__init__('Box', is_layout=True, **kwargs)
         self._items = items
         self._direction = direction
         self._scrollbar = scrollbar

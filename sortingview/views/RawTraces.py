@@ -13,9 +13,10 @@ class RawTraces(View):
         start_time_sec: float,
         sampling_frequency: float,
         traces: np.ndarray,
-        channel_ids: np.array
+        channel_ids: np.array,
+        **kwargs
     ) -> None:
-        super().__init__('RawTraces')
+        super().__init__('RawTraces', **kwargs)
         self._start_time_sec = start_time_sec
         self._sampling_frequency = sampling_frequency
         self._traces = traces

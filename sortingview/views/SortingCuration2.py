@@ -9,8 +9,8 @@ class SortingCuration2(View):
     """
     Sorting curation v2 control view
     """
-    def __init__(self, *, sorting_id: str) -> None:
-        super().__init__('SortingCuration2')
+    def __init__(self, *, sorting_id: str, **kwargs) -> None:
+        super().__init__('SortingCuration2', **kwargs)
         self._sorting_id = sorting_id
     def to_dict(self) -> dict:
         ret = {

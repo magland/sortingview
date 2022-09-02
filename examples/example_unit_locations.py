@@ -27,7 +27,7 @@ def main():
     url = view2.url(label='Unit locations example')
     print(url)
 
-def example_unit_locations(*, recording: si.BaseRecording, sorting: si.BaseSorting):
+def example_unit_locations(*, recording: si.BaseRecording, sorting: si.BaseSorting, height=400):
     channel_locations = recording.get_channel_locations()
     xmin = np.min(channel_locations[:, 0])
     xmax = np.max(channel_locations[:, 0])
@@ -52,7 +52,8 @@ def example_unit_locations(*, recording: si.BaseRecording, sorting: si.BaseSorti
     view = vv.UnitLocations(
         units=unit_items,
         channel_locations=channel_locations,
-        disable_auto_rotate=True
+        disable_auto_rotate=True,
+        height=height
     )
     return view
 

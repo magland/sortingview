@@ -17,9 +17,10 @@ class MountainLayout(View):
     MountainView layout
     """
     def __init__(self,
-        items: List[MountainLayoutItem]
+        items: List[MountainLayoutItem],
+        **kwargs
     ) -> None:
-        super().__init__('Mountain', is_layout=True)
+        super().__init__('Mountain', is_layout=True, **kwargs)
         self._items = items
     def to_dict(self) -> dict:
         ret = {

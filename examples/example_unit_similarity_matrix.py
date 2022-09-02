@@ -17,7 +17,7 @@ def main():
     url = view.url(label='Unit similarity matrix example')
     print(url)
 
-def example_unit_unit_similarity_matrix(*, recording: si.BaseRecording, sorting: si.BaseSorting):
+def example_unit_unit_similarity_matrix(*, recording: si.BaseRecording, sorting: si.BaseSorting, height=400):
     recording.get_num_channels() # so that it is not marked as unused by linter
     unit_ids = list(sorting.get_unit_ids())
     similarity_scores: List[vv.UnitSimilarityScore] = []
@@ -33,7 +33,8 @@ def example_unit_unit_similarity_matrix(*, recording: si.BaseRecording, sorting:
 
     view = vv.UnitSimilarityMatrix(
         unit_ids=unit_ids,
-        similarity_scores=similarity_scores
+        similarity_scores=similarity_scores,
+        height=height
     )
     return view
 

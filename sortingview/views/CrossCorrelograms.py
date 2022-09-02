@@ -32,9 +32,10 @@ class CrossCorrelograms(View):
     def __init__(self,
         cross_correlograms: List[CrossCorrelogramItem],
         *,
-        hide_unit_selector: bool=False
+        hide_unit_selector: bool=False,
+        **kwargs
     ) -> None:
-        super().__init__('CrossCorrelograms')
+        super().__init__('CrossCorrelograms', **kwargs)
         self._cross_correlograms = cross_correlograms
         self._hide_unit_selector = hide_unit_selector
     def to_dict(self) -> dict:
