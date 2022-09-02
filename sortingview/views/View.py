@@ -95,6 +95,16 @@ class View:
         for view in views:
             view.register_task_handlers(task_backend)
         return fj.FigurlFigure(view_uri=view_uri, data_uri=data_uri, height=height, task_handlers=task_backend._registered_task_handlers)
+    # Took me a while to figure out that
+    # this is the right way to do it in order
+    # to support both jupyter lab and notebook
+    # I figure it out by looking into the ipywidgets
+    # source code.
+    def _repr_mimebundle_(self, **kwargs):
+        ipywidget = self.jupyter(height=self._height)
+        data = ipywidget._repr_mimebundle_(**kwargs)
+        return data
+    # This works in jupyter lab but not nb
     def _ipython_display_(self):
         from IPython.display import display
         display(self.jupyter(height=self._height))
