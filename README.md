@@ -4,22 +4,38 @@ View, curate, and share results of electrophysiological spike sorting in the bro
 
 [Gallery of examples](./doc/examples.md)
 
+[List of features](./doc/features.md)
+
 ## Installation and setup
 
 ```bash
 pip install --upgrade sortingview
 ```
 
-Configure your [kachery-cloud](https://github.com/scratchrealm/kachery-cloud) client
+If you want to generate shareable URLs, configure your [kachery-cloud](https://github.com/scratchrealm/kachery-cloud) client
 
 ```bash
 kachery-cloud-init
 # follow the instructions to associate your client with your Google user name on kachery-cloud
 ```
 
+## Getting started
+
+See the [examples folder](./examples) or the [example notebook](./notebooks/sortingview_jupyter.ipynb).
+
+Keep in mind that sortingview widgets can be viewed in any of the following modes:
+* shareable URL in the browser
+* local URL in the browser
+* electron desktop window
+* jupyter lab notebook widget
+
+## SpikeInterface Integration
+
+We are working on a tight integration between sortingview and [SpikeInterface](https://spikeinterface.readthedocs.io/en/latest/).
+
 ## Running a backend
 
-Some visualizations require a running backend. Most do not. Optionally, run the following in a terminal:
+This is optional. When generating shareable URLs, some visualizations require a running backend. Most do not. Optionally, run the following in a terminal:
 
 ```bash
 sortingview-start-backend
@@ -27,63 +43,13 @@ sortingview-start-backend
 
 For advanced usage, see [doc/backend.md](doc/backend.md).
 
-## Visualizing a recording/sorting pair
+## Frank lab usage
 
-See [examples/example2.py](examples/old/example2.py)
-
-[View figURL](https://figurl.org/f?v=gs://figurl/spikesortingview-6&d=sha1://b8c937f982a0308d6a5d8c440b7a01e7cf578447&label=test%20mountain%20layout)
-
-## Reloading a workspace
-
-A workspace can be reloaded from an existing URI. For example:
-
-```python
-import sortingview as sv
-
-uri = ...
-W = sv.load_workspace(uri)
-```
-
-## Creating a copy of a recording/sorting extractor
-
-Only some recording/sorting extractor types are supported by sortingview (see below for the list).
-If you have extractors that are not supported, you can create copies
-that are compatible:
-
-```python
-import sortingview as sv
-
-recording = ...
-sorting = ...
-
-R = sv.copy_recording_extractor(recording=recording, serialize_dtype='float32')
-S = sv.copy_sorting_extractor(sorting=sorting)
-```
-
-## Multi-panel timeseries visualization
-
-See [examples/old_timeseries_panels.py](examples/old_timeseries_panels.py)
-
-[View figURL](https://www.figurl.org/f?v=gs://figurl/spikesortingview-2&d=ipfs://bafkreictlxjsm5c35hz5gs4x4z6e3k5wumcqujytabfygjceecfowdx7li&project=siojtbyvbw&label=Jaq_03_12_visualization_data)
-
-Note: you should instead use the layout method for this. Needs example and documentation.
-
-## Supported SpikeInterface extractors
-
-The following sorting/recording extractor types are currently supported by sortingview:
-
-* NpzSortingExtractor
-* MdaSortingExtractor
-* NwbSortingExtractor
-* NwbRecordingExtractor
-* BinaryRecordingExtractor
-* ConcatenateSegmentRecording
-
-If your extractor is not one of these types you can use `copy_*_extractor()` as above to create a copy that is supported, or request support for your extractor.
+See [franklab_usage](./franklab_usage.md)
 
 ## Environment
 
-You can use environment variables to control the storage/configuration directory used by kachery-cloud and the project ID used for storing data in the cloud.
+You can use environment variables to control the storage/configuration directory used by kachery-cloud, the project ID used for storing data in the cloud, and the options for creating figures.
 
 ```bash
 # Set the storage/configuration directory used by kachery-cloud
@@ -164,7 +130,14 @@ snap install --edge --devmode figurl-electron
 To use electron mode you either set the `SORTINGVIEW_ELECTRON` env variable to `1` as shown above,
 or you can call `.electron(label='...')` instead of `.url(...)` on any of the views.
 
-## Backward compatibility
+## Jupyter lab integration
 
-This version of sortingview (`>= 0.8.*`) uses kachery-cloud whereas the previous version (`0.7.*`) used kachery-daemon and kachery-client.
-The previous version is on the v1 branch. This version is on the main branch.
+You can also view sortingview widgets directly in a Jupyter lab notebook. As with local and electron modes, no data goes to the cloud, and the front-end simply communicates with the python kernel. It uses the ipywidgets mechanism.
+
+After creating a view, simply use the following command in the notebook cell.
+
+```
+view.jupyter(height=800)
+```
+
+See [example notebook sortingview_jupyter.ipynb](./notebooks/sortingview_jupyter.ipynb)
