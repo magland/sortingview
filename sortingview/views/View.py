@@ -1,3 +1,4 @@
+from copy import deepcopy
 import os
 import socket
 from abc import abstractmethod
@@ -17,6 +18,9 @@ class View:
         self.id = _random_id()
         self.is_layout = is_layout
         self._height = height
+        self._jupyter_widget = None
+        self._selected_unit_ids = []
+        self._sorting_curation = {}
     @abstractmethod
     def to_dict(self) -> dict:
         return {}
@@ -26,6 +30,26 @@ class View:
     @abstractmethod
     def register_task_handlers(self, task_backend: TaskBackend):
         pass
+    @property
+    def selected_unit_ids(self):
+        return deepcopy(self._selected_unit_ids)
+    def set_selected_unit_ids(self, ids: List[Union[int, str]]):
+        if self._jupyter_widget is None:
+            raise Exception('No jupyter widget')
+        self._jupyter_widget.send_message_to_frontend({
+            'type': 'setSelectedUnitIds',
+            'selectedUnitIds': ids
+        })
+    @property
+    def sorting_curation(self):
+        return deepcopy(self._sorting_curation)
+    def set_sorting_curation(self, sorting_curation):
+        if self._jupyter_widget is None:
+            raise Exception('No jupyter widget')
+        self._jupyter_widget.send_message_to_frontend({
+            'type': 'setSortingCuration',
+            'sortingCuration': sorting_curation
+        })
     def get_descendant_views_including_self(self):
         ret: List[View] = [self]
         for ch in self.child_views():
@@ -103,11 +127,14 @@ class View:
     def _repr_mimebundle_(self, **kwargs):
         ipywidget = self.jupyter(height=self._height)
         data = ipywidget._repr_mimebundle_(**kwargs)
+        self._set_jupyter_widget(ipywidget)
         return data
     # This works in jupyter lab but not nb
     def _ipython_display_(self):
         from IPython.display import display
-        display(self.jupyter(height=self._height))
+        ipywidget = self.jupyter(height=self._height)
+        self._set_jupyter_widget(ipywidget)
+        display(ipywidget)
     def run(self, *, label: str, port: int):
         if port == 0:
             # get an open port
@@ -121,6 +148,15 @@ class View:
             view.register_task_handlers(task_backend)
         self.electron(label=label, listen_port=port)
         task_backend.run()
+    def _set_jupyter_widget(self, W):
+        self._jupyter_widget = W
+        W.on_message_from_frontend(lambda message: self._on_message(message))
+    def _on_message(self, message):
+        type0 = message.get('type', '')
+        if type0 == 'setSelectedUnitIds':
+            self._selected_unit_ids = message.get('selectedUnitIds', [])
+        elif type0 == 'setSortingCuration':
+            self._sorting_curation = message.get('sortingCuration', {})
 
 def _upload_data_and_return_uri(data, *, local: bool=False):
     return kcl.store_json(fig.serialize_data(data), local=local)
