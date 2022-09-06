@@ -4,14 +4,14 @@
 |Desktop views|:heavy_check_mark: ||
 |Jupyter lab|:heavy_check_mark:||
 |Jupyter notebook|:heavy_check_mark:||
-|Live views for shareable URLs|:heavy_check_mark: requires running backend||
+|Live views for shareable URLs|:heavy_check_mark:|Requires running backend|
 |Live views for desktop (electron)|:heavy_check_mark:||
-|Live views for jupyter|:heavy_check_mark:||
+|Live views for jupyter|:heavy_check_mark:|pip-installable jupyter extension|
 |Integration with SpikeInterface|:white_check_mark:|working on integration|
-|Box layouts|:heavy_check_mark: horizontal and vertical, min_size, max_size, stretch||
-|Splitter layouts|:heavy_check_mark: horizontal and vertical||
-|Tab layouts|:heavy_check_mark:||
-|Mountain layout|:heavy_check_mark:||
+|[Box layouts](./layouts.md)|:heavy_check_mark: horizontal and vertical, min_size, max_size, stretch||
+|[Splitter layouts](./layouts.md)|:heavy_check_mark: horizontal and vertical||
+|[Tab layouts](./layouts.md)|:heavy_check_mark:||
+|[Mountain layout](./layouts.md)|:heavy_check_mark:||
 |Synchronization of state for views within a layout|:heavy_check_mark:||
 |Synchronization of state between different jupyter cells|:x:||
 |Programmatic access to state in jupyter|:heavy_check_mark:|get/set selected unit IDs and sorting curation|

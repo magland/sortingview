@@ -2,9 +2,11 @@
 
 View, curate, and share results of electrophysiological spike sorting in the browser.
 
-[Gallery of examples](./doc/examples.md)
+[List of examples](./doc/examples.md)
 
-[List of features](./doc/features.md)
+[Table of features](./doc/features.md)
+
+[Using layouts](./doc/layouts.md)
 
 ## Installation and setup
 
