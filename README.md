@@ -25,15 +25,15 @@ kachery-cloud-init
 
 See the [examples folder](./examples) or the [example notebook](./notebooks/sortingview_jupyter.ipynb).
 
-Keep in mind that sortingview widgets can be viewed in any of the following modes:
+SortingView widgets can be viewed in any of the following modes:
 * shareable URL in the browser
-* local URL in the browser
-* electron desktop window
-* jupyter lab notebook widget
+* [local URL in the browser](./doc/local_mode.md)
+* [electron desktop window](./doc/electron_mode.md)
+* [jupyter widget](./doc/jupyter_integration.md)
 
 ## SpikeInterface Integration
 
-We are working on a tight integration between sortingview and [SpikeInterface](https://spikeinterface.readthedocs.io/en/latest/).
+We are working on a tight integration between SortingView and [SpikeInterface](https://spikeinterface.readthedocs.io/en/latest/).
 
 ## Running a backend
 
@@ -98,15 +98,3 @@ directory on their system (see above)
 
 The last step is necessary so that all files are created with read/write access for
 all users.
-
-## Local mode
-
-[Local mode](./doc/local_mode.md)
-
-## Electron mode
-
-[Electron mode](./doc/electron_mode.md)
-
-## Jupyter integration
-
-[Jupyter integration](jupyter_integration.md)
