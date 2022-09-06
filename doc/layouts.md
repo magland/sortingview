@@ -4,7 +4,7 @@ SortingView layouts allow you to compose views in Python during figure curation 
 
 ## Overview
 
-There are four types of layouts:
+There are four types of layouts, which may be nested:
 
 * [Box layouts](#box-layouts)
 * [Splitter layouts](#splitter-layouts)

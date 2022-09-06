@@ -1,6 +1,6 @@
 # SortingView
 
-View, curate, and share results of electrophysiological spike sorting in the browser.
+View, curate, and share results of electrophysiological spike sorting in the browser, on the desktop, and in the notebook.
 
 [List of examples](./doc/examples.md)
 
@@ -101,45 +101,12 @@ all users.
 
 ## Local mode
 
-**Note**: you may want to use electron mode instead. See below.
-
-In local mode, data will not be uploaded/downloaded from the cloud, and the URLs will not be shareable.
-
-To use local mode you either set the `SORTINGVIEW_LOCAL` env variable to `1` as shown above,
-or you can pass `local=True` as an argument to `.url()` in any of the views.
-
-To use local mode, the browser must be on the same computer as the local kachery-cloud
-directory. Upon opening the URL, the user will be prompted to select the kachery-cloud
-directory and give the browser permission to read from it. Note that if the directory
-starts with [dot], then you will need to show hidden files in the directory selection
-dialog box.
-
-This has only been tested in Chrome and probably does not work in Firefox.
+[Local mode](./doc/local_mode.md)
 
 ## Electron mode
 
-Electron mode is similar to local mode, except instead of returning
-a URL, an electron window will open and data will be accessed directly
-from the file system.
+[Electron mode](./doc/electron_mode.md)
 
-This requires installation of figurl-electron. On Linux you can use snap.
+## Jupyter integration
 
-```bash
-# Install figurl-electron on Linux
-snap install --edge --devmode figurl-electron
-```
-
-To use electron mode you either set the `SORTINGVIEW_ELECTRON` env variable to `1` as shown above,
-or you can call `.electron(label='...')` instead of `.url(...)` on any of the views.
-
-## Jupyter lab integration
-
-You can also view sortingview widgets directly in a Jupyter lab notebook. As with local and electron modes, no data goes to the cloud, and the front-end simply communicates with the python kernel. It uses the ipywidgets mechanism.
-
-After creating a view, simply use the following command in the notebook cell.
-
-```
-view.jupyter(height=800)
-```
-
-See [example notebook sortingview_jupyter.ipynb](./notebooks/sortingview_jupyter.ipynb)
+[Jupyter integration](jupyter_integration.md)
