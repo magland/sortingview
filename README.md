@@ -92,9 +92,6 @@ they can utilize the same projects, mutables, local files, and task backends. Fo
 with read and write permissions. For example, this could be on a shared drive.
 * Have each user set the KACHERY_CLOUD_DIR environment variable to point to this
 directory on their system (see above)
-* Have the main user (the one who will own the client) initiatialize the client as usual via
+* Have the main user (the one who will own the client) initialize the client as usual via
 `kachery-cloud-init`
-* Set `multiuser` to `true` in `$KACHERY_CLOUD_DIR/config.yaml`
-
-The last step is necessary so that all files are created with read/write access for
-all users.
+* Here's the tricky part. You must configure your system such that newly created files in the directory are readable and writeable by all the users with access. This is probably best accomplished using group permissions.
