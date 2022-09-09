@@ -20,6 +20,8 @@ class RawTraces(View):
         self._start_time_sec = start_time_sec
         self._sampling_frequency = sampling_frequency
         self._traces = traces
+        if isinstance(channel_ids, np.ndarray):
+            channel_ids = channel_ids.astype(np.int32)
         self._channel_ids = channel_ids
     def to_dict(self) -> dict:
         N = self._traces.shape[0]
