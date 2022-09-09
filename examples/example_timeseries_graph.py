@@ -1,5 +1,5 @@
 # 9/9/22
-# https://www.figurl.org/f?v=gs://figurl/spikesortingview-9&d=sha1://e5683f7e0ac5cb6958e62ea37099c1ba8af4ce51&label=Timeseries%20graph%20example
+# https://figurl.org/f?v=gs://figurl/spikesortingview-9&d=sha1://f649d425bb2f3480034dbd8bfc10425157083513&label=Timeseries%20graph%20example
 
 import numpy as np
 import sortingview.views as vv
@@ -23,10 +23,17 @@ def example_timeseries_graph(*, height=500):
     v = t * np.cos((2 * t)**2)
     G.add_line_series(name='1', t=t.astype(np.float32), y=v.astype(np.float32), color='blue')
 
-    n2 = 5000
+    n2 = 400
     t = np.arange(0, n2) / n2 * 10
     v = t * np.cos((2 * t)**2)
-    G.add_marker_series(name='2', t=t.astype(np.float32), y=v.astype(np.float32), color='red')
+    G.add_marker_series(name='2', t=t.astype(np.float32), y=v.astype(np.float32), color='red', radius=4)
+
+    v = t + 1
+    G.add_line_series(name='3', t=t.astype(np.float32), y=v.astype(np.float32), color='green', width=5, dash=[12, 8])
+
+    t = np.arange(0, 12) / 12 * 10
+    v = -t - 1
+    G.add_marker_series(name='4', t=t.astype(np.float32), y=v.astype(np.float32), color='black', radius=8, shape='square')
 
     return G
 
