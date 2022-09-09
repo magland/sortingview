@@ -15,7 +15,6 @@ def main():
     print(url)
 
 def example_timeseries_graph(*, height=500):
-    # rng = np.random.default_rng(2022)
     G = vv.TimeseriesGraph()
 
     n1 = 5000
@@ -37,12 +36,6 @@ def example_timeseries_graph(*, height=500):
             't': t.astype(np.float32),
             'v': v.astype(np.float32)
         }
-    ))
-    G.add_series(vv.TGSeries(
-        type='line',
-        dataset='1',
-        encoding={'t': 't', 'y': 'v'},
-        attributes={'color': 'blue'}
     ))
     G.add_series(vv.TGSeries(
         type='line',
