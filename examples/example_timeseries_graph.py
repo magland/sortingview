@@ -26,7 +26,7 @@ def example_timeseries_graph(*, height=500):
     n2 = 5000
     t = np.arange(0, n2) / n2 * 10
     v = t * np.cos((2 * t)**2)
-    G.add_marker_series(name='1', t=t.astype(np.float32), y=v.astype(np.float32), color='blue')
+    G.add_marker_series(name='2', t=t.astype(np.float32), y=v.astype(np.float32), color='red')
 
     return G
 
