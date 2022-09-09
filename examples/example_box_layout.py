@@ -37,26 +37,32 @@ def example_box_layout(recording: si.BaseRecording, sorting: si.BaseSorting, hei
     view = vv.Box(
         height=height,
         direction='vertical',
+        show_titles=True,
         items=[
             vv.LayoutItem(
                 vv.Box(
                     direction='horizontal',
+                    show_titles=True,
                     items=[
                         vv.LayoutItem(
                             v_units_table,
-                            stretch=1
+                            stretch=1,
+                            title='Units'
                         ),
                         vv.LayoutItem(
                             v_raster_plot,
-                            stretch=2
+                            stretch=2,
+                            title='Raster'
                         ),
                         vv.LayoutItem(
                             v_unit_similarity_matrix,
                             min_size=100,
-                            max_size=200
+                            max_size=200,
+                            title='Similarity'
                         )
                     ]
-                )
+                ),
+                title="top"
             ),
             vv.LayoutItem(
                 vv.Box(
@@ -74,7 +80,8 @@ def example_box_layout(recording: si.BaseRecording, sorting: si.BaseSorting, hei
                             v_cross_correlograms
                         )
                     ]
-                )
+                ),
+                title="bottom"
             )
         ]
     )
