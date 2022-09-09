@@ -21,41 +21,13 @@ def example_timeseries_graph(*, height=500):
     n1 = 5000
     t = np.arange(0, n1) / n1 * 10
     v = t * np.cos((2 * t)**2)
-    G.add_dataset(vv.TGDataset(
-        name='1',
-        data={
-            't': t.astype(np.float32),
-            'v': v.astype(np.float32)
-        }
-    ))
+    G.add_line_series(name='1', t=t.astype(np.float32), y=v.astype(np.float32), color='blue')
+
     n2 = 5000
     t = np.arange(0, n2) / n2 * 10
     v = t * np.cos((2 * t)**2)
-    G.add_dataset(vv.TGDataset(
-        name='2',
-        data={
-            't': t.astype(np.float32),
-            'v': v.astype(np.float32)
-        }
-    ))
-    G.add_series(vv.TGSeries(
-        type='line',
-        dataset='1',
-        encoding={'t': 't', 'y': 'v'},
-        attributes={'color': 'blue'}
-    ))
-    G.add_series(vv.TGSeries(
-        type='line',
-        dataset='1',
-        encoding={'t': 't', 'y': 'v'},
-        attributes={'color': 'blue'}
-    ))
-    G.add_series(vv.TGSeries(
-        type='marker',
-        dataset='2',
-        encoding={'t': 't', 'y': 'v'},
-        attributes={'color': 'green'}
-    ))
+    G.add_marker_series(name='1', t=t.astype(np.float32), y=v.astype(np.float32), color='blue')
+
     return G
 
 if __name__ == '__main__':
