@@ -14,26 +14,30 @@ class TGDataset:
         }
 
 class TGSeries:
-    def __init__(self, *, type: str, dataset: str, encoding: dict, attributes: dict) -> None:
+    def __init__(self, *, type: str, dataset: str, encoding: dict, attributes: dict, title: str='') -> None:
         self._type = type
         self._dataset = dataset
         self._encoding = encoding
         self._attributes = attributes
+        self._title = title
     def to_dict(self):
         return {
             'type': self._type,
             'dataset': self._dataset,
             'encoding': self._encoding,
-            'attributes': self._attributes
+            'attributes': self._attributes,
+            'title': self._title
         }
 
 class TimeseriesGraph(View):
-    def __init__(self,
+    def __init__(self, *,
+        legend_opts: Union[None, dict]=None,
         **kwargs
     ) -> None:
         super().__init__('TimeseriesGraph', **kwargs)
         self._datasets = []
         self._series = []
+        self._legend_opts = legend_opts
         # time_offset is used to allow float64 type in the time arrays
         self._time_offset = None
     def add_line_series(self, *,
@@ -95,6 +99,8 @@ class TimeseriesGraph(View):
         }
         if self._time_offset is not None:
             ret['timeOffset'] = self._time_offset
+        if self._legend_opts is not None:
+            ret['legendOpts'] = self._legend_opts
         return ret
     def register_task_handlers(self, task_backend):
         return super().register_task_handlers(task_backend)
@@ -112,7 +118,8 @@ class TimeseriesGraph(View):
             type=type,
             encoding={'t': 't', 'y': 'y'},
             dataset=name,
-            attributes=attributes
+            attributes=attributes,
+            title=name
         )
         self.add_dataset(ds)
         self.add_series(s)
