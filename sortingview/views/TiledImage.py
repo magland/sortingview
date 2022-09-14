@@ -5,10 +5,14 @@ import numpy as np
 import kachery_cloud as kcl
 from .View import View
 
+pyvips_installation_msg = "To use TiledImage you need to install pyvips (conda recommended)"
 
 class TiledImageLayer:
     def __init__(self, label: str, data: Union[np.array, Any]) -> None:
-        import pyvips
+        try:
+            import pyvips
+        except ImportError:
+            raise ImportError(pyvips_installation_msg)
         self.label = label
         self.data=data
         if isinstance(data, pyvips.Image):
@@ -20,10 +24,15 @@ class TiledImageLayer:
 
 
 class TiledImage(View):
-    def __init__(self, *, tile_size: int, layers: List[TiledImageLayer], **kwargs) -> None:
+    def __init__(self, *, tile_size: int, layers: List[TiledImageLayer], verbose=False, **kwargs) -> None:
+        try:
+            import pyvips
+        except ImportError:
+            raise ImportError(pyvips_installation_msg)
         super().__init__('TiledImage', **kwargs)
         self._tile_size = tile_size
         self._layers = layers
+        self._verbose = verbose
 
     def to_dict(self) -> dict:
         import pyvips
@@ -68,7 +77,8 @@ class TiledImage(View):
                 keys = list(image_files.keys())
 
                 # Store image files in kachery-cloud
-                uris = _store_files_parallel([image_files[key] for key in keys], labels=[f'{key}.jpeg' for key in keys], verbose=True)
+                uris = _store_files_parallel([image_files[key] for key in keys], labels=[f'{key}.jpeg' for key in keys], 
+                                             verbose=self._verbose)
 
                 # Replace image file names with URIs
                 for key, uri in zip(keys, uris):
