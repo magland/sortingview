@@ -1,6 +1,7 @@
-from typing import Any, List, Tuple, Union
+from typing import List, Union
 import numpy as np
-from .Figure import Figure
+# from .Figure import Figure
+from ..views.View import View
 
 def create_position_pdf_plot(*, start_time_sec: np.float32, sampling_frequency: np.float32, pdf: np.ndarray, label: str):
     # Nt = pdf.shape[0]
@@ -16,10 +17,11 @@ def create_position_pdf_plot(*, start_time_sec: np.float32, sampling_frequency: 
         'samplingFrequency': sampling_frequency,
         'startTimeSec': start_time_sec
     }
-    return Figure(
-        data=data,
-        label=label
-    )
+    return PositionPdfPlot(data=data)
+    # return Figure(
+    #     data=data,
+    #     label=label
+    # )
 
 def create_live_position_pdf_plot(*, start_time_sec: np.float32, end_time_sec: np.float32, sampling_frequency: np.float32, num_positions: int, pdf_object: dict, segment_size: int, multiscale_factor: int, label: str, linear_positions: Union[np.array, None]=None):
     data = {
@@ -34,10 +36,39 @@ def create_live_position_pdf_plot(*, start_time_sec: np.float32, end_time_sec: n
     }
     if linear_positions is not None:
         data['linearPositions'] = linear_positions
-    return Figure(
-        data=data,
-        label=label
-    )
+    return LivePositionPdfPlot(data=data)
+    # return Figure(
+    #     data=data,
+    #     label=label
+    # )
+
+class PositionPdfPlot(View):
+    def __init__(self, *,
+        data: dict,
+        **kwargs
+    ) -> None:
+        super().__init__('PositionPdfPlot', **kwargs)
+        self._data = data
+    def to_dict(self) -> dict:
+        return self._data
+    def register_task_handlers(self, task_backend):
+        pass
+    def child_views(self) -> List[View]:
+        return []
+
+class LivePositionPdfPlot(View):
+    def __init__(self, *,
+        data: dict,
+        **kwargs
+    ) -> None:
+        super().__init__('LivePositionPdfPlot', **kwargs)
+        self._data = data
+    def to_dict(self) -> dict:
+        return self._data
+    def register_task_handlers(self, task_backend):
+        pass
+    def child_views(self) -> List[View]:
+        return []
 
 # def _get_subsample_inds(timestamps: np.array, sampling_frequency: float):
 #     dt = 1 / sampling_frequency
