@@ -2,6 +2,7 @@ from typing import List, Union
 import numpy as np
 # from .Figure import Figure
 from ..views.View import View
+from kachery_cloud._serialize import _serialize
 
 def create_position_pdf_plot(*, start_time_sec: np.float32, sampling_frequency: np.float32, pdf: np.ndarray, label: str):
     # Nt = pdf.shape[0]
@@ -49,6 +50,7 @@ class PositionPdfPlot(View):
     ) -> None:
         super().__init__('PositionPdfPlot', **kwargs)
         self._data = data
+        self._serialized_data = _serialize(self._data, compress_npy=True)
     def to_dict(self) -> dict:
         return self._data
     def register_task_handlers(self, task_backend):
@@ -61,6 +63,8 @@ class PositionPdfPlot(View):
     @property
     def label(self):
         return 'no-label'
+    def get_serialized_figure_data(self):
+        return self._serialized_data
 
 class LivePositionPdfPlot(View):
     def __init__(self, *,
@@ -69,6 +73,7 @@ class LivePositionPdfPlot(View):
     ) -> None:
         super().__init__('LivePositionPdfPlot', **kwargs)
         self._data = data
+        self._serialized_data = _serialize(self._data, compress_npy=True)
     def to_dict(self) -> dict:
         return self._data
     def register_task_handlers(self, task_backend):
@@ -81,6 +86,8 @@ class LivePositionPdfPlot(View):
     @property
     def label(self):
         return 'no-label'
+    def get_serialized_figure_data(self):
+        return self._serialized_data
 
 # def _get_subsample_inds(timestamps: np.array, sampling_frequency: float):
 #     dt = 1 / sampling_frequency
