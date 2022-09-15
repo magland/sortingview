@@ -55,6 +55,12 @@ class PositionPdfPlot(View):
         pass
     def child_views(self) -> List[View]:
         return []
+    @property
+    def data(self):
+        return self._data
+    @property
+    def label(self):
+        return 'no-label'
 
 class LivePositionPdfPlot(View):
     def __init__(self, *,
@@ -69,6 +75,12 @@ class LivePositionPdfPlot(View):
         pass
     def child_views(self) -> List[View]:
         return []
+    @property
+    def data(self):
+        return self._data
+    @property
+    def label(self):
+        return 'no-label'
 
 # def _get_subsample_inds(timestamps: np.array, sampling_frequency: float):
 #     dt = 1 / sampling_frequency
