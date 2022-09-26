@@ -73,7 +73,7 @@ class View:
         if self.is_layout:
             all_views = self.get_descendant_views_including_self()
             data = {
-                'type': 'MainLayout',
+                'type': 'SortingLayout',
                 'layout': self.to_dict(),
                 'views': [
                     {

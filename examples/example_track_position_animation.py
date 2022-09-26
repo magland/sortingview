@@ -1,5 +1,5 @@
-# 7/14/22
-# https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://9f52e595588458db2b029779110940cbba05cd20&label=Track%20position%20animation%20example
+# 9/20/22
+#https://figurl.org/f?v=gs://figurl/spikesortingview-9&d=sha1://c7e0ae023c4c75d9ae85078e459d7fc8daa1224d&label=Track%20position%20animation%20example
 
 import numpy as np
 import sortingview.views.franklab as vvf
