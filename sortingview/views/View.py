@@ -73,7 +73,7 @@ class View:
         if self.is_layout:
             all_views = self.get_descendant_views_including_self()
             data = {
-                'type': 'SortingLayout',
+                'type': 'MainLayout',
                 'layout': self.to_dict(),
                 'views': [
                     {
@@ -84,10 +84,10 @@ class View:
                     for view in all_views if not view.is_layout
                 ]
             }
-            if sorting_curation_uri is not None:
-                data['sortingCurationUri'] = sorting_curation_uri
-                if project_id is None:
-                    project_id = kcl.get_project_id()
+            # if sorting_curation_uri is not None:
+            #     data['sortingCurationUri'] = sorting_curation_uri
+            #     if project_id is None:
+            #         project_id = kcl.get_project_id()
             view_url = os.getenv('SORTINGVIEW_VIEW_URL', 'gs://figurl/spikesortingview-9')
             F = fig.Figure(view_url=view_url, data=data)
             url = F.url(label=label, project_id=project_id, local=local)
