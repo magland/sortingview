@@ -10,7 +10,7 @@ class Figure:
         self._label = label
         # important to define the figure here - because it does the check to see if the data is too large
         self._figure = fig.Figure(
-            view_url=os.getenv('SPIKESORTINGVIEW_URL', 'gs://figurl/spikesortingview-9'),
+            view_url=os.getenv('SPIKESORTINGVIEW_URL', 'gs://figurl/spikesortingview-10'),
             data=self._data
         )
     def url(self):
