@@ -1,4 +1,5 @@
-# 9/2/22
+# 9/27/22
+# https://figurl.org/f?v=gs://figurl/spikesortingview-10&d=sha1://b00e4dd1f7868ece9d2647c48f7582db46f3c255&label=Sorting%20curation%20example
 
 import kachery_cloud as kcl
 import sortingview.views as vv
@@ -16,20 +17,26 @@ def main():
     url = view.url(label='Sorting curation example')
     print(url)
 
-def example_sorting_curation(*, sorting: si.BaseSorting, include_units_table=True, height=500):
-    view_sc = vv.SortingCuration2(sorting_id='test', height=height)
-    if include_units_table:
-        view_ut = create_units_table(sorting=sorting)
-        return vv.Box(
-            direction='horizontal',
-            items=[
-                vv.LayoutItem(view_ut, max_size=250),
-                vv.LayoutItem(view_sc)
-            ],
-            height=height
-        )
-    else:
-        return view_sc
+def example_sorting_curation(*, sorting: si.BaseSorting):
+    view_sc = vv.SortingCuration2()
+
+    view_ut = create_units_table(sorting=sorting)
+
+    view_ml = vv.MountainLayout(
+        items=[
+            vv.MountainLayoutItem(
+                label='Units',
+                view=view_ut
+            ),
+            vv.MountainLayoutItem(
+                label='Curation',
+                view=view_sc,
+                is_control=True,
+                control_height=600
+            )
+        ]
+    )
+    return view_ml
 
 if __name__ == '__main__':
     main()

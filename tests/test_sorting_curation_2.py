@@ -28,7 +28,7 @@ def main():
     print(url)
 
 def test_sorting_curation_2():
-    view = vv.SortingCuration2(sorting_id='test')
+    view = vv.SortingCuration2()
     return view
 
 def _create_units_table(*, sorting: si.BaseSorting):

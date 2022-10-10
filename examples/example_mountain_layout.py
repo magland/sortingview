@@ -60,7 +60,9 @@ def example_mountain_layout(recording: si.BaseRecording, sorting: si.BaseSorting
             ),
             vv.MountainLayoutItem(
                 label='Unit similarity matrix',
-                view=v_unit_similarity_matrix
+                view=v_unit_similarity_matrix,
+                is_control=True,
+                control_height=300
             )
         ]
     )
