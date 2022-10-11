@@ -8,8 +8,8 @@ setup(
     include_package_data = True,
     install_requires=[
         'spikeinterface>=0.94.0',
-        'kachery-cloud>=0.2.7',
-        'figurl>=0.2.13',
+        'kachery-cloud>=0.2.11',
+        'figurl>=0.2.16',
         'click',
         'pynwb',
         'pyyaml',
