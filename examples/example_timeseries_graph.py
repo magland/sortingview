@@ -16,7 +16,12 @@ def main():
 
 def example_timeseries_graph(*, height=500):
     # rng = np.random.default_rng(2022)
-    G = vv.TimeseriesGraph(legend_opts={'location': 'northwest'}, y_range=[-15, 15])
+    G = vv.TimeseriesGraph(
+        legend_opts={'location': 'northwest'},
+        y_range=[-15, 15],
+        hide_x_gridlines=False,
+        hide_y_gridlines=True
+    )
 
     # this is for testing the time offset feature
     t0 = 25
