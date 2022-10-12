@@ -1,5 +1,5 @@
 # 9/14/22
-# https://figurl.org/f?v=gs://figurl/spikesortingview-9&d=sha1://0d9cb4bae0e34ccbf4d897cbd51fcb27efa0c471&label=Timeseries%20graph%20example
+# https://figurl.org/f?v=gs://figurl/spikesortingview-10&d=sha1://0112d2ee12ca91f0c467ecb0fc38c7accb2e8160&label=Timeseries%20graph%20example
 
 import numpy as np
 import sortingview.views as vv
@@ -16,7 +16,7 @@ def main():
 
 def example_timeseries_graph(*, height=500):
     # rng = np.random.default_rng(2022)
-    G = vv.TimeseriesGraph(legend_opts={'location': 'northwest'})
+    G = vv.TimeseriesGraph(legend_opts={'location': 'northwest'}, y_range=[-15, 15])
 
     # this is for testing the time offset feature
     t0 = 1000000

@@ -32,12 +32,14 @@ class TGSeries:
 class TimeseriesGraph(View):
     def __init__(self, *,
         legend_opts: Union[None, dict]=None,
+        y_range: Union[List[float], None]=None,
         **kwargs
     ) -> None:
         super().__init__('TimeseriesGraph', **kwargs)
         self._datasets = []
         self._series = []
         self._legend_opts = legend_opts
+        self._y_range = y_range
         # time_offset is used to allow float64 type in the time arrays
         self._time_offset = None
     def add_line_series(self, *,
@@ -101,6 +103,9 @@ class TimeseriesGraph(View):
             ret['timeOffset'] = self._time_offset
         if self._legend_opts is not None:
             ret['legendOpts'] = self._legend_opts
+        if self._y_range is not None:
+            assert len(self._y_range) == 2
+            ret['yRange'] = self._y_range
         return ret
     def register_task_handlers(self, task_backend):
         return super().register_task_handlers(task_backend)
