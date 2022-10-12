@@ -21,6 +21,8 @@ class View:
         self._jupyter_widget = None
         self._selected_unit_ids = []
         self._sorting_curation = {}
+    def set_id(self, id: str):
+        self.id = id
     @abstractmethod
     def to_dict(self) -> dict:
         return {}
@@ -57,7 +59,7 @@ class View:
             for v in a:
                 ret.append(v)
         return ret
-    def url(self, *, label: str, sorting_curation_uri: Union[None, str]=None, local: Union[bool, None]=None, electron: Union[bool, None]=None, project_id: Union[str, None]=None, listen_port: Union[int, None]=None, state: Union[dict, None]=None):
+    def url(self, *, label: str, sorting_curation_uri: Union[None, str]=None, local: Union[bool, None]=None, electron: Union[bool, None]=None, project_id: Union[str, None]=None, listen_port: Union[int, None]=None, state: Union[dict, None]=None, time_range: Union[List[float], None]=None):
         from .Box import Box
         from .LayoutItem import LayoutItem
         if electron is None:
@@ -72,6 +74,9 @@ class View:
             raise Exception('Cannot use listen_port without electron')
         if self.is_layout:
             all_views = self.get_descendant_views_including_self()
+            # set the view IDs to make the figure deterministic
+            for i, vv in enumerate(all_views):
+                vv.set_id(f'{i}')
             data = {
                 'type': 'MainLayout',
                 'layout': self.to_dict(),
@@ -91,7 +96,13 @@ class View:
                 if project_id is None:
                     project_id = kcl.get_project_id()
             view_url = os.getenv('SORTINGVIEW_VIEW_URL', 'gs://figurl/spikesortingview-10')
-            F = fig.Figure(view_url=view_url, data=data, state=state)
+            F = fig.Figure(view_url=view_url, data=data)
+            if time_range is not None:
+                if state is None:
+                    state = {}
+                state['timeRange'] = time_range
+            if state is not None:
+                F.set_state(state)
             url = F.url(label=label, project_id=project_id, local=local)
             if electron is True:
                 F.electron(label=label, listen_port=listen_port)
@@ -105,7 +116,7 @@ class View:
             ]
         )
         assert V.is_layout # avoid infinite recursion
-        return V.url(label=label, sorting_curation_uri=sorting_curation_uri, local=local, electron=electron, project_id=project_id, listen_port=listen_port, state=state)
+        return V.url(label=label, sorting_curation_uri=sorting_curation_uri, local=local, electron=electron, project_id=project_id, listen_port=listen_port, state=state, time_range=time_range)
     def electron(self, *, label: str, listen_port: Union[int, None]=None):
         self.url(label=label, local=True, electron=True, listen_port=listen_port)
     def jupyter(self, *, height: Union[int, None]=None):

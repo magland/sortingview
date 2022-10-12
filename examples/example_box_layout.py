@@ -1,5 +1,5 @@
-# 9/9/22
-# https://figurl.org/f?v=gs://figurl/spikesortingview-9&d=sha1://30954d339b438614df848bc4fe71dbbfef0b2187&label=Box%20layout%20example
+# 10/12/22
+# https://figurl.org/f?v=gs://figurl/spikesortingview-10&d=sha1://3ee2df1ea84baa665ffe9f6ea7ee4cafe1d730c4&label=Box%20layout%20example
 
 import sortingview.views as vv
 import spikeinterface.extractors as se
