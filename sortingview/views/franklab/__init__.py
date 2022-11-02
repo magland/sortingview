@@ -1,1 +1,2 @@
 from .TrackPositionAnimationV1 import TrackPositionAnimationV1, DecodedPositionData
+from .DecodedLinearPositionV1 import DecodedLinearPositionData
