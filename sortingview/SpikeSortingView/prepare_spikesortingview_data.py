@@ -189,6 +189,11 @@ def extract_spike_snippets(*,
     ret = np.zeros((L, T, M), dtype=traces.dtype)
     if L > 0:
         for t in range(T):
+            # replace last index with index-1
+            if np.where(times==traces.shape[0]-10)[0].shape[0] > 0:
+                print('replace spike at final time index with 0. number:',
+                    np.where(times==traces.shape[0]-10)[0].shape[0] )
+            times[np.where(times==traces.shape[0]-10)] = 0
             ret[:, t, :] = traces[times - a + t, :]
     return ret
 
