@@ -188,9 +188,9 @@ def extract_spike_snippets(*,
     L = len(times)
     ret = np.zeros((L, T, M), dtype=traces.dtype)
     if L > 0:
-    for t in range(T):
-        valid_inds = np.where(times < traces.shape[0] - b)
-        ret[valid_inds, t, :] = traces[times[valid_inds] - a + t, :]
+        for t in range(T):
+            valid_inds = np.where(times < traces.shape[0] - b)
+            ret[valid_inds, t, :] = traces[times[valid_inds] - a + t, :]
     return ret
 
 def _sha1_of_string(txt: str) -> str:
