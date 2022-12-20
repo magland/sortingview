@@ -2,6 +2,7 @@
 # https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://3bd6d3c6b77428cca467bc1afb48c5f272d7b4e6&label=Units%20table%20example
 
 from typing import List
+import numpy as np
 import sortingview.views as vv
 import spikeinterface as si
 import spikeinterface.extractors as se
@@ -48,9 +49,20 @@ def example_units_table(*, recording: si.BaseRecording, sorting: si.BaseSorting,
                 }
             )
         )
+    dummy_similarity_scores: List[vv.UnitSimilarityScore] = []
+    for id1 in sorting.get_unit_ids():
+        for id2 in sorting.get_unit_ids():
+            if id2 != id1:
+                if np.random.random() < 0.5:
+                    dummy_similarity_scores.append(vv.UnitSimilarityScore(
+                        unit_id1=id1,
+                        unit_id2=id2,
+                        similarity=np.random.random()
+                    ))
     view = vv.UnitsTable(
         columns=columns,
         rows=rows,
+        similarity_scores=dummy_similarity_scores,
         height=height
     )
     return view

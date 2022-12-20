@@ -1,5 +1,6 @@
 from typing import List, Literal, Union
 from .View import View
+from .UnitSimilarityMatrix import UnitSimilarityScore
 
 
 class UnitsTableColumn:
@@ -44,17 +45,21 @@ class UnitsTable(View):
     def __init__(self, *,
         columns: List[UnitsTableColumn],
         rows: List[UnitsTableRow],
+        similarity_scores: Union[List[UnitSimilarityScore], None]=None,
         **kwargs
     ) -> None:
         super().__init__('UnitsTable', **kwargs)
         self._columns = columns
         self._rows = rows
+        self._similarity_scores = similarity_scores
     def to_dict(self) -> dict:
         ret = {
             'type': self.type,
             'columns': [a.to_dict() for a in self._columns],
             'rows': [a.to_dict() for a in self._rows]
         }
+        if self._similarity_scores is not None:
+            ret['similarityScores'] = [x.to_dict() for x in self._similarity_scores]
         return ret
     def child_views(self) -> List[View]:
         return []
