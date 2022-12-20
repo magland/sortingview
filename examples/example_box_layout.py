@@ -15,7 +15,7 @@ from example_unit_similarity_matrix import example_unit_unit_similarity_matrix
 
 def main():
     kcl.use_sandbox()
-    R, S = se.toy_example(num_units=12, duration=300, seed=0, num_segments=1)
+    R, S = se.toy_example(num_units=12, duration=300, seed=1, num_segments=1)
 
     view = example_box_layout(recording=R, sorting=S)
 

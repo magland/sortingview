@@ -1,6 +1,7 @@
 import os
 import spikeinterface as si
 import spikeinterface.extractors as se
+import spikeinterface.preprocessing as spre
 import kachery_cloud as kcl
 from kachery_cloud._serialize import _serialize
 from pathlib import Path
@@ -50,7 +51,19 @@ def get_recording_object(recording: si.BaseRecording):
             'recording_format': 'ConcatenateSegmentRecording',
             'data': data
         }
+    elif isinstance(recording, spre.BandpassFilterRecording):
+        data = {
+            'freq_min': recording._kwargs['freq_min'],
+            'freq_max': recording._kwargs['freq_max'],
+            'margin_ms': recording._kwargs['margin_ms'],
+            'recording': get_recording_object(recording._kwargs['recording'])
+        }
+        recording_object = {
+            'recording_format': 'BandpassFilterRecording',
+            'data': data
+        }
     else:
+        print(recording)
         raise Exception('Unable to create sortingview object from recording')
     recording_object = _serialize(recording_object)
     setattr(recording, 'sortingview_object', recording_object)

@@ -6,6 +6,7 @@ import h5py
 import hashlib
 import spikeinterface as si
 import kachery_cloud as kcl
+import spikeinterface.preprocessing as spre
 from ..load_extractors.get_recording_object import get_recording_object
 from ..load_extractors.get_sorting_object import get_sorting_object
 
@@ -15,24 +16,34 @@ def prepare_spikesortingview_data(*,
     segment_duration_sec: float,
     snippet_len: Tuple[int],
     max_num_snippets_per_segment: Union[int, None],
-    channel_neighborhood_size: int
+    channel_neighborhood_size: int,
+    bandpass_filter: bool=False,
+    use_cache: bool=True
 ) -> str:
-    recording_object = get_recording_object(recording)
-    sorting_object = get_sorting_object(sorting)
-    cache_key_obj = {
-        'type': 'spikesortingview_data',
-        'version': 2,
-        'recording_object': recording_object,
-        'sorting_object': sorting_object,
-        'segment_duration_sec': segment_duration_sec,
-        'snippet_len': list(snippet_len),
-        'max_num_snippets_per_segment': max_num_snippets_per_segment,
-        'channel_neighborhood_size': channel_neighborhood_size
-    }
-    cache_key = _sha1_of_object(cache_key_obj)
-    uri = kcl.get_mutable_local(f'@spikesortingview_data/{cache_key}')
-    if uri is not None and kcl.load_file(uri) is not None:
-        return uri
+    if use_cache:
+        recording_object = get_recording_object(recording)
+        sorting_object = get_sorting_object(sorting)
+        cache_key_obj = {
+            'type': 'spikesortingview_data',
+            'version': 2,
+            'recording_object': recording_object,
+            'sorting_object': sorting_object,
+            'segment_duration_sec': segment_duration_sec,
+            'snippet_len': list(snippet_len),
+            'max_num_snippets_per_segment': max_num_snippets_per_segment,
+            'channel_neighborhood_size': channel_neighborhood_size
+        }
+        if bandpass_filter:
+            cache_key_obj['bandpass_filter'] = bandpass_filter
+        cache_key = _sha1_of_object(cache_key_obj)
+        uri = kcl.get_mutable_local(f'@spikesortingview_data/{cache_key}')
+        if uri is not None and kcl.load_file(uri) is not None:
+            return uri
+    else:
+        recording_object = {}
+        sorting_object = {}
+    if bandpass_filter:
+        recording = spre.bandpass_filter(recording)
     unit_ids = np.array(sorting.get_unit_ids()).astype(np.int32)
     channel_ids = np.array(recording.get_channel_ids()).astype(np.int32)
     sampling_frequency = recording.get_sampling_frequency()
@@ -146,7 +157,8 @@ def prepare_spikesortingview_data(*,
                     index = index + num
                     f.create_dataset(f'segment/{iseg}/unit/{unit_id}/subsampled_spike_snippets', data=spike_snippets)
         uri = kcl.store_file_local(output_file_name)
-        kcl.set_mutable_local(f'@spikesortingview_data/{cache_key}', uri)
+        if use_cache:
+            kcl.set_mutable_local(f'@spikesortingview_data/{cache_key}', uri)
         return uri
 
 def get_channel_neighborhood(*,

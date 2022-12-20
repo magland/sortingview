@@ -18,7 +18,7 @@ def main():
     print(url)
 
 def example_sorting_curation(*, sorting: si.BaseSorting):
-    view_sc = vv.SortingCuration2()
+    view_sc = vv.SortingCuration2(label_choices=['accept', 'reject', 'noise'])
 
     view_ut = create_units_table(sorting=sorting)
 

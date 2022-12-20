@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 from .View import View
 
 
@@ -9,12 +9,15 @@ class SortingCuration2(View):
     """
     Sorting curation v2 control view
     """
-    def __init__(self, **kwargs) -> None:
+    def __init__(self,*, label_choices: Union[None, list]=None, **kwargs) -> None:
         super().__init__('SortingCuration2', **kwargs)
+        self._label_choices = label_choices
     def to_dict(self) -> dict:
         ret = {
             'type': self.type
         }
+        if self._label_choices is not None:
+            ret['labelChoices'] = self._label_choices
         return ret
     def child_views(self) -> List[View]:
         return []
