@@ -120,7 +120,13 @@ class TimeseriesGraph(View):
         return super().register_task_handlers(task_backend)
     def child_views(self) -> List[View]:
         return []
-    def _add_series(self, *, type: str, name: str, t: np.array, y: np.array, attributes: dict):
+    def _add_series(self, *, type: str, name: str, t: np.ndarray, y: np.ndarray, attributes: dict):
+        if t.ndim != 1:
+            print('WARNING: TimeseriesGraph::_add_series t argument is not 1D array. Using squeeze.')
+            t = np.squeeze(t)
+        if y.ndim != 1:
+            print('WARNING: TimeseriesGraph::_add_series y argument is not 1D array. Using squeeze.')
+            y = np.squeeze(y)
         ds = TGDataset(
             name=name,
             data={
