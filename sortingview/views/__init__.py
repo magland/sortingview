@@ -28,3 +28,4 @@ from .LiveEvaluateFunction import LiveEvaluateFunction
 from .LiveTraces import LiveTraces
 from .TimeseriesGraph import TimeseriesGraph, TGDataset, TGSeries
 from .Annotations import Annotations
+from .Image import Image
