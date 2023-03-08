@@ -11,13 +11,15 @@ class LayoutItem:
         min_size: Union[None, float]=None,
         max_size: Union[None, float]=None,
         stretch: Union[None, float]=None,
-        title: Union[None, str]=None
+        title: Union[None, str]=None,
+        collapsible: Union[None, bool]=None
     ) -> None:
         self.view = view
         self.min_size = min_size
         self.max_size = max_size
         self.stretch = stretch
         self.title = title
+        self.collapsible = collapsible
     def properties_dict(self):
         ret = {}
         if self.min_size is not None:
@@ -28,4 +30,6 @@ class LayoutItem:
             ret['stretch'] = self.stretch
         if self.title is not None:
             ret['title'] = self.title
+        if self.collapsible is not None:
+            ret['collapsible'] = self.collapsible
         return ret

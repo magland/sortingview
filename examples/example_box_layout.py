@@ -1,5 +1,5 @@
-# 10/12/22
-# https://figurl.org/f?v=gs://figurl/spikesortingview-10&d=sha1://3ee2df1ea84baa665ffe9f6ea7ee4cafe1d730c4&label=Box%20layout%20example
+# 3/8/23
+# https://figurl.org/f?v=gs://figurl/spikesortingview-10&d=sha1://2e01e18ff73f7510f4b294e917a1ee1efee80acf&label=Box%20layout%20example
 
 import sortingview.views as vv
 import spikeinterface.extractors as se
@@ -62,7 +62,8 @@ def example_box_layout(recording: si.BaseRecording, sorting: si.BaseSorting, hei
                         )
                     ]
                 ),
-                title="top"
+                title="top",
+                collapsible=True
             ),
             vv.LayoutItem(
                 vv.Box(
@@ -81,7 +82,8 @@ def example_box_layout(recording: si.BaseRecording, sorting: si.BaseSorting, hei
                         )
                     ]
                 ),
-                title="bottom"
+                title="bottom",
+                collapsible=True
             )
         ]
     )
