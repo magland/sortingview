@@ -62,18 +62,7 @@ def main():
         ]
     )
 
-    user_ids = None # List of authorized user IDs
-    if user_ids is not None:
-        assert isinstance(user_ids, list)
-        curation_feed = kcl.create_feed()
-        sorting_curation_uri = curation_feed.uri
-        sorting_curation_feed_id = sorting_curation_uri.split('/')[2]
-        kcl.set_mutable(
-            f'@sortingview/@sortingCurationAuthorizedUsers/{sorting_curation_feed_id}',
-            json.dumps(user_ids)
-        )
-    else:
-        sorting_curation_uri=None
+    sorting_curation_uri=None
 
     url = view.url(
         label='test mountain layout',

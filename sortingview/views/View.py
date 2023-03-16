@@ -4,7 +4,6 @@ import socket
 from abc import abstractmethod
 from typing import List, Union
 import kachery_cloud as kcl
-from kachery_cloud.TaskBackend import TaskBackend
 import figurl as fig
 import uuid
 
@@ -29,9 +28,6 @@ class View:
     @abstractmethod
     def child_views(self) -> List['View']:
         return []
-    @abstractmethod
-    def register_task_handlers(self, task_backend: TaskBackend):
-        pass
     @property
     def selected_unit_ids(self):
         return deepcopy(self._selected_unit_ids)
@@ -59,19 +55,9 @@ class View:
             for v in a:
                 ret.append(v)
         return ret
-    def url(self, *, label: str, sorting_curation_uri: Union[None, str]=None, local: Union[bool, None]=None, electron: Union[bool, None]=None, project_id: Union[str, None]=None, listen_port: Union[int, None]=None, state: Union[dict, None]=None, time_range: Union[List[float], None]=None):
+    def url_dict(self, *, label: str, state: Union[dict, None]=None):
         from .Box import Box
         from .LayoutItem import LayoutItem
-        if electron is None:
-            electron = os.getenv('SORTINGVIEW_ELECTRON', '0') == '1'
-            if electron is True:
-                local = True
-        if electron is True and (local is not True):
-            raise Exception('Cannot use electron without local')
-        if local is None:
-            local = os.getenv('SORTINGVIEW_LOCAL', '0') == '1'
-        if listen_port is not None and (electron is not True):
-            raise Exception('Cannot use listen_port without electron')
         if self.is_layout:
             all_views = self.get_descendant_views_including_self()
             # set the view IDs to make the figure deterministic
@@ -84,29 +70,18 @@ class View:
                     {
                         'type': view.type,
                         'viewId': view.id,
-                        'dataUri': _upload_data_and_return_uri(view.to_dict(), local=local)
+                        'dataUri': _upload_data_and_return_uri(view.to_dict())
                     }
                     for view in all_views if not view.is_layout
                 ]
             }
-            if sorting_curation_uri is not None:
-                # We need to handle this case until we create a replacement for doing curation
-                data['type'] = 'SortingLayout'
-                data['sortingCurationUri'] = sorting_curation_uri
-                if project_id is None:
-                    project_id = kcl.get_project_id()
             view_url = os.getenv('SORTINGVIEW_VIEW_URL', 'gs://figurl/spikesortingview-10')
             F = fig.Figure(view_url=view_url, data=data)
-            if time_range is not None:
-                if state is None:
-                    state = {}
-                state['timeRange'] = time_range
-            if state is not None:
-                F.set_state(state)
-            url = F.url(label=label, project_id=project_id, local=local)
-            if electron is True:
-                F.electron(label=label, listen_port=listen_port)
-            return url
+            # if time_range is not None:
+            #     if state is None:
+            #         state = {}
+            #     state['timeRange'] = time_range
+            return F.url_dict(label=label, state=state)
 
         # Need to wrap it in a layout
         V = Box(
@@ -116,9 +91,9 @@ class View:
             ]
         )
         assert V.is_layout # avoid infinite recursion
-        return V.url(label=label, sorting_curation_uri=sorting_curation_uri, local=local, electron=electron, project_id=project_id, listen_port=listen_port, state=state, time_range=time_range)
-    def electron(self, *, label: str, listen_port: Union[int, None]=None):
-        self.url(label=label, local=True, electron=True, listen_port=listen_port)
+        return V.url_dict(label=label, state=state)
+    def url(self, *, label: str, state: Union[dict, None]=None):
+        return fig.url_from_url_dict(self.url_dict(label=label, state=state))
     def jupyter(self, *, height: Union[int, None]=None):
         if height is None:
             height = self._height
@@ -127,11 +102,8 @@ class View:
         a = _parse_figurl_url(url)
         view_uri = a['v']
         data_uri = a['d']
-        task_backend = TaskBackend(project_id='jupyter')
         views = self.get_descendant_views_including_self()
-        for view in views:
-            view.register_task_handlers(task_backend)
-        return fj.FigurlFigure(view_uri=view_uri, data_uri=data_uri, height=height, task_handlers=task_backend._registered_task_handlers)
+        return fj.FigurlFigure(view_uri=view_uri, data_uri=data_uri, height=height)
     # Took me a while to figure out that
     # this is the right way to do it in order
     # to support both jupyter lab and notebook
@@ -155,12 +127,8 @@ class View:
             sock.bind(('', 0))
             port = sock.getsockname()[1]
             sock.close()
-        task_backend = TaskBackend(project_id=f'local:{port}')
         views = self.get_descendant_views_including_self()
-        for view in views:
-            view.register_task_handlers(task_backend)
         self.electron(label=label, listen_port=port)
-        task_backend.run()
     def _set_jupyter_widget(self, W):
         self._jupyter_widget = W
         W.on_message_from_frontend(lambda message: self._on_message(message))

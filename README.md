@@ -35,16 +35,6 @@ SortingView widgets can be viewed in any of the following modes:
 
 We are working on a tight integration between SortingView and [SpikeInterface](https://spikeinterface.readthedocs.io/en/latest/).
 
-## Running a backend
-
-This is optional. When generating shareable URLs, some visualizations require a running backend. Most do not. Optionally, run the following in a terminal:
-
-```bash
-sortingview-start-backend
-```
-
-For advanced usage, see [doc/backend.md](doc/backend.md).
-
 ## Frank lab usage
 
 See [franklab_usage](./franklab_usage.md)
@@ -86,7 +76,7 @@ It is recommend that you set these variables in your `~/.bashrc` file.
 ## Sharing the kachery cloud directory between multiple users
 
 On a shared system, you may want to share your kachery cloud directory between multiple users so that
-they can utilize the same projects, mutables, local files, and task backends. Follow these steps:
+they can utilize the same local files. Follow these steps:
 
 * Create a new kachery cloud directory in a location where the users may access it
 with read and write permissions. For example, this could be on a shared drive.

@@ -20,13 +20,11 @@ from .UnitMetricsGraph import UnitMetricsGraphMetric, UnitMetricsGraphUnit, Unit
 from .TiledImage import TiledImage, TiledImageLayer
 from .SortingCuration2 import SortingCuration2
 from .SortingSelection import SortingSelection
-from .RawTraces import RawTraces
 from .SpikeLocations import SpikeLocations, SpikeLocationsItem
 from .PositionPlot import PositionPlot
 from .ConfusionMatrix import ConfusionMatrix, UnitEventCount, MatchingUnitEventCount
-from .LiveEvaluateFunction import LiveEvaluateFunction
-from .LiveTraces import LiveTraces
 from .TimeseriesGraph import TimeseriesGraph, TGDataset, TGSeries
-from .Annotations import Annotations
 from .Image import Image
 from .UnitImages import UnitImages, UnitImagesItem
+
+from .EphysTraces import EphysTraces

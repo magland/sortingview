@@ -116,8 +116,6 @@ class TimeseriesGraph(View):
                 'hideY': True if self._hide_y_gridlines is True else False
             }
         return ret
-    def register_task_handlers(self, task_backend):
-        return super().register_task_handlers(task_backend)
     def child_views(self) -> List[View]:
         return []
     def _add_series(self, *, type: str, name: str, t: np.ndarray, y: np.ndarray, attributes: dict):
