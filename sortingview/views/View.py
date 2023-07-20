@@ -17,7 +17,7 @@ class View:
         self.id = _random_id()
         self.is_layout = is_layout
         self._height = height
-        self._jupyter_widget = None
+        # self._jupyter_widget = None
         self._selected_unit_ids = []
         self._sorting_curation = {}
     def set_id(self, id: str):
@@ -32,22 +32,24 @@ class View:
     def selected_unit_ids(self):
         return deepcopy(self._selected_unit_ids)
     def set_selected_unit_ids(self, ids: List[Union[int, str]]):
-        if self._jupyter_widget is None:
-            raise Exception('No jupyter widget')
-        self._jupyter_widget.send_message_to_frontend({
-            'type': 'setSelectedUnitIds',
-            'selectedUnitIds': ids
-        })
+        raise Exception(f'Jupyter mode no longer supported')
+        # if self._jupyter_widget is None:
+        #     raise Exception('No jupyter widget')
+        # self._jupyter_widget.send_message_to_frontend({
+        #     'type': 'setSelectedUnitIds',
+        #     'selectedUnitIds': ids
+        # })
     @property
     def sorting_curation(self):
         return deepcopy(self._sorting_curation)
     def set_sorting_curation(self, sorting_curation):
-        if self._jupyter_widget is None:
-            raise Exception('No jupyter widget')
-        self._jupyter_widget.send_message_to_frontend({
-            'type': 'setSortingCuration',
-            'sortingCuration': sorting_curation
-        })
+        raise Exception(f'Jupyter mode no longer supported')
+        # if self._jupyter_widget is None:
+        #     raise Exception('No jupyter widget')
+        # self._jupyter_widget.send_message_to_frontend({
+        #     'type': 'setSortingCuration',
+        #     'sortingCuration': sorting_curation
+        # })
     def get_descendant_views_including_self(self):
         ret: List[View] = [self]
         for ch in self.child_views():
@@ -95,31 +97,32 @@ class View:
     def url(self, *, label: str, state: Union[dict, None]=None):
         return fig.url_from_url_dict(self.url_dict(label=label, state=state))
     def jupyter(self, *, height: Union[int, None]=None):
-        if height is None:
-            height = self._height
-        import figurl_jupyter as fj
-        url = self.url(label='jupyter', local=True, electron=False, listen_port=None)
-        a = _parse_figurl_url(url)
-        view_uri = a['v']
-        data_uri = a['d']
-        views = self.get_descendant_views_including_self()
-        return fj.FigurlFigure(view_uri=view_uri, data_uri=data_uri, height=height)
+        raise Exception(f'Jupyter mode no longer supported')
+        # if height is None:
+        #     height = self._height
+        # import figurl_jupyter as fj
+        # url = self.url(label='jupyter')
+        # a = _parse_figurl_url(url)
+        # view_uri = a['v']
+        # data_uri = a['d']
+        # views = self.get_descendant_views_including_self()
+        # return fj.FigurlFigure(view_uri=view_uri, data_uri=data_uri, height=height)
     # Took me a while to figure out that
     # this is the right way to do it in order
     # to support both jupyter lab and notebook
     # I figure it out by looking into the ipywidgets
     # source code.
-    def _repr_mimebundle_(self, **kwargs):
-        ipywidget = self.jupyter(height=self._height)
-        data = ipywidget._repr_mimebundle_(**kwargs)
-        self._set_jupyter_widget(ipywidget)
-        return data
-    # This works in jupyter lab but not nb
-    def _ipython_display_(self):
-        from IPython.display import display
-        ipywidget = self.jupyter(height=self._height)
-        self._set_jupyter_widget(ipywidget)
-        display(ipywidget)
+    # def _repr_mimebundle_(self, **kwargs):
+    #     ipywidget = self.jupyter(height=self._height)
+    #     data = ipywidget._repr_mimebundle_(**kwargs)
+    #     self._set_jupyter_widget(ipywidget)
+    #     return data
+    # # This works in jupyter lab but not nb
+    # def _ipython_display_(self):
+    #     from IPython.display import display
+    #     ipywidget = self.jupyter(height=self._height)
+    #     self._set_jupyter_widget(ipywidget)
+    #     display(ipywidget)
     def run(self, *, label: str, port: int):
         if port == 0:
             # get an open port
@@ -129,9 +132,9 @@ class View:
             sock.close()
         views = self.get_descendant_views_including_self()
         self.electron(label=label, listen_port=port)
-    def _set_jupyter_widget(self, W):
-        self._jupyter_widget = W
-        W.on_message_from_frontend(lambda message: self._on_message(message))
+    # def _set_jupyter_widget(self, W):
+    #     self._jupyter_widget = W
+    #     W.on_message_from_frontend(lambda message: self._on_message(message))
     def _on_message(self, message):
         type0 = message.get('type', '')
         if type0 == 'setSelectedUnitIds':
