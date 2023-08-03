@@ -26,6 +26,9 @@ def example_timeseries_graph(*, height=500):
     # this is for testing the time offset feature
     t0 = 25
 
+    t = np.arange(0, 5).astype(np.float32) * 2
+    G.add_interval_series(name='blue interval', t_start=t0 + t, t_end=t0 + t + 0.5, color='lightblue')
+
     n1 = 5000
     t = np.arange(0, n1) / n1 * 10
     v = t * np.cos((2 * t)**2)

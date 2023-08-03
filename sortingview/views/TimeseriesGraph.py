@@ -91,6 +91,29 @@ class TimeseriesGraph(View):
             attributes['shape'] = shape
         self._add_series(type='marker', name=name, t=t, y=y, attributes=attributes)
         return self
+    def add_interval_series(self, *,
+            name: str,
+            t_start: np.array,
+            t_end: np.array,
+            color: str,
+    ):
+        # allow float64 for time array
+        t_start = self._handle_time_offset_t(t_start)
+        t_end = self._handle_time_offset_t(t_end)
+
+        if t_start.dtype == np.float64:
+            raise Exception('Cannot handle float64 datatype for t_start parameter in add_interval_series')
+        if t_end.dtype == np.float64:
+            raise Exception('Cannot handle float64 datatype for t_end parameter in add_interval_series')
+        attributes = {'color': color}
+        t = np.zeros((len(t_start) * 2,), dtype=t_start.dtype)
+        t[0::2] = t_start
+        t[1::2] = t_end
+        y = np.zeros((len(t_start) * 2,), dtype=np.int16)
+        y[0::2] = 0
+        y[1::2] = 1
+        self._add_series(type='interval', name=name, t=t, y=y, attributes=attributes)
+        return self
     def add_dataset(self, ds: TGDataset):
         self._datasets.append(ds)
         return self
@@ -147,6 +170,10 @@ class TimeseriesGraph(View):
             if self._time_offset is None:
                 # we don't, let's make one
                 self._time_offset = t[0]
+                # adjust the existing ones
+                for ds in self._datasets:
+                    if 't' in ds._data:
+                        ds._data['t'] = (ds._data['t'] - self._time_offset).astype(np.float32)
         if self._time_offset is not None:
             # if we have a time offset, let's subtract it
             t = (t - self._time_offset)
