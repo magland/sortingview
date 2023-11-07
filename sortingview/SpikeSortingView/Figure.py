@@ -1,6 +1,6 @@
-import os
 from typing import Any
 import figurl as fig
+from ..sortingview_view_url import sortingview_view_url
 
 
 class Figure:
@@ -9,7 +9,7 @@ class Figure:
         self._label = label
         # important to define the figure here - because it does the check to see if the data is too large
         self._figure = fig.Figure(
-            view_url=os.getenv('SPIKESORTINGVIEW_URL', 'gs://figurl/spikesortingview-11dev'),
+            view_url=sortingview_view_url,
             data=self._data
         )
     def url(self):
