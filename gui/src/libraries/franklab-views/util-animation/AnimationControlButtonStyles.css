@@ -1,0 +1,58 @@
+div.AnimationControlButton span {
+    padding: 4px;
+    /* text-align: center; /* Ought to work, but doesn't, alas. */
+}
+
+div.AnimationControlButton span.Highlighted {
+    /* color: white; */
+    color: #b50e00;
+    /* background-color: black; */
+}
+
+div.AnimationControlButton span.Inactive {
+    color: #828282;
+}
+
+/* Styling for inline dropdown from https://github.com/JedWatson/react-select/issues/4201
+linking to https://codesandbox.io/s/react-select-inline-kk1u6?file=/style.css:761-1065 */
+
+.dropdown-inline {
+    display: inline-block;
+    margin: 0 0.25em;
+}
+
+.dropdown-inline .dropdown__control {
+    border: none;
+    outline: none;
+    box-shadow: none;
+    min-height: none;
+    cursor: pointer;
+}
+
+.dropdown-inline .dropdown__value-container {
+    padding: 0;
+}
+
+.dropdown-inline .dropdown__single-value {
+    position: relative;
+    transform: none;
+    max-width: none;
+}
+
+.dropdown-inline .dropdown__single-value::after {
+    content: " ";
+    position: relative;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 5px 4px 0 4px;
+    border-color: #000000 transparent transparent transparent;
+  
+    margin-left: 0.25em;
+    top: -0.125em;
+}
+
+.dropdown-inline .dropdown__menu {
+    width: auto;
+}

@@ -6,6 +6,7 @@ from typing import List, Union
 import kachery_cloud as kcl
 import figurl as fig
 import uuid
+from ..sortingview_view_url import sortingview_view_url
 
 
 class View:
@@ -77,7 +78,7 @@ class View:
                     for view in all_views if not view.is_layout
                 ]
             }
-            view_url = os.getenv('SORTINGVIEW_VIEW_URL', 'gs://figurl/spikesortingview-10')
+            view_url = sortingview_view_url
             F = fig.Figure(view_url=view_url, data=data)
             # if time_range is not None:
             #     if state is None:

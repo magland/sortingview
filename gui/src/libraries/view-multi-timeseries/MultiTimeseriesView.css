@@ -1,0 +1,21 @@
+.MultiTimeseriesViewParent {
+    position: relative;
+    left: 0;
+    top: 0;
+}
+
+.MultiTimeseriesViewLabels {
+    position: absolute;
+    writing-mode: vertical-lr;
+    transform: rotate(-180deg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 0;
+    top: 0;
+}
+
+.MultiTimeseriesViewContent {
+    position: absolute;
+    top: 0;
+}
