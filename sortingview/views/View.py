@@ -77,7 +77,7 @@ class View:
                     for view in all_views if not view.is_layout
                 ]
             }
-            view_url = os.getenv('SORTINGVIEW_VIEW_URL', 'gs://figurl/spikesortingview-10')
+            view_url = os.getenv('SORTINGVIEW_VIEW_URL', 'gs://figurl/spikesortingview-11dev')
             F = fig.Figure(view_url=view_url, data=data)
             # if time_range is not None:
             #     if state is None:

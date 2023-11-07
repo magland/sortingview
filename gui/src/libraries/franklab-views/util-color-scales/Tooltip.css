@@ -1,0 +1,25 @@
+/* This should probably be centralized */
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px solid black;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 400px;
+    background-color: rgb(244, 245, 212);
+    color: black;
+    text-align: left;
+    padding: 5px;
+    border-radius: 6px;
+
+    position: relative;
+    top: -150px;
+    z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}

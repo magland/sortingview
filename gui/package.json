@@ -1,0 +1,76 @@
+{
+  "name": "spikesortingview",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "./",
+  "dependencies": {
+    "@figurl/interface": "^0.2.2",
+    "@fortawesome/fontawesome-svg-core": "^6.1.1",
+    "@fortawesome/free-regular-svg-icons": "^6.1.2",
+    "@fortawesome/free-solid-svg-icons": "^6.1.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/icons": "^4.11.3",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.11.45",
+    "@types/react": "^18.0.15",
+    "@types/react-dom": "^18.0.6",
+    "assert": "npm:assert-browserify",
+    "buffer": "npm:buffer-browserify",
+    "chroma-js": "^2.4.2",
+    "crypto": "npm:crypto-browserify",
+    "deck.gl": "^8.8.4",
+    "github-markdown-css": "^5.4.0",
+    "mathjs": "^12.0.0",
+    "object-hash": "^3.0.0",
+    "path": "npm:path-browserify",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-draggable": "^4.4.6",
+    "react-icons": "^4.11.0",
+    "react-markdown": "^4.3.1",
+    "react-syntax-highlighter": "^15.5.0",
+    "react-scripts": "5.0.1",
+    "react-select": "^5.8.0",
+    "react-visibility-sensor": "^5.1.1",
+    "scale-color-perceptual": "^1.1.2",
+    "stream": "npm:stream-browserify",
+    "typescript": "^4.7.4",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "start": "BROWSER=none react-scripts start",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "build-with-sourcemap": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "bundle-into-single-html": "GENERATE_SOURCEMAP=false node devel/bundle-into-single-html.js"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/chroma-js": "^2.4.2",
+    "@types/object-hash": "^3.0.6",
+    "source-map-explorer": "^2.5.3"
+  }
+}
