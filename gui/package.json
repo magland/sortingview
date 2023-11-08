@@ -19,7 +19,6 @@
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "assert": "npm:assert-browserify",
-    "buffer": "npm:buffer-browserify",
     "chroma-js": "^2.4.2",
     "crypto": "npm:crypto-browserify",
     "deck.gl": "^8.8.4",
