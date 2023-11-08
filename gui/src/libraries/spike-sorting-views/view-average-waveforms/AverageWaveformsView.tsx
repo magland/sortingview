@@ -68,12 +68,14 @@ const AverageWaveformsView: FunctionComponent<Props> = ({data, width, height}) =
             channelIds: (number | string)[];
             waveform: number[][];
             waveformStdDev?: number[][];
+            waveformPercentiles?: number[][][];
             waveformColor: string;
         }[] = [
             {
                 channelIds: aw.channelIds,
                 waveform: subtractChannelMeans(aw.waveform),
                 waveformStdDev: showWaveformStdev && !showOverlapping ? aw.waveformStdDev : undefined,
+                waveformPercentiles: showWaveformStdev && !showOverlapping ? aw.waveformPercentiles : undefined,
                 waveformColor: getUnitColor(idToNum(aw.unitId))
             }
         ]

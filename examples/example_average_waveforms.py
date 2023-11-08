@@ -11,7 +11,7 @@ import kachery_cloud as kcl
 
 def main():
     kcl.use_sandbox()
-    recording, sorting = se.toy_example(num_units=12, duration=300, seed=0, num_segments=1)
+    recording, sorting = se.toy_example(num_units=12, duration=300, seed=0, num_segments=1, average_peak_amplitude=-20)
 
     view = example_average_waveforms(recording=recording, sorting=sorting)
 
@@ -28,8 +28,10 @@ def example_average_waveforms(*, recording: si.BaseRecording, sorting: si.BaseSo
         average_waveform_items.append(
             vv.AverageWaveformItem(
                 unit_id=unit_id,
-                waveform=waveform.T,
-                channel_ids=channel_ids
+                waveform=waveform,
+                channel_ids=channel_ids,
+                # waveform_std_dev=a['waveform_std_dev'],
+                waveform_percentiles=a['waveform_percentiles'],
             )
         )
     channel_locations = {}
@@ -61,10 +63,15 @@ def compute_average_waveform(*, recording: si.BaseRecording, sorting: si.BaseSor
     traces = recording.get_traces(segment_index=0)
     times = sorting.get_unit_spike_train(segment_index=0, unit_id=unit_id)
     snippets = extract_snippets(traces=traces, times=times, snippet_len=(20, 20))
-    waveform = np.mean(snippets, axis=0)
+    waveform = np.mean(snippets, axis=0).T.astype(np.float32)
+    stdev = np.std(snippets, axis=0).T.astype(np.float32)
+    waveform_percentiles = np.percentile(snippets, [5, 25, 75, 95], axis=0)
+    waveform_percentiles = [waveform_percentiles[i].T.astype(np.float32) for i in range(4)]
     return {
         'channel_ids': recording.get_channel_ids().astype(np.int32),
-        'waveform': waveform.astype(np.float32)
+        'waveform': waveform,
+        'waveform_std_dev': stdev,
+        'waveform_percentiles': waveform_percentiles
     }
 
 if __name__ == '__main__':

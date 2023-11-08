@@ -19,6 +19,7 @@ export type WaveformWidgetProps = {
         electrodeIndices: number[]
         waveform: number[][]
         waveformStdDev?: number[][]
+        waveformPercentiles?: number[][][]
         waveformColors: WaveformColors
     }[]
     ampScaleFactor: number

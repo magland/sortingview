@@ -12,6 +12,7 @@ export type AverageWaveformPlotProps = {
         channelIds: (number | string)[]
         waveform: number[][]
         waveformStdDev?: number[][]
+        waveformPercentiles?: number[][][]
         waveformColor: string
     }[]
     layoutMode: 'geom' | 'vertical'
@@ -63,6 +64,7 @@ const AverageWaveformPlot: FunctionComponent<AverageWaveformPlotProps> = ({allCh
                 electrodeIndices,
                 waveform: unit.waveform,
                 waveformStdDev: unit.waveformStdDev,
+                waveformPercentiles: unit.waveformPercentiles,
                 waveformColors
             }
         })

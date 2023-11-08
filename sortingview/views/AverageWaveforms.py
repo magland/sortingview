@@ -1,4 +1,3 @@
-import wave
 import numpy as np
 from typing import Any, Dict, List, Union
 from .View import View
@@ -29,7 +28,7 @@ class AverageWaveformItem:
         unit_id: Union[int, str],
         channel_ids: List[Union[int, str]],
         waveform: np.array,
-        waveform_std_dev: Union[None, np.array]=None
+        waveform_std_dev: Union[None, np.array]=None,
         waveform_percentiles: Union[None, List[np.array]]=None
     ) -> None:
         self.unit_id = unit_id

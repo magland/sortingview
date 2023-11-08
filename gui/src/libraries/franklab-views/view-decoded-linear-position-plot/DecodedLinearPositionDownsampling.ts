@@ -115,7 +115,7 @@ export const getVisibleFrames = (props: getVisibleFramesProps) => {
     // if visibleTimeEndSeconds is defined, then we take the min of that or of dataEndSeconds.
     // dataEndSeconds is nullable, though; if it's unset, we'll take visibleTimeEndSeconds (making the comparison a no-op)
     // or -1 if that's undefined (since again, if visibleTimeEndSeconds is undefined, nothing else matters)
-    const lastSecond = Math.min(visibleTimeEndSeconds ?? -1, dataEndSeconds ?? visibleTimeEndSeconds ?? -1)
+    // const lastSecond = Math.min(visibleTimeEndSeconds ?? -1, dataEndSeconds ?? visibleTimeEndSeconds ?? -1)
     const lastFrame = visibleTimeEndSeconds === undefined
         ? dataLength - 1
         : firstFrame + Math.floor((visibleTimeEndSeconds - (visibleTimeStartSeconds ?? 0)) * _samplingFrequencyHz)
