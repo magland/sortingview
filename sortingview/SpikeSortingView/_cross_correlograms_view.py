@@ -8,7 +8,7 @@ def cross_correlograms_view(self, *, unit_ids: List[int], hide_unit_selector: bo
 
     assert isinstance(self, SpikeSortingView)
 
-    cross_correlograms: vv.CrossCorrelogramItem = []
+    cross_correlograms: List[vv.CrossCorrelogramItem] = []
     for unit_id1 in unit_ids:
         times1 = self.get_unit_spike_train(unit_id=unit_id1)
         for unit_id2 in unit_ids:

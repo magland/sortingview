@@ -14,29 +14,20 @@ def main():
 
     view = example_sorting_curation(sorting=sorting)
 
-    url = view.url(label='Sorting curation example')
+    url = view.url(label="Sorting curation example")
     print(url)
 
+
 def example_sorting_curation(*, sorting: si.BaseSorting):
-    view_sc = vv.SortingCuration2(label_choices=['accept', 'reject', 'noise'])
+    view_sc = vv.SortingCuration2(label_choices=["accept", "reject", "noise"])
 
     view_ut = create_units_table(sorting=sorting)
 
     view_ml = vv.MountainLayout(
-        items=[
-            vv.MountainLayoutItem(
-                label='Units',
-                view=view_ut
-            ),
-            vv.MountainLayoutItem(
-                label='Curation',
-                view=view_sc,
-                is_control=True,
-                control_height=600
-            )
-        ]
+        items=[vv.MountainLayoutItem(label="Units", view=view_ut), vv.MountainLayoutItem(label="Curation", view=view_sc, is_control=True, control_height=600)]
     )
     return view_ml
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

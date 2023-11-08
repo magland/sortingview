@@ -26,7 +26,7 @@ def create_position_plot(
     return Figure(data=data, label=label)
 
 
-def _get_subsample_inds(timestamps: np.array, sampling_frequency: float):
+def _get_subsample_inds(timestamps: np.ndarray, sampling_frequency: float):
     dt = 1 / sampling_frequency
     ret = []
     last_t = timestamps[0] - dt * 2

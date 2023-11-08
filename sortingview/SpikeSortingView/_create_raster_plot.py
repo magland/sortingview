@@ -24,7 +24,7 @@ def create_raster_plot(self, *, unit_ids: List[int], label: Union[str, None] = N
     return Figure(data=data, label=label)
 
 
-def _subsample(x: np.array, num: int):
+def _subsample(x: np.ndarray, num: int):
     if num >= len(x):
         return x
     incr = len(x) / num

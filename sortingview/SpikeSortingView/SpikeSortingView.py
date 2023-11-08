@@ -1,7 +1,6 @@
-from typing import List, Tuple, Union
+from typing import Tuple, Union
 import spikeinterface as si
 import kachery_cloud as kcl
-import json
 import h5py
 import numpy as np
 from sortingview.SpikeSortingView.prepare_spikesortingview_data import prepare_spikesortingview_data
@@ -14,8 +13,8 @@ class SpikeSortingView:
         if self._data_file_name is None:
             raise Exception(f"Unable to load spikesortingview data file: {data_uri}")
         with h5py.File(self._data_file_name, "r") as f:
-            self._recording_object = json.loads(f.attrs["recording_object"])
-            self._sorting_object = json.loads(f.attrs["sorting_object"])
+            # self._recording_object = json.loads(f.attrs["recording_object"])
+            # self._sorting_object = json.loads(f.attrs["sorting_object"])
             self._unit_ids = np.array(f.get("unit_ids"))
             self._sampling_frequency = np.array(f.get("sampling_frequency"))[0].item()
             self._channel_ids = np.array(f.get("channel_ids"))
@@ -34,11 +33,10 @@ class SpikeSortingView:
         recording: si.BaseRecording,
         sorting: si.BaseSorting,
         segment_duration_sec: float,
-        snippet_len: Tuple[int],
+        snippet_len: Tuple[int, int],
         max_num_snippets_per_segment: Union[int, None],
         channel_neighborhood_size: int,
         bandpass_filter: bool = False,
-        use_cache: bool = True,
     ):
         data_uri = prepare_spikesortingview_data(
             recording=recording,
@@ -48,7 +46,6 @@ class SpikeSortingView:
             max_num_snippets_per_segment=max_num_snippets_per_segment,
             channel_neighborhood_size=channel_neighborhood_size,
             bandpass_filter=bandpass_filter,
-            use_cache=use_cache,
         )
         return SpikeSortingView(data_uri)
 
@@ -56,13 +53,13 @@ class SpikeSortingView:
     def data_uri(self):
         return self._data_uri
 
-    @property
-    def recording_object(self):
-        return self._recording_object
+    # @property
+    # def recording_object(self):
+    #     return self._recording_object
 
-    @property
-    def sorting_object(self):
-        return self._sorting_object
+    # @property
+    # def sorting_object(self):
+    #     return self._sorting_object
 
     @property
     def unit_ids(self):

@@ -10,7 +10,7 @@ class UnitImagesItem:
     Single unit image
     """
 
-    def __init__(self, unit_id: Union[int, str], figure: plt.Figure, dpi: int) -> None:
+    def __init__(self, unit_id: Union[int, str], figure, dpi: int) -> None:
         self.unit_id = unit_id
         with kcl.TemporaryDirectory() as tmpdir:
             fname = f"{tmpdir}/image.jpg"

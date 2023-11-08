@@ -12,30 +12,23 @@ import kachery_cloud as kcl
 def main():
     kcl.use_sandbox()
     recording, sorting = se.toy_example(num_units=12, duration=300, seed=0, num_segments=1)
+    assert isinstance(recording, si.BaseRecording)
 
     view = example_raster_plot(recording=recording, sorting=sorting)
 
-    url = view.url(label='Raster plot example')
+    url = view.url(label="Raster plot example")
     print(url)
+
 
 def example_raster_plot(*, recording: si.BaseRecording, sorting: si.BaseSorting, height=500):
     plot_items: List[vv.RasterPlotItem] = []
     for unit_id in sorting.get_unit_ids():
         spike_times_sec = np.array(sorting.get_unit_spike_train(segment_index=0, unit_id=unit_id)) / sorting.get_sampling_frequency()
-        plot_items.append(
-            vv.RasterPlotItem(
-                unit_id=unit_id,
-                spike_times_sec=spike_times_sec.astype(np.float32)
-            )
-        )
+        plot_items.append(vv.RasterPlotItem(unit_id=unit_id, spike_times_sec=spike_times_sec.astype(np.float32)))
 
-    view = vv.RasterPlot(
-        start_time_sec=0,
-        end_time_sec=recording.get_num_frames(segment_index=0) / recording.get_sampling_frequency(),
-        plots=plot_items,
-        height=height
-    )
+    view = vv.RasterPlot(start_time_sec=0, end_time_sec=recording.get_num_frames(segment_index=0) / recording.get_sampling_frequency(), plots=plot_items, height=height)
     return view
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

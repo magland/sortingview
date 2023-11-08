@@ -1,6 +1,5 @@
-from typing import List, Tuple, Union
+from typing import Union
 import numpy as np
-from .helpers.compute_correlogram_data import compute_correlogram_data
 from .Figure import Figure
 
 
@@ -19,8 +18,6 @@ def create_summary(self, *, label: Union[str, None] = None):
         "type": "Summary",
         "recordingDescription": "",
         "sortingDescription": "",
-        "recordingObject": self.recording_object,
-        "sortingObject": self.sorting_object,
         "unitIds": self.unit_ids,
         "channelIds": self.channel_ids,
         "samplingFrequency": float(self.sampling_frequency),

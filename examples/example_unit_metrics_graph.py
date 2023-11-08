@@ -12,32 +12,20 @@ from helpers.create_units_table import create_units_table
 def main():
     kcl.use_sandbox()
     recording, sorting = se.toy_example(num_units=12, duration=300, seed=0, num_segments=1)
+    assert isinstance(recording, si.BaseRecording)
 
     view = example_unit_metrics_graph(recording=recording, sorting=sorting)
 
-    view2 = vv.Box(
-        direction='horizontal',
-        items=[
-            vv.LayoutItem(create_units_table(sorting=sorting), max_size=150),
-            vv.LayoutItem(view)
-        ]
-    )
+    view2 = vv.Box(direction="horizontal", items=[vv.LayoutItem(create_units_table(sorting=sorting), max_size=150), vv.LayoutItem(view)])
 
-    url = view2.url(label='Unit metrics graph example')
+    url = view2.url(label="Unit metrics graph example")
     print(url)
+
 
 def example_unit_metrics_graph(*, recording: si.BaseRecording, sorting: si.BaseSorting, height=800):
     metrics: List[vv.UnitMetricsGraphMetric] = [
-        vv.UnitMetricsGraphMetric(
-            key='numEvents',
-            label='Num. events',
-            dtype='int'
-        ),
-        vv.UnitMetricsGraphMetric(
-            key='firingRateHz',
-            label='Firing rate (Hz)',
-            dtype='float'
-        )
+        vv.UnitMetricsGraphMetric(key="numEvents", label="Num. events", dtype="int"),
+        vv.UnitMetricsGraphMetric(key="firingRateHz", label="Firing rate (Hz)", dtype="float"),
     ]
     units: List[vv.UnitMetricsGraphUnit] = []
     for unit_id in sorting.get_unit_ids():
@@ -45,18 +33,12 @@ def example_unit_metrics_graph(*, recording: si.BaseRecording, sorting: si.BaseS
         units.append(
             vv.UnitMetricsGraphUnit(
                 unit_id=unit_id,
-                values={
-                    'numEvents': len(spike_train),
-                    'firingRateHz': len(spike_train) / (recording.get_num_frames(segment_index=0) / recording.get_sampling_frequency())
-                }
+                values={"numEvents": len(spike_train), "firingRateHz": len(spike_train) / (recording.get_num_frames(segment_index=0) / recording.get_sampling_frequency())},
             )
         )
-    view = vv.UnitMetricsGraph(
-        units=units,
-        metrics=metrics,
-        height=height
-    )
+    view = vv.UnitMetricsGraph(units=units, metrics=metrics, height=height)
     return view
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

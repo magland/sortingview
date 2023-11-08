@@ -1,6 +1,4 @@
 from copy import deepcopy
-import os
-import socket
 from abc import abstractmethod
 from typing import List, Union
 import kachery_cloud as kcl
@@ -39,7 +37,7 @@ class View:
         return deepcopy(self._selected_unit_ids)
 
     def set_selected_unit_ids(self, ids: List[Union[int, str]]):
-        raise Exception(f"Jupyter mode no longer supported")
+        raise Exception("Jupyter mode no longer supported")
         # if self._jupyter_widget is None:
         #     raise Exception('No jupyter widget')
         # self._jupyter_widget.send_message_to_frontend({
@@ -52,7 +50,7 @@ class View:
         return deepcopy(self._sorting_curation)
 
     def set_sorting_curation(self, sorting_curation):
-        raise Exception(f"Jupyter mode no longer supported")
+        raise Exception("Jupyter mode no longer supported")
         # if self._jupyter_widget is None:
         #     raise Exception('No jupyter widget')
         # self._jupyter_widget.send_message_to_frontend({
@@ -99,7 +97,7 @@ class View:
         return fig.url_from_url_dict(self.url_dict(label=label, state=state))
 
     def jupyter(self, *, height: Union[int, None] = None):
-        raise Exception(f"Jupyter mode no longer supported")
+        raise Exception("Jupyter mode no longer supported")
         # if height is None:
         #     height = self._height
         # import figurl_jupyter as fj
@@ -126,15 +124,15 @@ class View:
     #     ipywidget = self.jupyter(height=self._height)
     #     self._set_jupyter_widget(ipywidget)
     #     display(ipywidget)
-    def run(self, *, label: str, port: int):
-        if port == 0:
-            # get an open port
-            sock = socket.socket()
-            sock.bind(("", 0))
-            port = sock.getsockname()[1]
-            sock.close()
-        views = self.get_descendant_views_including_self()
-        self.electron(label=label, listen_port=port)
+    # def run(self, *, label: str, port: int):
+    #     if port == 0:
+    #         # get an open port
+    #         sock = socket.socket()
+    #         sock.bind(("", 0))
+    #         port = sock.getsockname()[1]
+    #         sock.close()
+    #     views = self.get_descendant_views_including_self()
+    #     self.electron(label=label, listen_port=port)
 
     # def _set_jupyter_widget(self, W):
     #     self._jupyter_widget = W

@@ -7,12 +7,13 @@ import sortingview.views as vv
 def main():
     view = test_markdown()
 
-    url = view.url(label='test_markdown')
+    url = view.url(label="test_markdown")
     print(url)
+
 
 def test_markdown():
     view = vv.Markdown(
-'''
+        """
 # Test markdown
 
 Example markdown source
@@ -28,9 +29,10 @@ import spikeinterface as si
 
 print(si.__version__)
 ```
-'''
+"""
     )
     return view
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

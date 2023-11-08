@@ -9,7 +9,7 @@ pyvips_installation_msg = "To use TiledImage you need to install pyvips (conda r
 
 
 class TiledImageLayer:
-    def __init__(self, label: str, data: Union[np.array, Any]) -> None:
+    def __init__(self, label: str, data: Union[np.ndarray, Any]) -> None:
         try:
             import pyvips
         except ImportError:
@@ -20,16 +20,16 @@ class TiledImageLayer:
             image: pyvips.Image = data
         else:
             assert data.dtype == np.uint8, "Data must be of type uint8"
-            image: pyvips.Image = pyvips.Image.new_from_array(data)
+            image: pyvips.Image = pyvips.Image.new_from_array(data)  # type: ignore
         self.image = image
 
 
 class TiledImage(View):
     def __init__(self, *, tile_size: int, layers: List[TiledImageLayer], verbose=False, **kwargs) -> None:
-        try:
-            import pyvips
-        except ImportError:
-            raise ImportError(pyvips_installation_msg)
+        # try:
+        #     import pyvips
+        # except ImportError:
+        #     raise ImportError(pyvips_installation_msg)
         super().__init__("TiledImage", **kwargs)
         self._tile_size = tile_size
         self._layers = layers
@@ -42,8 +42,9 @@ class TiledImage(View):
         for L in self._layers:
             layer_label: str = L.label
             image: pyvips.Image = L.image
+            num_zoom_levels = 0
             with kcl.TemporaryDirectory() as tmpdir:
-                image.dzsave(f"{tmpdir}/output", overlap=0, tile_size=self._tile_size, layout=pyvips.enums.ForeignDzLayout.DZ)
+                image.dzsave(f"{tmpdir}/output", overlap=0, tile_size=self._tile_size, layout=pyvips.enums.ForeignDzLayout.DZ)  # type: ignore
                 output_dirname = f"{tmpdir}/output_files"
 
                 # Collect image files in a dict
@@ -104,7 +105,7 @@ class TiledImage(View):
 
 def _store_files_parallel(fnames: List[str], verbose: bool = True, *, labels: List[str]) -> List[str]:
     executor = ThreadPoolExecutor(max_workers=10)
-    results = executor.map(_store_file, fnames, labels, [verbose] * len(fnames))
+    results = list(executor.map(_store_file, fnames, labels, [verbose] * len(fnames)))
     return results
 
 

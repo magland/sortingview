@@ -16,13 +16,13 @@ from example_unit_similarity_matrix import example_unit_unit_similarity_matrix
 def main():
     kcl.use_sandbox()
     R, S = se.toy_example(num_units=12, duration=300, seed=1, num_segments=1)
+    assert isinstance(R, si.BaseRecording)
 
     view = example_box_layout(recording=R, sorting=S)
 
-    url = view.url(
-        label='Box layout example'
-    )
+    url = view.url(label="Box layout example")
     print(url)
+
 
 def example_box_layout(recording: si.BaseRecording, sorting: si.BaseSorting, height=800):
     R = recording
@@ -36,59 +36,35 @@ def example_box_layout(recording: si.BaseRecording, sorting: si.BaseSorting, hei
 
     view = vv.Box(
         height=height,
-        direction='vertical',
+        direction="vertical",
         show_titles=True,
         items=[
             vv.LayoutItem(
                 vv.Box(
-                    direction='horizontal',
+                    direction="horizontal",
                     show_titles=True,
                     items=[
-                        vv.LayoutItem(
-                            v_units_table,
-                            stretch=1,
-                            title='Units'
-                        ),
-                        vv.LayoutItem(
-                            v_raster_plot,
-                            stretch=2,
-                            title='Raster'
-                        ),
-                        vv.LayoutItem(
-                            v_unit_similarity_matrix,
-                            min_size=100,
-                            max_size=200,
-                            title='Similarity'
-                        )
-                    ]
+                        vv.LayoutItem(v_units_table, stretch=1, title="Units"),
+                        vv.LayoutItem(v_raster_plot, stretch=2, title="Raster"),
+                        vv.LayoutItem(v_unit_similarity_matrix, min_size=100, max_size=200, title="Similarity"),
+                    ],
                 ),
                 title="top",
-                collapsible=True
+                collapsible=True,
             ),
             vv.LayoutItem(
                 vv.Box(
-                    direction='horizontal',
-                    items=[
-                        vv.LayoutItem(
-                            v_autocorrelograms,
-                            min_size=300,
-                            max_size=350
-                        ),
-                        vv.LayoutItem(
-                            v_average_waveforms
-                        ),
-                        vv.LayoutItem(
-                            v_cross_correlograms
-                        )
-                    ]
+                    direction="horizontal",
+                    items=[vv.LayoutItem(v_autocorrelograms, min_size=300, max_size=350), vv.LayoutItem(v_average_waveforms), vv.LayoutItem(v_cross_correlograms)],
                 ),
                 title="bottom",
-                collapsible=True
-            )
-        ]
+                collapsible=True,
+            ),
+        ],
     )
 
     return view
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

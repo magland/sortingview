@@ -17,8 +17,6 @@ def sorting_summary_view(self, *, label: Union[str, None] = None):
     return vv.SortingSummary(
         recording_description="",
         sorting_description="",
-        recording_object=self.recording_object,
-        sorting_object=self.sorting_object,
         unit_ids=self.unit_ids,
         channel_ids=self.channel_ids,
         sampling_frequency=float(self.sampling_frequency),

@@ -9,7 +9,7 @@ class PositionPlot(View):
     """
 
     def __init__(
-        self, *, timestamps: np.array, positions: np.array, dimension_labels: List[str], subsampling_frequency: Union[float, None] = None, discontinuous: bool = False, **kwargs
+        self, *, timestamps: np.ndarray, positions: np.ndarray, dimension_labels: List[str], subsampling_frequency: Union[float, None] = None, discontinuous: bool = False, **kwargs
     ) -> None:
         super().__init__("PositionPlot", **kwargs)
         self.timestamps = timestamps
@@ -46,7 +46,7 @@ class PositionPlot(View):
         return []
 
 
-def _get_subsample_inds(timestamps: np.array, sampling_frequency: float):
+def _get_subsample_inds(timestamps: np.ndarray, sampling_frequency: float):
     dt = 1 / sampling_frequency
     ret = []
     last_t = timestamps[0] - dt * 2

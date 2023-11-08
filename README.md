@@ -27,17 +27,11 @@ See the [examples folder](./examples) or the [example notebook](./notebooks/sort
 
 SortingView widgets can be viewed in any of the following modes:
 * shareable URL in the browser
-* [local URL in the browser](./doc/local_mode.md)
-* [electron desktop window](./doc/electron_mode.md)
-* [jupyter widget](./doc/jupyter_integration.md)
+* [jupyter widget](./doc/jupyter_integration.md) (probably not working - needs to be updated)
 
 ## SpikeInterface Integration
 
 We are working on a tight integration between SortingView and [SpikeInterface](https://spikeinterface.readthedocs.io/en/latest/).
-
-## Frank lab usage
-
-See [franklab_usage](./franklab_usage.md)
 
 ## Environment
 

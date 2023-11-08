@@ -8,7 +8,7 @@ class SpikeLocationsItem:
     Single unit spike locations
     """
 
-    def __init__(self, unit_id: Union[int, str], spike_times_sec: np.array, x_locations: np.array, y_locations: np.array) -> None:
+    def __init__(self, unit_id: Union[int, str], spike_times_sec: np.ndarray, x_locations: np.ndarray, y_locations: np.ndarray) -> None:
         self.unit_id = unit_id
         self.spike_times_sec = spike_times_sec
         self.x_locations = x_locations

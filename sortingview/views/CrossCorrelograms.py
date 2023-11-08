@@ -8,7 +8,7 @@ class CrossCorrelogramItem:
     Single cross correlogram
     """
 
-    def __init__(self, unit_id1: Union[int, str], unit_id2: Union[int, str], bin_edges_sec: Union[np.array, List[float]], bin_counts: Union[np.array, List[float]]) -> None:
+    def __init__(self, unit_id1: Union[int, str], unit_id2: Union[int, str], bin_edges_sec: Union[np.ndarray, List[float]], bin_counts: Union[np.ndarray, List[float]]) -> None:
         self.unit_id1 = unit_id1
         self.unit_id2 = unit_id2
         self.bin_edges_sec = bin_edges_sec

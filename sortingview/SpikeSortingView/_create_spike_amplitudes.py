@@ -27,7 +27,7 @@ def create_spike_amplitudes(self, *, unit_ids: List[int], label: Union[str, None
     return Figure(data=data, label=label)
 
 
-def _subsample2(x: np.array, y: np.array, num: int):
+def _subsample2(x: np.ndarray, y: np.ndarray, num: int):
     if num >= len(x):
         return x, y
     incr = len(x) / num

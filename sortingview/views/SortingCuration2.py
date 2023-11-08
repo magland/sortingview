@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Union, Dict, Any
 from .View import View
 
 
@@ -16,7 +16,7 @@ class SortingCuration2(View):
         self._label_choices = label_choices
 
     def to_dict(self) -> dict:
-        ret = {"type": self.type}
+        ret: Dict[str, Any] = {"type": self.type}
         if self._label_choices is not None:
             ret["labelChoices"] = self._label_choices
         return ret

@@ -1,2 +1,0 @@
-from .bin1recordingextractor import Bin1RecordingExtractor
-from .bin2recordingextractor import Bin2RecordingExtractor

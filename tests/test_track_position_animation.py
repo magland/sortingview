@@ -8,17 +8,16 @@ import sortingview.views.franklab as vvf
 def main():
     view = test_track_position_animation()
 
-    url = view.url(label='test_track_position_animation')
+    url = view.url(label="test_track_position_animation")
     print(url)
+
 
 def test_track_position_animation():
     num_frames = 2500
     sampling_frequency_hz = 10
     timestamps = np.arange(num_frames).astype(np.float32) / sampling_frequency_hz
 
-    track_bin_ul_corners = np.array([
-        [0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [5, 4]
-    ]).astype(np.float32).T
+    track_bin_ul_corners = np.array([[0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [5, 4]]).astype(np.float32).T
 
     positions = []
     head_direction = []
@@ -48,21 +47,13 @@ def test_track_position_animation():
 
     locations = x_locations + x_count * y_locations
     decoded_position_data = vvf.DecodedPositionData(
-        x_min=0,
-        bin_width=1,
-        x_count=x_count,
-        y_min=0,
-        bin_height=1,
-        y_count=y_count,
-        values=values,
-        locations=locations,
-        frame_bounds=frame_bounds
+        x_min=0, bin_width=1, x_count=x_count, y_min=0, bin_height=1, y_count=y_count, values=values, locations=locations, frame_bounds=frame_bounds
     )
-    
+
     view = vvf.TrackPositionAnimationV1(
         track_bin_width=1,
         track_bin_height=1,
-        track_bin_ul_corners=track_bin_ul_corners, # 2 x n
+        track_bin_ul_corners=track_bin_ul_corners,  # 2 x n
         total_recording_frame_length=len(timestamps),
         timestamp_start=0,
         timestamps=timestamps,
@@ -73,9 +64,10 @@ def test_track_position_animation():
         y_max=11,
         head_direction=head_direction,
         decoded_data=decoded_position_data,
-        sampling_frequency_hz=sampling_frequency_hz
+        sampling_frequency_hz=sampling_frequency_hz,
     )
     return view
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

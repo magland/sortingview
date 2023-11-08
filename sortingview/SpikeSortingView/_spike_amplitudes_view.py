@@ -23,7 +23,7 @@ def spike_amplitudes_view(self, *, unit_ids: List[int], hide_unit_selector: bool
     return vv.SpikeAmplitudes(start_time_sec=0, end_time_sec=self.num_frames / self.sampling_frequency, plots=plots, hide_unit_selector=hide_unit_selector)
 
 
-def _subsample2(x: np.array, y: np.array, num: int):
+def _subsample2(x: np.ndarray, y: np.ndarray, num: int):
     if num >= len(x):
         return x, y
     incr = len(x) / num

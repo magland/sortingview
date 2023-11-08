@@ -19,35 +19,32 @@ def main():
 
     view = example_average_waveforms(recording=recording, sorting=sorting)
 
-    url = view.url(label='Average waveforms example')
+    url = view.url(label="Average waveforms example")
     print(url)
+
 
 def example_average_waveforms(*, recording: si.BaseRecording, sorting: si.BaseSorting, height=500):
     # noise_level = estimate_noise_level(recording)
     average_waveform_items: List[vv.AverageWaveformItem] = []
     for unit_id in sorting.get_unit_ids():
         a = compute_average_waveform(recording=recording, sorting=sorting, unit_id=unit_id)
-        channel_ids = a['channel_ids']
-        waveform = a['waveform']
+        channel_ids = a["channel_ids"]
+        waveform = a["waveform"]
         average_waveform_items.append(
             vv.AverageWaveformItem(
                 unit_id=unit_id,
                 waveform=waveform,
                 channel_ids=channel_ids,
                 # waveform_std_dev=a['waveform_std_dev'],
-                waveform_percentiles=a['waveform_percentiles'],
+                waveform_percentiles=a["waveform_percentiles"],
             )
         )
     channel_locations = {}
     for ii, channel_id in enumerate(recording.channel_ids):
         channel_locations[str(channel_id)] = recording.get_channel_locations()[ii, :].astype(np.float32)
-    view = vv.AverageWaveforms(
-        average_waveforms=average_waveform_items,
-        channel_locations=channel_locations,
-        show_reference_probe=True,
-        height=height
-    )
+    view = vv.AverageWaveforms(average_waveforms=average_waveform_items, channel_locations=channel_locations, show_reference_probe=True, height=height)
     return view
+
 
 def extract_snippets(*, traces: np.ndarray, times: np.ndarray, snippet_len: Tuple[int, int]):
     N = traces.shape[0]
@@ -63,20 +60,17 @@ def extract_snippets(*, traces: np.ndarray, times: np.ndarray, snippet_len: Tupl
             ret[valid, t, :] = traces[times2[valid], :]
     return ret
 
+
 def compute_average_waveform(*, recording: si.BaseRecording, sorting: si.BaseSorting, unit_id: int):
     traces = recording.get_traces(segment_index=0)
     times = sorting.get_unit_spike_train(segment_index=0, unit_id=unit_id)
     snippets = extract_snippets(traces=traces, times=times, snippet_len=(20, 20))
     waveform = np.mean(snippets, axis=0).T.astype(np.float32)
     stdev = np.std(snippets, axis=0).T.astype(np.float32)
-    waveform_percentiles = np.percentile(snippets, [5, 25, 75, 95], axis=0)
+    waveform_percentiles = np.percentile(snippets, [5, 25, 75, 95], axis=0) # type: ignore
     waveform_percentiles = [waveform_percentiles[i].T.astype(np.float32) for i in range(4)]
-    return {
-        'channel_ids': recording.get_channel_ids().astype(np.int32),
-        'waveform': waveform,
-        'waveform_std_dev': stdev,
-        'waveform_percentiles': waveform_percentiles
-    }
+    return {"channel_ids": recording.get_channel_ids().astype(np.int32), "waveform": waveform, "waveform_std_dev": stdev, "waveform_percentiles": waveform_percentiles}
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

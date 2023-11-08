@@ -8,8 +8,9 @@ import sortingview.views as vv
 def main():
     view = test_position_plot()
 
-    url = view.url(label='test_position_plot')
+    url = view.url(label="test_position_plot")
     print(url)
+
 
 def test_position_plot():
     timestamps = np.arange(1000, 2000, dtype=np.float64)
@@ -18,12 +19,9 @@ def test_position_plot():
     for i in range(n):
         positions[i, 0] = i + 3
         positions[i, 1] = timestamps[i] * np.cos(timestamps[i] * 2 * np.pi / 30)
-    view = vv.PositionPlot(
-        timestamps=timestamps,
-        positions=positions.astype(np.float32),
-        dimension_labels=['x', 'y']
-    )
+    view = vv.PositionPlot(timestamps=timestamps, positions=positions.astype(np.float32), dimension_labels=["x", "y"])
     return view
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
