@@ -6,7 +6,7 @@ from kachery_cloud._serialize import _deserialize
 
 from .MdaRecordingExtractorV2.MdaRecordingExtractorV2 import MdaRecordingExtractorV2
 
-      # test badly formatted line
+
 def load_recording_extractor(recording_object: Union[dict, str]):
     if isinstance(recording_object, str):
         if recording_object.startswith("sha1://") or recording_object.startswith("ipfs://"):
