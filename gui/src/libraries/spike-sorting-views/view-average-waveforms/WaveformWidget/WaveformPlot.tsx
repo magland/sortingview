@@ -221,8 +221,8 @@ const paint = (ctxt: CanvasRenderingContext2D, props: PaintProps) => {
         const pLower = pp2[ii]
         const pUpper = pp3[ii]
 
-        ctxt.fillStyle = '#aaaaaa'
-        ctxt.strokeStyle = '#aaaaaa'
+        ctxt.fillStyle = '#bbbbbb'
+        ctxt.strokeStyle = '#bbbbbb'
         ctxt.lineWidth = 1
         ctxt.translate(pLower.offsetFromParentCenter[0], pLower.offsetFromParentCenter[1])
         ctxt.beginPath()
