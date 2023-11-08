@@ -7,20 +7,17 @@ class PositionPlot(View):
     """
     Position plot view
     """
-    def __init__(self, *,
-        timestamps: np.array,
-        positions: np.array,
-        dimension_labels: List[str],
-        subsampling_frequency: Union[float, None]=None,
-        discontinuous: bool=False,
-        **kwargs
+
+    def __init__(
+        self, *, timestamps: np.array, positions: np.array, dimension_labels: List[str], subsampling_frequency: Union[float, None] = None, discontinuous: bool = False, **kwargs
     ) -> None:
-        super().__init__('PositionPlot', **kwargs)
+        super().__init__("PositionPlot", **kwargs)
         self.timestamps = timestamps
         self.positions = positions
         self.dimension_labels = dimension_labels
         self.subsampling_frequency = subsampling_frequency
         self.discontinuous = discontinuous
+
     def to_dict(self) -> dict:
         timestamps = self.timestamps
         positions = self.positions
@@ -36,16 +33,18 @@ class PositionPlot(View):
             timestamps = timestamps[inds]
             positions = positions[inds, :]
         ret = {
-            'type': self.type,
-            'timeOffset': timestamps[0],
-            'timestamps': (timestamps - timestamps[0]).astype(np.float32),
-            'positions': positions,
-            'dimensionLabels': dimension_labels,
-            'discontinuous': discontinuous
+            "type": self.type,
+            "timeOffset": timestamps[0],
+            "timestamps": (timestamps - timestamps[0]).astype(np.float32),
+            "positions": positions,
+            "dimensionLabels": dimension_labels,
+            "discontinuous": discontinuous,
         }
         return ret
+
     def child_views(self) -> List[View]:
         return []
+
 
 def _get_subsample_inds(timestamps: np.array, sampling_frequency: float):
     dt = 1 / sampling_frequency

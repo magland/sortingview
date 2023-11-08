@@ -30,7 +30,9 @@ from ..View import View
 #     frameBounds: number[]
 # }
 class DecodedPositionData:
-    def __init__(self, *,
+    def __init__(
+        self,
+        *,
         x_min: float,
         bin_width: float,
         x_count: int,
@@ -40,7 +42,7 @@ class DecodedPositionData:
         values: np.array,
         locations: np.array,
         frame_bounds: np.array,
-        unique_locations: Union[None, np.array]=None
+        unique_locations: Union[None, np.array] = None
     ) -> None:
         self.x_min = x_min
         self.bin_width = bin_width
@@ -52,29 +54,31 @@ class DecodedPositionData:
         self.locations = locations
         self.frame_bounds = frame_bounds
         self.unique_locations = unique_locations
+
     def to_dict(self) -> dict:
         ret = {
-            'type': 'DecodedPositionData',
-            'xmin': self.x_min,
-            'binWidth': self.bin_width,
-            'xcount': self.x_count,
-            'ymin': self.y_min,
-            'binHeight': self.bin_height,
-            'ycount': self.y_count,
-            'values': self.values,
-            'locations': self.locations,
-            'frameBounds': self.frame_bounds
+            "type": "DecodedPositionData",
+            "xmin": self.x_min,
+            "binWidth": self.bin_width,
+            "xcount": self.x_count,
+            "ymin": self.y_min,
+            "binHeight": self.bin_height,
+            "ycount": self.y_count,
+            "values": self.values,
+            "locations": self.locations,
+            "frameBounds": self.frame_bounds,
         }
         if self.unique_locations is not None:
-            ret['uniqueLocations'] = self.unique_locations
+            ret["uniqueLocations"] = self.unique_locations
         return ret
+
 
 # /**
 #  * Data comprising a complete (non-streamed) track animation. The track itself is
 #  * represented as a set of rectangles (a sparse subset of the full grid), and there are separate lists of timestamps
 #  * and corresponding positions, as well as the track extrema and the
 #  * optional sampling rate (number of frames per second in the recording - controls the base replay rate).
-#  * 
+#  *
 #  * @member trackBinWidth The width of a single tile in the track, in native units. NOT
 #  * the width of the overall track.
 #  * @member trackBinHeight The height of a single tile in the track, in native units. NOT
@@ -119,24 +123,27 @@ class TrackPositionAnimationV1(View):
     """
     Track position animation
     """
-    def __init__(self, *,
+
+    def __init__(
+        self,
+        *,
         track_bin_width: float,
         track_bin_height: float,
-        track_bin_ul_corners: np.array, # 2 x N
+        track_bin_ul_corners: np.array,  # 2 x N
         total_recording_frame_length: float,
-        timestamp_start: Union[float, None]=None,
-        timestamps: np.array, # N
-        positions: np.array, # 2 x N
+        timestamp_start: Union[float, None] = None,
+        timestamps: np.array,  # N
+        positions: np.array,  # 2 x N
         x_min: float,
         x_max: float,
         y_min: float,
         y_max: float,
-        head_direction: Union[None, np.array]=None, # N
-        decoded_data: Union[None, DecodedPositionData]=None,
-        sampling_frequency_hz: Union[None, float]=None,
+        head_direction: Union[None, np.array] = None,  # N
+        decoded_data: Union[None, DecodedPositionData] = None,
+        sampling_frequency_hz: Union[None, float] = None,
         **kwargs
     ) -> None:
-        super().__init__('TrackAnimation', **kwargs)
+        super().__init__("TrackAnimation", **kwargs)
         self.track_bin_width = track_bin_width
         self.track_bin_height = track_bin_height
         self.track_bin_ul_corners = track_bin_ul_corners
@@ -151,28 +158,30 @@ class TrackPositionAnimationV1(View):
         self.head_direction = head_direction
         self.decoded_data = decoded_data
         self.sampling_frequency_hz = sampling_frequency_hz
+
     def to_dict(self) -> dict:
         ret = {
-            'type': self.type,
-            'trackBinWidth': self.track_bin_width,
-            'trackBinHeight': self.track_bin_height,
-            'trackBinULCorners': self.track_bin_ul_corners,
-            'totalRecordingFrameLength': self.total_recording_frame_length,
-            'timestamps': self.timestamps,
-            'positions': self.positions,
-            'xmin': self.x_min,
-            'xmax': self.x_max,
-            'ymin': self.y_min,
-            'ymax': self.y_max
+            "type": self.type,
+            "trackBinWidth": self.track_bin_width,
+            "trackBinHeight": self.track_bin_height,
+            "trackBinULCorners": self.track_bin_ul_corners,
+            "totalRecordingFrameLength": self.total_recording_frame_length,
+            "timestamps": self.timestamps,
+            "positions": self.positions,
+            "xmin": self.x_min,
+            "xmax": self.x_max,
+            "ymin": self.y_min,
+            "ymax": self.y_max,
         }
         if self.timestamp_start is not None:
-            ret['timestampStart'] = self.timestamp_start
+            ret["timestampStart"] = self.timestamp_start
         if self.head_direction is not None:
-            ret['headDirection'] = self.head_direction
+            ret["headDirection"] = self.head_direction
         if self.decoded_data is not None:
-            ret['decodedData'] = self.decoded_data.to_dict()
+            ret["decodedData"] = self.decoded_data.to_dict()
         if self.sampling_frequency_hz is not None:
-            ret['samplingFrequencyHz'] = self.sampling_frequency_hz
+            ret["samplingFrequencyHz"] = self.sampling_frequency_hz
         return ret
+
     def child_views(self) -> List[View]:
         return []

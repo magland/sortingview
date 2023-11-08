@@ -30,6 +30,15 @@
                 "clear": true
             },
             "detail": "Generate .ipynb notebooks from .py files using jupytext (pip install jupytext)"
+        },
+        {
+            "label": "Black formatting",
+            "type": "shell",
+            "command": "black -l 180 sortingview",
+            "presentation": {
+                "clear": true
+            },
+            "detail": "Run black formatter"
         }
     ]
 }

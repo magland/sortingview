@@ -7,7 +7,10 @@ class SortingSummary(View):
     """
     Sorting summary
     """
-    def __init__(self, *,
+
+    def __init__(
+        self,
+        *,
         recording_description: str,
         sorting_description: str,
         recording_object: dict,
@@ -21,7 +24,7 @@ class SortingSummary(View):
         noise_level: float,
         **kwargs
     ) -> None:
-        super().__init__('Summary', **kwargs)
+        super().__init__("Summary", **kwargs)
         self.recording_description = recording_description
         self.sorting_description = sorting_description
         self.recording_object = recording_object
@@ -33,21 +36,23 @@ class SortingSummary(View):
         self.num_segments = num_segments
         self.channel_locations = channel_locations
         self.noise_level = noise_level
+
     def to_dict(self) -> dict:
         ret = {
-            'type': self.type,
-            'recordingDescription': self.recording_description,
-            'sortingDescription': self.sorting_description,
-            'recordingObject': self.recording_object,
-            'sortingObject': self.sorting_object,
-            'unitIds': self.unit_ids,
-            'channelIds': self.channel_ids,
-            'samplingFrequency': float(self.sampling_frequency),
-            'numFrames': self.num_frames,
-            'numSegments': self.num_segments,
-            'channelLocations': self.channel_locations.astype(np.float32),
-            'noiseLevel': float(self.noise_level)
+            "type": self.type,
+            "recordingDescription": self.recording_description,
+            "sortingDescription": self.sorting_description,
+            "recordingObject": self.recording_object,
+            "sortingObject": self.sorting_object,
+            "unitIds": self.unit_ids,
+            "channelIds": self.channel_ids,
+            "samplingFrequency": float(self.sampling_frequency),
+            "numFrames": self.num_frames,
+            "numSegments": self.num_segments,
+            "channelLocations": self.channel_locations.astype(np.float32),
+            "noiseLevel": float(self.noise_level),
         }
         return ret
+
     def child_views(self) -> List[View]:
         return []

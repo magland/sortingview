@@ -12,12 +12,12 @@ import traceback
 
 
 class MdaRecordingExtractorV2(BaseRecording):
-    extractor_name = 'MdaRecordingV2'
+    extractor_name = "MdaRecordingV2"
     has_default_locations = True
     has_unscaled = False
     installed = True  # check at class level if installed or not
     is_writable = True
-    mode = 'folder'
+    mode = "folder"
     installation_mesg = ""  # error message when not installed
 
     def __init__(self, raw_path: str, params: dict, geom):
@@ -26,15 +26,12 @@ class MdaRecordingExtractorV2(BaseRecording):
         self._diskreadmda = DiskReadMda(str(self._timeseries_path))
         dtype = self._diskreadmda.dt()
         num_channels = self._diskreadmda.N1()
-        sampling_frequency=float(self._dataset_params['samplerate'])
-        BaseRecording.__init__(self, sampling_frequency=sampling_frequency,
-                               channel_ids=np.arange(num_channels), dtype=dtype)
+        sampling_frequency = float(self._dataset_params["samplerate"])
+        BaseRecording.__init__(self, sampling_frequency=sampling_frequency, channel_ids=np.arange(num_channels), dtype=dtype)
         rec_segment = MdaRecordingSegment(self._diskreadmda, sampling_frequency)
         self.add_recording_segment(rec_segment)
         self.set_dummy_probe_from_locations(np.array(geom))
-        self._kwargs = {'raw_path': str(Path(raw_path).absolute()),
-                        'params': params,
-                        'geom': geom}
+        self._kwargs = {"raw_path": str(Path(raw_path).absolute()), "params": params, "geom": geom}
 
 
 class MdaRecordingSegment(BaseRecordingSegment):
@@ -51,17 +48,17 @@ class MdaRecordingSegment(BaseRecordingSegment):
         """
         return self._num_samples
 
-    def get_traces(self,
-                   start_frame: Union[int, None] = None,
-                   end_frame: Union[int, None] = None,
-                   channel_indices: Union[List, None] = None,
-                   ) -> np.ndarray:
+    def get_traces(
+        self,
+        start_frame: Union[int, None] = None,
+        end_frame: Union[int, None] = None,
+        channel_indices: Union[List, None] = None,
+    ) -> np.ndarray:
         if start_frame is None:
             start_frame = 0
         if end_frame is None:
             end_frame = self.get_num_samples()
-        recordings = self._diskreadmda.readChunk(i1=0, i2=start_frame, N1=self._diskreadmda.N1(),
-                                                 N2=end_frame - start_frame)
+        recordings = self._diskreadmda.readChunk(i1=0, i2=start_frame, N1=self._diskreadmda.N1(), N2=end_frame - start_frame)
         recordings = recordings[channel_indices, :].T
         return recordings
 
@@ -69,7 +66,7 @@ class MdaRecordingSegment(BaseRecordingSegment):
 ######### MDAIO ###########
 class MdaHeader:
     def __init__(self, dt0, dims0):
-        uses64bitdims = (max(dims0) > 2e9)
+        uses64bitdims = max(dims0) > 2e9
         self.uses64bitdims = uses64bitdims
         self.dt_code = _dt_code_from_dt(dt0)
         self.dt = dt0
@@ -98,16 +95,7 @@ class MdaHeader:
 
 def npy_dtype_to_string(dt):
     str = dt.str[1:]
-    map = {
-        "f2": 'float16',
-        "f4": 'float32',
-        "f8": 'float64',
-        "i1": 'int8',
-        "i2": 'int16',
-        "i4": 'int32',
-        "u2": 'uint16',
-        "u4": 'uint32'
-    }
+    map = {"f2": "float16", "f4": "float32", "f8": "float64", "i1": "int8", "i2": "int16", "i4": "int32", "u2": "uint16", "u4": "uint32"}
     return map[str]
 
 
@@ -115,11 +103,11 @@ class DiskReadMda:
     def __init__(self, path, header=None):
         self._npy_mode = False
         self._path = path
-        if file_extension(path) == '.npy':
-            raise Exception('DiskReadMda implementation has not been tested for npy files')
+        if file_extension(path) == ".npy":
+            raise Exception("DiskReadMda implementation has not been tested for npy files")
             self._npy_mode = True
             if header:
-                raise Exception('header not allowed in npy mode for DiskReadMda')
+                raise Exception("header not allowed in npy mode for DiskReadMda")
         if header:
             self._header = header
             self._header.header_size = 0
@@ -128,7 +116,7 @@ class DiskReadMda:
 
     def dims(self):
         if self._npy_mode:
-            A = np.load(self._path, mmap_mode='r')
+            A = np.load(self._path, mmap_mode="r")
             return A.shape
         return self._header.dims
 
@@ -143,13 +131,13 @@ class DiskReadMda:
 
     def dt(self):
         if self._npy_mode:
-            A = np.load(self._path, mmap_mode='r')
+            A = np.load(self._path, mmap_mode="r")
             return npy_dtype_to_string(A.dtype)
         return self._header.dt
 
     def numBytesPerEntry(self):
         if self._npy_mode:
-            A = np.load(self._path, mmap_mode='r')
+            A = np.load(self._path, mmap_mode="r")
             return A.itemsize
         return self._header.num_bytes_per_entry
 
@@ -157,8 +145,8 @@ class DiskReadMda:
         # print("Reading chunk {} {} {} {} {} {}".format(i1,i2,i3,N1,N2,N3))
         if i2 < 0:
             if self._npy_mode:
-                A = np.load(self._path, mmap_mode='r')
-                return A[:, :, i1:i1 + N1]
+                A = np.load(self._path, mmap_mode="r")
+                return A[:, :, i1 : i1 + N1]
             return self._read_chunk_1d(i1, N1)
         elif i3 < 0:
             if N1 != self.N1():
@@ -167,12 +155,12 @@ class DiskReadMda:
             X = self._read_chunk_1d(i1 + N1 * i2, N1 * N2)
 
             if X is None:
-                print('Problem reading chunk from file: ' + self._path)
+                print("Problem reading chunk from file: " + self._path)
                 return None
             if self._npy_mode:
-                A = np.load(self._path, mmap_mode='r')
-                return A[:, i2:i2 + N2]
-            return np.reshape(X, (N1, N2), order='F')
+                A = np.load(self._path, mmap_mode="r")
+                return A[:, i2 : i2 + N2]
+            return np.reshape(X, (N1, N2), order="F")
         else:
             if N1 != self.N1():
                 print("Unable to support N1 {} != {}".format(N1, self.N1()))
@@ -181,10 +169,10 @@ class DiskReadMda:
                 print("Unable to support N2 {} != {}".format(N2, self.N2()))
                 return None
             if self._npy_mode:
-                A = np.load(self._path, mmap_mode='r')
-                return A[:, :, i3:i3 + N3]
+                A = np.load(self._path, mmap_mode="r")
+                return A[:, :, i3 : i3 + N3]
             X = self._read_chunk_1d(i1 + N1 * i2 + N1 * N2 * i3, N1 * N2 * N3)
-            return np.reshape(X, (N1, N2, N3), order='F')
+            return np.reshape(X, (N1, N2, N3), order="F")
 
     def _read_chunk_1d(self, i, N):
         offset = self._header.header_size + self._header.num_bytes_per_entry * i
@@ -211,18 +199,18 @@ class DiskReadMda:
 
 
 def is_url(path):
-    return path.startswith('http://') or path.startswith('https://')
+    return path.startswith("http://") or path.startswith("https://")
 
 
 def _download_bytes_to_tmpfile(url, start, end):
     try:
         import requests
     except:
-        raise Exception('Unable to import module: requests')
+        raise Exception("Unable to import module: requests")
     headers = {"Range": "bytes={}-{}".format(start, end - 1)}
     r = requests.get(url, headers=headers, stream=True)
     fd, tmp_fname = tempfile.mkstemp()
-    with open(tmp_fname, 'wb') as f:
+    with open(tmp_fname, "wb") as f:
         for chunk in r.iter_content(chunk_size=1024):
             if chunk:
                 f.write(chunk)
@@ -233,7 +221,7 @@ def _read_header(path):
     if is_url(path):
         tmp_fname = _download_bytes_to_tmpfile(path, 0, 200)
         if not tmp_fname:
-            raise Exception('Problem downloading bytes from ' + path)
+            raise Exception("Problem downloading bytes from " + path)
         try:
             ret = _read_header(tmp_fname)
         except:
@@ -285,63 +273,63 @@ def _read_header(path):
 
 def _dt_from_dt_code(dt_code):
     if dt_code == -2:
-        dt = 'uint8'
+        dt = "uint8"
     elif dt_code == -3:
-        dt = 'float32'
+        dt = "float32"
     elif dt_code == -4:
-        dt = 'int16'
+        dt = "int16"
     elif dt_code == -5:
-        dt = 'int32'
+        dt = "int32"
     elif dt_code == -6:
-        dt = 'uint16'
+        dt = "uint16"
     elif dt_code == -7:
-        dt = 'float64'
+        dt = "float64"
     elif dt_code == -8:
-        dt = 'uint32'
+        dt = "uint32"
     else:
         dt = None
     return dt
 
 
 def _dt_code_from_dt(dt):
-    if dt == 'uint8':
+    if dt == "uint8":
         return -2
-    if dt == 'float32':
+    if dt == "float32":
         return -3
-    if dt == 'int16':
+    if dt == "int16":
         return -4
-    if dt == 'int32':
+    if dt == "int32":
         return -5
-    if dt == 'uint16':
+    if dt == "uint16":
         return -6
-    if dt == 'float64':
+    if dt == "float64":
         return -7
-    if dt == 'uint32':
+    if dt == "uint32":
         return -8
     return None
 
 
 def get_num_bytes_per_entry_from_dt(dt):
-    if dt == 'uint8':
+    if dt == "uint8":
         return 1
-    if dt == 'float32':
+    if dt == "float32":
         return 4
-    if dt == 'int16':
+    if dt == "int16":
         return 2
-    if dt == 'int32':
+    if dt == "int32":
         return 4
-    if dt == 'uint16':
+    if dt == "uint16":
         return 2
-    if dt == 'float64':
+    if dt == "float64":
         return 8
-    if dt == 'uint32':
+    if dt == "uint32":
         return 4
     return None
 
 
 def readmda_header(path):
-    if file_extension(path) == '.npy':
-        raise Exception('Cannot read mda header for .npy file.')
+    if file_extension(path) == ".npy":
+        raise Exception("Cannot read mda header for .npy file.")
     return _read_header(path)
 
 
@@ -370,8 +358,8 @@ def _write_header(path, H, rewrite=False):
 
 
 def readmda(path):
-    if file_extension(path) == '.npy':
-        return readnpy(path);
+    if file_extension(path) == ".npy":
+        return readnpy(path)
     H = _read_header(path)
     if H is None:
         print("Problem reading header of: {}".format(path))
@@ -381,7 +369,7 @@ def readmda(path):
         f.seek(H.header_size)
         # This is how I do the column-major order
         ret = np.fromfile(f, dtype=H.dt, count=H.dimprod)
-        ret = np.reshape(ret, H.dims, order='F')
+        ret = np.reshape(ret, H.dims, order="F")
         f.close()
         return ret
     except Exception as e:  # catch *all* exceptions
@@ -391,45 +379,45 @@ def readmda(path):
 
 
 def writemda32(X, fname):
-    if file_extension(fname) == '.npy':
+    if file_extension(fname) == ".npy":
         return writenpy32(X, fname)
-    return _writemda(X, fname, 'float32')
+    return _writemda(X, fname, "float32")
 
 
 def writemda64(X, fname):
-    if file_extension(fname) == '.npy':
+    if file_extension(fname) == ".npy":
         return writenpy64(X, fname)
-    return _writemda(X, fname, 'float64')
+    return _writemda(X, fname, "float64")
 
 
 def writemda8(X, fname):
-    if file_extension(fname) == '.npy':
+    if file_extension(fname) == ".npy":
         return writenpy8(X, fname)
-    return _writemda(X, fname, 'uint8')
+    return _writemda(X, fname, "uint8")
 
 
 def writemda32i(X, fname):
-    if file_extension(fname) == '.npy':
+    if file_extension(fname) == ".npy":
         return writenpy32i(X, fname)
-    return _writemda(X, fname, 'int32')
+    return _writemda(X, fname, "int32")
 
 
 def writemda32ui(X, fname):
-    if file_extension(fname) == '.npy':
+    if file_extension(fname) == ".npy":
         return writenpy32ui(X, fname)
-    return _writemda(X, fname, 'uint32')
+    return _writemda(X, fname, "uint32")
 
 
 def writemda16i(X, fname):
-    if file_extension(fname) == '.npy':
+    if file_extension(fname) == ".npy":
         return writenpy16i(X, fname)
-    return _writemda(X, fname, 'int16')
+    return _writemda(X, fname, "int16")
 
 
 def writemda16ui(X, fname):
-    if file_extension(fname) == '.npy':
+    if file_extension(fname) == ".npy":
         return writenpy16ui(X, fname)
-    return _writemda(X, fname, 'uint16')
+    return _writemda(X, fname, "uint16")
 
 
 def writemda(X, fname, *, dtype):
@@ -444,7 +432,7 @@ def _writemda(X, fname, dt):
         return False
 
     if type(fname) == str:
-        f = open(fname, 'wb')
+        f = open(fname, "wb")
     else:
         f = fname
     try:
@@ -457,7 +445,7 @@ def _writemda(X, fname, dt):
         # A=np.reshape(X,X.size,order='F').astype(dt)
         # A.tofile(f)
 
-        bytes0 = X.astype(dt).tobytes(order='F')
+        bytes0 = X.astype(dt).tobytes(order="F")
         f.write(bytes0)
 
         if type(fname) == str:
@@ -476,31 +464,31 @@ def readnpy(path):
 
 
 def writenpy8(X, path):
-    return _writenpy(X, path, dtype='int8')
+    return _writenpy(X, path, dtype="int8")
 
 
 def writenpy32(X, path):
-    return _writenpy(X, path, dtype='float32')
+    return _writenpy(X, path, dtype="float32")
 
 
 def writenpy64(X, path):
-    return _writenpy(X, path, dtype='float64')
+    return _writenpy(X, path, dtype="float64")
 
 
 def writenpy16i(X, path):
-    return _writenpy(X, path, dtype='int16')
+    return _writenpy(X, path, dtype="int16")
 
 
 def writenpy16ui(X, path):
-    return _writenpy(X, path, dtype='uint16')
+    return _writenpy(X, path, dtype="uint16")
 
 
 def writenpy32i(X, path):
-    return _writenpy(X, path, dtype='int32')
+    return _writenpy(X, path, dtype="int32")
 
 
 def writenpy32ui(X, path):
-    return _writenpy(X, path, dtype='uint32')
+    return _writenpy(X, path, dtype="uint32")
 
 
 def writenpy(X, path, *, dtype):
@@ -515,8 +503,8 @@ def _writenpy(X, path, *, dtype):
 
 
 def appendmda(X, path):
-    if file_extension(path) == '.npy':
-        raise Exception('appendmda not yet implemented for .npy files')
+    if file_extension(path) == ".npy":
+        raise Exception("appendmda not yet implemented for .npy files")
     H = _read_header(path)
     if H is None:
         print("Problem reading header of: {}".format(path))
@@ -535,7 +523,7 @@ def appendmda(X, path):
         _write_header(path, H, rewrite=True)
         f = open(path, "r+b")
         f.seek(H.header_size + H.num_bytes_per_entry * num_entries_old)
-        A = np.reshape(X, X.size, order='F').astype(H.dt)
+        A = np.reshape(X, X.size, order="F").astype(H.dt)
         A.tofile(f)
         f.close()
     except Exception as e:  # catch *all* exceptions
@@ -553,19 +541,19 @@ def file_extension(fname):
 
 
 def _read_int32(f):
-    return struct.unpack('<i', f.read(4))[0]
+    return struct.unpack("<i", f.read(4))[0]
 
 
 def _read_int64(f):
-    return struct.unpack('<q', f.read(8))[0]
+    return struct.unpack("<q", f.read(8))[0]
 
 
 def _write_int32(f, val):
-    f.write(struct.pack('<i', val))
+    f.write(struct.pack("<i", val))
 
 
 def _write_int64(f, val):
-    f.write(struct.pack('<q', val))
+    f.write(struct.pack("<q", val))
 
 
 def _header_from_file(f):
