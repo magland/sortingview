@@ -20,8 +20,8 @@ type Props = {
 const AverageWaveformsView: FunctionComponent<Props> = ({data, width, height}) => {
     const allChannelIds = useMemo(() => {
         const allChannelIds: (string | number)[] = []
-        for (let x of data.averageWaveforms) {
-            for (let id of x.channelIds) {
+        for (const x of data.averageWaveforms) {
+            for (const id of x.channelIds) {
                 if (!allChannelIds.includes(id)) {
                     allChannelIds.push(id)
                 }
@@ -75,7 +75,7 @@ const AverageWaveformsView: FunctionComponent<Props> = ({data, width, height}) =
                 channelIds: aw.channelIds,
                 waveform: subtractChannelMeans(aw.waveform),
                 waveformStdDev: showWaveformStdev && !showOverlapping ? aw.waveformStdDev : undefined,
-                waveformPercentiles: showWaveformStdev && !showOverlapping ? subtractChannelMeansFromPercentiles(aw.waveformPercentiles, aw.waveform) : undefined,
+                waveformPercentiles: showWaveformStdev && !showOverlapping && aw.waveformPercentiles ? subtractChannelMeansFromPercentiles(aw.waveformPercentiles, aw.waveform) : undefined,
                 waveformColor: getUnitColor(idToNum(aw.unitId))
             }
         ]
@@ -313,8 +313,8 @@ const combinePlotsForOverlappingView = (plots: PGPlot[]): PGPlot[] => {
     // plotProps.width *= 2
 
     const allChannelIdsSet = new Set<number | string>()
-    for (let plot of plots) {
-        for (let id of plot.props.channelIds) {
+    for (const plot of plots) {
+        for (const id of plot.props.channelIds) {
             allChannelIdsSet.add(id)
         }
     }

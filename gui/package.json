@@ -12,11 +12,11 @@
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@figurl/interface": "^0.3.0",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-regular-svg-icons": "^6.1.2",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
-    "@figurl/interface": "^0.3.0",
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
     "@testing-library/jest-dom": "^5.16.4",
@@ -44,10 +44,9 @@
     "scale-color-perceptual": "^1.1.2"
   },
   "devDependencies": {
-    "@types/node": "^20.6.1",
     "@types/chroma-js": "^2.4.2",
+    "@types/node": "^20.6.1",
     "@types/object-hash": "^3.0.6",
-    "source-map-explorer": "^2.5.3",
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
     "@vitejs/plugin-react": "^4.0.0",
@@ -55,6 +54,7 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
+    "source-map-explorer": "^2.5.3",
     "typescript": "^5.0.2",
     "vite": "^4.3.2"
   }
