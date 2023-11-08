@@ -3,8 +3,9 @@ import numpy as np
 import sortingview.views as vv
 
 
-def spike_amplitudes_view(self, *, unit_ids: List[int], hide_unit_selector: bool=False, _subsample_max_firing_rate: Union[float, None]=None):
+def spike_amplitudes_view(self, *, unit_ids: List[int], hide_unit_selector: bool = False, _subsample_max_firing_rate: Union[float, None] = None):
     from .SpikeSortingView import SpikeSortingView
+
     assert isinstance(self, SpikeSortingView)
 
     plots: List[vv.SpikeAmplitudesItem] = []
@@ -15,20 +16,12 @@ def spike_amplitudes_view(self, *, unit_ids: List[int], hide_unit_selector: bool
             max_num = int(self.num_frames / self.sampling_frequency * _subsample_max_firing_rate)
             if len(spike_times_sec) > max_num:
                 spike_times_sec, spike_amplitudes = _subsample2(spike_times_sec, spike_amplitudes, max_num)
-        plots.append(vv.SpikeAmplitudesItem(
-            unit_id=unit_id,
-            spike_times_sec=spike_times_sec.astype(np.float32),
-            spike_amplitudes=spike_amplitudes.astype(np.float32)
-        ))
+        plots.append(vv.SpikeAmplitudesItem(unit_id=unit_id, spike_times_sec=spike_times_sec.astype(np.float32), spike_amplitudes=spike_amplitudes.astype(np.float32)))
 
     # traces_sample = self.get_traces_sample(segment=0)
 
-    return vv.SpikeAmplitudes(
-        start_time_sec=0,
-        end_time_sec=self.num_frames / self.sampling_frequency,
-        plots=plots,
-        hide_unit_selector=hide_unit_selector
-    )
+    return vv.SpikeAmplitudes(start_time_sec=0, end_time_sec=self.num_frames / self.sampling_frequency, plots=plots, hide_unit_selector=hide_unit_selector)
+
 
 def _subsample2(x: np.array, y: np.array, num: int):
     if num >= len(x):

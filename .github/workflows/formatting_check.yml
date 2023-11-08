@@ -1,0 +1,14 @@
+name: formatting_check
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Formatting check
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install black
+      run: pip install black
+    - name: Check whether the code is formatted correctly
+      run: black -l 180 --check sortingview

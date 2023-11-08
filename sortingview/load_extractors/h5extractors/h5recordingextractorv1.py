@@ -7,11 +7,12 @@ from .TimeseriesModel_Hdf5.TimeseriesModel_Hdf5 import TimeseriesModel_Hdf5, pre
 
 
 class H5RecordingExtractorV1(se.RecordingExtractor):
-    extractor_name = 'H5RecordingExtractorV1'
+    extractor_name = "H5RecordingExtractorV1"
     is_writable = False
+
     def __init__(self, *, h5_path: str):
         se.RecordingExtractor.__init__(self)
-        
+
         self._h5_path: str = h5_path
         self._timeseries_model = TimeseriesModel_Hdf5(self._h5_path)
         geom = self._timeseries_model.geom()
@@ -41,9 +42,9 @@ class H5RecordingExtractorV1(se.RecordingExtractor):
         channel_inds = [all_channel_ids.index(id) for id in channel_ids]
 
         return self._timeseries_model.getChunk(t1=start_frame, t2=end_frame, channel_inds=channel_inds)
+
     @staticmethod
     def write_recording(recording: si.BaseRecording, h5_path: str, dtype=float):
         hdf5_chunk_size = 10 * 1000 * 1000
         hdf5_padding = 10000
         prepare_timeseries_hdf5_from_recording(recording, h5_path, chunk_size=hdf5_chunk_size, padding=hdf5_padding, dtype=dtype)
-
