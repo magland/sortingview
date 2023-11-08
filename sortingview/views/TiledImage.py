@@ -20,7 +20,7 @@ class TiledImageLayer:
             image: pyvips.Image = data
         else:
             assert data.dtype == np.uint8, "Data must be of type uint8"
-            image: pyvips.Image = pyvips.Image.new_from_array(data) # type: ignore
+            image: pyvips.Image = pyvips.Image.new_from_array(data)  # type: ignore
         self.image = image
 
 
@@ -44,7 +44,7 @@ class TiledImage(View):
             image: pyvips.Image = L.image
             num_zoom_levels = 0
             with kcl.TemporaryDirectory() as tmpdir:
-                image.dzsave(f"{tmpdir}/output", overlap=0, tile_size=self._tile_size, layout=pyvips.enums.ForeignDzLayout.DZ) # type: ignore
+                image.dzsave(f"{tmpdir}/output", overlap=0, tile_size=self._tile_size, layout=pyvips.enums.ForeignDzLayout.DZ)  # type: ignore
                 output_dirname = f"{tmpdir}/output_files"
 
                 # Collect image files in a dict

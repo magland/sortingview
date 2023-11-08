@@ -17,7 +17,7 @@ def prepare_spikesortingview_data(
     snippet_len: Tuple[int, int],
     max_num_snippets_per_segment: Union[int, None],
     channel_neighborhood_size: int,
-    bandpass_filter: bool = False
+    bandpass_filter: bool = False,
 ) -> str:
     if bandpass_filter:
         recording = spre.bandpass_filter(recording)

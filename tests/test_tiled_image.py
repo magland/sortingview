@@ -26,7 +26,7 @@ def test_tiled_image():
     print("Converting to color map uint8")
     RdGy = plt.get_cmap("RdGy")  # type: ignore
     # colorize and convert to uint8
-    y = np.flip((RdGy(x)[:, :, :3] * 255).astype(np.uint8), axis=0) # type: ignore
+    y = np.flip((RdGy(x)[:, :, :3] * 255).astype(np.uint8), axis=0)  # type: ignore
 
     print("Creating TiledImage view")
     layer1 = vv.TiledImageLayer(label="layer 1", data=y)

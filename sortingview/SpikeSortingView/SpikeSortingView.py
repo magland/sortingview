@@ -36,7 +36,7 @@ class SpikeSortingView:
         snippet_len: Tuple[int, int],
         max_num_snippets_per_segment: Union[int, None],
         channel_neighborhood_size: int,
-        bandpass_filter: bool = False
+        bandpass_filter: bool = False,
     ):
         data_uri = prepare_spikesortingview_data(
             recording=recording,
@@ -45,7 +45,7 @@ class SpikeSortingView:
             snippet_len=snippet_len,
             max_num_snippets_per_segment=max_num_snippets_per_segment,
             channel_neighborhood_size=channel_neighborhood_size,
-            bandpass_filter=bandpass_filter
+            bandpass_filter=bandpass_filter,
         )
         return SpikeSortingView(data_uri)
 
