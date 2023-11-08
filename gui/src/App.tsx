@@ -1,4 +1,4 @@
-import { useWindowDimensions } from 'libraries/core-utils';
+import { useWindowDimensions } from './libraries/core-utils';
 import { getFigureData, SetupUrlState } from '@figurl/interface';
 import { defaultUnitSelection, SetupSortingCuration, UnitMetricSelectionContext, unitMetricSelectionReducer, UnitSelectionContext, unitSelectionReducer } from './libraries/spike-sorting-views/index';
 import { SetupAnnotations, SetupTimeseriesSelection } from './libraries/timeseries-views';
@@ -7,7 +7,7 @@ import { useEffect, useMemo, useReducer, useState } from 'react';
 import './localStyles.css';
 import theme from './theme';
 import View from './View';
-import { SetupStyleSettings } from 'libraries/franklab-views';
+import { SetupStyleSettings } from './libraries/franklab-views';
 
 const urlSearchParams = new URLSearchParams(window.location.search)
 const queryParams = Object.fromEntries(urlSearchParams.entries())

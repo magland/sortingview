@@ -2,7 +2,7 @@ import { FunctionComponent, useMemo } from "react"
 import { TabWidget } from "../core-views"
 import LayoutItemView from "./LayoutItemView"
 import { LayoutItem, SLView } from "./SortingLayoutViewData"
-import { ViewComponentProps } from "libraries/core-view-component-props"
+import { ViewComponentProps } from "../../libraries/core-view-component-props"
 
 type Props = {
     layoutItem: LayoutItem

@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useMemo } from 'react';
-import { ViewComponentProps } from 'libraries/core-view-component-props';
+import { ViewComponentProps } from '../../libraries/core-view-component-props';
 import { CompositeViewData } from './CompositeViewData';
 import ViewWrapper from './ViewWrapper';
 

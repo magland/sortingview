@@ -23,6 +23,7 @@ export type WaveformProps = {
         electrodeIndices: number[]
         waveform: number[][]
         waveformStdDev?: number[][]
+        waveformPercentiles?: number[][][]
         waveformColors: WaveformColors
     }[]
     waveformWidth: number
@@ -48,6 +49,10 @@ type PaintProps = {
     pixelSpacePaths: PixelSpacePath[]
     pixelSpacePathsLower?: PixelSpacePath[]
     pixelSpacePathsUpper?: PixelSpacePath[]
+    pixelSpacePathsPercentile1?: PixelSpacePath[]
+    pixelSpacePathsPercentile2?: PixelSpacePath[]
+    pixelSpacePathsPercentile3?: PixelSpacePath[]
+    pixelSpacePathsPercentile4?: PixelSpacePath[]
     xMargin: number
     affineTransform?: AffineTransform
     useUnitColors: boolean
@@ -59,10 +64,11 @@ const computePaths = (
         electrodeIndices: number[]
         waveform: number[][]
         waveformStdDev?: number[][]
+        waveformPercentiles?: number[][][]
         waveformColors: WaveformColors
     }[],
     electrodes: PixelSpaceElectrode[],
-    mode: 'normal' | 'lower' | 'upper',
+    mode: 'normal' | 'lower' | 'upper' | 'percentile1' | 'percentile2' | 'percentile3' | 'percentile4',
     horizontalStretchFactor: number
 ): PixelSpacePath[] => {
     // const pointsPerWaveform = waveforms.length > 0 ? waveforms[0].waveform.length > 0 ? waveforms[0].waveform[0].length : 0 : 0 // assumed constant across all
@@ -77,6 +83,7 @@ const computePaths = (
             if (jj >= 0) {
                 let ww: number[] | undefined
                 const wsd = W.waveformStdDev
+                const wp = W.waveformPercentiles // TODO: use these to draw a shaded area
                 if (mode === 'normal') {
                     ww = W.waveform[jj]
                 }
@@ -85,6 +92,18 @@ const computePaths = (
                 }
                 else if (mode === 'upper') {
                     ww = wsd ? W.waveform[jj].map((v, i) => (W.waveform[jj][i] + wsd[jj][i])) : undefined
+                }
+                else if (mode === 'percentile1') {
+                    ww = wp ? W.waveform[jj].map((v, i) => (wp[0][jj][i])) : undefined
+                }
+                else if (mode === 'percentile2') {
+                    ww = wp ? W.waveform[jj].map((v, i) => (wp[1][jj][i])) : undefined
+                }
+                else if (mode === 'percentile3') {
+                    ww = wp && (2 < wp.length) ? W.waveform[jj].map((v, i) => (wp[2][jj][i])) : undefined
+                }
+                else if (mode === 'percentile4') {
+                    ww = wp && (3 < wp.length) ? W.waveform[jj].map((v, i) => (wp[3][jj][i])) : undefined
                 }
                 if (ww) {
                     const points: Vec2[] = ww.map((amplitude, time) => ([
@@ -105,7 +124,7 @@ const computePaths = (
 }
 
 const paint = (ctxt: CanvasRenderingContext2D, props: PaintProps) => {
-    const { pixelSpacePaths, pixelSpacePathsLower, pixelSpacePathsUpper, xMargin, waveformWidth, affineTransform, useUnitColors } = props
+    const { pixelSpacePaths, pixelSpacePathsLower, pixelSpacePathsUpper, pixelSpacePathsPercentile1, pixelSpacePathsPercentile2, pixelSpacePathsPercentile3, pixelSpacePathsPercentile4, xMargin, waveformWidth, affineTransform, useUnitColors } = props
     if (!pixelSpacePaths || pixelSpacePaths.length === 0) return
 
     ctxt.resetTransform()
@@ -122,6 +141,7 @@ const paint = (ctxt: CanvasRenderingContext2D, props: PaintProps) => {
     // So it doesn't work, alas. Leaving this comment here as a warning to future generations.
     const baseTransform = ctxt.getTransform()
 
+    // std dev shading
     pixelSpacePathsLower && pixelSpacePathsUpper && pixelSpacePathsLower.forEach((p, ii) => {
         const pLower = pixelSpacePathsLower[ii]
         const pUpper = pixelSpacePathsUpper[ii]
@@ -145,6 +165,82 @@ const paint = (ctxt: CanvasRenderingContext2D, props: PaintProps) => {
         ctxt.setTransform(baseTransform)
     })
 
+    let pp1: PixelSpacePath[] | undefined
+    let pp2: PixelSpacePath[] | undefined
+    let pp3: PixelSpacePath[] | undefined
+    let pp4: PixelSpacePath[] | undefined
+    if (pixelSpacePathsPercentile1 && pixelSpacePathsPercentile2 && pixelSpacePathsPercentile3 && pixelSpacePathsPercentile4) {
+        pp1 = pixelSpacePathsPercentile1
+        pp2 = pixelSpacePathsPercentile2
+        pp3 = pixelSpacePathsPercentile3
+        pp4 = pixelSpacePathsPercentile4
+    }
+    else if (pixelSpacePathsPercentile1 && pixelSpacePathsPercentile2 && !pixelSpacePathsPercentile3 && !pixelSpacePathsPercentile4) {
+        pp1 = undefined
+        pp2 = pixelSpacePathsPercentile1
+        pp3 = pixelSpacePathsPercentile2
+        pp4 = undefined
+    }
+    else {
+        pp1 = undefined
+        pp2 = undefined
+        pp3 = undefined
+        pp4 = undefined
+    }
+
+    // outer percentile
+    pp1 && pp4 && pp1.forEach((p, ii) => {
+        if (!pp1) throw Error('unexpected')
+        if (!pp4) throw Error('unexpected')
+        const pLower = pp1[ii]
+        const pUpper = pp4[ii]
+
+        ctxt.fillStyle = '#dddddd'
+        ctxt.strokeStyle = '#dddddd'
+        ctxt.lineWidth = 1
+        ctxt.translate(pLower.offsetFromParentCenter[0], pLower.offsetFromParentCenter[1])
+        ctxt.beginPath()
+        
+        ctxt.moveTo(pLower.pointsInPaintBox[0][0], pLower.pointsInPaintBox[0][1])
+        for (let j=0; j<pLower.pointsInPaintBox.length; j++) {
+            ctxt.lineTo(pLower.pointsInPaintBox[j][0], pLower.pointsInPaintBox[j][1])
+        }
+        for (let j=pUpper.pointsInPaintBox.length - 1; j>=0; j--) {
+            ctxt.lineTo(pUpper.pointsInPaintBox[j][0], pUpper.pointsInPaintBox[j][1])
+        }
+
+        ctxt.fill()
+        ctxt.stroke()
+        ctxt.setTransform(baseTransform)
+    })
+
+    // inner percentile
+    pp2 && pp3 && pp2.forEach((p, ii) => {
+        if (!pp2) throw Error('unexpected')
+        if (!pp3) throw Error('unexpected')
+        const pLower = pp2[ii]
+        const pUpper = pp3[ii]
+
+        ctxt.fillStyle = '#bbbbbb'
+        ctxt.strokeStyle = '#bbbbbb'
+        ctxt.lineWidth = 1
+        ctxt.translate(pLower.offsetFromParentCenter[0], pLower.offsetFromParentCenter[1])
+        ctxt.beginPath()
+        
+        ctxt.moveTo(pLower.pointsInPaintBox[0][0], pLower.pointsInPaintBox[0][1])
+        for (let j=0; j<pLower.pointsInPaintBox.length; j++) {
+            ctxt.lineTo(pLower.pointsInPaintBox[j][0], pLower.pointsInPaintBox[j][1])
+        }
+        for (let j=pUpper.pointsInPaintBox.length - 1; j>=0; j--) {
+            ctxt.lineTo(pUpper.pointsInPaintBox[j][0], pUpper.pointsInPaintBox[j][1])
+        }
+
+        ctxt.fill()
+        ctxt.stroke()
+        ctxt.setTransform(baseTransform)
+    })
+
+    // waveforms
     pixelSpacePaths.forEach((p) => {
         ctxt.strokeStyle = useUnitColors ? p.color : 'black'
         ctxt.lineWidth = waveformWidth
@@ -178,6 +274,10 @@ const WaveformPlot = (props: WaveformProps) => {
         const paths = computePaths(transform, waveforms, electrodes, 'normal', horizontalStretchFactor)
         const pathsLower = computePaths(transform, waveforms, electrodes, 'lower', horizontalStretchFactor)
         const pathsUpper = computePaths(transform, waveforms, electrodes, 'upper', horizontalStretchFactor)
+        const pathsPercentile1 = computePaths(transform, waveforms, electrodes, 'percentile1', horizontalStretchFactor)
+        const pathsPercentile2 = computePaths(transform, waveforms, electrodes, 'percentile2', horizontalStretchFactor)
+        const pathsPercentile3 = computePaths(transform, waveforms, electrodes, 'percentile3', horizontalStretchFactor)
+        const pathsPercentile4 = computePaths(transform, waveforms, electrodes, 'percentile4', horizontalStretchFactor)
         // const pathsLower = waveformLowerPoints ? computePaths(transform, waveformLowerPoints, electrodes, horizontalStretchFactor) : undefined
         // const pathsUpper = waveformUpperPoints ? computePaths(transform, waveformUpperPoints, electrodes, horizontalStretchFactor) : undefined
         const xMargin = layoutMode === 'vertical' ? (width - oneElectrodeWidth)/2 : 0
@@ -186,6 +286,10 @@ const WaveformPlot = (props: WaveformProps) => {
             pixelSpacePaths: paths,
             pixelSpacePathsLower: pathsLower,
             pixelSpacePathsUpper: pathsUpper,
+            pixelSpacePathsPercentile1: pathsPercentile1,
+            pixelSpacePathsPercentile2: pathsPercentile2,
+            pixelSpacePathsPercentile3: pathsPercentile3,
+            pixelSpacePathsPercentile4: pathsPercentile4,
             xMargin: xMargin,
             waveformWidth,
             affineTransform,

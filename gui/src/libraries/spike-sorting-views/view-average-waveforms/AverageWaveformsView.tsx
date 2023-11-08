@@ -68,12 +68,14 @@ const AverageWaveformsView: FunctionComponent<Props> = ({data, width, height}) =
             channelIds: (number | string)[];
             waveform: number[][];
             waveformStdDev?: number[][];
+            waveformPercentiles?: number[][][];
             waveformColor: string;
         }[] = [
             {
                 channelIds: aw.channelIds,
                 waveform: subtractChannelMeans(aw.waveform),
                 waveformStdDev: showWaveformStdev && !showOverlapping ? aw.waveformStdDev : undefined,
+                waveformPercentiles: showWaveformStdev && !showOverlapping ? subtractChannelMeansFromPercentiles(aw.waveformPercentiles, aw.waveform) : undefined,
                 waveformColor: getUnitColor(idToNum(aw.unitId))
             }
         ]
@@ -329,6 +331,19 @@ const subtractChannelMeans = (waveform: number[][]): number[][] => {
         const mean0 = computeMean(W)
         return W.map(a => (a - mean0))
     })
+}
+
+const subtractChannelMeansFromPercentiles = (waveformPercentiles: number[][][], waveform: number[][]): number[][][] => {
+    const ret: number[][][] = []
+    for (let i = 0; i < waveformPercentiles.length; i++) {
+        ret.push(
+            waveformPercentiles[i].map(W => {
+                const mean0 = computeMean(waveform[i])
+                return W.map(a => (a - mean0))
+            })
+        )
+    }
+    return ret
 }
 
 const computeMean = (ary: number[]) => ary.length > 0 ? mean(ary) : 0

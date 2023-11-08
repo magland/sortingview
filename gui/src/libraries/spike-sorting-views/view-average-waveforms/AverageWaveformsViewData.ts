@@ -6,6 +6,7 @@ type AverageWaveformData = {
     channelIds: (number | string)[]
     waveform: number[][]
     waveformStdDev?: number[][]
+    waveformPercentiles?: (number[][])[]
 }
 
 export const isAverageWaveformData = (x: any): x is AverageWaveformData => {
@@ -13,7 +14,8 @@ export const isAverageWaveformData = (x: any): x is AverageWaveformData => {
         unitId: isOneOf([isNumber, isString]),
         channelIds: isArrayOf(isOneOf([isNumber, isString])),
         waveform: () => (true),
-        waveformStdDev: optional(() => (true))
+        waveformStdDev: optional(() => (true)),
+        waveformPercentiles: optional(() => (true))
     }, {allowAdditionalFields: true})
 }
 

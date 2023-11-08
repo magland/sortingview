@@ -1,5 +1,5 @@
 import { Splitter } from "../core-views"
-import { ViewComponentProps } from "libraries/core-view-component-props"
+import { ViewComponentProps } from "../../libraries/core-view-component-props"
 import { FunctionComponent, useMemo } from "react"
 import { computeSizes } from "./BoxLayoutItemView"
 import LayoutItemView from "./LayoutItemView"

@@ -1,6 +1,6 @@
 import { useFileData } from '@figurl/interface';
 import { FunctionComponent, useEffect, useMemo, useState } from 'react';
-import { ViewComponentProps } from 'libraries/core-view-component-props';
+import { ViewComponentProps } from '../../libraries/core-view-component-props';
 
 type Props = {
     figureDataSha1: string // old

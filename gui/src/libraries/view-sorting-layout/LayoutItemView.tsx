@@ -1,4 +1,4 @@
-import { ViewComponentProps } from "libraries/core-view-component-props"
+import { ViewComponentProps } from "../../libraries/core-view-component-props"
 import { FunctionComponent } from "react"
 import BoxLayoutItemView from "./BoxLayoutItemView"
 import IndividualLayoutItemView from "./IndividualLayoutItemView"
