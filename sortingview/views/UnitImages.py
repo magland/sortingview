@@ -1,5 +1,4 @@
 from typing import List, Union
-import matplotlib.pyplot as plt
 from .View import View
 from .Image import _form_data_url
 import kachery_cloud as kcl
