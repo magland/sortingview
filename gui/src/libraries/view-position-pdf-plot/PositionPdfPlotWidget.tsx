@@ -3,7 +3,7 @@ import { DefaultToolbarWidth, TimeScrollView, TimeScrollViewPanel, usePanelDimen
 import { useTimeseriesSelectionInitialization, useTimeRange } from '../timeseries-views'
 import { useFetchCache } from '../core-utils'
 import { FunctionComponent, useCallback, useMemo, useState } from 'react'
-import { TimeseriesLayoutOpts } from 'View'
+import { TimeseriesLayoutOpts } from '../../View'
 
 export type FetchSegmentQuery = {
     type: 'fetchSegment'

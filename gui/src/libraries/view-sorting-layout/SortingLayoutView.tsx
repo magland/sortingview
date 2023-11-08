@@ -1,6 +1,6 @@
 import { getFileData, useUrlState } from '@figurl/interface';
 import { SortingCurationContext, sortingCurationReducer, UnitMetricSelectionContext, unitMetricSelectionReducer, useSelectedUnitIds } from '../spike-sorting-views';
-import { ViewComponentProps } from 'libraries/core-view-component-props';
+import { ViewComponentProps } from '../../libraries/core-view-component-props';
 import { FunctionComponent, useEffect, useReducer } from 'react';
 import LayoutItemView from './LayoutItemView';
 import { SortingLayoutViewData } from './SortingLayoutViewData';

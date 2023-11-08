@@ -1,7 +1,7 @@
 import { FunctionComponent, useMemo } from "react"
-import { MountainLayoutView, MLViewData, MountainLayoutViewData } from "libraries/view-mountain-layout"
+import { MountainLayoutView, MLViewData, MountainLayoutViewData } from "../../libraries/view-mountain-layout"
 import { LayoutItem, SLView } from "./SortingLayoutViewData"
-import { ViewComponentProps } from "libraries/core-view-component-props"
+import { ViewComponentProps } from "../../libraries/core-view-component-props"
 
 type Props = {
     layoutItem: LayoutItem

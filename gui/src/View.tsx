@@ -1,24 +1,24 @@
-import { TiledImageComponent } from 'libraries/component-tiled-image';
-import { CompositeView } from 'libraries/view-composite';
-import { ConsoleView } from 'libraries/view-console';
-import { EpochsView } from 'libraries/view-epochs';
-import { ExperimentalSelector1View } from 'libraries/view-experimental-selector-1';
-import { MountainLayoutView } from 'libraries/view-mountain-layout';
-import { MultiTimeseriesView } from 'libraries/view-multi-timeseries';
-import { PositionPdfPlotView } from 'libraries/view-position-pdf-plot';
-import { PositionPlotView } from 'libraries/view-position-plot';
-import { SortingCurationView } from 'libraries/view-sorting-curation';
-import { SortingLayoutView } from 'libraries/view-sorting-layout';
-import { SortingSelectionView } from 'libraries/view-sorting-selection';
-import { SummaryView } from 'libraries/view-summary';
-import { Test1View } from 'libraries/view-test-1';
+import { TiledImageComponent } from './libraries/component-tiled-image';
+import { CompositeView } from './libraries/view-composite';
+import { ConsoleView } from './libraries/view-console';
+import { EpochsView } from './libraries/view-epochs';
+import { ExperimentalSelector1View } from './libraries/view-experimental-selector-1';
+import { MountainLayoutView } from './libraries/view-mountain-layout';
+import { MultiTimeseriesView } from './libraries/view-multi-timeseries';
+import { PositionPdfPlotView } from './libraries/view-position-pdf-plot';
+import { PositionPlotView } from './libraries/view-position-plot';
+import { SortingCurationView } from './libraries/view-sorting-curation';
+import { SortingLayoutView } from './libraries/view-sorting-layout';
+import { SortingSelectionView } from './libraries/view-sorting-selection';
+import { SummaryView } from './libraries/view-summary';
+import { Test1View } from './libraries/view-test-1';
 import { FunctionComponent, useMemo } from 'react';
-import { isViewData } from 'ViewData';
-import {loadView as loadCoreView} from 'libraries/core-views'
-import {loadView as loadTimeseriesView} from 'libraries/timeseries-views'
-import {default as loadSpikeSortingView} from 'libraries/spike-sorting-views/loadView'
-import {default as loadFranklabView} from 'libraries/franklab-views/loadView'
-import { EphysTracesView } from 'libraries/view-ephys-traces-dev';
+import { isViewData } from './ViewData';
+import {loadView as loadCoreView} from './libraries/core-views'
+import {loadView as loadTimeseriesView} from './libraries/timeseries-views'
+import {default as loadSpikeSortingView} from './libraries/spike-sorting-views/loadView'
+import {default as loadFranklabView} from './libraries/franklab-views/loadView'
+import { EphysTracesView } from './libraries/view-ephys-traces-dev';
 
 export type TimeseriesLayoutOpts = {
     hideToolbar?: boolean
@@ -86,7 +86,7 @@ const View: FunctionComponent<Props> = ({data, width, height, opts}) => {
         }
         else {
             const viewLoaders = [loadCoreView, loadTimeseriesView, loadSpikeSortingView, loadFranklabView]
-            for (let loadView of viewLoaders) {
+            for (const loadView of viewLoaders) {
                 const v = loadView({data, width, height, opts, ViewComponent: View})
                 if (v) return v
             }

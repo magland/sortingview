@@ -24,7 +24,7 @@ const _barInterpreter = (x: number, y: number, scrubberCenterX: number, scrubber
     const xOffset = x - scrubberCenterX
     const yOffset = canvasVMidline - y
     // case 1: click is on the scrubber
-    return norm([xOffset, yOffset], 2) < scrubberRadius
+    return norm([xOffset, yOffset], 2) as number < scrubberRadius
         ? 'scrubber'
         // case 2: not on scrubber but within scrubber's height of bar
         : Math.abs(yOffset) < scrubberRadius

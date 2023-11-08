@@ -1,6 +1,6 @@
 import { Splitter } from '../core-views';
 import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser';
-import { ViewComponentProps } from 'libraries/core-view-component-props';
+import { ViewComponentProps } from '../../libraries/core-view-component-props';
 import { FunctionComponent, useCallback, useReducer } from 'react';
 import Expandable from './components/Expandable/Expandable';
 import MWViewContainer from './MWContainer';

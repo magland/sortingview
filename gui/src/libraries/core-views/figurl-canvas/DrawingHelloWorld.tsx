@@ -140,7 +140,7 @@ const clickEventHandler = (e: React.MouseEvent, pixelSpacePoints: Vec2[]) => {
     const clickPoint: Vec2 = [e.clientX - boundingRect.x, e.clientY - boundingRect.y]
 
     pixelSpacePoints.forEach((pt, ii) => {
-        if (norm([pt[0] - clickPoint[0], pt[1] - clickPoint[1]]) < 3) {
+        if (norm([pt[0] - clickPoint[0], pt[1] - clickPoint[1]]) as number < 3) {
             console.log(`You just clicked point ${ii}!`)
         }
     })
@@ -234,7 +234,7 @@ export const DrawingHelloWorldDragRect = (props: DrawingHelloWorldProps) => {
                 pixelSpacePoints: pixelPoints,
                 bonusParameter: 'We can inspect our own logic to see this will never appear!'
         }})
-        if (wasHandled) {}
+        // if (wasHandled) {}
         // If we wanted to respond to this event (either always or conditionally upon whether the drag canvas did something with it),
         // we would do so here. wasHandled will be true if DragCanvas did a state update, otherwise false.
     }, [pixelPoints])
