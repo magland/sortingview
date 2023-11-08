@@ -39,10 +39,10 @@ class DecodedPositionData:
         y_min: float,
         bin_height: float,
         y_count: int,
-        values: np.array,
-        locations: np.array,
-        frame_bounds: np.array,
-        unique_locations: Union[None, np.array] = None
+        values: np.ndarray,
+        locations: np.ndarray,
+        frame_bounds: np.ndarray,
+        unique_locations: Union[None, np.ndarray] = None
     ) -> None:
         self.x_min = x_min
         self.bin_width = bin_width
@@ -129,16 +129,16 @@ class TrackPositionAnimationV1(View):
         *,
         track_bin_width: float,
         track_bin_height: float,
-        track_bin_ul_corners: np.array,  # 2 x N
+        track_bin_ul_corners: np.ndarray,  # 2 x N
         total_recording_frame_length: float,
         timestamp_start: Union[float, None] = None,
-        timestamps: np.array,  # N
-        positions: np.array,  # 2 x N
+        timestamps: np.ndarray,  # N
+        positions: np.ndarray,  # 2 x N
         x_min: float,
         x_max: float,
         y_min: float,
         y_max: float,
-        head_direction: Union[None, np.array] = None,  # N
+        head_direction: Union[None, np.ndarray] = None,  # N
         decoded_data: Union[None, DecodedPositionData] = None,
         sampling_frequency_hz: Union[None, float] = None,
         **kwargs

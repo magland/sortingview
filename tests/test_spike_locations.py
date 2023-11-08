@@ -3,7 +3,6 @@
 
 import numpy as np
 from typing import List
-import sortingview as sv
 import sortingview.views as vv
 import spikeinterface as si
 import spikeinterface.extractors as se
@@ -11,16 +10,15 @@ import spikeinterface.extractors as se
 
 def main():
     recording, sorting = se.toy_example(num_units=12, num_channels=10, duration=300, seed=0)
+    assert isinstance(recording, si.BaseRecording)
 
-    R = sv.copy_recording_extractor(recording, serialize_dtype='float32')
-    S = sv.copy_sorting_extractor(sorting)
+    view = test_spike_locations(recording=recording, sorting=sorting, hide_unit_selector=False)
 
-    view = test_spike_locations(recording=R, sorting=S, hide_unit_selector=False)
-
-    url = view.url(label='test_spike_locations')
+    url = view.url(label="test_spike_locations")
     print(url)
 
-def test_spike_locations(*, recording: si.BaseRecording, sorting: si.BaseSorting, hide_unit_selector: bool=False):
+
+def test_spike_locations(*, recording: si.BaseRecording, sorting: si.BaseSorting, hide_unit_selector: bool = False):
     channel_locations = recording.get_channel_locations().astype(np.float32)
     xmin = np.min(channel_locations[:, 0])
     xmax = np.max(channel_locations[:, 0])
@@ -46,26 +44,31 @@ def test_spike_locations(*, recording: si.BaseRecording, sorting: si.BaseSorting
     items: List[vv.SpikeLocationsItem] = []
     for unit_id in sorting.get_unit_ids():
         spike_times_sec = np.array(sorting.get_unit_spike_train(unit_id=unit_id)) / sorting.get_sampling_frequency()
-        center_x = rng.uniform(xmin, xmax) # fake center for unit
-        center_y = rng.uniform(ymin, ymax) # fake center for unit
+        center_x = rng.uniform(xmin, xmax)  # fake center for unit
+        center_y = rng.uniform(ymin, ymax)  # fake center for unit
         items.append(
             vv.SpikeLocationsItem(
                 unit_id=unit_id,
                 spike_times_sec=spike_times_sec.astype(np.float32),
-                x_locations=rng.normal(center_x, 6, spike_times_sec.shape).astype(np.float32), # fake locations
-                y_locations=rng.normal(center_y, 6, spike_times_sec.shape).astype(np.float32)  # fake locations
+                x_locations=rng.normal(center_x, 6, spike_times_sec.shape).astype(np.float32),  # fake locations
+                y_locations=rng.normal(center_y, 6, spike_times_sec.shape).astype(np.float32),  # fake locations
             )
         )
+
+    channel_locations_2 = {}
+    for ii, channel_id in enumerate(recording.channel_ids):
+        channel_locations_2[str(channel_id)] = recording.get_channel_locations()[ii, :].astype(np.float32)
 
     view = vv.SpikeLocations(
         units=items,
         hide_unit_selector=hide_unit_selector,
-        x_range=[xmin, xmax],
-        y_range=[ymin, ymax],
-        channel_locations=channel_locations,
-        disable_auto_rotate=True
+        x_range=(float(xmin), float(xmax)),
+        y_range=(float(ymin), float(ymax)),
+        channel_locations=channel_locations_2,
+        disable_auto_rotate=True,
     )
     return view
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

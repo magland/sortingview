@@ -3,7 +3,7 @@ import numpy as np
 from .Figure import Figure
 
 
-def create_spike_raster_plot(*, times: np.array, labels: np.array, label: str):
+def create_spike_raster_plot(*, times: np.ndarray, labels: np.ndarray, label: str):
     unit_ids = np.sort(np.unique(labels))
     plots = []
     for unit_id in unit_ids:

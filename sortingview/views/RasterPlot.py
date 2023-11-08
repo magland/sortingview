@@ -8,7 +8,7 @@ class RasterPlotItem:
     Spike train for a single unit in a raster plot
     """
 
-    def __init__(self, unit_id: Union[int, str], spike_times_sec: np.array) -> None:
+    def __init__(self, unit_id: Union[int, str], spike_times_sec: np.ndarray) -> None:
         self.unit_id = unit_id
         self.spike_times_sec = spike_times_sec
 

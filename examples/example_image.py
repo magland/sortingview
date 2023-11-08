@@ -6,14 +6,14 @@ def main():
     kcl.use_sandbox()
     view = example_image()
 
-    url = view.url(label='Image example')
+    url = view.url(label="Image example")
     print(url)
 
+
 def example_image():
-    view = vv.Image(
-        image_path='./figurl192.png'
-    )
+    view = vv.Image(image_path="./figurl192.png")
     return view
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

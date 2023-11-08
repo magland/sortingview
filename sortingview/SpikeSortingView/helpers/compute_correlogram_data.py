@@ -1,7 +1,8 @@
+from typing import Optional
 import numpy as np
 
 
-def compute_correlogram_data(*, times1: np.array, times2: np.array, sampling_frequency: float, window_size_msec: float, bin_size_msec: float):
+def compute_correlogram_data(*, times1: np.ndarray, times2: Optional[np.ndarray], sampling_frequency: float, window_size_msec: float, bin_size_msec: float):
     num_bins = int(window_size_msec / bin_size_msec)
     if num_bins % 2 == 0:
         num_bins = num_bins - 1  # odd number of bins

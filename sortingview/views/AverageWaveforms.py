@@ -13,9 +13,9 @@ class AverageWaveformItem:
         The unit ID
     channel_ids: list of int or str
         The channel IDs
-    waveform: np.array
+    waveform: np.ndarray
         The average waveform (or template), (num_samples, num_channels)
-    waveform_std_dev: np.array or None, default: None
+    waveform_std_dev: np.ndarray or None, default: None
         The standard deviation of the template for each sample, (num_samples, num_channels)
     waveform_percentiles: list of np.array or None, default: None
         The percentiles to use for the shading. This argument is mutually exclusive with waveform_std_dev.
@@ -29,9 +29,9 @@ class AverageWaveformItem:
         self,
         unit_id: Union[int, str],
         channel_ids: List[Union[int, str]],
-        waveform: np.array,
-        waveform_std_dev: Union[None, np.array] = None,
-        waveform_percentiles: Union[None, List[np.array]] = None,
+        waveform: np.ndarray,
+        waveform_std_dev: Union[None, np.ndarray] = None,
+        waveform_percentiles: Union[None, List[np.ndarray]] = None,
     ) -> None:
         self.unit_id = unit_id
         self.channel_ids = channel_ids

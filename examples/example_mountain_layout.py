@@ -16,13 +16,13 @@ from example_unit_similarity_matrix import example_unit_unit_similarity_matrix
 def main():
     kcl.use_sandbox()
     R, S = se.toy_example(num_units=12, duration=300, seed=0, num_segments=1)
+    assert isinstance(R, si.BaseRecording)
 
     view = example_mountain_layout(recording=R, sorting=S)
 
-    url = view.url(
-        label='Mountain layout example'
-    )
+    url = view.url(label="Mountain layout example")
     print(url)
+
 
 def example_mountain_layout(recording: si.BaseRecording, sorting: si.BaseSorting, height=800):
     R = recording
@@ -38,36 +38,17 @@ def example_mountain_layout(recording: si.BaseRecording, sorting: si.BaseSorting
     view = vv.MountainLayout(
         height=height,
         items=[
-            vv.MountainLayoutItem(
-                label='Units',
-                view=v_units_table
-            ),
-            vv.MountainLayoutItem(
-                label='Raster plot',
-                view=v_raster_plot
-            ),
-            vv.MountainLayoutItem(
-                label='Autocorrelograms',
-                view=v_autocorrelograms
-            ),
-            vv.MountainLayoutItem(
-                label='Avg. waveforms',
-                view=v_average_waveforms
-            ),
-            vv.MountainLayoutItem(
-                label='Cross correlograms',
-                view=v_cross_correlograms
-            ),
-            vv.MountainLayoutItem(
-                label='Unit similarity matrix',
-                view=v_unit_similarity_matrix,
-                is_control=True,
-                control_height=300
-            )
-        ]
+            vv.MountainLayoutItem(label="Units", view=v_units_table),
+            vv.MountainLayoutItem(label="Raster plot", view=v_raster_plot),
+            vv.MountainLayoutItem(label="Autocorrelograms", view=v_autocorrelograms),
+            vv.MountainLayoutItem(label="Avg. waveforms", view=v_average_waveforms),
+            vv.MountainLayoutItem(label="Cross correlograms", view=v_cross_correlograms),
+            vv.MountainLayoutItem(label="Unit similarity matrix", view=v_unit_similarity_matrix, is_control=True, control_height=300),
+        ],
     )
 
     return view
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

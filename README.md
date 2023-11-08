@@ -35,10 +35,6 @@ SortingView widgets can be viewed in any of the following modes:
 
 We are working on a tight integration between SortingView and [SpikeInterface](https://spikeinterface.readthedocs.io/en/latest/).
 
-## Frank lab usage
-
-See [franklab_usage](./franklab_usage.md)
-
 ## Environment
 
 You can use environment variables to control the storage/configuration directory used by kachery-cloud, the project ID used for storing data in the cloud, and the options for creating figures.

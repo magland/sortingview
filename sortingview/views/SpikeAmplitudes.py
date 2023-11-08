@@ -8,7 +8,7 @@ class SpikeAmplitudesItem:
     Spike amplitudes for a single unit
     """
 
-    def __init__(self, unit_id: Union[int, str], spike_times_sec: np.array, spike_amplitudes: np.array) -> None:
+    def __init__(self, unit_id: Union[int, str], spike_times_sec: np.ndarray, spike_amplitudes: np.ndarray) -> None:
         self.unit_id = unit_id
         self.spike_times_sec = spike_times_sec
         self.spike_amplitudes = spike_amplitudes

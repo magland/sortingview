@@ -14,32 +14,23 @@ def main():
     _, sorting = se.toy_example(num_units=12, duration=300, seed=0, num_segments=1)
 
     view = example_cross_correlograms(sorting=sorting)
-    url = view.url(label='Cross correlograms example')
+    url = view.url(label="Cross correlograms example")
     print(url)
 
-def example_cross_correlograms(*, sorting: si.BaseSorting, hide_unit_selector: bool=False, height=500):
+
+def example_cross_correlograms(*, sorting: si.BaseSorting, hide_unit_selector: bool = False, height=500):
     cross_correlogram_items: List[vv.CrossCorrelogramItem] = []
     for unit_id1 in sorting.get_unit_ids():
         for unit_id2 in sorting.get_unit_ids():
             if unit_id1 != unit_id2 + 1:
                 a = compute_correlogram_data(sorting=sorting, unit_id1=unit_id1, unit_id2=unit_id2, window_size_msec=50, bin_size_msec=1)
-                bin_edges_sec = a['bin_edges_sec']
-                bin_counts = a['bin_counts']
-                cross_correlogram_items.append(
-                    vv.CrossCorrelogramItem(
-                        unit_id1 = unit_id1,
-                        unit_id2 = unit_id2,
-                        bin_edges_sec = bin_edges_sec,
-                        bin_counts = bin_counts
-                    )
-                )
+                bin_edges_sec = a["bin_edges_sec"]
+                bin_counts = a["bin_counts"]
+                cross_correlogram_items.append(vv.CrossCorrelogramItem(unit_id1=unit_id1, unit_id2=unit_id2, bin_edges_sec=bin_edges_sec, bin_counts=bin_counts))
 
-    view = vv.CrossCorrelograms(
-        cross_correlograms=cross_correlogram_items,
-        hide_unit_selector=hide_unit_selector,
-        height=height
-    )
+    view = vv.CrossCorrelograms(cross_correlograms=cross_correlogram_items, hide_unit_selector=hide_unit_selector, height=height)
     return view
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

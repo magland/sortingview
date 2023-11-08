@@ -8,7 +8,7 @@ class AutocorrelogramItem:
     Single autocorrelogram item (single box)
     """
 
-    def __init__(self, unit_id: Union[int, str], bin_edges_sec: Union[np.array, List[float]], bin_counts: Union[np.array, List[float]]) -> None:
+    def __init__(self, unit_id: Union[int, str], bin_edges_sec: Union[np.ndarray, List[float]], bin_counts: Union[np.ndarray, List[float]]) -> None:
         self.unit_id = unit_id
         self.bin_edges_sec = bin_edges_sec
         self.bin_counts = bin_counts

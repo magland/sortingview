@@ -1,5 +1,5 @@
 import numpy as np
-from typing import List, Union
+from typing import List, Union, Dict, Any
 from .View import View
 
 
@@ -44,7 +44,7 @@ class TimeseriesGraph(View):
         self._hide_x_gridlines = hide_x_gridlines
         self._hide_y_gridlines = hide_y_gridlines
 
-    def add_line_series(self, *, name: str, t: np.array, y: np.array, color: str, width: Union[None, int] = None, dash: Union[None, List[int]] = None):
+    def add_line_series(self, *, name: str, t: np.ndarray, y: np.ndarray, color: str, width: Union[None, int] = None, dash: Union[None, List[int]] = None):
         # allow float64 for time array
         t = self._handle_time_offset_t(t)
 
@@ -53,7 +53,7 @@ class TimeseriesGraph(View):
         if y.dtype == np.float64:
             raise Exception("Cannot handle float64 datatype for y parameter in add_line_series")
 
-        attributes = {"color": color}
+        attributes: Dict[str, Any] = {"color": color}
         if width is not None:
             attributes["width"] = width
         if dash is not None:
@@ -61,7 +61,7 @@ class TimeseriesGraph(View):
         self._add_series(type="line", name=name, t=t, y=y, attributes=attributes)
         return self
 
-    def add_marker_series(self, *, name: str, t: np.array, y: np.array, color: str, radius: Union[None, int] = None, shape: Union[None, str] = None):
+    def add_marker_series(self, *, name: str, t: np.ndarray, y: np.ndarray, color: str, radius: Union[None, int] = None, shape: Union[None, str] = None):
         # allow float64 for time array
         t = self._handle_time_offset_t(t)
 
@@ -69,7 +69,7 @@ class TimeseriesGraph(View):
             raise Exception("Cannot handle float64 datatype for t parameter in add_marker_series")
         if y.dtype == np.float64:
             raise Exception("Cannot handle float64 datatype for y parameter in add_marker_series")
-        attributes = {"color": color}
+        attributes: Dict[str, Any] = {"color": color}
         if radius is not None:
             attributes["radius"] = radius
         if shape is not None:
@@ -81,8 +81,8 @@ class TimeseriesGraph(View):
         self,
         *,
         name: str,
-        t_start: np.array,
-        t_end: np.array,
+        t_start: np.ndarray,
+        t_end: np.ndarray,
         color: str,
     ):
         # allow float64 for time array
@@ -139,7 +139,7 @@ class TimeseriesGraph(View):
         self.add_dataset(ds)
         self.add_series(s)
 
-    def _handle_time_offset_t(self, t: np.array):
+    def _handle_time_offset_t(self, t: np.ndarray):
         if t.dtype == np.float64:
             # We have a float64, let's see if we have a time offset
             if self._time_offset is None:

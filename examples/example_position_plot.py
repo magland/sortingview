@@ -10,8 +10,9 @@ def main():
     kcl.use_sandbox()
     view = example_position_plot()
 
-    url = view.url(label='Position plot example')
+    url = view.url(label="Position plot example")
     print(url)
+
 
 def example_position_plot(*, height=600):
     timestamps = np.arange(1000, 2000, dtype=np.float64)
@@ -20,13 +21,9 @@ def example_position_plot(*, height=600):
     for i in range(n):
         positions[i, 0] = i + 3
         positions[i, 1] = timestamps[i] * np.cos(timestamps[i] * 2 * np.pi / 30)
-    view = vv.PositionPlot(
-        timestamps=timestamps,
-        positions=positions.astype(np.float32),
-        dimension_labels=['x', 'y'],
-        height=height
-    )
+    view = vv.PositionPlot(timestamps=timestamps, positions=positions.astype(np.float32), dimension_labels=["x", "y"], height=height)
     return view
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

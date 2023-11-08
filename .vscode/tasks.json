@@ -34,7 +34,7 @@
         {
             "label": "Black formatting",
             "type": "shell",
-            "command": "black -l 180 sortingview",
+            "command": "black -l 180 sortingview && black -l 180 tests && black -l 180 examples",
             "presentation": {
                 "clear": true
             },

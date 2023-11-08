@@ -11,7 +11,7 @@ def autocorrelograms_view(self, *, unit_ids: List[int], label: Union[str, None] 
     if label is None:
         label = "Autocorrelograms"
 
-    autocorrelograms: vv.AutocorrelogramItem = []
+    autocorrelograms: List[vv.AutocorrelogramItem] = []
     for unit_id in unit_ids:
         times = self.get_unit_spike_train(unit_id=unit_id)
         a = compute_correlogram_data(times1=times, times2=None, sampling_frequency=self.sampling_frequency, window_size_msec=50, bin_size_msec=1)

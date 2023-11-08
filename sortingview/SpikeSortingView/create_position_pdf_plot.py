@@ -1,4 +1,4 @@
-from typing import Any, List, Tuple, Union
+from typing import Union
 import numpy as np
 from .Figure import Figure
 
@@ -25,7 +25,7 @@ def create_live_position_pdf_plot(
     segment_size: int,
     multiscale_factor: int,
     label: str,
-    linear_positions: Union[np.array, None] = None
+    linear_positions: Union[np.ndarray, None] = None
 ):
     data = {
         "type": "LivePositionPdfPlot",
@@ -42,7 +42,7 @@ def create_live_position_pdf_plot(
     return Figure(data=data, label=label)
 
 
-# def _get_subsample_inds(timestamps: np.array, sampling_frequency: float):
+# def _get_subsample_inds(timestamps: np.ndarray, sampling_frequency: float):
 #     dt = 1 / sampling_frequency
 #     ret = []
 #     last_t = timestamps[0] - dt * 2

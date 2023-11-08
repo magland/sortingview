@@ -7,8 +7,6 @@ import hashlib
 import spikeinterface as si
 import kachery_cloud as kcl
 import spikeinterface.preprocessing as spre
-from ..load_extractors.get_recording_object import get_recording_object
-from ..load_extractors.get_sorting_object import get_sorting_object
 
 
 def prepare_spikesortingview_data(
@@ -16,34 +14,11 @@ def prepare_spikesortingview_data(
     recording: si.BaseRecording,
     sorting: si.BaseSorting,
     segment_duration_sec: float,
-    snippet_len: Tuple[int],
+    snippet_len: Tuple[int, int],
     max_num_snippets_per_segment: Union[int, None],
     channel_neighborhood_size: int,
-    bandpass_filter: bool = False,
-    use_cache: bool = True,
+    bandpass_filter: bool = False
 ) -> str:
-    if use_cache:
-        recording_object = get_recording_object(recording)
-        sorting_object = get_sorting_object(sorting)
-        cache_key_obj = {
-            "type": "spikesortingview_data",
-            "version": 2,
-            "recording_object": recording_object,
-            "sorting_object": sorting_object,
-            "segment_duration_sec": segment_duration_sec,
-            "snippet_len": list(snippet_len),
-            "max_num_snippets_per_segment": max_num_snippets_per_segment,
-            "channel_neighborhood_size": channel_neighborhood_size,
-        }
-        if bandpass_filter:
-            cache_key_obj["bandpass_filter"] = bandpass_filter
-        cache_key = _sha1_of_object(cache_key_obj)
-        uri = kcl.get_mutable_local(f"@spikesortingview_data/{cache_key}")
-        if uri is not None and kcl.load_file(uri) is not None:
-            return uri
-    else:
-        recording_object = {}
-        sorting_object = {}
     if bandpass_filter:
         recording = spre.bandpass_filter(recording)
     unit_ids = np.array(sorting.get_unit_ids()).astype(np.int32)
@@ -66,8 +41,6 @@ def prepare_spikesortingview_data(
             f.create_dataset("snippet_len", data=np.array([snippet_len[0], snippet_len[1]]).astype(np.int32))
             f.create_dataset("max_num_snippets_per_segment", data=np.array([max_num_snippets_per_segment]).astype(np.int32))
             f.create_dataset("channel_neighborhood_size", data=np.array([channel_neighborhood_size]).astype(np.int32))
-            f.attrs["recording_object"] = json.dumps(recording_object)
-            f.attrs["sorting_object"] = json.dumps(sorting_object)
 
             # first get peak channels and channel neighborhoods
             unit_peak_channel_ids = {}
@@ -137,7 +110,7 @@ def prepare_spikesortingview_data(
                         f.create_dataset(f"segment/{iseg}/unit/{unit_id}/spike_amplitudes", data=spike_amplitudes)
                     else:
                         spike_amplitudes = np.array([], dtype=np.int32)
-                    if len(spike_train) > max_num_snippets_per_segment:
+                    if max_num_snippets_per_segment is not None and len(spike_train) > max_num_snippets_per_segment:
                         subsampled_spike_train = subsample(spike_train, max_num_snippets_per_segment)
                     else:
                         subsampled_spike_train = spike_train
@@ -156,12 +129,10 @@ def prepare_spikesortingview_data(
                     index = index + num
                     f.create_dataset(f"segment/{iseg}/unit/{unit_id}/subsampled_spike_snippets", data=spike_snippets)
         uri = kcl.store_file_local(output_file_name)
-        if use_cache:
-            kcl.set_mutable_local(f"@spikesortingview_data/{cache_key}", uri)
         return uri
 
 
-def get_channel_neighborhood(*, channel_ids: np.array, channel_locations: np.ndarray, peak_channel_id: int, channel_neighborhood_size: int):
+def get_channel_neighborhood(*, channel_ids: np.ndarray, channel_locations: np.ndarray, peak_channel_id: int, channel_neighborhood_size: int):
     channel_locations_by_id = {}
     for ii, channel_id in enumerate(channel_ids):
         channel_locations_by_id[channel_id] = channel_locations[ii]
@@ -178,14 +149,14 @@ def get_channel_neighborhood(*, channel_ids: np.array, channel_locations: np.nda
     return neighborhood_channel_ids
 
 
-def subsample(x: np.array, num: int):
+def subsample(x: np.ndarray, num: int):
     if num >= len(x):
         return x
     stride = math.floor(len(x) / num)
     return x[0 : stride * num : stride]
 
 
-def extract_spike_snippets(*, traces: np.ndarray, times: np.array, snippet_len: Tuple[int]):
+def extract_spike_snippets(*, traces: np.ndarray, times: np.ndarray, snippet_len: Tuple[int, int]):
     a = snippet_len[0]
     b = snippet_len[1]
     T = a + b
