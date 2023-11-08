@@ -1,3 +1,6 @@
+# 11/8/23
+# https://figurl.org/f?v=gs://figurl/spikesortingview-11dev&d=sha1://675d1a91d833f4ba26019be5c48aa91f1f35c903&label=Average%20waveforms%20example
+
 # 8/31/22
 # https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://ad6178659260bf36733a8038acbc82d2020fa4ae&label=Average%20waveforms%20example
 
@@ -12,6 +15,7 @@ import kachery_cloud as kcl
 def main():
     kcl.use_sandbox()
     recording, sorting = se.toy_example(num_units=12, duration=300, seed=0, num_segments=1, average_peak_amplitude=-20)
+    assert isinstance(recording, si.BaseRecording)
 
     view = example_average_waveforms(recording=recording, sorting=sorting)
 
@@ -45,7 +49,7 @@ def example_average_waveforms(*, recording: si.BaseRecording, sorting: si.BaseSo
     )
     return view
 
-def extract_snippets(*, traces: np.ndarray, times: np.array, snippet_len: Tuple[int]):
+def extract_snippets(*, traces: np.ndarray, times: np.ndarray, snippet_len: Tuple[int, int]):
     N = traces.shape[0]
     M = traces.shape[1]
     T = snippet_len[0] + snippet_len[1]
