@@ -11,7 +11,7 @@ jobs:
     - name: Install
       run: pip install .
     - name: Install pyright
-      run: pip install pyright
+      run: pip install --upgrade pyright
     - name: Install other
       run: pip install pyvips
     - name: Run pyright

@@ -59,11 +59,13 @@ def prepare_spikesortingview_data(
                 start_frame_with_padding = max(start_frame - snippet_len[0], 0)
                 end_frame_with_padding = min(end_frame + snippet_len[1], num_frames)
                 traces_with_padding = recording.get_traces(start_frame=start_frame_with_padding, end_frame=end_frame_with_padding)
+                assert isinstance(traces_with_padding, np.ndarray)
                 for unit_id in unit_ids:
                     if str(unit_id) not in unit_peak_channel_ids:
                         spike_train = sorting.get_unit_spike_train(unit_id=unit_id, start_frame=start_frame, end_frame=end_frame)
+                        assert isinstance(spike_train, np.ndarray)
                         if len(spike_train) > 0:
-                            values = traces_with_padding[spike_train - start_frame_with_padding, :]
+                            values = traces_with_padding[spike_train.astype(np.int32) - start_frame_with_padding, :]
                             avg_value = np.mean(values, axis=0)
                             peak_channel_ind = np.argmax(np.abs(avg_value))
                             peak_channel_id = channel_ids[peak_channel_ind]
