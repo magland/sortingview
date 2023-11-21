@@ -78,7 +78,19 @@ const UnitsTableView: FunctionComponent<Props> = ({data, width, height}) => {
                 columnName: c.key,
                 label: c.label,
                 tooltip: c.label,
-                sort: (a: any, b: any) => (a - b),
+                sort: (
+                    c.dtype === 'str' ? (
+                        (a: any, b: any) => (a < b ? -1 : a > b ? 1 : 0)
+                    ) : c.dtype === 'int' ? (
+                        (a: any, b: any) => (a - b)
+                    ) : c.dtype == 'bool' ? (
+                        (a: any, b: any) => (a ? 1 : 0) - (b ? 1 : 0)
+                    ) : c.dtype === 'float' ? (
+                        (a: any, b: any) => (a - b)
+                    ) : (
+                        (a: any, b: any) => (a - b)
+                    )
+                ),
                 dataElement: (d: any) => <span>{d}</span>,
                 calculating: false
             })
