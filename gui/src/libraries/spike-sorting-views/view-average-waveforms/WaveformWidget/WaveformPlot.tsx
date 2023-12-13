@@ -78,7 +78,7 @@ const computePaths = (
 
     const ret: PixelSpacePath[] = []
     electrodes.forEach((e, ii) => {
-        for (let W of waveforms) {
+        for (const W of waveforms) {
             const jj = W.electrodeIndices.indexOf(ii)
             if (jj >= 0) {
                 let ww: number[] | undefined
@@ -189,7 +189,7 @@ const paint = (ctxt: CanvasRenderingContext2D, props: PaintProps) => {
     }
 
     // outer percentile
-    pp1 && pp4 && pp1.forEach((p, ii) => {
+    pp1 && pp1.length > 0 && pp4 && pp4.length > 0 && pp1.forEach((p, ii) => {
         if (!pp1) throw Error('unexpected')
         if (!pp4) throw Error('unexpected')
         const pLower = pp1[ii]
@@ -200,7 +200,7 @@ const paint = (ctxt: CanvasRenderingContext2D, props: PaintProps) => {
         ctxt.lineWidth = 1
         ctxt.translate(pLower.offsetFromParentCenter[0], pLower.offsetFromParentCenter[1])
         ctxt.beginPath()
-        
+
         ctxt.moveTo(pLower.pointsInPaintBox[0][0], pLower.pointsInPaintBox[0][1])
         for (let j=0; j<pLower.pointsInPaintBox.length; j++) {
             ctxt.lineTo(pLower.pointsInPaintBox[j][0], pLower.pointsInPaintBox[j][1])
@@ -215,7 +215,7 @@ const paint = (ctxt: CanvasRenderingContext2D, props: PaintProps) => {
     })
 
     // inner percentile
-    pp2 && pp3 && pp2.forEach((p, ii) => {
+    pp2 && pp2.length > 0 && pp3 && pp3.length > 0 && pp2.forEach((p, ii) => {
         if (!pp2) throw Error('unexpected')
         if (!pp3) throw Error('unexpected')
         const pLower = pp2[ii]
