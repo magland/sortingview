@@ -274,10 +274,14 @@ const WaveformPlot = (props: WaveformProps) => {
         const paths = computePaths(transform, waveforms, electrodes, 'normal', horizontalStretchFactor)
         const pathsLower = computePaths(transform, waveforms, electrodes, 'lower', horizontalStretchFactor)
         const pathsUpper = computePaths(transform, waveforms, electrodes, 'upper', horizontalStretchFactor)
-        const pathsPercentile1 = computePaths(transform, waveforms, electrodes, 'percentile1', horizontalStretchFactor)
-        const pathsPercentile2 = computePaths(transform, waveforms, electrodes, 'percentile2', horizontalStretchFactor)
-        const pathsPercentile3 = computePaths(transform, waveforms, electrodes, 'percentile3', horizontalStretchFactor)
-        const pathsPercentile4 = computePaths(transform, waveforms, electrodes, 'percentile4', horizontalStretchFactor)
+        let pathsPercentile1: PixelSpacePath[] | undefined = computePaths(transform, waveforms, electrodes, 'percentile1', horizontalStretchFactor)
+        let pathsPercentile2: PixelSpacePath[] | undefined = computePaths(transform, waveforms, electrodes, 'percentile2', horizontalStretchFactor)
+        let pathsPercentile3: PixelSpacePath[] | undefined = computePaths(transform, waveforms, electrodes, 'percentile3', horizontalStretchFactor)
+        let pathsPercentile4: PixelSpacePath[] | undefined = computePaths(transform, waveforms, electrodes, 'percentile4', horizontalStretchFactor)
+        if (pathsPercentile1.length === 0) pathsPercentile1 = undefined
+        if (pathsPercentile2.length === 0) pathsPercentile2 = undefined
+        if (pathsPercentile3.length === 0) pathsPercentile3 = undefined
+        if (pathsPercentile4.length === 0) pathsPercentile4 = undefined
         // const pathsLower = waveformLowerPoints ? computePaths(transform, waveformLowerPoints, electrodes, horizontalStretchFactor) : undefined
         // const pathsUpper = waveformUpperPoints ? computePaths(transform, waveformUpperPoints, electrodes, horizontalStretchFactor) : undefined
         const xMargin = layoutMode === 'vertical' ? (width - oneElectrodeWidth)/2 : 0

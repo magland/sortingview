@@ -57,7 +57,7 @@ const AverageWaveformPlot: FunctionComponent<AverageWaveformPlotProps> = ({allCh
                 base: unit.waveformColor
             }
             const electrodeIndices = []
-            for (let id of unit.channelIds) {
+            for (const id of unit.channelIds) {
                 electrodeIndices.push(electrodes.map(e => (e.id)).indexOf(id))
             }
             return {
