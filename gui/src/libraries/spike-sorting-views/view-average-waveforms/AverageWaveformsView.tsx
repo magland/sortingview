@@ -337,8 +337,8 @@ const subtractChannelMeansFromPercentiles = (waveformPercentiles: number[][][], 
     const ret: number[][][] = []
     for (let i = 0; i < waveformPercentiles.length; i++) {
         ret.push(
-            waveformPercentiles[i].map(W => {
-                const mean0 = computeMean(waveform[i])
+            waveformPercentiles[i].map((W, jj) => {
+                const mean0 = computeMean(waveform[jj])
                 return W.map(a => (a - mean0))
             })
         )
