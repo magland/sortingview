@@ -1,6 +1,6 @@
 import { randomAlphaString } from '../../core-utils';
 import { Hyperlink } from '../../core-views';
-import { getFileData, storeFileData, storeGithubFileData, useSignedIn } from "@figurl/interface";
+import { getFileData, storeFileData, storeGithubFileData, useSignedIn } from "@fi-sci/figurl-interface";
 import { Button } from "@material-ui/core";
 import { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import EditGithubUriControl from './EditGithubUriControl';
@@ -128,7 +128,7 @@ const SaveControl: FunctionComponent<Props> = ({fallbackUri, uri, setUri, object
 	useEffect(() => {
 		if (!first.current) return
 		if (uri) {
-			getFileData(uri, () => {}).then((x) => {
+			getFileData(uri, 'json-deserialized', () => {}).then((x) => {
 				if (!x) {
 					console.warn('Empty state')
 					return
@@ -140,7 +140,7 @@ const SaveControl: FunctionComponent<Props> = ({fallbackUri, uri, setUri, object
 				})
 			}).catch((err: Error) => {
 				if (fallbackUri) {
-					getFileData(fallbackUri, () => {}).then((y) => {
+					getFileData(fallbackUri, 'json-deserialized', () => {}).then((y) => {
 						if (!y) {
 							console.warn('Empty state 2')
 							return
@@ -297,8 +297,8 @@ const SaveControl: FunctionComponent<Props> = ({fallbackUri, uri, setUri, object
 }
 
 // Thanks: https://stackoverflow.com/questions/16167581/sort-object-properties-and-json-stringify
-export const JSONStringifyDeterministic = ( obj: Object, space: string | number | undefined =undefined ) => {
-    var allKeys: string[] = [];
+export const JSONStringifyDeterministic = ( obj: object, space: string | number | undefined =undefined ) => {
+    const allKeys: string[] = [];
     JSON.stringify( obj, function( key, value ){ allKeys.push( key ); return value; } )
     allKeys.sort();
     return JSON.stringify( obj, allKeys, space );
@@ -306,7 +306,7 @@ export const JSONStringifyDeterministic = ( obj: Object, space: string | number 
 
 // Thanks: https://stackoverflow.com/questions/3665115/how-to-create-a-file-in-memory-for-user-to-download-but-not-through-server
 function downloadTextFile(filename: string, text: string) {
-	var element = document.createElement('a');
+	const element = document.createElement('a');
 	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
 	element.setAttribute('download', filename);
   

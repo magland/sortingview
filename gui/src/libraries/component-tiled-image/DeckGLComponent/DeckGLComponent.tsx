@@ -5,7 +5,7 @@ import { load } from '@loaders.gl/core';
 import { ImageLoader } from '@loaders.gl/images';
 import { clamp } from '@math.gl/core';
 import { COORDINATE_SYSTEM, OrthographicView } from 'deck.gl';
-import { getFileDataUrl } from '@figurl/interface';
+import { getFileDataUrl } from '@fi-sci/figurl-interface';
 import React, { FunctionComponent, useMemo } from 'react';
 
 
@@ -76,7 +76,7 @@ const DeckGLComponent: FunctionComponent<Props> = ({layers, layerIndex}) => {
                 renderSubLayers: (props: {tile: any, data: any}) => {
                     const {
                         bbox: {left, bottom, right, top}
-                    } = props.tile;
+                    } = props.tile as any;
                     // const {width, height} = dimensions;
                     return new BitmapLayer(props, {
                     data: null,

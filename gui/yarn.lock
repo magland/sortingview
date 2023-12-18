@@ -1673,21 +1673,17 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.53.0.tgz#bea56f2ed2b5baea164348ff4d5a879f6f81f20d"
   integrity sha512-Kn7K8dx/5U6+cT1yEhpX1w4PCSg0M+XyRILPgvwcEBjerFWCwQj5sbr3/VmxqV0JGHCBCzyd6LxypEuehypY1w==
 
-"@figurl/core-utils@^0.1":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@figurl/core-utils/-/core-utils-0.1.2.tgz#759f3062967cdcaceed2c05e18d79cffa8c4e296"
-  integrity sha512-D8R0KuQlQfeHdKfmlV1Np6T/YBr3K3Wb3LDd69nfAXy9jldSSpwLajPTLNNGwHTDCbcOiiueHYLrZ3zBRENEbA==
+"@fi-sci/figurl-interface@^0.3.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@fi-sci/figurl-interface/-/figurl-interface-0.1.0.tgz#719889a6e04a73f017bb5b62ddd33e765b48ece3"
+  integrity sha512-KdTOQ5+FoRDyv2OpZeIJv+8lKG7wAX5LWP9KdsfWVvM3cGNMXoG3SYbwVJTJEBpxF3F5Hk80cgOyMOZ6GbMJZA==
   dependencies:
-    chroma-js "^2.4.2"
-    object-hash "^3.0.0"
+    "@fi-sci/misc" "~0.0.7"
 
-"@figurl/interface@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@figurl/interface/-/interface-0.3.0.tgz#61e960d9bb2a9ccfa51e707e99ed4fd82d536721"
-  integrity sha512-dg0XOIZ+82j8to2ExPTM5yEis4bwzcP2kfHRxlQkwintD0KA+ZM3OvKgIbpTHriJPjgt/ET4XKuF2BE5o8Z2jQ==
-  dependencies:
-    "@figurl/core-utils" "^0.1"
-    "@types/node" "^18.7.18"
+"@fi-sci/misc@~0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@fi-sci/misc/-/misc-0.0.7.tgz#b1b6b0d6715acf3fce999bdcf152e6ce56c4c8ef"
+  integrity sha512-sREQA51xk/nSeQVAdd7lfF0aBWdoM2kMWECl11HjGccQSBCG95ZeK5199tNYb/NfGWEBTF90FZZ6xIwM146Xdg==
 
 "@floating-ui/core@^1.4.2":
   version "1.5.0"
@@ -3056,13 +3052,6 @@
   version "16.18.61"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-16.18.61.tgz#5ea47e3018348bf3bbbe646b396ba5e720310be1"
   integrity sha512-k0N7BqGhJoJzdh6MuQg1V1ragJiXTh8VUBAZTWjJ9cUq23SG0F0xavOwZbhiP4J3y20xd6jxKx+xNUhkMAi76Q==
-
-"@types/node@^18.7.18":
-  version "18.18.9"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.18.9.tgz#5527ea1832db3bba8eb8023ce8497b7d3f299592"
-  integrity sha512-0f5klcuImLnG4Qreu9hPj/rEfFq6YRc5n2mAjSsH+ec/mJL+3voBH0+8T7o8RpFjH7ovc+TRsL/c7OYIQsPTfQ==
-  dependencies:
-    undici-types "~5.26.4"
 
 "@types/object-hash@^3.0.6":
   version "3.0.6"

@@ -1,5 +1,5 @@
 import { ViewComponentProps } from '../../libraries/core-view-component-props';
-import { useFileData } from '@figurl/interface';
+import { useFileData } from '@fi-sci/figurl-interface';
 import React, { FunctionComponent, useMemo } from 'react';
 import { TimeseriesLayoutOpts } from '../../View';
 import './MultiTimeseriesView.css';
@@ -17,7 +17,7 @@ type Props = {
 const ViewWrapper: FunctionComponent<Props> = ({ label, figureDataSha1, figureDataUri, ViewComponent, isBottomPanel, width, height }) => {
     const sha1OrUri = figureDataSha1 ? figureDataSha1.toString() : figureDataUri
     if (!sha1OrUri) throw Error('No figureDataSha1 or figureDataUri in ViewWrapper')
-    const { fileData: figureData, errorMessage } = useFileData(sha1OrUri)
+    const { fileData: figureData, errorMessage } = useFileData(sha1OrUri, 'json-deserialized')
 
     const opts: TimeseriesLayoutOpts = useMemo(() => {
         return {

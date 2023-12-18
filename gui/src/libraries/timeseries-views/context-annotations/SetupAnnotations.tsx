@@ -1,4 +1,4 @@
-import { getFileData, useUrlState } from "@figurl/interface";
+import { getFileData, useUrlState } from "@fi-sci/figurl-interface";
 import { FunctionComponent, PropsWithChildren, useEffect, useMemo, useReducer, useRef } from "react";
 import AnnotationsContext, { annotationReducer, defaultAnnotationState } from "./AnnotationContext";
 
@@ -11,7 +11,7 @@ const SetupAnnotations: FunctionComponent<PropsWithChildren> = (props) => {
 		if (!first.current) return
 		const uri = urlState.annotations
 		if (uri) {
-			getFileData(uri, () => {}).then((x) => {
+			getFileData(uri, 'json-deserialized', () => {}).then((x) => {
 				annotationDispatch({type: 'setAnnotationState', annotationState: x})
 			}).catch((err: Error) => {
 				console.warn('Problem getting annotation state')

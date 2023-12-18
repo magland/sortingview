@@ -4,7 +4,7 @@ import { useSelectedUnitIds } from "..";
 import { FunctionComponent, useCallback, useEffect, useMemo } from "react";
 import { SortingCuration2ViewData } from "./SortingCuration2ViewData";
 import SaveControl from "./SaveControl";
-import { useUrlState } from "@figurl/interface";
+import { useUrlState } from "@fi-sci/figurl-interface";
 
 type Props = {
     data: SortingCuration2ViewData
@@ -148,7 +148,7 @@ const unitsAreInMergeGroups = (unitIds: (number | string)[], sortingCuration: So
     if (!sortingCuration) return false
     const mg = sortingCuration.mergeGroups || []
     const all = mg.reduce((prev, g) => [...prev, ...g], []) // all units in merge groups
-    for (let unitId of unitIds) {
+    for (const unitId of unitIds) {
         if (!all.includes(unitId)) return false
     }
     return true
@@ -156,7 +156,7 @@ const unitsAreInMergeGroups = (unitIds: (number | string)[], sortingCuration: So
 
 const getLabelCheckboxStates = (labelChoices: string[], sortingCuration: SortingCuration | undefined, selectedUnitIds: (string | number)[], disabled: boolean) => {
     const ret: {[label: string]: 'checked' | 'unchecked' | 'indeterminant' | 'disabled'} = {}
-    for (let label of labelChoices) {
+    for (const label of labelChoices) {
         const idsWithLabel = selectedUnitIds.filter(id => (sortingCuration && ((sortingCuration.labelsByUnit || {})[id] || []).includes(label)))
         ret[label] = disabled ? 'disabled' :
             selectedUnitIds.length === 0 ? 'disabled' :
@@ -170,8 +170,8 @@ const getLabelCheckboxStates = (labelChoices: string[], sortingCuration: Sorting
 export const getAllLabelChoices = (curation: SortingCuration | undefined, labelChoicesFromData: string[] | undefined) => {
     const ret = labelChoicesFromData ? [...labelChoicesFromData] : [...standardLabelChoices]
     if (curation !== undefined) {
-        for (let a of Object.values(curation.labelsByUnit || {})) {
-            for (let label of a) {
+        for (const a of Object.values(curation.labelsByUnit || {})) {
+            for (const label of a) {
                 if (!ret.includes(label)) ret.push(label)
             }
         }
@@ -180,8 +180,8 @@ export const getAllLabelChoices = (curation: SortingCuration | undefined, labelC
 }
 
 export const getAbbreviatedUnitIdsString = (unitIds: (string | number)[], maxLength: number) => {
-    let ret: string = ''
-    for (let id of unitIds) {
+    let ret = ''
+    for (const id of unitIds) {
         if (ret.length > maxLength - 3) {
             ret = ret + '...'
             break

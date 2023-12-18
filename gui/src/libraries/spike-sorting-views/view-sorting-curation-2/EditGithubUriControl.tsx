@@ -1,4 +1,4 @@
-import { useSignedIn } from "@figurl/interface";
+import { useSignedIn } from "@fi-sci/figurl-interface";
 import { Button, Input } from "@material-ui/core";
 import { FunctionComponent, useCallback, useEffect, useMemo, useState } from "react";
 

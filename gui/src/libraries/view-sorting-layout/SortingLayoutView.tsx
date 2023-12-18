@@ -1,4 +1,4 @@
-import { getFileData, useUrlState } from '@figurl/interface';
+import { getFileData, useUrlState } from '@fi-sci/figurl-interface';
 import { SortingCurationContext, sortingCurationReducer, UnitMetricSelectionContext, unitMetricSelectionReducer, useSelectedUnitIds } from '../spike-sorting-views';
 import { ViewComponentProps } from '../../libraries/core-view-component-props';
 import { FunctionComponent, useEffect, useReducer } from 'react';
@@ -41,8 +41,8 @@ const SortingLayoutView: FunctionComponent<Props> = ({data, ViewComponent, width
     const {initialUrlState} = useUrlState()
     useEffect(() => {
         if (initialUrlState.curation) {
-            ;(async () => {
-              const curation = await getFileData(initialUrlState.curation, () => {})
+            (async () => {
+              const curation = await getFileData(initialUrlState.curation, 'json-deserialized', () => {})
               sortingCurationDispatch2({
                 type: 'SET_CURATION',
                 curation

@@ -1,6 +1,6 @@
 import { Button, Checkbox } from "@material-ui/core";
 import { SortingCuration, useSortingCuration } from "../spike-sorting-views";
-import { useUrlState } from "@figurl/interface";
+import { useUrlState } from "@fi-sci/figurl-interface";
 import { useSelectedUnitIds } from "../spike-sorting-views";
 import { FunctionComponent, useCallback, useMemo } from "react";
 import { getAbbreviatedUnitIdsString, getAllLabelChoices } from "../spike-sorting-views";
@@ -152,7 +152,7 @@ const SortingSelectionView: FunctionComponent<Props> = ({width, height}) => {
 const getLabelSelectedStates = (labelChoices: string[], sortingCuration: SortingCuration | undefined, selectedUnitIds: (string | number)[], allUnitIds: (string | number)[]) => {
     const ret: {[label: string]: 'selected' | 'unselected' | 'partially-selected' | 'disabled'} = {}
     const selectedUnitIdsSet = new Set(selectedUnitIds)
-    for (let label of labelChoices) {
+    for (const label of labelChoices) {
         const idsWithLabel = allUnitIds.filter(id => (sortingCuration && ((sortingCuration.labelsByUnit || {})[id] || []).includes(label)))
         if (idsWithLabel.length === 0) {
             ret[label] = 'disabled'
@@ -166,7 +166,7 @@ const getLabelSelectedStates = (labelChoices: string[], sortingCuration: Sorting
     }
 
     // not
-    for (let label of labelChoices) {
+    for (const label of labelChoices) {
         const idsWithLabel = allUnitIds.filter(id => {
             const a: string[] = sortingCuration ? (sortingCuration.labelsByUnit || {})[id] || [] : []
             return !a.includes(label)

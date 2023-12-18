@@ -1,4 +1,4 @@
-import { getFileData, readDir } from "@figurl/interface"
+import { getFileData, readDir } from "@fi-sci/figurl-interface"
 
 const chunkSize = 1000 * 1000 * 4 // 4MB chunks. Is this a good choice?
 
@@ -49,10 +49,10 @@ class EphysTracesClient {
     async initialize() {
         const dir = await readDir(this.ephysTracesUri)
         const binaryJsonUri = `${this.ephysTracesUri}/binary.json`
-        this.#binaryJson = await getFileData(binaryJsonUri, () => {}, {responseType: 'json'})
+        this.#binaryJson = await getFileData(binaryJsonUri, 'json', () => {})
         if (!this.#binaryJson) throw Error('Unable to load binary.json')
         const probeJsonUri = `${this.ephysTracesUri}/probe.json`
-        this.#probeJson = await getFileData(probeJsonUri, () => {}, {responseType: 'json'})
+        this.#probeJson = await getFileData(probeJsonUri, 'json', () => {})
         if (!this.#probeJson) throw Error('Unable to load probe.json')
         const binaryFname = this.#binaryJson.kwargs.file_paths[0]
         const ff = dir.files.find(f => (f.name === binaryFname))
@@ -131,7 +131,7 @@ class EphysTracesClient {
         try {
             const i1 = chunkSize * i
             const i2 = Math.min(chunkSize * (i + 1), this.#fileSize)
-            const content = await getFileData(this.#binaryUri, () => {}, {startByte: i1, endByte: i2, responseType: 'binary'})
+            const content = await getFileData(this.#binaryUri, 'binary', () => {}, {startByte: i1, endByte: i2})
             this.#chunks[i] = content
             return this.#chunks[i]
         }

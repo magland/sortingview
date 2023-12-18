@@ -1,4 +1,4 @@
-import { useFileData } from '@figurl/interface';
+import { useFileData } from '@fi-sci/figurl-interface';
 import { TimeseriesSelectionContext } from '../timeseries-views';
 import { FunctionComponent, useContext, useEffect, useMemo, useState } from "react";
 import EphysTracesClient, { EphysTracesInfo } from "./EphysTracesClient";
@@ -21,7 +21,7 @@ const EphysTracesView: FunctionComponent<Props> = ({data, width, height}) => {
         ephysTracesClient.getInfo().then(setEphysTracesInfo)
     }, [ephysTracesClient])
 
-    const {fileData: sortingData} = useFileData(sortingUri || '')
+    const {fileData: sortingData} = useFileData(sortingUri || '', 'json-deserialized')
 
     const {timeseriesSelectionDispatch} = useContext(TimeseriesSelectionContext)
     // const {timeseriesStartTimeSec, timeseriesEndTimeSec} = timeseriesSelection

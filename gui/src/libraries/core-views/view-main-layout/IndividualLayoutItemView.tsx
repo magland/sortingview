@@ -1,4 +1,4 @@
-import { useFileData } from "@figurl/interface";
+import { useFileData } from "@fi-sci/figurl-interface";
 import { ProgressComponent } from "../component-progress";
 import { FunctionComponent, useEffect, useMemo, useState } from "react";
 import { LayoutItem, MLView } from "./MainLayoutViewData";
@@ -20,7 +20,7 @@ const IndividualLayoutItemView: FunctionComponent<Props> = ({layoutItem, ViewCom
     const view = views.filter(v => (v.viewId === viewId))[0]
     if (!view) throw Error(`View not found ${viewId}`)
 
-    const { fileData: figureData, progress, errorMessage } = useFileData(view.dataUri)
+    const { fileData: figureData, progress, errorMessage } = useFileData(view.dataUri, 'json-deserialized')
     const [progressValue, setProgressValue] = useState<{loaded: number, total: number} | undefined>(undefined)
     useEffect(() => {
         progress.onProgress(({loaded, total}) => {

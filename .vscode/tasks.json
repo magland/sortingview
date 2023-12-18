@@ -39,6 +39,15 @@
                 "clear": true
             },
             "detail": "Run black formatter"
+        },
+        {
+            "label": "Publish npm",
+            "type": "shell",
+            "command": "bash -ic .vscode/tasks/publish-npm.sh",
+            "presentation": {
+                "clear": true
+            },
+            "detail": "Publish GUI package to npm"
         }
     ]
 }

@@ -1,4 +1,4 @@
-import { useUrlState } from '@figurl/interface'
+import { useUrlState } from '@fi-sci/figurl-interface'
 import React, { FunctionComponent, PropsWithChildren, useEffect, useMemo, useReducer, useRef } from 'react'
 import TimeseriesSelectionContext, { timeseriesSelectionReducer, defaultTimeseriesSelection } from './TimeseriesSelectionContext'
 

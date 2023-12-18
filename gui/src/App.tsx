@@ -1,5 +1,5 @@
 import { useWindowDimensions } from './libraries/core-utils';
-import { getFigureData, SetupUrlState } from '@figurl/interface';
+import { getFigureData, SetupUrlState } from '@fi-sci/figurl-interface';
 import { defaultUnitSelection, SetupSortingCuration, UnitMetricSelectionContext, unitMetricSelectionReducer, UnitSelectionContext, unitSelectionReducer } from './libraries/spike-sorting-views/index';
 import { SetupAnnotations, SetupTimeseriesSelection } from './libraries/timeseries-views';
 import { MuiThemeProvider } from '@material-ui/core';

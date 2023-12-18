@@ -1,4 +1,4 @@
-import { useFileData } from '@figurl/interface';
+import { useFileData } from '@fi-sci/figurl-interface';
 import { FunctionComponent, useEffect, useMemo, useState } from 'react';
 import { ViewComponentProps } from '../../core-view-component-props';
 
@@ -13,7 +13,7 @@ type Props = {
 const ViewWrapper: FunctionComponent<Props> = ({ figureDataSha1, figureDataUri, ViewComponent, width, height }) => {
     const sha1OrUri = figureDataSha1 ? figureDataSha1.toString() : figureDataUri
     if (!sha1OrUri) throw Error('No figureDataSha1 or figureDataUri in ViewWrapper')
-    const { fileData: figureData, progress, errorMessage } = useFileData(sha1OrUri)
+    const { fileData: figureData, progress, errorMessage } = useFileData(sha1OrUri, 'json-deserialized')
     const [progressValue, setProgressValue] = useState<{loaded: number, total: number} | undefined>(undefined)
     useEffect(() => {
         progress.onProgress(({loaded, total}) => {
