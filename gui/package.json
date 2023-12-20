@@ -1,10 +1,10 @@
 {
   "name": "@fi-sci/figurl-sortingview",
   "private": false,
-  "version": "12.0.1",
+  "version": "12.0.3",
   "scripts": {
     "dev": "vite --port 3000",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && node devel/generate_file_manifest.js",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
@@ -12,7 +12,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@fi-sci/figurl-interface": "^0.3.0",
+    "@fi-sci/figurl-interface": "^0.1.0",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-regular-svg-icons": "^6.1.2",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
