@@ -1673,10 +1673,10 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.53.0.tgz#bea56f2ed2b5baea164348ff4d5a879f6f81f20d"
   integrity sha512-Kn7K8dx/5U6+cT1yEhpX1w4PCSg0M+XyRILPgvwcEBjerFWCwQj5sbr3/VmxqV0JGHCBCzyd6LxypEuehypY1w==
 
-"@fi-sci/figurl-interface@^0.3.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@fi-sci/figurl-interface/-/figurl-interface-0.1.0.tgz#719889a6e04a73f017bb5b62ddd33e765b48ece3"
-  integrity sha512-KdTOQ5+FoRDyv2OpZeIJv+8lKG7wAX5LWP9KdsfWVvM3cGNMXoG3SYbwVJTJEBpxF3F5Hk80cgOyMOZ6GbMJZA==
+"@fi-sci/figurl-interface@>=0.1.1 <0.2.0":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@fi-sci/figurl-interface/-/figurl-interface-0.1.1.tgz#3451091e9f0244906d114beb363f287e5cae2e2b"
+  integrity sha512-nUtpBFXvsI0kp02+Ekxl+7oShnypGzBtDUZX+L0YAmcOwT1f035sKx2+sbU7Xt+CzaCI9BnReqM0XI7Kc2p/yQ==
   dependencies:
     "@fi-sci/misc" "~0.0.7"
 
