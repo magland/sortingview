@@ -33,6 +33,7 @@ def prepare_spikesortingview_data(
         int_type = np.int64
     else:
         int_type = np.int32
+    print(f"int_type: {int_type}")
         
 
     with kcl.TemporaryDirectory() as tmpdir:
