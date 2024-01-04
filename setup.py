@@ -8,7 +8,7 @@ setup(
     install_requires=[
         'spikeinterface>=0.97.0',
         'kachery-cloud>=0.4.0',
-        'figurl>=0.2.18',
+        'figurl>=0.2.22',
         'matplotlib',
         'click',
         'pynwb',
