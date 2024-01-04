@@ -67,7 +67,7 @@ def compute_average_waveform(*, recording: si.BaseRecording, sorting: si.BaseSor
     snippets = extract_snippets(traces=traces, times=times, snippet_len=(20, 20))
     waveform = np.mean(snippets, axis=0).T.astype(np.float32)
     stdev = np.std(snippets, axis=0).T.astype(np.float32)
-    waveform_percentiles = np.percentile(snippets, [5, 25, 75, 95], axis=0) # type: ignore
+    waveform_percentiles = np.percentile(snippets, [5, 25, 75, 95], axis=0)  # type: ignore
     waveform_percentiles = [waveform_percentiles[i].T.astype(np.float32) for i in range(4)]
     return {"channel_ids": recording.get_channel_ids().astype(np.int32), "waveform": waveform, "waveform_std_dev": stdev, "waveform_percentiles": waveform_percentiles}
 

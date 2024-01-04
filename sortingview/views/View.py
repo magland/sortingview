@@ -66,7 +66,7 @@ class View:
                 ret.append(v)
         return ret
 
-    def url_dict(self, *, label: str, state: Union[dict, None] = None, allow_float64: bool=False):
+    def url_dict(self, *, label: str, state: Union[dict, None] = None, allow_float64: bool = False):
         from .Box import Box
         from .LayoutItem import LayoutItem
 
@@ -78,7 +78,11 @@ class View:
             data = {
                 "type": "MainLayout",
                 "layout": self.to_dict(),
-                "views": [{"type": view.type, "viewId": view.id, "dataUri": _upload_data_and_return_uri(view.to_dict(), allow_float64=allow_float64)} for view in all_views if not view.is_layout],
+                "views": [
+                    {"type": view.type, "viewId": view.id, "dataUri": _upload_data_and_return_uri(view.to_dict(), allow_float64=allow_float64)}
+                    for view in all_views
+                    if not view.is_layout
+                ],
             }
             view_url = sortingview_view_url
             F = fig.Figure(view_url=view_url, data=data, allow_float64=allow_float64)
@@ -93,7 +97,7 @@ class View:
         assert V.is_layout  # avoid infinite recursion
         return V.url_dict(label=label, state=state, allow_float64=allow_float64)
 
-    def url(self, *, label: str, state: Union[dict, None] = None, allow_float64: bool=False):
+    def url(self, *, label: str, state: Union[dict, None] = None, allow_float64: bool = False):
         return fig.url_from_url_dict(self.url_dict(label=label, state=state, allow_float64=allow_float64))
 
     def jupyter(self, *, height: Union[int, None] = None):
@@ -145,7 +149,7 @@ class View:
             self._sorting_curation = message.get("sortingCuration", {})
 
 
-def _upload_data_and_return_uri(data, *, local: bool = False, allow_float64: bool=False):
+def _upload_data_and_return_uri(data, *, local: bool = False, allow_float64: bool = False):
     return kcl.store_json(fig.serialize_data(data, allow_float64=allow_float64), local=local)
 
 
