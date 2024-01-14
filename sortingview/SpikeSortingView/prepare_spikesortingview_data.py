@@ -19,22 +19,28 @@ def prepare_spikesortingview_data(
     channel_neighborhood_size: int,
     bandpass_filter: bool = False,
 ) -> str:
+
+
+    # NOTE(DS): for data longer than 25hours with fs = 20000; num_frame is too large for int32
+    if recording.get_num_frames() > (2 ** 31 - 1):
+        int_type = np.int64
+    else:
+        int_type = np.int32
+        #int_type = np.int64 #NOTE(DS): to test in short recording
+
+    print(f"int_type: {int_type}")
+    
     if bandpass_filter:
         recording = spre.bandpass_filter(recording)
-    unit_ids = np.array(sorting.get_unit_ids()).astype(int_type)
-    channel_ids = np.array(recording.get_channel_ids()).astype(int_type)
+    unit_ids = np.array(sorting.get_unit_ids()).astype(np.int32)
+    channel_ids = np.array(recording.get_channel_ids()).astype(np.int32)
     sampling_frequency = recording.get_sampling_frequency()
     num_frames = recording.get_num_frames()
     num_frames_per_segment = math.ceil(segment_duration_sec * sampling_frequency)
     num_segments = math.ceil(num_frames / num_frames_per_segment)
 
-    # NOTE(DS): for data longer than 25hours with fs = 20000; num_frame is too large for int32
-    if num_frames > int_type(2 ** 31 - 1):
-        int_type = np.int64
-    else:
-        int_type = np.int32
-    print(f"int_type: {int_type}")
-        
+
+
 
     with kcl.TemporaryDirectory() as tmpdir:
         output_file_name = tmpdir + "/spikesortingview.h5"
@@ -45,11 +51,11 @@ def prepare_spikesortingview_data(
             f.create_dataset("num_frames", data=np.array([num_frames]).astype(int_type))
             channel_locations = recording.get_channel_locations()
             f.create_dataset("channel_locations", data=np.array(channel_locations))
-            f.create_dataset("num_segments", data=np.array([num_segments]).astype(int_type))
-            f.create_dataset("num_frames_per_segment", data=np.array([num_frames_per_segment]).astype(int_type))
-            f.create_dataset("snippet_len", data=np.array([snippet_len[0], snippet_len[1]]).astype(int_type))
-            f.create_dataset("max_num_snippets_per_segment", data=np.array([max_num_snippets_per_segment]).astype(int_type))
-            f.create_dataset("channel_neighborhood_size", data=np.array([channel_neighborhood_size]).astype(int_type))
+            f.create_dataset("num_segments", data=np.array([num_segments]).astype(np.int32))
+            f.create_dataset("num_frames_per_segment", data=np.array([num_frames_per_segment]).astype(np.int32))
+            f.create_dataset("snippet_len", data=np.array([snippet_len[0], snippet_len[1]]).astype(np.int32))
+            f.create_dataset("max_num_snippets_per_segment", data=np.array([max_num_snippets_per_segment]).astype(np.int32))
+            f.create_dataset("channel_neighborhood_size", data=np.array([channel_neighborhood_size]).astype(np.int32))
 
             # first get peak channels and channel neighborhoods
             unit_peak_channel_ids = {}
@@ -74,7 +80,7 @@ def prepare_spikesortingview_data(
                         spike_train = sorting.get_unit_spike_train(unit_id=unit_id, start_frame=start_frame, end_frame=end_frame)
                         assert isinstance(spike_train, np.ndarray)
                         if len(spike_train) > 0:
-                            values = traces_with_padding[spike_train - start_frame_with_padding, :].astype(int_type)
+                            values = traces_with_padding[spike_train - start_frame_with_padding, :].astype(np.int32)
                             avg_value = np.mean(values, axis=0)
                             peak_channel_ind = np.argmax(np.abs(avg_value))
                             peak_channel_id = channel_ids[peak_channel_ind]
@@ -93,8 +99,8 @@ def prepare_spikesortingview_data(
                 if peak_channel_id is None:
                     raise Exception(f"Peak channel not found for unit {unit_id}. This is probably because no spikes were found in any segment for this unit.")
                 channel_neighborhood = unit_channel_neighborhoods[str(unit_id)]
-                f.create_dataset(f"unit/{unit_id}/peak_channel_id", data=np.array([peak_channel_id]).astype(int_type))
-                f.create_dataset(f"unit/{unit_id}/channel_neighborhood", data=np.array(channel_neighborhood).astype(int_type))
+                f.create_dataset(f"unit/{unit_id}/peak_channel_id", data=np.array([peak_channel_id]).astype(np.int32))
+                f.create_dataset(f"unit/{unit_id}/channel_neighborhood", data=np.array(channel_neighborhood).astype(np.int32))
 
             for iseg in range(num_segments):
                 print(f"Segment {iseg} of {num_segments}")
@@ -120,7 +126,7 @@ def prepare_spikesortingview_data(
                         spike_amplitudes = traces_with_padding[spike_train - start_frame_with_padding, peak_channel_ind]
                         f.create_dataset(f"segment/{iseg}/unit/{unit_id}/spike_amplitudes", data=spike_amplitudes)
                     else:
-                        spike_amplitudes = np.array([], dtype=int_type)
+                        spike_amplitudes = np.array([], dtype=np.int32)
                     if max_num_snippets_per_segment is not None and len(spike_train) > max_num_snippets_per_segment:
                         subsampled_spike_train = subsample(spike_train, max_num_snippets_per_segment)
                     else:
