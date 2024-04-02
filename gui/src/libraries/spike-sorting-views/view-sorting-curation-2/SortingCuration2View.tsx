@@ -72,7 +72,7 @@ const SortingCuration2View: FunctionComponent<Props> = ({data, width, height}) =
                 if (event.key === ')') choiceIndex = 9
                 if ((0 <= choiceIndex) && (choiceIndex < labelChoices.length)) {
                     const label = labelChoices[choiceIndex]
-                    handleClick(label, labelSelectedStates[label])
+                    handleClick(label, labelCheckboxStates[label])
                 }
                 if (event.key === 'ArrowDown') {
                     if (selectedUnitIds.length === 0) return
@@ -104,7 +104,7 @@ const SortingCuration2View: FunctionComponent<Props> = ({data, width, height}) =
         return () => {
             globalKeyHandler.deregisterCallback(cb)
         }
-    }, [selectedUnitIds, orderedUnitIds, labelChoices, handleClick, unitIdSelectionDispatch])
+    }, [selectedUnitIds, orderedUnitIds, labelChoices, handleClick, unitIdSelectionDispatch, labelCheckboxStates])
 
     const handleMergeSelected = useCallback(() => {
         if (!sortingCurationDispatch) return
