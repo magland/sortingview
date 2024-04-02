@@ -8,6 +8,7 @@ import './localStyles.css';
 import theme from './theme';
 import View from './View';
 import { SetupStyleSettings } from './libraries/franklab-views';
+import { globalKeyHandler } from './globalKeyHandler';
 
 const urlSearchParams = new URLSearchParams(window.location.search)
 const queryParams = Object.fromEntries(urlSearchParams.entries())
@@ -63,12 +64,20 @@ function App() {
               <SetupUrlState>
                 <SetupSortingCuration>
                   <SetupStyleSettings>
-                    <View
-                      data={data}
-                      opts={opts}
-                      width={width - 10}
-                      height={height - 5}
-                    />
+                    <div
+                      tabIndex={0}
+                      style={{position: 'absolute', top: 0, left: 0, width: width, height: height, overflow: 'hidden'}}
+                      onKeyDown={(e) => {
+                        globalKeyHandler.handleEvent(e)
+                      }}
+                    >
+                      <View
+                        data={data}
+                        opts={opts}
+                        width={width - 10}
+                        height={height - 5}
+                      />
+                    </div>
                   </SetupStyleSettings>
                 </SetupSortingCuration>
               </SetupUrlState>

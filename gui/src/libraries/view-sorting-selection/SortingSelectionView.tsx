@@ -2,9 +2,10 @@ import { Button, Checkbox } from "@material-ui/core";
 import { SortingCuration, useSortingCuration } from "../spike-sorting-views";
 import { useUrlState } from "@fi-sci/figurl-interface";
 import { useSelectedUnitIds } from "../spike-sorting-views";
-import { FunctionComponent, useCallback, useMemo } from "react";
+import { FunctionComponent, KeyboardEvent, useCallback, useEffect, useMemo } from "react";
 import { getAbbreviatedUnitIdsString, getAllLabelChoices } from "../spike-sorting-views";
 import { SortingSelectionViewData } from "./SortingSelectionViewData";
+import { globalKeyHandler } from "../../globalKeyHandler";
 
 type Props = {
     data: SortingSelectionViewData
@@ -86,6 +87,31 @@ const SortingSelectionView: FunctionComponent<Props> = ({width, height}) => {
             visibleUnitIds: restrictedUnitIds
         })
     }, [selectedUnitIds, updateUrlState, restrictedUnitIds])
+    useEffect(() => {
+        const cb = (event: KeyboardEvent) => {
+            if (event.shiftKey) {
+                let choiceIndex = -1
+                if (event.key === '!') choiceIndex = 0
+                if (event.key === '@') choiceIndex = 1
+                if (event.key === '#') choiceIndex = 2
+                if (event.key === '$') choiceIndex = 3
+                if (event.key === '%') choiceIndex = 4
+                if (event.key === '^') choiceIndex = 5
+                if (event.key === '&') choiceIndex = 6
+                if (event.key === '*') choiceIndex = 7
+                if (event.key === '(') choiceIndex = 8
+                if (event.key === ')') choiceIndex = 9
+                if (choiceIndex < 0) return
+                if (choiceIndex >= labelChoices.length) return
+                const label = labelChoices[choiceIndex]
+                handleClick(label, labelSelectedStates[label])
+            }
+        }
+        globalKeyHandler.registerCallback(cb)
+        return () => {
+            globalKeyHandler.deregisterCallback(cb)
+        }
+    }, [selectedUnitIds, restrictedUnitIds, handleClick, labelChoices, labelSelectedStates])
     return (
         <div style={{position: 'absolute', width, height, overflowY: 'auto'}}>
             <h3>Selection</h3>
