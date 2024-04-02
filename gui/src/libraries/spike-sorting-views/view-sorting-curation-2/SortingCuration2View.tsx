@@ -1,10 +1,11 @@
 import { Checkbox } from "@material-ui/core";
 import { SortingCuration, useSortingCuration } from "..";
 import { useSelectedUnitIds } from "..";
-import { FunctionComponent, useCallback, useEffect, useMemo } from "react";
+import { FunctionComponent, KeyboardEvent, useCallback, useEffect, useMemo } from "react";
 import { SortingCuration2ViewData } from "./SortingCuration2ViewData";
 import SaveControl from "./SaveControl";
 import { useUrlState } from "@fi-sci/figurl-interface";
+import { globalKeyHandler } from "../../../globalKeyHandler";
 
 type Props = {
     data: SortingCuration2ViewData
@@ -54,6 +55,56 @@ const SortingCuration2View: FunctionComponent<Props> = ({data, width, height}) =
             }
         }
     }, [selectedUnitIds, sortingCurationDispatch])
+
+    useEffect(() => {
+        const cb = (event: KeyboardEvent) => {
+            if (event.shiftKey) {
+                let choiceIndex = -1
+                if (event.key === '!') choiceIndex = 0
+                if (event.key === '@') choiceIndex = 1
+                if (event.key === '#') choiceIndex = 2
+                if (event.key === '$') choiceIndex = 3
+                if (event.key === '%') choiceIndex = 4
+                if (event.key === '^') choiceIndex = 5
+                if (event.key === '&') choiceIndex = 6
+                if (event.key === '*') choiceIndex = 7
+                if (event.key === '(') choiceIndex = 8
+                if (event.key === ')') choiceIndex = 9
+                if ((0 <= choiceIndex) && (choiceIndex < labelChoices.length)) {
+                    const label = labelChoices[choiceIndex]
+                    handleClick(label, labelSelectedStates[label])
+                }
+                if (event.key === 'ArrowDown') {
+                    if (selectedUnitIds.length === 0) return
+                    const lastUnitSelected = selectedUnitIds[selectedUnitIds.length - 1]
+                    const index = orderedUnitIds.indexOf(lastUnitSelected)
+                    if (index < 0) return
+                    if (index === orderedUnitIds.length - 1) return
+                    const id = orderedUnitIds[index + 1]
+                    unitIdSelectionDispatch({
+                        type: 'SET_SELECTION',
+                        incomingSelectedUnitIds: [id]
+                    })
+                }
+                if (event.key === 'ArrowUp') {
+                    if (selectedUnitIds.length === 0) return
+                    const firstUnitSelected = selectedUnitIds[0]
+                    const index = orderedUnitIds.indexOf(firstUnitSelected)
+                    if (index < 0) return
+                    if (index === 0) return
+                    const id = orderedUnitIds[index - 1]
+                    unitIdSelectionDispatch({
+                        type: 'SET_SELECTION',
+                        incomingSelectedUnitIds: [id]
+                    })
+                }
+            }
+        }
+        globalKeyHandler.registerCallback(cb)
+        return () => {
+            globalKeyHandler.deregisterCallback(cb)
+        }
+    }, [selectedUnitIds, orderedUnitIds, labelChoices, handleClick, unitIdSelectionDispatch])
 
     const handleMergeSelected = useCallback(() => {
         if (!sortingCurationDispatch) return
