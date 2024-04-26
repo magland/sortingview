@@ -119,12 +119,12 @@ const TabWidgetVertical: FunctionComponent<PropsWithChildren<Props>> = ({childre
                     onCurrentTabIndexChanged={setCurrentTabIndex}
                 />
             </div>
-            <div style={{position: 'absolute', left: leftPanelWidth, top: 0, width: W - leftPanelWidth, height: H}}>
+            <div style={{position: 'absolute', left: leftPanelWidth, top: 0, width: W, height: H}}>
                 {
                     children2.map((c, i) => {
                         const visible = i === currentTabIndex
                         return (
-                            <div key={`child-${i}`} style={{visibility: visible ? undefined : 'hidden', overflowY: 'hidden', overflowX: 'hidden', position: 'absolute', left: 0, top: 0, width: W - leftPanelWidth, height: H}}>
+                            <div key={`child-${i}`} style={{visibility: visible ? undefined : 'hidden', overflowY: 'hidden', overflowX: 'hidden', position: 'absolute', left: 0, top: 0, width: W, height: H}}>
                                 {
                                     hasBeenVisible.includes(i) && <c.type {...c.props} width={W} height={H - vm * 2}/>
                                 }
