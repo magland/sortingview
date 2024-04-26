@@ -40,7 +40,7 @@ const ImageView: FunctionComponent<Props> = ({data, width, height}) => {
         }
     }, [width, height, naturalSize])
     return (
-        <div style={{position: 'absolute', width, height}}>
+        <div style={{position: 'absolute', width, height, visibility: r ? undefined : 'hidden'}}>
             <img ref={elmt => setElement(elmt)} src={url} width={r?.w} height={r?.h} style={{position: 'absolute', left: r?.x, top: r?.y, width: r?.w, height: r?.h}} alt="" />
         </div>
     )

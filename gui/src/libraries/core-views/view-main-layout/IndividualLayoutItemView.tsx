@@ -10,7 +10,7 @@ type Props = {
     views: MLView[]
     width: number
     height: number
-}  
+}
 
 const IndividualLayoutItemView: FunctionComponent<Props> = ({layoutItem, ViewComponent, views, width, height}) => {
     if (layoutItem.type !== 'View') {

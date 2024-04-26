@@ -1,4 +1,4 @@
-import { FunctionComponent, PropsWithChildren, useState } from "react";
+import { FunctionComponent, PropsWithChildren, useEffect, useReducer, useState } from "react";
 import TabWidgetTabBar from "./TabWidgetTabBar";
 
 type Props = {
@@ -54,6 +54,13 @@ const TabWidgetHorizontal: FunctionComponent<PropsWithChildren<Props>> = ({child
     const vMargin = 8
     const W = (width || 300) - hMargin * 2
     const H = height - vMargin * 2
+
+    const [hasBeenVisible, hasBeenVisibleDispatch] = useReducer(hasBeenVisibleReducer, [])
+    useEffect(() => {
+        if (currentTabIndex !== undefined) {
+            hasBeenVisibleDispatch({type: 'add', index: currentTabIndex})
+        }
+    }, [currentTabIndex])
     return (
         <div
             style={{position: 'absolute', left: hMargin, top: vMargin, width: W, height: H, overflow: 'hidden'}}
@@ -72,7 +79,7 @@ const TabWidgetHorizontal: FunctionComponent<PropsWithChildren<Props>> = ({child
                     const visible = i === currentTabIndex
                     return (
                         <div key={`child-${i}`} style={{visibility: visible ? undefined : 'hidden', overflowY: 'hidden', overflowX: 'hidden', position: 'absolute', left: 0, top: tabBarHeight, width: W, height: H}}>
-                            <c.type {...c.props} width={W} height={H - tabBarHeight}/>
+                            {hasBeenVisible.includes(i) && <c.type {...c.props} width={W} height={H - tabBarHeight}/>}
                         </div>
                     )
                 })
@@ -88,11 +95,19 @@ const TabWidgetVertical: FunctionComponent<PropsWithChildren<Props>> = ({childre
         throw Error('TabWidget: incorrect number of tabs')
     }
     const leftPanelWidth = Math.min(250, width / 3)
-    const W = width - leftPanelWidth
-    const H = height
+    const hm = 8
+    const vm = 8
+    const W = width - hm * 2 - leftPanelWidth
+    const H = height - vm * 2
+    const [hasBeenVisible, hasBeenVisibleDispatch] = useReducer(hasBeenVisibleReducer, [])
+    useEffect(() => {
+        if (currentTabIndex !== undefined) {
+            hasBeenVisibleDispatch({type: 'add', index: currentTabIndex})
+        }
+    }, [currentTabIndex])
     return (
         <div
-            style={{position: 'absolute', left: 0, top: 0, width: W, height: H}}
+            style={{position: 'absolute', left: hm, top: vm, width: W, height: H}}
             className="TabWidgetVertical"
         >
             <div style={{position: 'absolute', left: 0, top: 0, width: leftPanelWidth, height: H}}>
@@ -110,7 +125,9 @@ const TabWidgetVertical: FunctionComponent<PropsWithChildren<Props>> = ({childre
                         const visible = i === currentTabIndex
                         return (
                             <div key={`child-${i}`} style={{visibility: visible ? undefined : 'hidden', overflowY: 'hidden', overflowX: 'hidden', position: 'absolute', left: 0, top: 0, width: W - leftPanelWidth, height: H}}>
-                                <c.type {...c.props} width={W - leftPanelWidth} height={H}/>
+                                {
+                                    hasBeenVisible.includes(i) && <c.type {...c.props} width={W} height={H - vm * 2}/>
+                                }
                             </div>
                         )
                     })
@@ -132,7 +149,7 @@ type VerticalTabSelectionPanelProps = {
 
 const VerticalTabSelectionPanel: FunctionComponent<VerticalTabSelectionPanelProps> = ({tabs, currentTabIndex, onCurrentTabIndexChanged, width, height}) => {
     return (
-        <div style={{position: 'absolute', left: 0, top: 0, width: width, height: height, overflowY: 'auto'}}>
+        <div style={{position: 'absolute', left: 0, top: 0, width: width, height: height, overflowY: 'auto', userSelect: 'none'}}>
             {
                 tabs.map((tab, i) => (
                     <div key={i} style={{padding: 4, cursor: 'pointer', backgroundColor: i === currentTabIndex ? 'lightgray' : undefined}} onClick={() => onCurrentTabIndexChanged(i)}>
@@ -142,6 +159,11 @@ const VerticalTabSelectionPanel: FunctionComponent<VerticalTabSelectionPanelProp
             }
         </div>
     )
+}
+
+const hasBeenVisibleReducer = (state: number[], action: {type: 'add', index: number}) => {
+    if (state.includes(action.index)) return state
+    return [...state, action.index]
 }
 
 export default TabWidget
