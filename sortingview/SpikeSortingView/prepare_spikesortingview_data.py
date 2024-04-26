@@ -20,7 +20,7 @@ def prepare_spikesortingview_data(
     bandpass_filter: bool = False,
 ) -> str:
     # NOTE(DS): for data longer than 25hours with fs = 20000; num_frame is too large for int32
-    if recording.get_num_frames() > (2 ** 31 - 1):
+    if recording.get_num_frames() > (2**31 - 1):
         int_type = np.int64
     else:
         int_type = np.int32
@@ -104,7 +104,7 @@ def prepare_spikesortingview_data(
                 start_frame_with_padding = max(start_frame - snippet_len[0], 0)
                 end_frame_with_padding = min(end_frame + snippet_len[1], num_frames)
                 traces_with_padding = recording.get_traces(start_frame=start_frame_with_padding, end_frame=end_frame_with_padding)
-                traces_sample = traces_with_padding[start_frame - start_frame_with_padding: start_frame - start_frame_with_padding + int(sampling_frequency * 1), :]
+                traces_sample = traces_with_padding[start_frame - start_frame_with_padding : start_frame - start_frame_with_padding + int(sampling_frequency * 1), :]
                 f.create_dataset(f"segment/{iseg}/traces_sample", data=traces_sample)
                 all_subsampled_spike_trains = []
                 for unit_id in unit_ids:
@@ -137,7 +137,7 @@ def prepare_spikesortingview_data(
                     channel_neighborhood = unit_channel_neighborhoods[str(unit_id)]
                     channel_neighborhood_indices = [channel_ids.tolist().index(ch_id) for ch_id in channel_neighborhood]
                     num = len(all_subsampled_spike_trains[ii])
-                    spike_snippets = spike_snippets_concat[index: index + num, :, channel_neighborhood_indices]
+                    spike_snippets = spike_snippets_concat[index : index + num, :, channel_neighborhood_indices]
                     index = index + num
                     f.create_dataset(f"segment/{iseg}/unit/{unit_id}/subsampled_spike_snippets", data=spike_snippets)
         uri = kcl.store_file_local(output_file_name)
@@ -165,7 +165,7 @@ def subsample(x: np.ndarray, num: int):
     if num >= len(x):
         return x
     stride = math.floor(len(x) / num)
-    return x[0: stride * num: stride]
+    return x[0 : stride * num : stride]
 
 
 def extract_spike_snippets(*, traces: np.ndarray, times: np.ndarray, snippet_len: Tuple[int, int]):
