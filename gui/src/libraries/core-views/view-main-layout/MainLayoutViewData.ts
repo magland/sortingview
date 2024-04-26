@@ -36,6 +36,7 @@ export type LayoutItem = {
 } | {
     type: 'TabLayout'
     items: LayoutItem[]
+    tabBarLayout?: 'horizontal' | 'vertical'
     itemProperties: {
         label: string
     }[]
@@ -86,7 +87,8 @@ export const isLayoutItem = (x: any): x is LayoutItem => {
             items: isArrayOf(isLayoutItem),
             itemProperties: isArrayOf(z => (validateObject(z, {
                 label: isString
-            })))
+            }))),
+            tabBarLayout: optional(isOneOf(['horizontal', 'vertical'].map(s => (isEqualTo(s)))))
         })),
         (y: any) => (validateObject(y, {
             type: isEqualTo('View'),

@@ -29,6 +29,7 @@ const TabLayoutItemView: FunctionComponent<Props> = ({layoutItem, ViewComponent,
             tabs={tabs}
             width={width}
             height={height}
+            tabBarLayout={layoutItem.tabBarLayout}
         >
             {
                 items.map((item, ii) => (

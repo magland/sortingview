@@ -5,6 +5,7 @@ type Props = {
     tabs: {
         label: string
     }[]
+    tabBarLayout?: 'horizontal' | 'vertical'
     width: number
     height: number
 }
@@ -12,7 +13,38 @@ type Props = {
 // needs to correspond to css (not best system) - see mountainview.css
 const tabBarHeight = 30 + 5
 
-const TabWidget: FunctionComponent<PropsWithChildren<Props>> = ({children, tabs, width, height}) => {
+const TabWidget: FunctionComponent<PropsWithChildren<Props>> = ({children, tabs, tabBarLayout, width, height}) => {
+    const tbl = tabBarLayout || 'horizontal'
+    if (tbl === 'horizontal') {
+        return (
+            <TabWidgetHorizontal
+                tabs={tabs}
+                tabBarLayout={tabBarLayout}
+                width={width}
+                height={height}
+            >
+                {children}
+            </TabWidgetHorizontal>
+        )
+    }
+    else if (tbl === 'vertical') {
+        return (
+            <TabWidgetVertical
+                tabs={tabs}
+                tabBarLayout={tabBarLayout}
+                width={width}
+                height={height}
+            >
+                {children}
+            </TabWidgetVertical>
+        )
+    }
+    else {
+        return <div>TabWidget: unknown tabBarLayout {tbl}</div>
+    }
+}
+
+const TabWidgetHorizontal: FunctionComponent<PropsWithChildren<Props>> = ({children, tabs, tabBarLayout, width, height}) => {
     const [currentTabIndex, setCurrentTabIndex] = useState<number | undefined>(undefined)
     const children2 = children as React.ReactElement[]
     if ((children2 || []).length !== tabs.length) {
@@ -32,7 +64,7 @@ const TabWidget: FunctionComponent<PropsWithChildren<Props>> = ({children, tabs,
                     tabs={tabs}
                     currentTabIndex={currentTabIndex}
                     onCurrentTabIndexChanged={setCurrentTabIndex}
-                    onTabClosed={() => {}}
+                    onTabClosed={undefined}
                 />
             </div>
             {
@@ -44,6 +76,69 @@ const TabWidget: FunctionComponent<PropsWithChildren<Props>> = ({children, tabs,
                         </div>
                     )
                 })
+            }
+        </div>
+    )
+}
+
+const TabWidgetVertical: FunctionComponent<PropsWithChildren<Props>> = ({children, tabs, tabBarLayout, width, height}) => {
+    const [currentTabIndex, setCurrentTabIndex] = useState<number | undefined>(0)
+    const children2 = children as React.ReactElement[]
+    if ((children2 || []).length !== tabs.length) {
+        throw Error('TabWidget: incorrect number of tabs')
+    }
+    const leftPanelWidth = Math.min(250, width / 3)
+    const W = width - leftPanelWidth
+    const H = height
+    return (
+        <div
+            style={{position: 'absolute', left: 0, top: 0, width: W, height: H}}
+            className="TabWidgetVertical"
+        >
+            <div style={{position: 'absolute', left: 0, top: 0, width: leftPanelWidth, height: H}}>
+                <VerticalTabSelectionPanel
+                    width={leftPanelWidth}
+                    height={H}
+                    tabs={tabs}
+                    currentTabIndex={currentTabIndex}
+                    onCurrentTabIndexChanged={setCurrentTabIndex}
+                />
+            </div>
+            <div style={{position: 'absolute', left: leftPanelWidth, top: 0, width: W - leftPanelWidth, height: H}}>
+                {
+                    children2.map((c, i) => {
+                        const visible = i === currentTabIndex
+                        return (
+                            <div key={`child-${i}`} style={{visibility: visible ? undefined : 'hidden', overflowY: 'hidden', overflowX: 'hidden', position: 'absolute', left: 0, top: 0, width: W - leftPanelWidth, height: H}}>
+                                <c.type {...c.props} width={W - leftPanelWidth} height={H}/>
+                            </div>
+                        )
+                    })
+                }
+            </div>
+        </div>
+    )
+}
+
+type VerticalTabSelectionPanelProps = {
+    tabs: {
+        label: string
+    }[]
+    currentTabIndex?: number
+    onCurrentTabIndexChanged: (i: number) => void
+    width: number
+    height: number
+}
+
+const VerticalTabSelectionPanel: FunctionComponent<VerticalTabSelectionPanelProps> = ({tabs, currentTabIndex, onCurrentTabIndexChanged, width, height}) => {
+    return (
+        <div style={{position: 'absolute', left: 0, top: 0, width: width, height: height, overflowY: 'auto'}}>
+            {
+                tabs.map((tab, i) => (
+                    <div key={i} style={{padding: 4, cursor: 'pointer', backgroundColor: i === currentTabIndex ? 'lightgray' : undefined}} onClick={() => onCurrentTabIndexChanged(i)}>
+                        {tab.label}
+                    </div>
+                ))
             }
         </div>
     )

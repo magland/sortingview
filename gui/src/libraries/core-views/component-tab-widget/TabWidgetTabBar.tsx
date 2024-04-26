@@ -9,7 +9,7 @@ type Props = {
     }[]
     currentTabIndex: number | undefined
     onCurrentTabIndexChanged: (i: number) => void
-    onTabClosed: (i: number) => void
+    onTabClosed?: (i: number) => void
 }
 
 const TabWidgetTabBar: FunctionComponent<Props> = ({ tabs, currentTabIndex, onCurrentTabIndexChanged, onTabClosed }) => {
@@ -53,7 +53,7 @@ const TabWidgetTabBar: FunctionComponent<Props> = ({ tabs, currentTabIndex, onCu
 type TabProps = {
     tab: {label: string}
     tabIndex: number
-    onClose: (i: number) => void
+    onClose?: (i: number) => void
     opts: {selected?: boolean}
     onClick: (i: number) => void
 }
@@ -75,7 +75,7 @@ const TabWidgetTab: FunctionComponent<TabProps> = ({tab, onClose, opts, onClick,
             {<icon.type {...icon.props} style={{paddingRight: 5, paddingLeft: 3, paddingTop: 0, width: 20, height: 20, display: 'inline', verticalAlign: 'middle'}} />}
             <span style={{display: 'inline', verticalAlign: 'middle'}}>{tab.label}</span>
             <span>&nbsp;</span>
-            <IconButton
+            {onClose ? <IconButton
                 component="div"
                 onClick={() => onClose(tabIndex)}
                 className="CloseButton"
@@ -88,12 +88,12 @@ const TabWidgetTab: FunctionComponent<TabProps> = ({tab, onClose, opts, onClick,
                         fontSize: 20
                     }}
                 />
-            </IconButton>
+            </IconButton> : <span />}
         </div>
     )
     const style: React.CSSProperties = useMemo(() => (opts.selected ? {color: 'black', fontWeight: 'bold'} : {color: 'gray'}), [opts.selected])
     return (
-        <Tab key={tabIndex} label={label} className="Tab" style={style} />
+        <Tab key={tabIndex} label={label} className="Tab" style={style} wrapped={true} />
     )
 }
 
