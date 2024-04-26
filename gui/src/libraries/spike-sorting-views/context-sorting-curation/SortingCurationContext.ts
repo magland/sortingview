@@ -27,7 +27,7 @@ export const sortingCurationReducer = (state: SortingCuration, action: SortingCu
         const uids: (number | string)[] = typeof(action.unitId) === 'object' ? action.unitId : [action.unitId]
         const newLabelsByUnit = {...(state.labelsByUnit || {})}
         let somethingChanged = false
-        for (let uid of uids) {
+        for (const uid of uids) {
             const labels = newLabelsByUnit[uid + ''] || []
             if (!labels.includes(action.label)) {
                 somethingChanged = true
@@ -62,7 +62,7 @@ export const sortingCurationReducer = (state: SortingCuration, action: SortingCu
         const uids: (number | string)[] = typeof(action.unitId) === 'object' ? action.unitId : [action.unitId]
         const newLabelsByUnit = {...(state.labelsByUnit || {})}
         let somethingChanged = false
-        for (let uid of uids) {
+        for (const uid of uids) {
             const labels = newLabelsByUnit[uid + ''] || []
             if (labels.includes(action.label)) {
                 somethingChanged = true

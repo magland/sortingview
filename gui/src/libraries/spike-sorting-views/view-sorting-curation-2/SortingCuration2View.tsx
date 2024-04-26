@@ -42,14 +42,14 @@ const SortingCuration2View: FunctionComponent<Props> = ({data, width, height}) =
             if ((cbState === 'unchecked') || (cbState === 'indeterminant')) {
                 sortingCurationDispatch({
                     type: 'ADD_UNIT_LABEL',
-                    unitId: selectedUnitIds,
+                    unitId: [...selectedUnitIds],
                     label
                 })
             }
             else if (cbState === 'checked') {
                 sortingCurationDispatch({
                     type: 'REMOVE_UNIT_LABEL',
-                    unitId: selectedUnitIds,
+                    unitId: [...selectedUnitIds],
                     label
                 })
             }

@@ -21,7 +21,7 @@ const UnitMetricScatterPlot: FunctionComponent<UnitMetricScatterPlotProps> = ({m
     const radius = 6
     const markers: ScatterPlotMarker[] = useMemo(() => {
         const ret: ScatterPlotMarker[] = []
-        for (let unit of units) {
+        for (const unit of units) {
             const xValue = unit.values[metric1.key]
             const yValue = unit.values[metric2.key]
             if ((xValue !== undefined) && (yValue !== undefined)) {
