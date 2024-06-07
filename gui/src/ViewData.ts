@@ -14,6 +14,7 @@ import { isSortingSelectionViewData, SortingSelectionViewData } from './librarie
 import { isSummaryViewData, SummaryViewData } from "./libraries/view-summary"
 import { isTest1ViewData, Test1ViewData } from './libraries/view-test-1'
 import { EphysTracesViewData, isEphysTracesViewData } from './libraries/view-ephys-traces-dev'
+import { isPlotlyFigureViewData, PlotlyFigureViewData } from './libraries/core-views/view-plotly-figure'
 
 export type ViewData =
     CompositeViewData |
@@ -30,7 +31,8 @@ export type ViewData =
     SortingSelectionViewData |
     ExperimentalSelector1ViewData |
     Test1ViewData |
-    EphysTracesViewData
+    EphysTracesViewData |
+    PlotlyFigureViewData
 
 export const isViewData = (x: any): x is ViewData => {
     return isOneOf([
@@ -48,6 +50,7 @@ export const isViewData = (x: any): x is ViewData => {
         isSortingSelectionViewData,
         isExperimentalSelector1ViewData,
         isTest1ViewData,
-        isEphysTracesViewData
+        isEphysTracesViewData,
+        isPlotlyFigureViewData
     ])(x)
 }

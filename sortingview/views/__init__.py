@@ -26,5 +26,6 @@ from .ConfusionMatrix import ConfusionMatrix, UnitEventCount, MatchingUnitEventC
 from .TimeseriesGraph import TimeseriesGraph, TGDataset, TGSeries
 from .Image import Image
 from .UnitImages import UnitImages, UnitImagesItem
+from .PlotlyFigure import PlotlyFigure
 
 from .EphysTraces import EphysTraces

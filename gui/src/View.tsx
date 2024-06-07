@@ -19,6 +19,7 @@ import {loadView as loadTimeseriesView} from './libraries/timeseries-views'
 import {default as loadSpikeSortingView} from './libraries/spike-sorting-views/loadView'
 import {default as loadFranklabView} from './libraries/franklab-views/loadView'
 import { EphysTracesView } from './libraries/view-ephys-traces-dev';
+import { PlotlyFigureView } from './libraries/core-views/view-plotly-figure';
 
 export type TimeseriesLayoutOpts = {
     hideToolbar?: boolean
@@ -83,6 +84,9 @@ const View: FunctionComponent<Props> = ({data, width, height, opts}) => {
             else if (data.type === 'EphysTraces') {
                 return <EphysTracesView data={data} width={width} height={height} />
             }
+            else if (data.type === 'PlotlyFigure') {
+                return <PlotlyFigureView data={data} width={width} height={height} />
+            }
         }
         else {
             const viewLoaders = [loadCoreView, loadTimeseriesView, loadSpikeSortingView, loadFranklabView]
@@ -93,7 +97,7 @@ const View: FunctionComponent<Props> = ({data, width, height, opts}) => {
             return undefined
         }
     }, [data, height, width, opts])
-    
+
     if (v) return v
 
     console.warn('Unsupported view data', data)
