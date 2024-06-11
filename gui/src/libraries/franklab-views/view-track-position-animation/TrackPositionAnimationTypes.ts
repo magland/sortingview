@@ -26,7 +26,7 @@ export type DecodedPositionFramePx = {
  * represented as a set of rectangles (a sparse subset of the full grid), and there are separate lists of timestamps
  * and corresponding positions, as well as the track extrema and the
  * optional sampling rate (number of frames per second in the recording - controls the base replay rate).
- * 
+ *
  * @member trackBinWidth The width of a single tile in the track, in native units. NOT
  * the width of the overall track.
  * @member trackBinHeight The height of a single tile in the track, in native units. NOT
@@ -69,6 +69,8 @@ export type TrackAnimationStaticData = {
 }
 
 export const isTrackAnimationStaticData = (x: any): x is TrackAnimationStaticData => {
+    if (!x) return false
+    if (x.type !== 'TrackAnimation') return false
     const typeMatch = validateObject(x, {
         type: isEqualTo('TrackAnimation'),
         trackBinWidth: isNumber,
@@ -85,23 +87,49 @@ export const isTrackAnimationStaticData = (x: any): x is TrackAnimationStaticDat
         decodedData: optional(isDecodedPositionData),
         headDirection: optional(isArrayOf(isNumber)),
         samplingFrequencyHz: optional(isNumber)
-    })
-    if (typeMatch) {
-        const candidate = x as TrackAnimationStaticData
-        const rangeFail = candidate.xmin >= candidate.xmax || candidate.ymin >= candidate.ymax
-        const trackRectsDimensionsFail = candidate.trackBinULCorners.length !== 2 || candidate.trackBinULCorners[0].length !== candidate.trackBinULCorners[1].length
-        const positionDimensionsFail = candidate.positions.length !== 2
-        const timesCount = candidate.timestamps.length
-        const timestampPositionMismatch = timesCount !== candidate.positions[0].length || timesCount !== candidate.positions[1].length
-        const headDirectionLengthMismatch = (candidate.headDirection && candidate.headDirection.length > 0 && timesCount !== candidate.headDirection.length)
-        const decodedProbabilityFrameBoundsMatchesOverallFrameLength = (!x.decodedProbabilityFrameBounds) || (x.decodedProbabilityFrameBounds.length === x.totalRecordingFrameLength)
-        const decodedDataFrameCountMatchesPositionData = !(candidate.decodedData) || !(candidate.decodedData.frameBounds) || candidate.decodedData.frameBounds.length === timesCount
+    }, {callback: console.warn})
+    if (!typeMatch) return false
 
-        return !(rangeFail || trackRectsDimensionsFail || positionDimensionsFail || timestampPositionMismatch || headDirectionLengthMismatch
-                    || !decodedProbabilityFrameBoundsMatchesOverallFrameLength || !decodedDataFrameCountMatchesPositionData)
+    const candidate = x as TrackAnimationStaticData
+    const rangeFail = candidate.xmin >= candidate.xmax || candidate.ymin >= candidate.ymax
+    const trackRectsDimensionsFail = candidate.trackBinULCorners.length !== 2 || candidate.trackBinULCorners[0].length !== candidate.trackBinULCorners[1].length
+    const positionDimensionsFail = candidate.positions.length !== 2
+    const timesCount = candidate.timestamps.length
+    const timestampPositionMismatch = timesCount !== candidate.positions[0].length || timesCount !== candidate.positions[1].length
+    const headDirectionLengthMismatch = (candidate.headDirection && candidate.headDirection.length > 0 && timesCount !== candidate.headDirection.length)
+    const decodedProbabilityFrameBoundsMatchesOverallFrameLength = (!x.decodedProbabilityFrameBounds) || (x.decodedProbabilityFrameBounds.length === x.totalRecordingFrameLength)
+    const decodedDataFrameCountMatchesPositionData = !(candidate.decodedData) || !(candidate.decodedData.frameBounds) || candidate.decodedData.frameBounds.length === timesCount
+
+    if (rangeFail) {
+        console.warn(`Range failure: ${candidate.xmin} >= ${candidate.xmax} or ${candidate.ymin} >= ${candidate.ymax}`)
+        return false
+    }
+    if (trackRectsDimensionsFail) {
+        console.warn(`Track rectangle dimensions failure: ${candidate.trackBinULCorners.length} !== 2 || ${candidate.trackBinULCorners[0].length} !== ${candidate.trackBinULCorners[1].length}`)
+        return false
+    }
+    if (positionDimensionsFail) {
+        console.warn(`Position dimensions failure: ${candidate.positions.length} !== 2`)
+        return false
+    }
+    if (timestampPositionMismatch) {
+        console.warn(`Timestamp-position mismatch: ${timesCount} !== ${candidate.positions[0].length} or ${timesCount} !== ${candidate.positions[1].length}`)
+        return false
+    }
+    if (headDirectionLengthMismatch) {
+        console.warn(`Head direction length mismatch: ${timesCount} !== ${candidate.headDirection?.length}`)
+        return false
+    }
+    if (!decodedProbabilityFrameBoundsMatchesOverallFrameLength) {
+        console.warn(`Decoded probability frame bounds do not match overall frame length.`)
+        return false
+    }
+    if (!decodedDataFrameCountMatchesPositionData) {
+        console.warn(`Decoded data frame count does not match position data.`)
+        return false
     }
 
-    return false
+    return true
 }
 
 /**
