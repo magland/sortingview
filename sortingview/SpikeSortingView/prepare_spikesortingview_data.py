@@ -36,13 +36,9 @@ def prepare_spikesortingview_data(
     num_frames = recording.get_num_frames()
     num_frames_per_segment = math.ceil(segment_duration_sec * sampling_frequency)
     num_segments = math.ceil(num_frames / num_frames_per_segment)
-    if hasattr(recording, "has_scaleable_traces") and callable(
-        getattr(recording, "has_scaleable_traces")
-    ):
+    if hasattr(recording, "has_scaleable_traces") and callable(getattr(recording, "has_scaleable_traces")):
         scalable = recording.has_scaleable_traces()
-    elif hasattr(recording, "has_scaled") and callable(
-        getattr(recording, "has_scaled")
-    ):
+    elif hasattr(recording, "has_scaled") and callable(getattr(recording, "has_scaled")):
         scalable = recording.has_scaled()
     else:
         scalable = False
@@ -59,9 +55,7 @@ def prepare_spikesortingview_data(
             f.create_dataset("num_frames", data=np.array([num_frames]).astype(int_type))
             channel_locations = recording.get_channel_locations()
             f.create_dataset("channel_locations", data=np.array(channel_locations))
-            f.create_dataset(
-                "num_segments", data=np.array([num_segments]).astype(np.int32)
-            )
+            f.create_dataset("num_segments", data=np.array([num_segments]).astype(np.int32))
             f.create_dataset(
                 "num_frames_per_segment",
                 data=np.array([num_frames_per_segment]).astype(np.int32),
@@ -110,9 +104,7 @@ def prepare_spikesortingview_data(
                         )
                         assert isinstance(spike_train, np.ndarray)
                         if len(spike_train) > 0:
-                            values = traces_with_padding[
-                                spike_train - start_frame_with_padding, :
-                            ].astype(np.int32)
+                            values = traces_with_padding[spike_train - start_frame_with_padding, :].astype(np.int32)
                             avg_value = np.mean(values, axis=0)
                             peak_channel_ind = np.argmax(np.abs(avg_value))
                             peak_channel_id = channel_ids[peak_channel_ind]
@@ -125,22 +117,14 @@ def prepare_spikesortingview_data(
                             if len(spike_train) >= 10:
                                 unit_peak_channel_ids[str(unit_id)] = peak_channel_id
                             else:
-                                fallback_unit_peak_channel_ids[
-                                    str(unit_id)
-                                ] = peak_channel_id
-                            unit_channel_neighborhoods[
-                                str(unit_id)
-                            ] = channel_neighborhood
+                                fallback_unit_peak_channel_ids[str(unit_id)] = peak_channel_id
+                            unit_channel_neighborhoods[str(unit_id)] = channel_neighborhood
             for unit_id in unit_ids:
                 peak_channel_id = unit_peak_channel_ids.get(str(unit_id), None)
                 if peak_channel_id is None:
-                    peak_channel_id = fallback_unit_peak_channel_ids.get(
-                        str(unit_id), None
-                    )
+                    peak_channel_id = fallback_unit_peak_channel_ids.get(str(unit_id), None)
                 if peak_channel_id is None:
-                    raise Exception(
-                        f"Peak channel not found for unit {unit_id}. This is probably because no spikes were found in any segment for this unit."
-                    )
+                    raise Exception(f"Peak channel not found for unit {unit_id}. This is probably because no spikes were found in any segment for this unit.")
                 channel_neighborhood = unit_channel_neighborhoods[str(unit_id)]
                 f.create_dataset(
                     f"unit/{unit_id}/peak_channel_id",
@@ -163,10 +147,7 @@ def prepare_spikesortingview_data(
                     return_scaled=scalable,
                 )
                 traces_sample = traces_with_padding[
-                    start_frame
-                    - start_frame_with_padding : start_frame
-                    - start_frame_with_padding
-                    + int(sampling_frequency * 1),
+                    start_frame - start_frame_with_padding : start_frame - start_frame_with_padding + int(sampling_frequency * 1),
                     :,
                 ]
                 f.create_dataset(f"segment/{iseg}/traces_sample", data=traces_sample)
@@ -174,38 +155,23 @@ def prepare_spikesortingview_data(
                 for unit_id in unit_ids:
                     peak_channel_id = unit_peak_channel_ids.get(str(unit_id), None)
                     if peak_channel_id is None:
-                        peak_channel_id = fallback_unit_peak_channel_ids.get(
-                            str(unit_id), None
-                        )
+                        peak_channel_id = fallback_unit_peak_channel_ids.get(str(unit_id), None)
                     if peak_channel_id is None:
-                        raise Exception(
-                            f"Peak channel not found for unit {unit_id}. This is probably because no spikes were found in any segment for this unit."
-                        )
-                    spike_train = sorting.get_unit_spike_train(
-                        unit_id=unit_id, start_frame=start_frame, end_frame=end_frame
-                    ).astype(int_type)
-                    f.create_dataset(
-                        f"segment/{iseg}/unit/{unit_id}/spike_train", data=spike_train
-                    )
+                        raise Exception(f"Peak channel not found for unit {unit_id}. This is probably because no spikes were found in any segment for this unit.")
+                    spike_train = sorting.get_unit_spike_train(unit_id=unit_id, start_frame=start_frame, end_frame=end_frame).astype(int_type)
+                    f.create_dataset(f"segment/{iseg}/unit/{unit_id}/spike_train", data=spike_train)
                     channel_neighborhood = unit_channel_neighborhoods[str(unit_id)]
                     peak_channel_ind = channel_ids.tolist().index(peak_channel_id)
                     if len(spike_train) > 0:
-                        spike_amplitudes = traces_with_padding[
-                            spike_train - start_frame_with_padding, peak_channel_ind
-                        ]
+                        spike_amplitudes = traces_with_padding[spike_train - start_frame_with_padding, peak_channel_ind]
                         f.create_dataset(
                             f"segment/{iseg}/unit/{unit_id}/spike_amplitudes",
                             data=spike_amplitudes,
                         )
                     else:
                         spike_amplitudes = np.array([], dtype=np.int32)
-                    if (
-                        max_num_snippets_per_segment is not None
-                        and len(spike_train) > max_num_snippets_per_segment
-                    ):
-                        subsampled_spike_train = subsample(
-                            spike_train, max_num_snippets_per_segment
-                        )
+                    if max_num_snippets_per_segment is not None and len(spike_train) > max_num_snippets_per_segment:
+                        subsampled_spike_train = subsample(spike_train, max_num_snippets_per_segment)
                     else:
                         subsampled_spike_train = spike_train
                     f.create_dataset(
@@ -213,9 +179,7 @@ def prepare_spikesortingview_data(
                         data=subsampled_spike_train,
                     )
                     all_subsampled_spike_trains.append(subsampled_spike_train)
-                subsampled_spike_trains_concat = np.concatenate(
-                    all_subsampled_spike_trains
-                )
+                subsampled_spike_trains_concat = np.concatenate(all_subsampled_spike_trains)
                 # print('Extracting spike snippets')
                 spike_snippets_concat = extract_spike_snippets(
                     traces=traces_with_padding,
@@ -226,14 +190,9 @@ def prepare_spikesortingview_data(
                 index = 0
                 for ii, unit_id in enumerate(unit_ids):
                     channel_neighborhood = unit_channel_neighborhoods[str(unit_id)]
-                    channel_neighborhood_indices = [
-                        channel_ids.tolist().index(ch_id)
-                        for ch_id in channel_neighborhood
-                    ]
+                    channel_neighborhood_indices = [channel_ids.tolist().index(ch_id) for ch_id in channel_neighborhood]
                     num = len(all_subsampled_spike_trains[ii])
-                    spike_snippets = spike_snippets_concat[
-                        index : index + num, :, channel_neighborhood_indices
-                    ]
+                    spike_snippets = spike_snippets_concat[index : index + num, :, channel_neighborhood_indices]
                     index = index + num
                     f.create_dataset(
                         f"segment/{iseg}/unit/{unit_id}/subsampled_spike_snippets",
@@ -273,9 +232,7 @@ def subsample(x: np.ndarray, num: int):
     return x[0 : stride * num : stride]
 
 
-def extract_spike_snippets(
-    *, traces: np.ndarray, times: np.ndarray, snippet_len: Tuple[int, int]
-):
+def extract_spike_snippets(*, traces: np.ndarray, times: np.ndarray, snippet_len: Tuple[int, int]):
     a = snippet_len[0]
     b = snippet_len[1]
     T = a + b
