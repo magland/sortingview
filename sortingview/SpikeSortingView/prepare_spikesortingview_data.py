@@ -36,7 +36,13 @@ def prepare_spikesortingview_data(
     num_frames = recording.get_num_frames()
     num_frames_per_segment = math.ceil(segment_duration_sec * sampling_frequency)
     num_segments = math.ceil(num_frames / num_frames_per_segment)
-
+    if hasattr(recording, 'has_scaleable_traces') and callable(getattr(recording, 'has_scaleable_traces')):
+        scalable = recording.has_scaleable_traces()
+    elif hasattr(recording, 'has_scaled') and callable(getattr(recording, 'has_scaled')):
+        scalable = recording.has_scaled()
+    else:
+        scalable = False
+    
     with kcl.TemporaryDirectory() as tmpdir:
         output_file_name = tmpdir + "/spikesortingview.h5"
         with h5py.File(output_file_name, "w") as f:
@@ -68,7 +74,7 @@ def prepare_spikesortingview_data(
                 end_frame = min(start_frame + num_frames_per_segment, num_frames)
                 start_frame_with_padding = max(start_frame - snippet_len[0], 0)
                 end_frame_with_padding = min(end_frame + snippet_len[1], num_frames)
-                traces_with_padding = recording.get_traces(start_frame=start_frame_with_padding, end_frame=end_frame_with_padding)
+                traces_with_padding = recording.get_traces(start_frame=start_frame_with_padding, end_frame=end_frame_with_padding, return_scaled=scalable)
                 assert isinstance(traces_with_padding, np.ndarray)
                 for unit_id in unit_ids:
                     if str(unit_id) not in unit_peak_channel_ids:
@@ -103,7 +109,7 @@ def prepare_spikesortingview_data(
                 end_frame = min(start_frame + num_frames_per_segment, num_frames)
                 start_frame_with_padding = max(start_frame - snippet_len[0], 0)
                 end_frame_with_padding = min(end_frame + snippet_len[1], num_frames)
-                traces_with_padding = recording.get_traces(start_frame=start_frame_with_padding, end_frame=end_frame_with_padding)
+                traces_with_padding = recording.get_traces(start_frame=start_frame_with_padding, end_frame=end_frame_with_padding, return_scaled=scalable)
                 traces_sample = traces_with_padding[start_frame - start_frame_with_padding : start_frame - start_frame_with_padding + int(sampling_frequency * 1), :]
                 f.create_dataset(f"segment/{iseg}/traces_sample", data=traces_sample)
                 all_subsampled_spike_trains = []
