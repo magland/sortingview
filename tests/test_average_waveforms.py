@@ -49,9 +49,9 @@ def extract_snippets(*, traces: np.ndarray, times: np.ndarray, snippet_len: Tupl
 
 
 def compute_average_waveform(*, recording: si.BaseRecording, sorting: si.BaseSorting, unit_id: int):
-    if hasattr(recording, 'has_scaleable_traces') and callable(getattr(recording, 'has_scaleable_traces')):
+    if hasattr(recording, "has_scaleable_traces") and callable(getattr(recording, "has_scaleable_traces")):
         scalable = recording.has_scaleable_traces()
-    elif hasattr(recording, 'has_scaled') and callable(getattr(recording, 'has_scaled')):
+    elif hasattr(recording, "has_scaled") and callable(getattr(recording, "has_scaled")):
         scalable = recording.has_scaled()
     else:
         scalable = False

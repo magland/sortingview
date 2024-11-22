@@ -12,7 +12,7 @@ def main():
 
 
 def example_plotly():
-    fig = go.Figure(data=[go.Scatter(x=[1, 2, 3, 4], y=[10, 11, 12, 13], mode='markers')])
+    fig = go.Figure(data=[go.Scatter(x=[1, 2, 3, 4], y=[10, 11, 12, 13], mode="markers")])
     view = vv.PlotlyFigure(fig=fig)
     return view
 
