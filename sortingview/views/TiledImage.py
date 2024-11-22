@@ -1,8 +1,9 @@
 from concurrent.futures import ThreadPoolExecutor
+from tempfile import TemporaryDirectory
 import os
 from typing import Any, List, Union
 import numpy as np
-import kachery_cloud as kcl
+import kachery as ka
 from .View import View
 
 pyvips_installation_msg = "To use TiledImage you need to install pyvips (conda recommended)"
@@ -43,7 +44,7 @@ class TiledImage(View):
             layer_label: str = L.label
             image: pyvips.Image = L.image
             num_zoom_levels = 0
-            with kcl.TemporaryDirectory() as tmpdir:
+            with TemporaryDirectory() as tmpdir:
                 image.dzsave(f"{tmpdir}/output", overlap=0, tile_size=self._tile_size, layout=pyvips.enums.ForeignDzLayout.DZ)  # type: ignore
                 output_dirname = f"{tmpdir}/output_files"
 
@@ -98,7 +99,7 @@ class TiledImage(View):
 #     uris: List[str] = []
 #     for fname, label in zip(fnames, labels):
 #         print(f'Storing file: {fname}')
-#         uri = kcl.store_file(fname, label=label)
+#         uri = ka.store_file(fname, label=label)
 #         uris.append(uri)
 #     return uris
 
@@ -112,4 +113,4 @@ def _store_files_parallel(fnames: List[str], verbose: bool = True, *, labels: Li
 def _store_file(fname: str, label: str, verbose: str):
     if verbose:
         print(f"Storing file: {fname}")
-    return kcl.store_file(fname, label=label)
+    return ka.store_file(fname, label=label)

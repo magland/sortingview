@@ -1,6 +1,6 @@
 import os
 from typing import Union
-import kachery_cloud as kcl
+import kachery as ka
 from .Figure import Figure
 
 
@@ -25,5 +25,5 @@ class MultiTimeseries:
 
 
 def _upload_data_and_return_uri(data):
-    data_uri = kcl.store_json(data)
+    data_uri = ka.store_json(data)
     return data_uri

@@ -1,9 +1,9 @@
 import sortingview.views as vv
-import kachery_cloud as kcl
+import kachery as ka
 
 
 def main():
-    kcl.use_sandbox()
+    ka.use_sandbox()
     view = example_image()
 
     url = view.url(label="Image example")

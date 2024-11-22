@@ -2,11 +2,11 @@
 # https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://1c894158e5518d6ff05fa36373ba8a543f1ee28f&label=Markdown%20example
 
 import sortingview.views as vv
-import kachery_cloud as kcl
+import kachery as ka
 
 
 def main():
-    kcl.use_sandbox()
+    ka.use_sandbox()
     view = example_markdown()
 
     url = view.url(label="Markdown example")

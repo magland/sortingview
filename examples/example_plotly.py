@@ -1,10 +1,10 @@
 import sortingview.views as vv
-import kachery_cloud as kcl
+import kachery as ka
 import plotly.graph_objects as go
 
 
 def main():
-    kcl.use_sandbox()
+    ka.use_sandbox()
     view = example_plotly()
 
     url = view.url(label="Plotly example")

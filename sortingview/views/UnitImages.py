@@ -1,7 +1,8 @@
 from typing import List, Union
+from tempfile import TemporaryDirectory
 from .View import View
 from .Image import _form_data_url
-import kachery_cloud as kcl
+import kachery as ka
 
 
 class UnitImagesItem:
@@ -11,7 +12,7 @@ class UnitImagesItem:
 
     def __init__(self, unit_id: Union[int, str], figure, dpi: int) -> None:
         self.unit_id = unit_id
-        with kcl.TemporaryDirectory() as tmpdir:
+        with TemporaryDirectory() as tmpdir:
             fname = f"{tmpdir}/image.jpg"
             figure.savefig(fname, dpi=dpi)
             self.url = _form_data_url(fname)

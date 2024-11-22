@@ -4,11 +4,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import sortingview.views as vv
-import kachery_cloud as kcl
+import kachery as ka
 
 
 def main():
-    kcl.use_sandbox()
+    ka.use_sandbox()
     view = example_tiled_image()
 
     url = view.url(label="Tiled image example")

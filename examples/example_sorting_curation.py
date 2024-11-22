@@ -1,7 +1,7 @@
 # 10/10/22
 # https://figurl.org/f?v=gs://figurl/spikesortingview-10&d=sha1://bd702d032c8326d65484238ba3b2c505c421e095&label=Sorting%20curation%20example
 
-import kachery_cloud as kcl
+import kachery as ka
 import sortingview.views as vv
 import spikeinterface.extractors as se
 import spikeinterface as si
@@ -9,7 +9,7 @@ from helpers.create_units_table import create_units_table
 
 
 def main():
-    kcl.use_sandbox()
+    ka.use_sandbox()
     _, sorting = se.toy_example(num_units=12, duration=300, seed=0, num_segments=1)
 
     view = example_sorting_curation(sorting=sorting)

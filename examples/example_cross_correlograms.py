@@ -5,12 +5,12 @@ from typing import List
 import sortingview.views as vv
 import spikeinterface as si
 import spikeinterface.extractors as se
-import kachery_cloud as kcl
+import kachery as ka
 from helpers.compute_correlogram_data import compute_correlogram_data
 
 
 def main():
-    kcl.use_sandbox()
+    ka.use_sandbox()
     _, sorting = se.toy_example(num_units=12, duration=300, seed=0, num_segments=1)
 
     view = example_cross_correlograms(sorting=sorting)

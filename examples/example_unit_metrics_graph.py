@@ -5,12 +5,12 @@ from typing import List
 import sortingview.views as vv
 import spikeinterface as si
 import spikeinterface.extractors as se
-import kachery_cloud as kcl
+import kachery as ka
 from helpers.create_units_table import create_units_table
 
 
 def main():
-    kcl.use_sandbox()
+    ka.use_sandbox()
     recording, sorting = se.toy_example(num_units=12, duration=300, seed=0, num_segments=1)
     assert isinstance(recording, si.BaseRecording)
 

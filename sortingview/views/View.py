@@ -1,7 +1,7 @@
 from copy import deepcopy
 from abc import abstractmethod
 from typing import List, Union
-import kachery_cloud as kcl
+import kachery as ka
 import figurl as fig
 import uuid
 from ..sortingview_view_url import sortingview_view_url
@@ -150,7 +150,7 @@ class View:
 
 
 def _upload_data_and_return_uri(data, *, local: bool = False, allow_float64: bool = False):
-    return kcl.store_json(fig.serialize_data(data, allow_float64=allow_float64), local=local)
+    return ka.store_json(fig.serialize_data(data, allow_float64=allow_float64), local=local)
 
 
 def _random_id():

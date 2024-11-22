@@ -3,11 +3,11 @@
 
 import numpy as np
 import sortingview.views.franklab as vvf
-import kachery_cloud as kcl
+import kachery as ka
 
 
 def main():
-    kcl.use_sandbox()
+    ka.use_sandbox()
     view = example_track_position_animation()
 
     url = view.url(label="Track position animation example")

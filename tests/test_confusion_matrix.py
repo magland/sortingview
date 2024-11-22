@@ -2,17 +2,18 @@
 # https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://6f924d60a45e2800b6cfe198188d46a911313864&label=test_confusion_matrix
 
 from typing import List
+from tempfile import TemporaryDirectory
 import spikeinterface as si
 import spikeinterface.sorters as ss
 import spikeinterface.comparison as sc
 import spikeinterface.extractors as se
-import kachery_cloud as kcl
+import kachery as ka
 import sortingview.views as vv
 
 
 def main():
     recording, _ = se.toy_example(num_units=12, num_channels=4, duration=200, seed=0, num_segments=1)
-    with kcl.TemporaryDirectory() as tmpdir:
+    with TemporaryDirectory() as tmpdir:
         sorter_params1 = {
             "detect_sign": -1,
             "adjacency_radius": -1,

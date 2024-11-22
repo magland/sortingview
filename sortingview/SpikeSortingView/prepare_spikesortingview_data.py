@@ -1,11 +1,12 @@
 from typing import Tuple, Union
+from tempfile import TemporaryDirectory
 import json
 import math
 import numpy as np
 import h5py
 import hashlib
 import spikeinterface as si
-import kachery_cloud as kcl
+import kachery as ka
 import spikeinterface.preprocessing as spre
 
 
@@ -43,7 +44,7 @@ def prepare_spikesortingview_data(
     else:
         scalable = False
 
-    with kcl.TemporaryDirectory() as tmpdir:
+    with TemporaryDirectory() as tmpdir:
         output_file_name = tmpdir + "/spikesortingview.h5"
         with h5py.File(output_file_name, "w") as f:
             f.create_dataset("unit_ids", data=unit_ids)
@@ -198,7 +199,7 @@ def prepare_spikesortingview_data(
                         f"segment/{iseg}/unit/{unit_id}/subsampled_spike_snippets",
                         data=spike_snippets,
                     )
-        uri = kcl.store_file_local(output_file_name)
+        uri = ka.store_file_local(output_file_name)
         return uri
 
 

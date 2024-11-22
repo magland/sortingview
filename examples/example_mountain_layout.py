@@ -4,7 +4,7 @@
 import sortingview.views as vv
 import spikeinterface.extractors as se
 import spikeinterface as si
-import kachery_cloud as kcl
+import kachery as ka
 from example_autocorrelograms import example_autocorrelograms
 from example_cross_correlograms import example_cross_correlograms
 from example_raster_plot import example_raster_plot
@@ -14,7 +14,7 @@ from example_unit_similarity_matrix import example_unit_unit_similarity_matrix
 
 
 def main():
-    kcl.use_sandbox()
+    ka.use_sandbox()
     R, S = se.toy_example(num_units=12, duration=300, seed=0, num_segments=1)
     assert isinstance(R, si.BaseRecording)
 

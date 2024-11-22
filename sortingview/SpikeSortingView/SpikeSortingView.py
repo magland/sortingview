@@ -1,6 +1,6 @@
 from typing import Tuple, Union
 import spikeinterface as si
-import kachery_cloud as kcl
+import kachery as ka
 import h5py
 import numpy as np
 from sortingview.SpikeSortingView.prepare_spikesortingview_data import prepare_spikesortingview_data
@@ -9,7 +9,7 @@ from sortingview.SpikeSortingView.prepare_spikesortingview_data import prepare_s
 class SpikeSortingView:
     def __init__(self, data_uri: str) -> None:
         self._data_uri = data_uri
-        self._data_file_name = kcl.load_file(data_uri)
+        self._data_file_name = ka.load_file(data_uri)
         if self._data_file_name is None:
             raise Exception(f"Unable to load spikesortingview data file: {data_uri}")
         with h5py.File(self._data_file_name, "r") as f:

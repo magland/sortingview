@@ -3,11 +3,11 @@
 
 import numpy as np
 import sortingview.views as vv
-import kachery_cloud as kcl
+import kachery as ka
 
 
 def main():
-    kcl.use_sandbox()
+    ka.use_sandbox()
     view = example_position_plot()
 
     url = view.url(label="Position plot example")
