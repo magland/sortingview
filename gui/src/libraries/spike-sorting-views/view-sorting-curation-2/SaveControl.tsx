@@ -1,6 +1,6 @@
 import { randomAlphaString } from '../../core-utils';
 import { Hyperlink } from '../../core-views';
-import { getFileData, storeFileData, storeGithubFileData, useSignedIn } from "@fi-sci/figurl-interface";
+import { getFileData, postMessageToParent, storeFileData, storeGithubFileData, useSignedIn } from "@fi-sci/figurl-interface";
 import { Button } from "@material-ui/core";
 import { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import EditGithubUriControl from './EditGithubUriControl';
@@ -154,7 +154,7 @@ const SaveControl: FunctionComponent<Props> = ({fallbackUri, uri, setUri, object
 					}).catch((err2: Error) => {
 						console.warn('Problem getting state 2')
 						console.warn(err2)
-						setErrorString(`Error getting ${fallbackUri}`)	
+						setErrorString(`Error getting ${fallbackUri}`)
 					})
 				}
 				else {
@@ -162,7 +162,7 @@ const SaveControl: FunctionComponent<Props> = ({fallbackUri, uri, setUri, object
 					console.warn(err)
 					setErrorString(`Error getting ${uri}`)
 				}
-				
+
 			})
 		}
 		first.current = false
@@ -224,6 +224,10 @@ const SaveControl: FunctionComponent<Props> = ({fallbackUri, uri, setUri, object
 
 	const [editingGithubUri, setEditingGithubUri] = useState(false)
 
+	const handleSubmitToParent = useCallback(() => {
+		postMessageToParent({type: 'submit-curation', curation: object})
+	}, [object])
+
 	return (
 		<div>
 			<div>
@@ -261,6 +265,7 @@ const SaveControl: FunctionComponent<Props> = ({fallbackUri, uri, setUri, object
 						</span>
 					)
 				} */}
+				<Button style={buttonStyle} onClick={handleSubmitToParent}>Submit to parent</Button>
 				{
 					!editingGithubUri ? (
 						<span>
@@ -289,7 +294,7 @@ const SaveControl: FunctionComponent<Props> = ({fallbackUri, uri, setUri, object
 				<div style={{paddingLeft: 8, fontSize: 12}}>
 					URI: <FormatUri uri={uri} />
 				</div>
-				
+
 			</div>
 			{errorString && <div style={{color: 'red'}}>{errorString}</div>}
 		</div>
@@ -309,12 +314,12 @@ function downloadTextFile(filename: string, text: string) {
 	const element = document.createElement('a');
 	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
 	element.setAttribute('download', filename);
-  
+
 	element.style.display = 'none';
 	document.body.appendChild(element);
-  
+
 	element.click();
-  
+
 	document.body.removeChild(element);
 }
 
