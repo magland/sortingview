@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Submit to Parent</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Test Submit to Parent</h1>
+        <div class="description">
+            <p>This test application demonstrates how to embed sortingview/figurl in an iframe and receive messages from it. You can:</p>
+            <ol>
+                <li>Edit the curation in the embedded view below</li>
+                <li>Click the "Submit to Parent" button</li>
+                <li>View the received message details in the messages section below</li>
+            </ol>
+            <p>This setup is useful when embedding sortingview within a larger application that needs to receive curation updates.</p>
+        </div>
+        <div class="iframe-container">
+            <iframe
+                src="https://figurl.org/f?v=npm://@fi-sci/figurl-sortingview@12/dist&d=sha1://c17199c4d56f0119e108117535eca5a410a8fa5b&s={%22sortingCuration%22:%22gh://AllenNeuralDynamics/ephys-sorting-manual-curation/main/behavior_751004_2024-12-19_11-50-31/experiment1_Record%20Node%20104%23Neuropix-PXI-100.ProbeA_recording1/kilosort4/curation.json%22}&label=behavior_751004_2024-12-19_11-50-31%20-%20experiment1_Record%20Node%20104%23Neuropix-PXI-100.ProbeA_recording1%20-%20kilosort4%20-%20Sorting%20Summary&zone=aind"
+                width="100%"
+                height="900"
+                frameborder="0"
+            ></iframe>
+        </div>
+        <div class="messages-container">
+            <h2>Received Messages:</h2>
+            <div id="messages"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
