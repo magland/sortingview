@@ -6,6 +6,7 @@ import { SortingCuration2ViewData } from "./SortingCuration2ViewData";
 import SaveControl from "./SaveControl";
 import { useUrlState } from "@fi-sci/figurl-interface";
 import { globalKeyHandler } from "../../../globalKeyHandler";
+import { onMessageToFrontend, removeMessageToFrontendCallback } from "@fi-sci/figurl-interface/lib/startListeningToParent";
 
 type Props = {
     data: SortingCuration2ViewData
@@ -137,6 +138,17 @@ const SortingCuration2View: FunctionComponent<Props> = ({data, width, height}) =
     const setSortingCuration = useCallback((x: any) => {
         sortingCurationDispatch && sortingCurationDispatch({type: 'SET_CURATION', curation: x as any as SortingCuration})
     }, [sortingCurationDispatch])
+    useEffect(() => {
+        const cb = (message: any) => {
+            if (message.type === 'SET_CURATION') {
+                setSortingCuration(message.curation)
+            }
+        }
+        onMessageToFrontend(cb)
+        return () => {
+            removeMessageToFrontendCallback(cb)
+        }
+    }, [setSortingCuration])
     return (
         <div style={{position: 'absolute', width: width - 10, height, overflowY: 'auto', paddingLeft: 10}}>
             <h3>Curation</h3>
