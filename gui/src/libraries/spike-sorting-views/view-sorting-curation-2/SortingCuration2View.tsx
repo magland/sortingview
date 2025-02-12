@@ -6,7 +6,7 @@ import { SortingCuration2ViewData } from "./SortingCuration2ViewData";
 import SaveControl from "./SaveControl";
 import { useUrlState } from "@fi-sci/figurl-interface";
 import { globalKeyHandler } from "../../../globalKeyHandler";
-import { onMessageToFrontend, removeMessageToFrontendCallback } from "@fi-sci/figurl-interface/lib/startListeningToParent";
+import { onMessageToFrontend, removeMessageToFrontendCallback } from "@fi-sci/figurl-interface";
 
 type Props = {
     data: SortingCuration2ViewData

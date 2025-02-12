@@ -1,3 +1,16 @@
+function sendCurationMessage() {
+    const iframe = document.querySelector('iframe');
+    const message = {
+        type: "messageToFrontend",
+        figureId: "fig1",
+        message: {
+            type: "SET_CURATION",
+            curation: {}
+        }
+    };
+    iframe.contentWindow.postMessage(message, 'https://figurl.org');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const messagesContainer = document.getElementById('messages');
 
