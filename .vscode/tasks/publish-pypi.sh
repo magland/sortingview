@@ -44,6 +44,6 @@ done
 twine upload ./dist/*
 
 # Tag this commit
-git tag v0.14.0a1
+git tag v0.14.1
 
-echo "Tagged as v0.14.0a1"
+echo "Tagged as v0.14.1"
