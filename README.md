@@ -24,10 +24,12 @@ Then set the following environment variables
 
 ```bash
 export KACHERY_API_KEY = "the-api-key"
-export KACHERY_ZONE = "scratch"
+export KACHERY_ZONE = "default"
 ```
 
-You can use the scratch zone to get started, but the files in that zone will be cleared out periodically. For more persistent storage (which is also not guaranteed to persist forever), you'll need to set up your own zone.
+For information about kachery storage and zones, see:
+
+https://github.com/magland/kachery?tab=readme-ov-file#zones-and-storage
 
 ## Getting started
 
