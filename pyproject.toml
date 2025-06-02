@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sortingview"
+version = "0.14.1"
+description = "Web app for viewing results of ephys spike sorting"
+authors = [
+    { name="Jeremy Magland", email="jmagland@flatironinstitute.org" },
+    { name="Jeff Soules"}
+]
+dependencies = [
+    "spikeinterface>=0.97.0",
+    "kachery>=2.0.2,<3",
+    "figurl==0.3.0a1",
+    "matplotlib",
+    "click",
+    "pynwb",
+    "pyyaml",
+    "h5py"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/magland/sortingview"
+Issues = "https://github.com/magland/sortingview/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["*"]
+
+[tool.setuptools]
+include-package-data = true
