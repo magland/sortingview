@@ -40,7 +40,7 @@ git clone <this-repo>
 Open this workspace in VS Code.
 
 ```bash
-cd spikesortingview
+cd gui
 code .
 ```
 
@@ -54,7 +54,6 @@ Install the recommended VS Code extensions
 ## Install node packages via yarn
 
 ```bash
-cd spikesortingview
 yarn install
 ```
 
@@ -64,7 +63,7 @@ This will install a large number of packages in the `node_modules/` folder
 
 ```bash
 # In VS Code terminal
-yarn start
+yarn dev
 ```
 
 If all works as intended, you will get a development server listening on port 3000.

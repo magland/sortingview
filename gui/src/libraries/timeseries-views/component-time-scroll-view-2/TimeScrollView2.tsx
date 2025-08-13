@@ -10,6 +10,8 @@ import { ViewToolbar } from '../ViewToolbar';
 import { useTimeTicks } from './timeTicks';
 import TSV2AxesLayer from './TSV2AxesLayer';
 import TSV2CursorLayer from './TSV2CursorLayer';
+import { exportToSVG, downloadSVG } from './svgExport';
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 type Props = {
     width: number
@@ -30,7 +32,7 @@ type Props = {
 }
 
 const defaultMargins = {
-    left: 30,
+    left: 50,
     right: 20,
     top: 20,
     bottom: 30
@@ -118,6 +120,7 @@ const TimeScrollView2: FunctionComponent<Props> = ({width, height, onCanvasEleme
     }, [canvasWidth, canvasHeight, timeRange, margins, currentTimePixels, currentTimeIntervalPixels])
 
     const divRef = useRef<HTMLDivElement | null>(null)
+    const canvasRef = useRef<HTMLCanvasElement | null>(null)
     useEffect(() => suppressWheelScroll(divRef), [divRef])
     const panelWidthSeconds = (visibleEndTimeSec ?? 0) - (visibleStartTimeSec ?? 0)
     const handleWheel = useTimeScrollZoom(divRef, zoomTimeseriesSelection)
@@ -171,6 +174,40 @@ const TimeScrollView2: FunctionComponent<Props> = ({width, height, onCanvasEleme
         onMouseOut && onMouseOut(e)
     }, [handleMouseLeave, onMouseOut])
 
+    const handleExportSVG = useCallback(() => {
+        // Get canvas data as base64 image
+        let canvasImageData: string | undefined
+        if (canvasRef.current) {
+            try {
+                canvasImageData = canvasRef.current.toDataURL('image/png')
+            } catch (error) {
+                console.warn('Could not export canvas data:', error)
+            }
+        }
+
+        // Create SVG export props
+        const svgProps = {
+            width: canvasWidth,
+            height: canvasHeight,
+            margins,
+            timeTicks,
+            yTickSet: yAxisInfo?.showTicks ? yTickSet : undefined,
+            gridlineOpts,
+            currentTimePixels,
+            currentTimeIntervalPixels,
+            canvasImageData
+        }
+
+        // Generate and download SVG
+        const svgContent = exportToSVG(svgProps)
+        downloadSVG(svgContent)
+    }, [canvasWidth, canvasHeight, margins, timeTicks, yAxisInfo?.showTicks, yTickSet, gridlineOpts, currentTimePixels, currentTimeIntervalPixels])
+
+    const handleCanvasElement = useCallback((elmt: HTMLCanvasElement) => {
+        canvasRef.current = elmt
+        onCanvasElement(elmt)
+    }, [onCanvasElement])
+
     const content = useMemo(() => {
         return (
             <div
@@ -191,16 +228,26 @@ const TimeScrollView2: FunctionComponent<Props> = ({width, height, onCanvasEleme
                 {axesLayer}
                 <canvas
                     style={{position: 'absolute', width: canvasWidth, height: canvasHeight}}
-                    ref={onCanvasElement}
+                    ref={handleCanvasElement}
                     width={canvasWidth}
                     height={canvasHeight}
                 />
                 {cursorLayer}
             </div>
         )
-    }, [onCanvasElement, axesLayer, cursorLayer, canvasWidth, canvasHeight, handleKeyDown, handleWheel, handleMouseDown2, handleMouseUp2, handleMouseMove2, handleMouseOut2])
+    }, [handleCanvasElement, axesLayer, cursorLayer, canvasWidth, canvasHeight, handleKeyDown, handleWheel, handleMouseDown2, handleMouseUp2, handleMouseMove2, handleMouseOut2])
     
-    const timeControlActions = useActionToolbar()
+    const exportAction = useMemo(() => ({
+        type: 'button' as const,
+        title: 'Export to SVG',
+        icon: <GetAppIcon />,
+        callback: handleExportSVG,
+        selected: false
+    }), [handleExportSVG])
+
+    const timeControlActions = useActionToolbar({
+        belowDefault: [exportAction]
+    })
 
     if (hideToolbar) {
         return (
