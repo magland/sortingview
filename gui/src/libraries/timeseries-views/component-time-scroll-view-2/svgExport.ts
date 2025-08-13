@@ -11,10 +11,11 @@ export interface SVGExportProps {
     currentTimePixels?: number
     currentTimeIntervalPixels?: [number, number]
     canvasImageData?: string // base64 encoded canvas data
+    additionalSVGElements?: string[] // Additional SVG elements from parent component
 }
 
 export const exportToSVG = (props: SVGExportProps): string => {
-    const {width, height, margins, timeTicks, yTickSet, gridlineOpts, currentTimePixels, currentTimeIntervalPixels, canvasImageData} = props
+    const {width, height, margins, timeTicks, yTickSet, gridlineOpts, currentTimePixels, currentTimeIntervalPixels, canvasImageData, additionalSVGElements} = props
     
     // Create SVG elements
     const svgElements: string[] = []
@@ -22,15 +23,20 @@ export const exportToSVG = (props: SVGExportProps): string => {
     // SVG header
     svgElements.push(`<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">`)
     
-    // Add canvas content as image if available
+    // Add canvas content as image if available (fallback for non-capable parents)
     if (canvasImageData) {
         svgElements.push(`<image x="0" y="0" width="${width}" height="${height}" href="${canvasImageData}" />`)
     }
     
-    // Add axes and gridlines
+    // Add axes and gridlines (behind the plot data)
     svgElements.push(...renderAxesToSVG(props))
     
-    // Add cursor elements
+    // Add additional SVG elements from parent component (proper vector export - in front of axes)
+    if (additionalSVGElements) {
+        svgElements.push(...additionalSVGElements)
+    }
+    
+    // Add cursor elements (on top of everything)
     svgElements.push(...renderCursorToSVG(props))
     
     // SVG footer

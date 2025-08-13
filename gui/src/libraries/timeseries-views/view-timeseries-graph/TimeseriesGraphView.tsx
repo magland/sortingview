@@ -1,8 +1,9 @@
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
 import TimeScrollView2, { useTimeScrollView2 } from '../component-time-scroll-view-2/TimeScrollView2'
+import { SVGExportCapability } from '../component-time-scroll-view-2/SVGExportCapability'
 import { useTimeRange, useTimeseriesSelectionInitialization } from '../context-timeseries-selection'
 import { TimeseriesGraphViewData } from './TimeseriesGraphViewData'
-import { Opts } from './WorkerTypes'
+import { Opts, SVGExportRequest, SVGExportResponse } from './WorkerTypes'
 
 type Props = {
     data: TimeseriesGraphViewData
@@ -104,6 +105,42 @@ const TimeseriesGraphView: FunctionComponent<Props> = ({data, width, height}) =>
         yMax: maxValue
     }), [minValue, maxValue])
 
+    // SVG Export capability implementation
+    const requestSVGFromWorker = useCallback(async (): Promise<string[]> => {
+        if (!worker) {
+            throw new Error('Worker not available for SVG export')
+        }
+
+        return new Promise((resolve, reject) => {
+            const requestId = Math.random().toString(36).substr(2, 9)
+            const timeout = setTimeout(() => {
+                reject(new Error('SVG export request timed out'))
+            }, 10000) // 10 second timeout
+
+            const handleMessage = (event: MessageEvent) => {
+                const data = event.data as SVGExportResponse
+                if (data.type === 'svgExportData' && data.requestId === requestId) {
+                    clearTimeout(timeout)
+                    worker.removeEventListener('message', handleMessage)
+                    resolve(data.svgElements)
+                }
+            }
+
+            worker.addEventListener('message', handleMessage)
+
+            const request: SVGExportRequest = {
+                type: 'requestSVGExport',
+                requestId
+            }
+            worker.postMessage(request)
+        })
+    }, [worker])
+
+    const svgExportCapability: SVGExportCapability = useMemo(() => ({
+        canExportToSVG: true,
+        exportToSVG: requestSVGFromWorker
+    }), [requestSVGFromWorker])
+
     const content = (
         <TimeScrollView2
             onCanvasElement={elmt => setCanvasElement(elmt)}
@@ -113,6 +150,7 @@ const TimeseriesGraphView: FunctionComponent<Props> = ({data, width, height}) =>
             height={height}
             yAxisInfo={yAxisInfo}
             hideToolbar={hideToolbar}
+            svgExportCapability={svgExportCapability}
         />
     )
     return content

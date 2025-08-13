@@ -19,3 +19,14 @@ export type ResolvedSeries = {
     t: number[]
     y: number[]
 }
+
+export type SVGExportRequest = {
+    type: 'requestSVGExport'
+    requestId: string
+}
+
+export type SVGExportResponse = {
+    type: 'svgExportData'
+    requestId: string
+    svgElements: string[]
+}

@@ -1,4 +1,4 @@
-import { Opts, ResolvedSeries } from "./WorkerTypes";
+import { Opts, ResolvedSeries, SVGExportRequest, SVGExportResponse } from "./WorkerTypes";
 
 let canvas: HTMLCanvasElement | undefined = undefined
 let opts: Opts | undefined = undefined
@@ -17,6 +17,9 @@ onmessage = function (evt) {
     if (evt.data.resolvedSeries) {
         resolvedSeries = evt.data.resolvedSeries
         drawDebounced()
+    }
+    if (evt.data.type === 'requestSVGExport') {
+        handleSVGExportRequest(evt.data as SVGExportRequest)
     }
 }
 
@@ -276,6 +279,191 @@ function sleepMsec(msec: number) {
     return new Promise((resolve) => {
         setTimeout(resolve, msec)
     })
+}
+
+const handleSVGExportRequest = (request: SVGExportRequest) => {
+    try {
+        const svgElements = generateSVGElements()
+        const response: SVGExportResponse = {
+            type: 'svgExportData',
+            requestId: request.requestId,
+            svgElements
+        }
+        postMessage(response)
+    } catch (error) {
+        console.error('Error generating SVG elements:', error)
+        const response: SVGExportResponse = {
+            type: 'svgExportData',
+            requestId: request.requestId,
+            svgElements: []
+        }
+        postMessage(response)
+    }
+}
+
+const generateSVGElements = (): string[] => {
+    if (!opts || !resolvedSeries) return []
+
+    const {margins, canvasWidth, canvasHeight, visibleStartTimeSec, visibleEndTimeSec, minValue, maxValue} = opts
+
+    // Compute plot series if not already computed
+    const currentPlotSeries = plotSeries || computePlotSeries(resolvedSeries)
+
+    const coordToPixel = (p: {x: number, y: number}): {x: number, y: number} => {
+        return {
+            x: margins.left + (p.x - visibleStartTimeSec) / (visibleEndTimeSec - visibleStartTimeSec) * (canvasWidth - margins.left - margins.right),
+            y: canvasHeight - margins.bottom - (p.y - minValue) / (maxValue - minValue) * (canvasHeight - margins.top - margins.bottom)
+        }
+    }
+
+    const pixelData = currentPlotSeries.map((s, i) => {
+        return {
+            dimensionIndex: i,
+            dimensionLabel: `${i}`,
+            pixelTimes: s.times.map(t => coordToPixel({x: t, y: 0}).x),
+            pixelValues: s.type === 'interval' ? s.values : s.values.map(y => coordToPixel({x: 0, y}).y),
+            type: s.type,
+            attributes: s.attributes
+        }
+    })
+
+    const svgElements: string[] = []
+
+    // Add clipping path
+    svgElements.push(`<defs><clipPath id="plotArea"><rect x="${margins.left}" y="${margins.top}" width="${canvasWidth - margins.left - margins.right}" height="${canvasHeight - margins.top - margins.bottom}" /></clipPath></defs>`)
+
+    // Generate SVG elements for each dimension
+    pixelData.forEach(dim => {
+        if (dim.type === 'line') {
+            svgElements.push(...generateLineSVG(dim))
+        }
+        else if (dim.type === 'marker') {
+            svgElements.push(...generateMarkerSVG(dim))
+        }
+        else if (dim.type === 'interval') {
+            svgElements.push(...generateIntervalSVG(dim))
+        }
+    })
+
+    // Add legend
+    svgElements.push(...generateLegendSVG())
+
+    return svgElements
+}
+
+const generateLineSVG = (dim: any): string[] => {
+    const color = dim.attributes['color'] ?? 'black'
+    const width = dim.attributes['width'] ?? 1.1
+    const dash = dim.attributes['dash']
+
+    if (dim.pixelTimes.length === 0) return []
+
+    let pathData = `M ${dim.pixelTimes[0]} ${dim.pixelValues[0]}`
+    for (let i = 1; i < dim.pixelTimes.length; i++) {
+        pathData += ` L ${dim.pixelTimes[i]} ${dim.pixelValues[i]}`
+    }
+
+    const strokeDashArray = dash ? dash.join(',') : undefined
+    const dashAttr = strokeDashArray ? ` stroke-dasharray="${strokeDashArray}"` : ''
+
+    return [`<path d="${pathData}" stroke="${color}" stroke-width="${width}" fill="none" clip-path="url(#plotArea)"${dashAttr} />`]
+}
+
+const generateMarkerSVG = (dim: any): string[] => {
+    const color = dim.attributes['color'] ?? 'black'
+    const radius = dim.attributes['radius'] ?? 2
+    const shape = dim.attributes['shape'] ?? 'circle'
+    const elements: string[] = []
+
+    dim.pixelTimes.forEach((t: number, ii: number) => {
+        const y = dim.pixelValues[ii]
+        if (shape === 'circle') {
+            elements.push(`<circle cx="${t}" cy="${y}" r="${radius}" fill="${color}" clip-path="url(#plotArea)" />`)
+        } else if (shape === 'square') {
+            elements.push(`<rect x="${t - radius}" y="${y - radius}" width="${radius * 2}" height="${radius * 2}" fill="${color}" clip-path="url(#plotArea)" />`)
+        }
+    })
+
+    return elements
+}
+
+const generateIntervalSVG = (dim: any): string[] => {
+    if (!opts) return []
+    const {margins, canvasHeight} = opts
+    const color = dim.attributes['color'] ?? 'black'
+    const elements: string[] = []
+
+    for (let i = 0; i < dim.pixelTimes.length - 1; i++) {
+        if (dim.pixelValues[i] === 0) {
+            const tStart = dim.pixelTimes[i]
+            const tEnd = dim.pixelTimes[i + 1]
+            const width = tEnd - tStart
+            const height = canvasHeight - margins.top - margins.bottom - 1
+            elements.push(`<rect x="${tStart}" y="${margins.top}" width="${width}" height="${height}" fill="${color}" clip-path="url(#plotArea)" />`)
+        }
+    }
+
+    return elements
+}
+
+const generateLegendSVG = (): string[] => {
+    if (!opts || !resolvedSeries) return []
+    if (opts.hideLegend) return []
+
+    const { legendOpts, margins, canvasWidth } = opts
+    const seriesToInclude = resolvedSeries.filter(s => (s.title)).filter(s => (s.type !== 'interval'))
+    if (seriesToInclude.length === 0) return []
+
+    const { location } = legendOpts
+    const entryHeight = 18
+    const entryFontSize = 12
+    const symbolWidth = 50
+    const legendWidth = 200
+    const margin = 10
+    const legendHeight = 20 + seriesToInclude.length * entryHeight
+    const R = location === 'northwest' ? { x: margins.left + 20, y: margins.top + 20, w: legendWidth, h: legendHeight } :
+        location === 'northeast' ? { x: canvasWidth - margins.right - legendWidth - 20, y: margins.top + 20, w: legendWidth, h: legendHeight } : undefined
+    if (!R) return []
+
+    const elements: string[] = []
+
+    // Legend background
+    elements.push(`<rect x="${R.x}" y="${R.y}" width="${R.w}" height="${R.h}" fill="white" stroke="gray" stroke-width="1.5" />`)
+
+    // Legend entries
+    seriesToInclude.forEach((s, i) => {
+        const y0 = R.y + margin + i * entryHeight
+        const symbolRect = { x: R.x + margin, y: y0, w: symbolWidth, h: entryHeight }
+        const titleRect = { x: R.x + margin + symbolWidth + margin, y: y0, w: legendWidth - margin - margin - symbolWidth - margin, h: entryHeight }
+        const title = s.title || 'untitled'
+
+        // Title text
+        elements.push(`<text x="${titleRect.x}" y="${titleRect.y + titleRect.h / 2 + entryFontSize / 2}" font-family="Arial" font-size="${entryFontSize}" fill="black">${title}</text>`)
+
+        // Symbol
+        if (s.type === 'line') {
+            const color = s.attributes['color'] ?? 'black'
+            const width = s.attributes['width'] ?? 1.1
+            const dash = s.attributes['dash']
+            const strokeDashArray = dash ? dash.join(',') : undefined
+            const dashAttr = strokeDashArray ? ` stroke-dasharray="${strokeDashArray}"` : ''
+            elements.push(`<line x1="${symbolRect.x}" y1="${symbolRect.y + symbolRect.h / 2}" x2="${symbolRect.x + symbolRect.w}" y2="${symbolRect.y + symbolRect.h / 2}" stroke="${color}" stroke-width="${width}"${dashAttr} />`)
+        }
+        else if (s.type === 'marker') {
+            const color = s.attributes['color'] ?? 'black'
+            const radius = entryHeight * 0.3
+            const shape = s.attributes['shape'] ?? 'circle'
+            const center = { x: symbolRect.x + symbolRect.w / 2, y: symbolRect.y + symbolRect.h / 2 }
+            if (shape === 'circle') {
+                elements.push(`<circle cx="${center.x}" cy="${center.y}" r="${radius}" fill="${color}" />`)
+            }
+            else if (shape === 'square') {
+                elements.push(`<rect x="${center.x - radius}" y="${center.y - radius}" width="${radius * 2}" height="${radius * 2}" fill="${color}" />`)
+            }
+        }
+    })
+
+    return elements
 }
 
 // export { }

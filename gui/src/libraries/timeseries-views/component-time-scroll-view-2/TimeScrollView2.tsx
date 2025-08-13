@@ -11,6 +11,7 @@ import { useTimeTicks } from './timeTicks';
 import TSV2AxesLayer from './TSV2AxesLayer';
 import TSV2CursorLayer from './TSV2CursorLayer';
 import { exportToSVG, downloadSVG } from './svgExport';
+import { SVGExportCapability } from './SVGExportCapability';
 import GetAppIcon from '@material-ui/icons/GetApp';
 
 type Props = {
@@ -29,6 +30,7 @@ type Props = {
         yMin?: number
         yMax?: number
     }
+    svgExportCapability?: SVGExportCapability
 }
 
 const defaultMargins = {
@@ -53,7 +55,7 @@ export const useTimeScrollView2 = ({width, height, hideToolbar}: {width: number,
     }
 }
 
-const TimeScrollView2: FunctionComponent<Props> = ({width, height, onCanvasElement, gridlineOpts, onKeyDown, onMouseDown, onMouseMove, onMouseOut, onMouseUp, hideToolbar, yAxisInfo}) => {
+const TimeScrollView2: FunctionComponent<Props> = ({width, height, onCanvasElement, gridlineOpts, onKeyDown, onMouseDown, onMouseMove, onMouseOut, onMouseUp, hideToolbar, yAxisInfo, svgExportCapability}) => {
     const { visibleStartTimeSec, visibleEndTimeSec, zoomTimeseriesSelection, panTimeseriesSelection } = useTimeRange()
     const {currentTime, currentTimeInterval } = useTimeseriesSelection()
     const timeRange = useMemo(() => (
@@ -174,34 +176,45 @@ const TimeScrollView2: FunctionComponent<Props> = ({width, height, onCanvasEleme
         onMouseOut && onMouseOut(e)
     }, [handleMouseLeave, onMouseOut])
 
-    const handleExportSVG = useCallback(() => {
-        // Get canvas data as base64 image
-        let canvasImageData: string | undefined
-        if (canvasRef.current) {
-            try {
-                canvasImageData = canvasRef.current.toDataURL('image/png')
-            } catch (error) {
-                console.warn('Could not export canvas data:', error)
+    const handleExportSVG = useCallback(async () => {
+        try {
+            // Create SVG export props
+            const svgProps = {
+                width: canvasWidth,
+                height: canvasHeight,
+                margins,
+                timeTicks,
+                yTickSet: yAxisInfo?.showTicks ? yTickSet : undefined,
+                gridlineOpts,
+                currentTimePixels,
+                currentTimeIntervalPixels
             }
-        }
 
-        // Create SVG export props
-        const svgProps = {
-            width: canvasWidth,
-            height: canvasHeight,
-            margins,
-            timeTicks,
-            yTickSet: yAxisInfo?.showTicks ? yTickSet : undefined,
-            gridlineOpts,
-            currentTimePixels,
-            currentTimeIntervalPixels,
-            canvasImageData
-        }
+            let svgContent: string
 
-        // Generate and download SVG
-        const svgContent = exportToSVG(svgProps)
-        downloadSVG(svgContent)
-    }, [canvasWidth, canvasHeight, margins, timeTicks, yAxisInfo?.showTicks, yTickSet, gridlineOpts, currentTimePixels, currentTimeIntervalPixels])
+            if (svgExportCapability?.canExportToSVG && svgExportCapability.exportToSVG) {
+                // Use parent's SVG export capability for proper vector export
+                const additionalSVGElements = await svgExportCapability.exportToSVG(svgProps)
+                svgContent = exportToSVG({...svgProps, additionalSVGElements})
+            } else {
+                // Fallback to bitmap export (should not happen if button is properly hidden)
+                let canvasImageData: string | undefined
+                if (canvasRef.current) {
+                    try {
+                        canvasImageData = canvasRef.current.toDataURL('image/png')
+                    } catch (error) {
+                        console.warn('Could not export canvas data:', error)
+                    }
+                }
+                svgContent = exportToSVG({...svgProps, canvasImageData})
+            }
+
+            downloadSVG(svgContent)
+        } catch (error) {
+            console.error('Failed to export SVG:', error)
+            alert('Failed to export SVG. Please try again.')
+        }
+    }, [canvasWidth, canvasHeight, margins, timeTicks, yAxisInfo?.showTicks, yTickSet, gridlineOpts, currentTimePixels, currentTimeIntervalPixels, svgExportCapability])
 
     const handleCanvasElement = useCallback((elmt: HTMLCanvasElement) => {
         canvasRef.current = elmt
@@ -239,14 +252,14 @@ const TimeScrollView2: FunctionComponent<Props> = ({width, height, onCanvasEleme
     
     const exportAction = useMemo(() => ({
         type: 'button' as const,
-        title: 'Export to SVG',
+        title: 'Export plot to SVG',
         icon: <GetAppIcon />,
         callback: handleExportSVG,
         selected: false
     }), [handleExportSVG])
 
     const timeControlActions = useActionToolbar({
-        belowDefault: [exportAction]
+        belowDefault: svgExportCapability?.canExportToSVG ? [exportAction] : []
     })
 
     if (hideToolbar) {
