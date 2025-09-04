@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sortingview"
-version = "0.14.1"
+version = "0.14.2"
 description = "Web app for viewing results of ephys spike sorting"
 authors = [
     { name="Jeremy Magland", email="jmagland@flatironinstitute.org" },
@@ -13,7 +13,7 @@ authors = [
 dependencies = [
     "spikeinterface>=0.97.0",
     "kachery>=2.0.2,<3",
-    "figurl==0.3.0a1",
+    "figurl>=0.3.1",
     "matplotlib",
     "click",
     "pynwb",
