@@ -40,3 +40,22 @@ For example:
 ```bash
 python examples/example_autocorrelograms.py
 ```
+
+## Publishing to figpack instead of figurl (experimental)
+
+Existing code that calls `view.url(...)` (for example spyglass) can publish to [figpack](https://github.com/flatironinstitute/figpack) without code changes:
+
+```bash
+pip install "sortingview[figpack]"
+export SORTINGVIEW_BACKEND=figpack
+export FIGPACK_API_KEY=...      # your figpack API key
+export FIGPACK_BUCKET=...       # optional: a bucket whose figures do not expire
+```
+
+For the Frank Lab track animation and the 1D decoded position views, also install the figpack extensions:
+
+```bash
+figpack extensions install figpack_franklab figpack_experimental
+```
+
+`view.url(...)` then returns a figpack figure URL. If the view tree contains a view with no figpack equivalent, sortingview warns and falls back to figurl (set `SORTINGVIEW_FIGPACK_STRICT=1` to raise instead). A starting curation passed as `state={"sortingCuration": uri}` is loaded into the figpack figure, and `sortingview.figpack_backend.load_curation(figure_url)` reads the saved curation back. Set `SORTINGVIEW_FIGPACK_MODE=local` to write the figure to a local folder instead of uploading, or `ephemeral` for a temporary upload that needs no API key.

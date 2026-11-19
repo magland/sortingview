@@ -98,6 +98,13 @@ class View:
         return V.url_dict(label=label, state=state, allow_float64=allow_float64)
 
     def url(self, *, label: str, state: Union[dict, None] = None, allow_float64: bool = False):
+        from .. import figpack_backend
+
+        if figpack_backend.use_figpack():
+            # SORTINGVIEW_BACKEND=figpack: publish to figpack instead of figurl
+            figpack_url = figpack_backend.try_figpack_url(self, label=label, state=state)
+            if figpack_url is not None:
+                return figpack_url
         return fig.url_from_url_dict(self.url_dict(label=label, state=state, allow_float64=allow_float64))
 
     def jupyter(self, *, height: Union[int, None] = None):
