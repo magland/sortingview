@@ -1,0 +1,105 @@
+# Publish sortingview to PyPI when the version is bumped on main.
+#
+# Runs when sortingview/version.py changes on main (a version bump), or by hand
+# from the Actions tab. If PyPI already has the version, nothing is published.
+#
+# Uses PyPI trusted publishing, so no token is stored in GitHub. One-time setup
+# on pypi.org: sortingview > Settings > Publishing > add a GitHub publisher with
+# owner "magland", repository "sortingview", workflow "publish.yml" and
+# environment "pypi".
+
+name: publish
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "sortingview/version.py"
+  workflow_dispatch:
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      published: ${{ steps.pypi.outputs.published }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install build tools
+        run: python -m pip install --upgrade pip build black
+
+      - name: Check formatting
+        run: black -l 180 --check sortingview
+
+      - name: Check that the version strings agree
+        id: version
+        run: |
+          VERSION=$(python -c "import re; print(re.search(r'__version__ = \"(.+)\"', open('sortingview/version.py').read()).group(1))")
+          for f in pyproject.toml setup.cfg jinjaroot.yaml; do
+            if ! grep -qE "^(version = \"?|pythonProjectVersion: )${VERSION}\"?$" "$f"; then
+              echo "::error file=$f::version does not match sortingview/version.py ($VERSION)"
+              exit 1
+            fi
+          done
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Check whether PyPI already has this version
+        id: pypi
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://pypi.org/pypi/sortingview/${{ steps.version.outputs.version }}/json")
+          if [ "$STATUS" = "200" ]; then
+            echo "sortingview ${{ steps.version.outputs.version }} is already on PyPI; nothing to publish"
+            echo "published=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build sdist and wheel
+        run: python -m build
+
+      - name: Check that the wheel installs and imports
+        run: |
+          python -m venv /tmp/check
+          /tmp/check/bin/pip install dist/*.whl
+          INSTALLED=$(cd /tmp && /tmp/check/bin/python -c "import sortingview, sortingview.views, sortingview.figpack_backend; print(sortingview.__version__)")
+          test "$INSTALLED" = "${{ steps.version.outputs.version }}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    if: needs.build.outputs.published != 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/sortingview/${{ needs.build.outputs.version }}/
+    permissions:
+      id-token: write # trusted publishing
+      contents: write # tag and GitHub release
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+      - name: Tag and create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: v${{ needs.build.outputs.version }}
+        run: |
+          gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "$TAG" --generate-notes dist/*
