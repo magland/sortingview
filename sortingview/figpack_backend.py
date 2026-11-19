@@ -23,8 +23,8 @@ FIGPACK_API_KEY, FIGPACK_BUCKET, FIGPACK_API_BASE_URL
     URL will be stored in a database.
 
 Requires: pip install figpack figpack_spike_sorting
-(and figpack_franklab for the Frank Lab track animation and 1D decoded
-position views).
+(figpack_franklab for the Frank Lab track animation view, and
+figpack_experimental for the 1D decoded position view).
 
 Legacy SpikeSortingView.Figure objects (create_raw_traces_plot, and the
 MountainLayout figures spyglass v0 builds from them) are converted too.
@@ -34,6 +34,7 @@ import base64
 import json
 import os
 import tempfile
+import time
 import urllib.error
 import urllib.request
 import warnings
@@ -215,23 +216,57 @@ def _convert_position_plot(view):
 
 
 def _convert_decoded_linear_position(view):
+    """DecodedLinearPositionData -> figpack_experimental LinearDecode.
+
+    sortingview stores the posterior sparsely (per-frame lists of bin index and
+    0-255 value) over bins that need not be evenly spaced: a linearized track
+    has gaps between segments. LinearDecode takes a dense time x position
+    array on a uniform grid, so the bins are placed on a uniform grid with the
+    median bin spacing, leaving the gaps empty.
+    """
     try:
-        from figpack_franklab.views import DecodedLinearPosition
+        from figpack_experimental.views import LinearDecode
     except Exception as e:  # ImportError, or FileNotFoundError when its JS bundle is missing
-        raise UnsupportedViewError(f"DecodedLinearPositionData requires figpack_franklab with DecodedLinearPosition ({e})") from e
+        raise UnsupportedViewError(f"DecodedLinearPositionData requires the figpack_experimental extension ({e})") from e
 
     sampling_frequency = view.sampling_frequency
     if sampling_frequency is None:
         sampling_frequency = 1000.0  # sortingview's frontend default
-    return DecodedLinearPosition(
-        values=np.asarray(view.values),
-        positions=np.asarray(view.positions),
-        frame_bounds=np.asarray(view.frame_bounds),
-        positions_key=np.asarray(view.positions_key),
+    key = np.asarray(view.positions_key, dtype=np.float64)
+    frame_bounds = np.asarray(view.frame_bounds).astype(np.int64)
+    n_frames = len(frame_bounds)
+
+    cols, grid = _uniform_position_grid(key)
+    dense = np.zeros((n_frames, len(grid)), dtype=np.float32)
+    frame_of_entry = np.repeat(np.arange(n_frames), frame_bounds)
+    dense[frame_of_entry, cols[np.asarray(view.positions).astype(np.int64)]] = np.asarray(view.values, dtype=np.float32) / 255.0
+
+    observed = getattr(view, "observed_positions", None)
+    if observed is None:
+        observed = np.full(n_frames, np.nan, dtype=np.float32)  # LinearDecode needs an array; NaN draws nothing
+    return LinearDecode(
         start_time_sec=float(view.start_time_sec),
         sampling_frequency_hz=float(sampling_frequency),
-        observed_positions=getattr(view, "observed_positions", None),
+        data=dense,
+        observed_positions=np.asarray(observed, dtype=np.float32).reshape(-1),
+        position_grid=grid.astype(np.float32),
     )
+
+
+def _uniform_position_grid(key: np.ndarray):
+    """Column of each bin on a uniform grid spanning the bins, and that grid."""
+    if len(key) < 2:
+        return np.zeros(len(key), dtype=np.int64), key.copy()
+    step = float(np.median(np.diff(key)))
+    if step <= 0:
+        raise UnsupportedViewError("positions_key must be increasing")
+    cols = np.round((key - key[0]) / step).astype(np.int64)
+    n_grid = int(cols[-1]) + 1
+    if n_grid > 10 * len(key) or len(np.unique(cols)) != len(cols):
+        # Too irregular for a uniform grid: show the bins evenly spaced instead
+        warnings.warn("sortingview: decoded position bins are irregular; showing them evenly spaced")
+        return np.arange(len(key), dtype=np.int64), np.linspace(key[0], key[-1], len(key))
+    return cols, key[0] + step * np.arange(n_grid)
 
 
 # ---------------------------------------------------------------------------
@@ -385,15 +420,12 @@ def _convert_spike_sorting_view(view):
 
     if isinstance(view, vv.Autocorrelograms):
         return ssv.Autocorrelograms(
-            autocorrelograms=[
-                ssv.AutocorrelogramItem(unit_id=_j(a.unit_id), bin_edges_sec=a.bin_edges_sec, bin_counts=a.bin_counts) for a in view._autocorrelograms
-            ]
+            autocorrelograms=[ssv.AutocorrelogramItem(unit_id=_j(a.unit_id), bin_edges_sec=a.bin_edges_sec, bin_counts=a.bin_counts) for a in view._autocorrelograms]
         )
     if isinstance(view, vv.CrossCorrelograms):
         return ssv.CrossCorrelograms(
             cross_correlograms=[
-                ssv.CrossCorrelogramItem(unit_id1=_j(c.unit_id1), unit_id2=_j(c.unit_id2), bin_edges_sec=c.bin_edges_sec, bin_counts=c.bin_counts)
-                for c in view._cross_correlograms
+                ssv.CrossCorrelogramItem(unit_id1=_j(c.unit_id1), unit_id2=_j(c.unit_id2), bin_edges_sec=c.bin_edges_sec, bin_counts=c.bin_counts) for c in view._cross_correlograms
             ],
             hide_unit_selector=bool(view._hide_unit_selector),
         )
@@ -421,17 +453,11 @@ def _convert_spike_sorting_view(view):
         return ssv.SpikeAmplitudes(
             start_time_sec=view._start_time_sec,
             end_time_sec=view._end_time_sec,
-            plots=[
-                ssv.SpikeAmplitudesItem(unit_id=_j(p.unit_id), spike_times_sec=p.spike_times_sec, spike_amplitudes=p.spike_amplitudes)
-                for p in view._plots
-            ],
+            plots=[ssv.SpikeAmplitudesItem(unit_id=_j(p.unit_id), spike_times_sec=p.spike_times_sec, spike_amplitudes=p.spike_amplitudes) for p in view._plots],
         )
     if isinstance(view, vv.SpikeLocations):
         return ssv.SpikeLocations(
-            units=[
-                ssv.SpikeLocationsItem(unit_id=_j(u.unit_id), spike_times_sec=u.spike_times_sec, x_locations=u.x_locations, y_locations=u.y_locations)
-                for u in view._units
-            ],
+            units=[ssv.SpikeLocationsItem(unit_id=_j(u.unit_id), spike_times_sec=u.spike_times_sec, x_locations=u.x_locations, y_locations=u.y_locations) for u in view._units],
             x_range=view._x_range,
             y_range=view._y_range,
             channel_locations=_j(view._channel_locations),
@@ -606,13 +632,24 @@ def load_curation(uri_or_url: str) -> dict:
         if base.endswith("/index.html"):
             base = base[: -len("/index.html")]
         base = base.rstrip("/")
+        # A cache-buster so a just-saved curation is not served stale from the
+        # CDN (the figpack viewer does the same), and a User-Agent because the
+        # figpack servers reject Python's default one
+        from .version import __version__
+
+        req = urllib.request.Request(
+            f"{base}/annotations.json?cb={int(time.time() * 1000)}",
+            headers={"User-Agent": f"sortingview/{__version__}"},
+        )
         try:
-            with urllib.request.urlopen(f"{base}/annotations.json") as resp:
+            with urllib.request.urlopen(req) as resp:
                 saved = json.loads(resp.read().decode("utf-8"))
         except urllib.error.HTTPError as e:
-            if e.code in (403, 404):
+            if e.code == 404:
                 return {}  # nothing saved yet
-            raise
+            # Never turn an error into an empty curation: that would be
+            # recorded downstream as "no labels, no merges"
+            raise RuntimeError(f"Could not load curation from {base}/annotations.json (HTTP {e.code})") from e
         text = saved.get("annotations", {}).get("/", {}).get("sorting_curation")
         return json.loads(text) if text else {}
     import kachery as ka
