@@ -21,8 +21,7 @@ class DecodedLinearPositionData(View):
         self.positions = positions
         self.frame_bounds = frame_bounds
         self.positions_key = positions_key
-        if observed_positions is not None:
-            self.observed_positions = observed_positions.astype("float32")
+        self.observed_positions = observed_positions.astype("float32") if observed_positions is not None else None
         self.start_time_sec = 0 if start_time_sec == None else start_time_sec
         self.sampling_frequency = sampling_frequency
 

@@ -26,6 +26,12 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+[project.optional-dependencies]
+figpack = [
+    "figpack>=0.4.5",
+    "figpack_spike_sorting>=0.1.18",
+]
+
 [project.urls]
 Homepage = "https://github.com/magland/sortingview"
 Issues = "https://github.com/magland/sortingview/issues"
