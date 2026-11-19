@@ -13,12 +13,12 @@ Set these wherever you run your code (shell profile, `.env`, or the top of a not
 ```bash
 export SORTINGVIEW_BACKEND=figpack
 export FIGPACK_API_KEY=<your key>
-export FIGPACK_BUCKET=<your lab's bucket>   # e.g. gillespielab
+export FIGPACK_BUCKET=<your lab's bucket>
 ```
 
-- Your API key is on your profile at https://manage.figpack.org.
+- Your API key is on your profile at https://manage.figpack.org. If you don't have one, contact the figpack maintainers.
 - Uploads to a lab bucket only work if you are on that bucket's list of authorized users. Ask the bucket's owner to add you.
-- Use a bucket whose figures do not expire if the URLs will be stored (as spyglass does).
+- By default, figures expire after 24 hours unless they are pinned or renewed. If that is an issue (spyglass, for example, stores figure URLs), your bucket may be configured to retain figures automatically.
 
 For the Frank Lab track animation and the 1D decoded position views, also run:
 
